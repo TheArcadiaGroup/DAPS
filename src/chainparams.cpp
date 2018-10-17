@@ -277,6 +277,7 @@ public:
         nTargetTimespan = 1 * 60; // DAPScoin: 1 day
         nTargetSpacing = 1 * 60;  // DAPScoin: 1 minute
         nLastPOWBlock = 200;
+        nStartPOABlock = 300;
         nMaturity = 15;
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 51197; //approx Mon, 17 Apr 2017 04:00:00 GMT

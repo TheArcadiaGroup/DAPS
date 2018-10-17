@@ -7,6 +7,7 @@
 #define BITCOIN_MINER_H
 
 #include <stdint.h>
+#include "enum.h"
 
 class CBlock;
 class CBlockHeader;
@@ -27,7 +28,7 @@ void IncrementExtraNonce(CBlock* pblock, CBlockIndex* pindexPrev, unsigned int& 
 /** Check mined block */
 void UpdateTime(CBlockHeader* block, const CBlockIndex* pindexPrev);
 
-void BitcoinMiner(CWallet* pwallet, bool fProofOfStake);
+void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType=MineType::MINETYPE_POW);
 
 extern double dHashesPerSec;
 extern int64_t nHPSTimerStart;
