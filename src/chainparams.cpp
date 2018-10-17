@@ -276,7 +276,7 @@ public:
         nMinerThreads = 0;
         nTargetTimespan = 1 * 60; // DAPScoin: 1 day
         nTargetSpacing = 1 * 60;  // DAPScoin: 1 minute
-        nLastPOWBlock = 200;
+        nLastPOWBlock = 210;
         nStartPOABlock = 300;
         nMaturity = 15;
         nMasternodeCountDrift = 4;
