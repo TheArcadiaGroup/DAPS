@@ -120,7 +120,7 @@ public:
 
         /** Height or Time Based Activations **/
         nLastPOWBlock = 1000;
-        nStartPOABlock = 25000;
+        nStartPOABlock = 100000;
         nModifierUpdateBlock = 615800;
 
         /**
