@@ -2176,7 +2176,7 @@ int64_t GetBlockValue(int nHeight) {
                 nSubsidy = 50 * 100 * COIN;
             }
             else if(nHeight > Params().START_POA_BLOCK() && nHeight % 60 == 0) {
-                nSubsidy 550 * 59 * COIN;
+                nSubsidy = 550 * 59 * COIN;
             } else {
                 nSubsidy = 550 * COIN;
             }
