@@ -2846,10 +2846,10 @@ bool CWallet::CreateCoinAudit(const CKeyStore& keystore, unsigned int nBits, int
     // Calculate reward
     CAmount nReward;
     const CBlockIndex* pIndex0 = chainActive.Tip();
-    //nReward = GetBlockValue(pIndex0->nHeight);
+    nReward = GetBlockValue(pIndex0->nHeight);
     // nCredit += nReward;
     //since every 60 PoS blocks, there is a PoA block, the reward = 60 * 100
-    nReward = 60 * 100;
+//    nReward = 60 * 100;
 
     CAmount nMinFee = 0;
     if (txNew.vout.size() == 3) {

@@ -145,7 +145,8 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
             unsigned int nTxNewTime = 0;
             // POA miner
             //every 60 PoS block, we will create a new PoA blocks
-            if ((pindexPrev->nHeight + 2) % 61 == 0 && pindexPrev->nHeight > Params().START_POA_BLOCK()){
+//            if ((pindexPrev->nHeight + 2) % 61 == 0 && pindexPrev->nHeight > Params().START_POA_BLOCK()){
+            if (pindexPrev->nHeight % 60 == 0 && pindexPrev->nHeight > Params().START_POA_BLOCK()){
                 CMutableTransaction txCoinAudit;
                 if (pwallet->CreateCoinAudit(*pwallet, pblock->nBits, nSearchTime - nLastCoinStakeSearchTime, txCoinAudit, nTxNewTime)) {
                     pblock->nTime = nTxNewTime;
