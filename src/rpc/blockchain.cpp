@@ -125,6 +125,24 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     zdapsObj.push_back(Pair("total", ValueFromAmount(blockindex->GetZerocoinSupply())));
     result.push_back(Pair("zDAPSsupply", zdapsObj));
 
+    if ((blockindex->Height() + 1)%61 == 0) {
+        //This is a PoA block
+        //Read information of PoS blocks audited by this PoA block
+        UniValue posBlockInfos(UniValue::VARR);
+        int posStart = blockindex->Height() - 60;
+        int posStop = posStart + 60 - 1;
+
+        for (int i = posStart; i <= posStop; i++) {
+            CBlockIndex* pPoSBlockindex = chainActive[i];
+            UniValue objPoSBlockInfo(UniValue::VOBJ);
+            PoSBlockInfoToJSON(pPoSBlockindex->GetBlockHash(), 
+                    pPoSBlockindex->GetBlockTime(), i, objPoSBlockInfo);
+            posBlockInfos.push_back(objPoSBlockInfo);
+        }
+
+        result.push_back(Pair("posblocks", posBlockInfos));
+    }
+
     return result;
 }
 

@@ -59,6 +59,12 @@ void ScriptPubKeyToJSON(const CScript& scriptPubKey, UniValue& out, bool fInclud
     out.push_back(Pair("addresses", a));
 }
 
+void PoSBlockInfoToJSON(const uint256 hashBlock, uint32 nTime, uint height, UniValue& entry) {
+    entry.push_back(Pair("posblockhash", hashBlock));
+    entry.push_back(Pair("time", nTime));
+    entry.push_back(Pair("height", height));
+}
+
 void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
 {
     entry.push_back(Pair("txid", tx.GetHash().GetHex()));
