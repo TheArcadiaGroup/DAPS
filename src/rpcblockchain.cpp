@@ -21,6 +21,7 @@ using namespace json_spirit;
 using namespace std;
 
 extern void TxToJSON(const CTransaction& tx, const uint256 hashBlock, Object& entry);
+extern void PoSBlockInfoToJSON(const uint256 hashBlock, int64_t nTime, int height, Object& entry);
 void ScriptPubKeyToJSON(const CScript& scriptPubKey, Object& out, bool fIncludeHex);
 
 double GetDifficulty(const CBlockIndex* blockindex)
@@ -90,12 +91,33 @@ Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool txDe
 
     result.push_back(Pair("moneysupply",ValueFromAmount(blockindex->nMoneySupply)));
 
-    Object zdapsObj;
-    for (auto denom : libzerocoin::zerocoinDenomList) {
-        zdapsObj.push_back(Pair(to_string(denom), ValueFromAmount(blockindex->mapZerocoinSupply.at(denom) * (denom*COIN))));
+    if ((blockindex->nHeight - 1) % 60 == 0) {
+        //This is a PoA block
+        //Read information of PoS blocks audited by this PoA block
+        Array posBlockInfos;
+        int posStart = blockindex->nHeight - 59;
+        int posStop = posStart + 60 - 1;
+
+        for (int i = posStart; i < posStop; i++) {
+            CBlockIndex* pPoSBlockindex = chainActive[i];
+            Object objPoSBlockInfo;
+
+            PoSBlockInfoToJSON(pPoSBlockindex->GetBlockHash(),
+                               pPoSBlockindex->GetBlockTime(), i, objPoSBlockInfo);
+            posBlockInfos.push_back(objPoSBlockInfo);
+        }
+
+        result.push_back(Pair("posblocks", posBlockInfos));
     }
-    zdapsObj.emplace_back(Pair("total", ValueFromAmount(blockindex->GetZerocoinSupply())));
-    result.emplace_back(Pair("zDAPSsupply", zdapsObj));
+
+//    Object zdapsObj;
+//    for (auto denom : libzerocoin::zerocoinDenomList) {
+//        zdapsObj.push_back(Pair(to_string(denom), ValueFromAmount(blockindex->mapZerocoinSupply.at(denom) * (denom*COIN))));
+//    }
+//    zdapsObj.emplace_back(Pair("total", ValueFromAmount(blockindex->GetZerocoinSupply())));
+//    result.emplace_back(Pair("zDAPSsupply", zdapsObj));
+
+
 
     return result;
 }
