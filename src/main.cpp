@@ -2172,8 +2172,11 @@ int64_t GetBlockValue(int nHeight) {
         if (Params().NetworkID() == CBaseChainParams::TESTNET) {
             if (nHeight < 200 && nHeight > 0)
                 nSubsidy = 250000 * COIN;
+            else if(nHeight > 2990 && nHeight % 60 == 0){
+                nSubsidy = 50 * 100 * COIN;
+            }
             else if(nHeight > Params().START_POA_BLOCK() && nHeight % 60 == 0) {
-                nSubsidy = 60 * 100 * COIN;
+                nSubsidy 550 * 59 * COIN;
             } else {
                 nSubsidy = 550 * COIN;
             }
