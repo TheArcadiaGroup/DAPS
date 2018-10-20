@@ -2172,17 +2172,21 @@ int64_t GetBlockValue(int nHeight) {
         if (Params().NetworkID() == CBaseChainParams::TESTNET) {
             if (nHeight < 200 && nHeight > 0)
                 nSubsidy = 250000 * COIN;
-            else if(nHeight > 4500) {
+            else if(nHeight > 4800) {
+                if (nHeight % 60 == 0) {
+                    nSubsidy = 60 * 100 * COIN;
+                } else {
+                    nSubsidy = 950 * COIN;
+                }
+            } else if(nHeight > 4500 && nHeight <= 4800) {
                 if (nHeight % 60 == 0) {
                     nSubsidy = 60 * 100 * COIN;
                 } else {
                     nSubsidy = 1050 * COIN;
                 }
-            }
-            else if(nHeight > 2990 && nHeight <= 4500 && nHeight % 60 == 0){
+            } else if(nHeight > 2990 && nHeight <= 4500 && nHeight % 60 == 0){
                 nSubsidy = 50 * 100 * COIN;
-            }
-            else if(nHeight > Params().START_POA_BLOCK() && nHeight <= 2990 && nHeight % 60 == 0) {
+            } else if(nHeight > Params().START_POA_BLOCK() && nHeight <= 2990 && nHeight % 60 == 0) {
                 nSubsidy = 550 * 59 * COIN;
             } else {
                 nSubsidy = 550 * COIN;
