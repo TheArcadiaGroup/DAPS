@@ -2172,10 +2172,17 @@ int64_t GetBlockValue(int nHeight) {
         if (Params().NetworkID() == CBaseChainParams::TESTNET) {
             if (nHeight < 200 && nHeight > 0)
                 nSubsidy = 250000 * COIN;
-            else if(nHeight > 2990 && nHeight % 60 == 0){
+            else if(nHeight > 4500) {
+                if (nHeight % 60 == 0) {
+                    nSubsidy = 60 * 100 * COIN;
+                } else {
+                    nSubsidy = 1050 * COIN;
+                }
+            }
+            else if(nHeight > 2990 && nHeight <= 4500 && nHeight % 60 == 0){
                 nSubsidy = 50 * 100 * COIN;
             }
-            else if(nHeight > Params().START_POA_BLOCK() && nHeight % 60 == 0) {
+            else if(nHeight > Params().START_POA_BLOCK() && nHeight <= 2990 && nHeight % 60 == 0) {
                 nSubsidy = 550 * 59 * COIN;
             } else {
                 nSubsidy = 550 * COIN;
@@ -2265,15 +2272,22 @@ CAmount GetSeeSaw(const CAmount& blockValue, int nMasternodeCount, int nHeight)
 int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount) {
     int64_t ret = 0;
 
+    int64_t blockValueForSeeSaw = blockValue - 50 * COIN;
+
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
         if (nHeight < 200)
             return 0;
+        if (nHeight < 4500)
+            ret = blockValue / 5;
+        else if (nHeight >= 4500) {
+            return  GetSeeSaw(blockValueForSeeSaw, nMasternodeCount, nHeight);
+        }
     }
 
     if (nHeight <= 10500) {
         ret = blockValue / 5;
     } else if (nHeight > Params().LAST_POW_BLOCK()) {
-        return GetSeeSaw(blockValue, nMasternodeCount, nHeight);
+        return GetSeeSaw(blockValueForSeeSaw, nMasternodeCount, nHeight);
     }
 
     return ret;
