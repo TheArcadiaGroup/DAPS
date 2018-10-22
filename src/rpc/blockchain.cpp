@@ -125,7 +125,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     zdapsObj.push_back(Pair("total", ValueFromAmount(blockindex->GetZerocoinSupply())));
     result.push_back(Pair("zDAPSsupply", zdapsObj));
 
-    if (blockindex->Height() % 60 == 0) {
+    if (blockindex->nHeight > Params().START_POA_BLOCK() && blockindex->Height() % 60 == 0) {
         //This is a PoA block
         //Read information of PoS blocks audited by this PoA block
         UniValue posBlockInfos(UniValue::VARR);
