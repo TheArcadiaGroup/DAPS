@@ -342,7 +342,7 @@ Value masternodeconnect(const Array& params, bool fHelp)
 
 Value getmasternodecount (const Array& params, bool fHelp)
 {
-    if (fHelp || (params.size() > 0))
+    if (fHelp)
         throw runtime_error(
             "getmasternodecount\n"
             "\nGet masternode count values\n"
