@@ -148,7 +148,7 @@ Value getblockcount(const Array& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getblockcount", "") + HelpExampleRpc("getblockcount", ""));
 
-    return chainActive.Height();v
+    return chainActive.Height();
 }
 
 Value getbestblockhash(const Array& params, bool fHelp)
