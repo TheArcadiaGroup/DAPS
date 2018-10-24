@@ -291,46 +291,20 @@ module.exports = {
     arr_vin = vin;
     module.exports.syncLoop(vout.length, function (loop) {
       var i = loop.iteration();
-      // make sure vout has an address
-      if (vout[i].scriptPubKey.type != 'nonstandard' && vout[i].scriptPubKey.type != 'nulldata' && vout[i].scriptPubKey.hasOwnProperty("addresses")) {
-        // check if vout address is unique, if so add it array, if not add its amount to existing index
-        //console.log('vout:' + i + ':' + txid);
-        module.exports.is_unique(arr_vout, vout[i].scriptPubKey.addresses[0], function(unique, index) {
-          if (unique == true) {
-            // unique vout
-            module.exports.convert_to_satoshi(parseFloat(vout[i].value), function(amount_sat){
-              arr_vout.push({addresses: vout[i].scriptPubKey.addresses[0], amount: amount_sat});
-              loop.next();
-            });
-          } else {
-            // already exists
-            module.exports.convert_to_satoshi(parseFloat(vout[i].value), function(amount_sat){
-              arr_vout[index].amount = arr_vout[index].amount + amount_sat;
-              loop.next();
-            });
-          }
-        });
-      } else {
-        // no address, move to next vout
-        loop.next();
-      }
-    }, function(){
-      if (vout[0].scriptPubKey.type == 'nonstandard') {
-        if ( arr_vin.length > 0 && arr_vout.length > 0 ) {
-          if (arr_vin[0].addresses == arr_vout[0].addresses) {
-            //PoS
-            arr_vout[0].amount = arr_vout[0].amount - arr_vin[0].amount;
-            arr_vin.shift();
-            return cb(arr_vout, arr_vin);
-          } else {
-            return cb(arr_vout, arr_vin);
-          }
+        if (vout[i].scriptPubKey.type == 'nonstandard') {
+          arr_vout.push({addresses: 'non standard', amount: 0});
+          loop.next();
         } else {
-          return cb(arr_vout, arr_vin);
+          module.exports.is_unique(arr_vout, vout[i].scriptPubKey.addresses[0], function(unique, index) {
+              module.exports.convert_to_satoshi(parseFloat(vout[i].value), function(amount_sat){
+                arr_vout.push({addresses: vout[i].scriptPubKey.addresses[0], amount: amount_sat});
+                loop.next();
+              });
+          });
         }
-      } else {
-        return cb(arr_vout, arr_vin);
-      }
+    }, function(){
+      //simply return all vout and vin in the transaction to update db
+      return cb(arr_vout, arr_vin);
     });
   },
 
