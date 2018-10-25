@@ -1157,7 +1157,7 @@ UniValue getseesawrewardwithheight (const Array& params, bool fHelp)
 
     CAmount masternodeReward = GetSeeSaw(nReward, 0, nblockHeight);
     CAmount stakingnodeReward = nReward - masternodeReward;
-    obj.push_back(Pair("Block Height", nBlockHeight));
+    obj.push_back(Pair("Block Height", nblockHeight));
     obj.push_back(Pair("Masternode Reward", ValueFromAmount(masternodeReward)));
     obj.push_back(Pair("Staking Reward", ValueFromAmount(stakingnodeReward)));
     obj.push_back(Pair("Total Reward", ValueFromAmount(nReward)));
