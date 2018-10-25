@@ -1129,3 +1129,38 @@ UniValue getcurrentseesawreward (const Array& params, bool fHelp)
     return obj;
 }
 
+UniValue getseesawrewardwithheight (const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() > 1)
+        throw runtime_error(
+            "getseesawrewardwithheight\n"
+            "\nPrint See Saw Reward With Specific block height\n"
+
+            "\nArguments:\n"
+            "1. Height of block\n"
+            "\nResult:\n"
+            "{\n"
+            "  SeeSaw reward:  Masternode-Staking node : xx-xx\n"
+            "  ,...\n"
+            "}\n"
+            "\nExamples:\n" +
+            HelpExampleCli("getseesawrewardwithheight", "") + HelpExampleRpc("getseesawrewardwithheight", ""));
+
+    int nblockHeight = chainActive.Tip()->nHeight;;
+    if (params.size() == 1) {
+        nblockHeight = params[0].get_int();
+    }
+    UniValue obj(UniValue::VOBJ);
+    int ipv4 = 0, ipv6 = 0, onion = 0;
+    mnodeman.CountNetworks(ActiveProtocol(), ipv4, ipv6, onion);
+    CAmount nReward = GetBlockValue(nblockHeight);
+
+    CAmount masternodeReward = GetSeeSaw(nReward, 0, nblockHeight);
+    CAmount stakingnodeReward = nReward - masternodeReward;
+    obj.push_back(Pair("Block Height", nBlockHeight));
+    obj.push_back(Pair("Masternode Reward", ValueFromAmount(masternodeReward)));
+    obj.push_back(Pair("Staking Reward", ValueFromAmount(stakingnodeReward)));
+    obj.push_back(Pair("Total Reward", ValueFromAmount(nReward)));
+    return obj;
+}
+

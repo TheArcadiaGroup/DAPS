@@ -93,6 +93,7 @@
     "api_getmasternodelist": "Returns the complete master node list.",
     "api_getmasternodecount": "Returns the total number of master nodes on the network.",
     "api_getcurrentseesawreward": "Returns the current seesaw reward.",
+    "api_getseesawrewardwithheight": "Returns the current seesaw reward.",
     "api_getmasternodecountonline": "Returns the number of master nodes on the network that are currently online.",
     "api_getvotelist":  "Returns the current vote list.",
     "api_getblockcount": "Returns the current block index.",

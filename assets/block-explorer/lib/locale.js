@@ -88,6 +88,7 @@ exports.api_getconnectioncount = "Returns the number of connections the block ex
 exports.api_getmasternodelist = "Returns the complete master node list.",
 exports.api_getmasternodecount = "Returns the total number of master nodes on the network.",
 exports.api_getcurrentseesawreward = "Returns the current seesaw reward.",
+exports.api_getseesawrewardwithheight = "Returns the seesaw reward at specific height",
 exports.api_getmasternodecountonline = "Returns the number of master nodes on the network that are currently online.",
 exports.api_getvotelist = "Returns the current vote list.",
 exports.api_getblockcount = "Returns the number of blocks currently in the block chain.",
