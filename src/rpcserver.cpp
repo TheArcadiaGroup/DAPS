@@ -322,6 +322,7 @@ static const CRPCCommand vRPCCommands[] =
         {"dapscoin", "masternode", &masternode, true, true, false},
         {"dapscoin", "listmasternodes", &listmasternodes, true, true, false},
         {"dapscoin", "getmasternodecount", &getmasternodecount, true, true, false},
+        {"dapscoin", "getcurrentseesawreward", &getcurrentseesawreward, true, true, false},
         {"dapscoin", "masternodeconnect", &masternodeconnect, true, true, false},
         {"dapscoin", "masternodecurrent", &masternodecurrent, true, true, false},
         {"dapscoin", "masternodedebug", &masternodedebug, true, true, false},

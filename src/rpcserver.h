@@ -260,6 +260,7 @@ extern json_spirit::Value getpoolinfo(const json_spirit::Array& params, bool fHe
 extern json_spirit::Value masternode(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value listmasternodes(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value getmasternodecount(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value getcurrentseesawreward(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value masternodeconnect(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value masternodecurrent(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value masternodedebug(const json_spirit::Array& params, bool fHelp);

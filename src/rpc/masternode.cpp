@@ -1099,3 +1099,33 @@ UniValue relaymasternodebroadcast(const UniValue& params, bool fHelp)
     return strprintf("Masternode broadcast sent (service %s, vin %s)", mnb.addr.ToString(), mnb.vin.ToString());
 }
 
+UniValue getcurrentseesawreward (const Array& params, bool fHelp)
+{
+    if (fHelp)
+        throw runtime_error(
+            "getcurrentseesawratio\n"
+            "\nPrint Current See Saw Reward Ratio\n"
+
+            "\nNo Arguments needed\n"
+
+            "\nResult:\n"
+            "{\n"
+            "  SeeSaw reward ratio:  Masternode-Staking node : xx-xx\n"
+            "  ,...\n"
+            "}\n"
+            "\nExamples:\n" +
+            HelpExampleCli("getcurrentseesawratio", "") + HelpExampleRpc("getcurrentseesawratio", ""));
+
+    UniValue obj(UniValue::VOBJ);
+    mnodeman.CountNetworks(ActiveProtocol(), ipv4, ipv6, onion);
+    int nblockHeight = chainActive.Tip()->nHeight;
+    CAmount nReward = GetBlockValue(nblockHeight);
+
+    CAmount masternodeReward = GetSeeSaw(nReward, 0, nblockHeight);
+    CAmount stakingnodeReward = nReward - masternodeReward;
+    obj.push_back(Pair("Masternode Reward", masternodeReward));
+    obj.push_back(Pair("Staking Reward", stakingnodeReward));
+    obj.push_back(Pair("Total Reward", nReward)));
+    return obj;
+}
+

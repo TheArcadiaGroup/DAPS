@@ -13,11 +13,14 @@
 #include "masternodeman.h"
 #include "rpcserver.h"
 #include "utilmoneystr.h"
+#include "spork.h"
 
 #include <boost/tokenizer.hpp>
 
 #include <fstream>
 using namespace json_spirit;
+
+extern CAmount GetSeeSaw(const CAmount& blockValue, int nMasternodeCount, int nHeight);
 
 void SendMoney(const CTxDestination& address, CAmount nValue, CWalletTx& wtxNew, AvailableCoinsType coin_type = ALL_COINS)
 {
@@ -906,5 +909,36 @@ Value getmasternodescores (const Array& params, bool fHelp)
             obj.push_back(Pair(strprintf("%d", nHeight), pBestMasternode->vin.prevout.hash.ToString().c_str()));
     }
 
+    return obj;
+}
+
+Value getcurrentseesawreward (const Array& params, bool fHelp)
+{
+    if (fHelp)
+        throw runtime_error(
+            "getcurrentseesawratio\n"
+            "\nPrint Current See Saw Reward Ratio\n"
+
+            "\nNo Arguments needed\n"
+
+            "\nResult:\n"
+            "{\n"
+            "  SeeSaw reward ratio:  Masternode-Staking node : xx-xx\n"
+            "  ,...\n"
+            "}\n"
+            "\nExamples:\n" +
+            HelpExampleCli("getcurrentseesawratio", "") + HelpExampleRpc("getcurrentseesawratio", ""));
+
+    Object obj;
+    int ipv4 = 0, ipv6 = 0, onion = 0;
+    mnodeman.CountNetworks(ActiveProtocol(), ipv4, ipv6, onion);
+    int nblockHeight = chainActive.Tip()->nHeight;
+    CAmount nReward = GetBlockValue(nblockHeight);
+
+    CAmount masternodeReward = GetSeeSaw(nReward, 0, nblockHeight);
+    CAmount stakingnodeReward = nReward - masternodeReward;
+    obj.push_back(Pair("Masternode Reward", masternodeReward));
+    obj.push_back(Pair("Staking Reward", stakingnodeReward));
+    obj.push_back(Pair("Total Reward", nReward));
     return obj;
 }
