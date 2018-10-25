@@ -102,6 +102,13 @@ module.exports = {
     });
   },
 
+  get_seesawrewardratio: function(cb) {
+    var uri = base_url + 'getseesawrewardratio';
+    request({uri: uri, json: true}, function (error, response, body) {
+      return cb(body);
+    });
+  },
+
   get_seesawrewardwithheight: function(height, cb) {
     var uri = base_url + 'getseesawrewardwithheight?height=' + height;
     request({uri: uri, json: true}, function (error, response, body) {

@@ -298,6 +298,7 @@ extern UniValue masternode(const UniValue& params, bool fHelp);
 extern UniValue listmasternodes(const UniValue& params, bool fHelp);
 extern UniValue getmasternodecount(const UniValue& params, bool fHelp);
 extern UniValue getcurrentseesawreward(const UniValue& params, bool fHelp);
+extern UniValue getseesawrewardratio(const UniValue& params, bool fHelp);
 extern UniValue getseesawrewardwithheight(const UniValue& params, bool fHelp);
 extern UniValue createmasternodebroadcast(const UniValue& params, bool fHelp);
 extern UniValue decodemasternodebroadcast(const UniValue& params, bool fHelp);

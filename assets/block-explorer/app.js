@@ -19,7 +19,7 @@ chaincoinapi.setWalletDetails(settings.wallet);
 if (settings.heavy != true) {
   chaincoinapi.setAccess('only', ['getinfo', 'getnetworkhashps', 'getmininginfo','getdifficulty', 'getconnectioncount',
   'getmasternodecount', 'getcurrentseesawreward', 'getmasternodecountonline', 'getmasternodelist', 'getvotelist', 'getblockcount', 'getblockhash', 'getblock', 'getrawtransaction', 
-  'getpeerinfo', 'gettxoutsetinfo', 'getseesawrewardwithheight']);
+  'getpeerinfo', 'gettxoutsetinfo', 'getseesawrewardwithheight', 'getseesawrewardratio']);
 } else {
   // enable additional heavy api calls
   /*
@@ -34,7 +34,7 @@ if (settings.heavy != true) {
     getmaxmoney - Returns the maximum possible money supply.
   */
   chaincoinapi.setAccess('only', ['getinfo', 'getstakinginfo', 'getnetworkhashps', 'getdifficulty', 'getconnectioncount',
-    'getmasternodecount', 'getcurrentseesawreward', 'getmasternodecountonline', 'getmasternodelist', 'getvotelist', 'getblockcount', 'getblockhash', 
+    'getmasternodecount', 'getcurrentseesawreward', 'getseesawrewardratio', 'getmasternodecountonline', 'getmasternodelist', 'getvotelist', 'getblockcount', 'getblockhash', 
     'getblock', 'getrawtransaction', 'getmaxmoney', 'getvote', 'getmaxvote', 'getphase', 'getreward', 'getpeerinfo', 
     'getnextrewardestimate', 'getnextrewardwhenstr', 'getnextrewardwhensec', 'getsupply', 'gettxoutsetinfo', 'getseesawrewardwithheight']);
 }
