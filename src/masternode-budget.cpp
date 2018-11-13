@@ -532,7 +532,7 @@ void CBudgetManager::FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, b
         }
     } else {
         //miners get the full amount on these blocks and transaction fee
-        txNew.vout[0].nValue = blockValue + nFees * COIN;
+        txNew.vout[0].nValue = blockValue;
 
         if (nHighestCount > 0) {
             txNew.vout.resize(2);
