@@ -49,13 +49,8 @@ void bench_free()
 void algo_free_all(int thr_id)
 {
 	// only initialized algos will be freed
-	free_cryptolight(thr_id);
-	free_cryptonight(thr_id);
-	free_pentablake(thr_id);
 	free_sha256d(thr_id);
 	free_sha256t(thr_id);
-	free_sia(thr_id);
-	free_wildkeccak(thr_id);
 	free_scrypt(thr_id);
 }
 

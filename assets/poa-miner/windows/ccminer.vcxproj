@@ -235,12 +235,11 @@
     <ClCompile Include="crypto\xmr-rpc.cpp" />
     <ClCompile Include="crypto\aesb.cpp" />
     <ClCompile Include="crypto\oaes_lib.cpp" />
-    <ClCompile Include="crypto\cryptolight-cpu.cpp" />
-    <ClCompile Include="crypto\cryptonight-cpu.cpp" />
     <ClCompile Include="crypto\cpu\c_keccak.c" />
     <ClCompile Include="nvapi.cpp" />
     <ClCompile Include="nvsettings.cpp" />
     <ClCompile Include="pools.cpp" />
+    <ClCompile Include="sia\sia-rpc.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="bench.cpp" />
     <ClCompile Include="bignum.cpp" />
@@ -251,28 +250,17 @@
     <ClCompile Include="api.cpp" />
     <ClCompile Include="sysinfos.cpp" />
     <ClCompile Include="crc32.c" />
-    <CudaCompile Include="crypto\cryptolight.cu" />
-    <CudaCompile Include="crypto\cryptolight-core.cu">
-      <MaxRegCount>64</MaxRegCount>
-    </CudaCompile>
-    <CudaCompile Include="crypto\cryptonight.cu" />
-    <CudaCompile Include="crypto\cryptonight-core.cu">
-      <MaxRegCount>64</MaxRegCount>
-    </CudaCompile>
-    <CudaCompile Include="crypto\cryptonight-extra.cu">
-      <MaxRegCount>255</MaxRegCount>
-    </CudaCompile>
+    <ClInclude Include="crypto\int128_c.h" />
+    <ClInclude Include="crypto\oaes_config.h" />
+    <ClInclude Include="crypto\oaes_lib.h" />
     <ClInclude Include="crypto\cn_aes.cuh" />
     <ClInclude Include="crypto\cn_blake.cuh" />
     <ClInclude Include="crypto\cn_groestl.cuh" />
     <ClInclude Include="crypto\cn_jh.cuh" />
     <ClInclude Include="crypto\cn_keccak.cuh" />
     <ClInclude Include="crypto\cn_skein.cuh" />
-    <CudaCompile Include="crypto\wildkeccak.cu">
-      <MaxRegCount>128</MaxRegCount>
-    </CudaCompile>
+    <CudaCompile Include="crypto\wildkeccak.cu" />
     <ClCompile Include="scrypt.cpp" />
-    <ClCompile Include="sia\sia-rpc.cpp" />
     <ClCompile Include="sph\aes_helper.c" />
     <ClCompile Include="sph\blake.c" />
     <ClCompile Include="sph\blake2b.c" />
@@ -298,6 +286,7 @@
     <ClCompile Include="sph\hamsi.c" />
     <ClCompile Include="sph\hamsi_helper.c" />
     <ClCompile Include="sph\whirlpool.c" />
+    <CudaCompile Include="sia\sia.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="compat.h" />
@@ -318,8 +307,6 @@
     <ClInclude Include="compat\unistd.h" />
     <ClInclude Include="compat\winansi.h" />
     <ClInclude Include="compat\ccminer-config.h" />
-    <ClInclude Include="crypto\cryptolight.h" />
-    <ClInclude Include="crypto\cryptonight.h" />
     <ClInclude Include="crypto\mman.h" />
     <ClInclude Include="crypto\wildkeccak.h" />
     <ClInclude Include="crypto\xmr-rpc.h" />
@@ -330,8 +317,8 @@
     <ClInclude Include="miner.h" />
     <ClInclude Include="nvml.h" />
     <ClInclude Include="res\resource.h" />
-    <ClInclude Include="sia\sia-rpc.h" />
     <ClInclude Include="scrypt\salsa_kernel.h" />
+    <ClInclude Include="sia\sia-rpc.h" />
     <ClInclude Include="sph\blake2b.h" />
     <ClInclude Include="sph\blake2s.h" />
     <ClInclude Include="sph\sph_blake.h" />
@@ -385,7 +372,9 @@
     <CudaCompile Include="sha256\sha256d.cu" />
     <CudaCompile Include="sha256\cuda_sha256t.cu" />
     <CudaCompile Include="sha256\sha256t.cu" />
-    <CudaCompile Include="sia\sia.cu" />
+    <CudaCompile Include="cuda_checkhash.cu">
+      <CInterleavedPTX>false</CInterleavedPTX>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ccminer.ico" />

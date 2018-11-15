@@ -1177,19 +1177,6 @@ static bool stratum_parse_extranonce(struct stratum_ctx *sctx, json_t *params, i
 	if (!xn2_size) {
 		char algo[64] = { 0 };
 		get_currentalgo(algo, sizeof(algo));
-		if (strcmp(algo, "equihash") == 0) {
-			int xn1_size = (int)strlen(xnonce1) / 2;
-			xn2_size = 32 - xn1_size;
-			if (xn1_size < 4 || xn1_size > 12) {
-				// This miner iterates the nonces at data32[30]
-				applog(LOG_ERR, "Unsupported extranonce size of %d (12 maxi)", xn1_size);
-				goto out;
-			}
-			goto skip_n2;
-		} else {
-			applog(LOG_ERR, "Failed to get extranonce2_size");
-			goto out;
-		}
 	}
 	if (xn2_size < 2 || xn2_size > 16) {
 		applog(LOG_ERR, "Failed to get valid n2size in parse_extranonce (%d)", xn2_size);
@@ -2162,11 +2149,6 @@ void print_hash_tests(void)
 
 	printf(CL_WHT "CPU HASH ON EMPTY BUFFER RESULTS:" CL_N "\n");
 
-	cryptolight_hash(&hash[0], &buf[0]);
-	printpfx("cryptolight", hash);
-
-	cryptonight_hash(&hash[0], &buf[0]);
-	printpfx("cryptonight", hash);
 
 	memset(buf, 0, 180);
 
@@ -2179,12 +2161,6 @@ void print_hash_tests(void)
 
 	sha256t_hash(&hash[0], &buf[0]);
 	printpfx("sha256t", hash);
-
-	blake2b_hash(&hash[0], &buf[0]);
-	printpfx("sia", hash);
-
-	stellite_hash(&hash[0], &buf[0]);
-	printpfx("stelitte", hash);
 
 
 	printf("\n");
