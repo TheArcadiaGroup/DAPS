@@ -44,17 +44,6 @@
 
 double target_to_diff_rpc2(uint32_t* target)
 {
-	// unlike other algos, xmr diff is very low
-	if (opt_algo == ALGO_CRYPTONIGHT && target[7]) {
-		// simplified to get 1.0 for 1000
-		return (double) (UINT32_MAX / target[7]) / 1000;
-	}
-	else if (opt_algo == ALGO_CRYPTOLIGHT && target[7]) {
-		return (double) (UINT32_MAX / target[7]) / 1000;
-	}
-	else if (opt_algo == ALGO_WILDKECCAK) {
-		return target_to_diff(target) * 1000;
-	}
 	return target_to_diff(target); // util.cpp
 }
 
@@ -402,10 +391,6 @@ bool rpc2_job_decode(const json_t *job, struct work *work)
 		goto err_out;
 	}
 
-	if(opt_algo == ALGO_WILDKECCAK && !addendums_decode(job)) {
-		applog(LOG_ERR, "JSON failed to process addendums");
-		goto err_out;
-	}
 	// now allow ADDENDUM notices (after the init)
 	opt_quiet_start = false;
 
@@ -472,9 +457,6 @@ bool rpc2_job_decode(const json_t *job, struct work *work)
 
 		snprintf(work->job_id, sizeof(work->job_id), "%s", rpc2_job_id);
 	}
-
-	if (opt_algo == ALGO_WILDKECCAK)
-		wildkeccak_scratchpad_need_update(pscratchpad_buff);
 	return true;
 
 err_out:
@@ -532,44 +514,6 @@ bool rpc2_stratum_submit(struct pool_infos *pool, struct work *work)
 	int idnonce = work->submit_nonce_id;
 
 	memcpy(&data[0], work->data, 88);
-
-	if (opt_algo == ALGO_WILDKECCAK) {
-		// 64 bits nonce
-		memcpy(&data[1], work->nonces, 8);
-		// pass if the previous hash is not the current previous hash
-		if(!submit_old && memcmp(&work->data[3], &g_work.data[3], 28)) {
-			if (opt_debug) applog(LOG_DEBUG, "stale work detected");
-			pool->stales_count++;
-			return false;
-		}
-		noncestr = bin2hex((unsigned char*) &data[1], 8);
-		// "nonce":"5794ec8000000000" => 0x0000000080ec9457
-		memcpy(&last_found_nonce, work->nonces, 8);
-		wildkeccak_hash(hash, data, NULL, 0);
-		work_set_target_ratio(work, (uint32_t*) hash);
-	}
-
-	else if (opt_algo == ALGO_CRYPTOLIGHT) {
-		int variant = 1;
-		uint32_t nonce = work->nonces[idnonce];
-		noncestr = bin2hex((unsigned char*) &nonce, 4);
-		last_found_nonce = nonce;
-		//if (cryptonight_fork > 1 && ((unsigned char*)work->data)[0] >= cryptonight_fork)
-		//	variant = ((unsigned char*)work->data)[0] - cryptonight_fork + 1;
-		cryptolight_hash_variant(hash, data, 76, variant);
-		work_set_target_ratio(work, (uint32_t*) hash);
-	}
-
-	else if (opt_algo == ALGO_CRYPTONIGHT) {
-		int variant = 0;
-		uint32_t nonce = work->nonces[idnonce];
-		noncestr = bin2hex((unsigned char*) &nonce, 4);
-		last_found_nonce = nonce;
-		if (cryptonight_fork > 1 && ((unsigned char*)work->data)[0] >= cryptonight_fork)
-			variant = ((unsigned char*)work->data)[0] - cryptonight_fork + 1;
-		cryptonight_hash_variant(hash, data, 76, variant);
-		work_set_target_ratio(work, (uint32_t*) hash);
-	}
 
 	if (hash[31] != 0)
 		return false; // prevent bad hashes
@@ -649,7 +593,6 @@ bool store_scratchpad_to_file(bool do_fsync)
 	FILE *fp;
 	int ret;
 
-	if(opt_algo != ALGO_WILDKECCAK) return true;
 	if(!scratchpad_size || !pscratchpad_buff) return true;
 
 	snprintf(file_name_buff, sizeof(file_name_buff), "%s.tmp", pscratchpad_local_cache);
@@ -704,7 +647,6 @@ bool load_scratchpad_from_file(const char *fname)
 	FILE *fp;
 	long flen;
 
-	if(opt_algo != ALGO_WILDKECCAK) return true;
 
 	fp = fopen(fname, "rb");
 	if (!fp) {
@@ -752,7 +694,6 @@ bool load_scratchpad_from_file(const char *fname)
 bool dump_scratchpad_to_file_debug()
 {
 	char file_name_buff[1024] = { 0 };
-	if(opt_algo != ALGO_WILDKECCAK) return true;
 
 	snprintf(file_name_buff, sizeof(file_name_buff), "scratchpad_%" PRIu64 "_%llx.scr",
 		current_scratchpad_hi.height, (long long) last_found_nonce);
@@ -1092,7 +1033,6 @@ static bool rpc2_stratum_getscratchpad(struct stratum_ctx *sctx)
 	json_t *val = NULL;
 	json_error_t err;
 	char *s, *sret;
-	if(opt_algo != ALGO_WILDKECCAK) return true;
 
 	s = (char*) calloc(1, 1024);
 	if (!s)
@@ -1136,18 +1076,10 @@ bool rpc2_stratum_authorize(struct stratum_ctx *sctx, const char *user, const ch
 	char *sret;
 	char *s = (char*) calloc(1, 320 + strlen(user) + strlen(pass));
 
-	if (opt_algo == ALGO_WILDKECCAK) {
-		char *prevhash = bin2hex((const unsigned char*)current_scratchpad_hi.prevhash, 32);
-		sprintf(s, "{\"method\":\"login\",\"params\":{\"login\":\"%s\",\"pass\":\"%s\","
-			   "\"hi\":{\"height\":%" PRIu64 ",\"block_id\":\"%s\"},"
-			   "\"agent\":\"" USER_AGENT "\"},\"id\":2}",
-			user, pass, current_scratchpad_hi.height, prevhash);
-		free(prevhash);
-	} else {
-		sprintf(s, "{\"method\":\"login\",\"params\":{\"login\":\"%s\",\"pass\":\"%s\","
-			   "\"agent\":\"" USER_AGENT "\"},\"id\":2}",
-			user, pass);
-	}
+	
+	sprintf(s, "{\"method\":\"login\",\"params\":{\"login\":\"%s\",\"pass\":\"%s\","
+			"\"agent\":\"" USER_AGENT "\"},\"id\":2}",
+		user, pass);
 
 	if (!stratum_send_line(sctx, s))
 		goto out;
@@ -1219,16 +1151,8 @@ bool rpc2_stratum_request_job(struct stratum_ctx *sctx)
 		return ret;
 	}
 
-	if (opt_algo == ALGO_WILDKECCAK) {
-		char* prevhash = bin2hex((const unsigned char*)current_scratchpad_hi.prevhash, 32);
-		sprintf(s, "{\"method\":\"getjob\",\"params\": {"
-			"\"id\":\"%s\", \"hi\": {\"height\": %" PRIu64 ",\"block_id\":\"%s\" }, \"agent\": \"" USER_AGENT "\"},"
-			"\"id\":1}",
-			rpc2_id, current_scratchpad_hi.height, prevhash);
-		free(prevhash);
-	} else {
-		sprintf(s, "{\"method\":\"getjob\",\"params\":{\"id\":\"%s\"},\"id\":1}", rpc2_id);
-	}
+	sprintf(s, "{\"method\":\"getjob\",\"params\":{\"id\":\"%s\"},\"id\":1}", rpc2_id);
+
 
 	if(!stratum_send_line(sctx, s)) {
 		applog(LOG_ERR, "Stratum failed to send getjob line");
@@ -1283,22 +1207,6 @@ int rpc2_stratum_thread_stuff(struct pool_infos* pool)
 		if(!stratum_connect(&stratum, stratum.url) || !stratum_authorize(&stratum, pool->user, pool->pass)) {
 			stratum_disconnect(&stratum);
 			applog(LOG_ERR, "Failed...retry after %d seconds", opt_fail_pause);
-			sleep(opt_fail_pause);
-		}
-	}
-
-	if(!scratchpad_size && opt_algo == ALGO_WILDKECCAK) {
-		if(!rpc2_stratum_getscratchpad(&stratum)) {
-			stratum_disconnect(&stratum);
-			applog(LOG_ERR, "...retry after %d seconds", opt_fail_pause);
-			sleep(opt_fail_pause);
-		}
-		store_scratchpad_to_file(false);
-		prev_save = time(NULL);
-
-		if(!rpc2_stratum_request_job(&stratum)) {
-			stratum_disconnect(&stratum);
-			applog(LOG_ERR, "...retry after %d seconds", opt_fail_pause);
 			sleep(opt_fail_pause);
 		}
 	}
