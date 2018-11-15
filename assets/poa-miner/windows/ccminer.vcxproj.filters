@@ -246,9 +246,6 @@
     <ClCompile Include="equi\blake2\blake2bx.cpp" />
     <ClCompile Include="equi\equi-stratum.cpp" />
     <ClCompile Include="equi\equi.cpp" />
-    <ClCompile Include="equi\blake2\blake2bx.cpp" />
-    <ClCompile Include="equi\equi-stratum.cpp" />
-    <ClCompile Include="equi\equi.cpp" />
     <ClCompile Include="sia\sia-rpc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
