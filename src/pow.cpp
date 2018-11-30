@@ -229,7 +229,7 @@ bool CheckNumberOfAuditedPoSBlocks(const CBlock& block) {
 
 //Check whether the block is successfully mined and the mined hash satisfy the difficulty
 bool CheckPoABlockMinedHash(const CBlockHeader& block) {
-    const uint256 minedHash = block.ComputeMinedHash();
+    const uint256 minedHash = block.minedHash;//block.ComputeMinedHash();
     if (minedHash == block.minedHash) {
         //Check minedHash satisfy difficulty based on nbits
         bool fNegative;
@@ -237,20 +237,32 @@ bool CheckPoABlockMinedHash(const CBlockHeader& block) {
         uint256 bnTarget;
 
         //As of now, there is no PoA miner, this will let all emulated PoA blocks bypass the check
-        if (Params().SkipProofOfWorkCheck() || Params().NetworkID() == CBaseChainParams::TESTNET || Params().NetworkID() == CBaseChainParams::MAIN)
+        if (Params().SkipProofOfWorkCheck() || Params().NetworkID() == CBaseChainParams::TESTNET)
             return true;
+
+        //The current mainnet is at 10800 blocks, this check will ignore these first blocks
+        if (mapBlockIndex.count(block.hashPrevBlock) != 0) {
+            CBlockIndex *pindex = mapBlockIndex[block.hashPrevBlock];
+            if (pindex->nHeight < 10800) {
+                return true;
+            }
+        }
 
         bnTarget.SetCompact(block.nBits, &fNegative, &fOverflow);
 
         // Check range
-        if (fNegative || bnTarget == 0 || fOverflow || bnTarget > Params().ProofOfWorkLimit())
-            return error("CheckProofOfWork() : nBits below minimum work");
+        //if (fNegative || bnTarget == 0 || fOverflow || bnTarget > Params().ProofOfWorkLimit())
+        //    return error("CheckProofOfWork() : nBits below minimum work");
 
         // Check proof of work matches claimed amount
-        if (minedHash > bnTarget)
+        if (minedHash > bnTarget) {
+            std::cout << "Block mined hash not satisfied" << std::endl;
             return error("CheckProofOfWork() : hash doesn't match nBits");
+        }
 
         return true;
+    } else {
+        std::cout << "Mined hash not equal" << std::endl;
     }
     return false;
 }

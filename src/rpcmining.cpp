@@ -799,6 +799,7 @@ Value getpoablocktemplate(const Array& params, bool fHelp)
     }
 
     uint256 poaMerkleRoot = pblock->BuildPoAMerkleTree();
+    uint256 hashTarget = uint256().SetCompact(pblock->nBits);
 
     pblock->SetVersionPoABlock();
     Object result;
@@ -814,6 +815,7 @@ Value getpoablocktemplate(const Array& params, bool fHelp)
 //    result.push_back(Pair("sizelimit", (int64_t)MAX_BLOCK_SIZE));
     result.push_back(Pair("curtime", pblock->GetBlockTime()));
     result.push_back(Pair("bits", strprintf("%08x", pblock->nBits)));
+    result.push_back(Pair("target", hashTarget.GetHex()));
     result.push_back(Pair("height", (int64_t)(pindexPrev->nHeight + 1)));
     result.push_back(Pair("posblocksaudited", posBlocksAudited));
 
@@ -873,9 +875,12 @@ Value submitblock(const Array& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("submitblock", "\"mydata\"") + HelpExampleRpc("submitblock", "\"mydata\""));
 
+    //block received from miner does not have up-to-date previous block, need to update that before calling ProcessNewBlock
     CBlock block;
     if (!DecodeHexBlk(block, params[0].get_str()))
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
+
+    block.hashPrevBlock = chainActive.Tip()->GetBlockHash();
 
     uint256 hash = block.GetHash();
     bool fBlockPresent = false;
