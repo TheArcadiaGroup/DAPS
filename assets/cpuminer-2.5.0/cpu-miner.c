@@ -784,6 +784,9 @@ static const char *gbt_lp_req =
 	"{\"method\": \"getblocktemplate\", \"params\": [{\"capabilities\": "
 	GBT_CAPABILITIES ", \"rules\": " GBT_RULES ", \"longpollid\": \"%s\"}], \"id\":0}\r\n";
 
+static const char *gpoabt_req =
+"{\"method\": \"getpoablocktemplate\", \"params\": null, \"id\":0}\r\n";
+
 static bool get_upstream_work(CURL *curl, struct work *work)
 {
 	json_t *val;
