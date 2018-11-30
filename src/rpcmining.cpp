@@ -799,7 +799,8 @@ Value getpoablocktemplate(const Array& params, bool fHelp)
     }
 
     uint256 poaMerkleRoot = pblock->BuildPoAMerkleTree();
-    uint256 hashTarget = uint256().SetCompact(pblock->nBits);
+    uint256 hashTarget;
+    hashTarget.SetCompact(pblock->nBits);
 
     pblock->SetVersionPoABlock();
     Object result;
