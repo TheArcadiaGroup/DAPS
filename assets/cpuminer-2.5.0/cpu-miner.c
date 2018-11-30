@@ -117,7 +117,6 @@ bool opt_redirect = true;
 bool want_longpoll = true;
 bool have_longpoll = false;
 bool have_gbt = true;
-bool allow_getwork = true;
 bool want_stratum = true;
 bool have_stratum = false;
 bool use_syslog = false;
@@ -188,7 +187,6 @@ Options:\n\
       --coinbase-addr=ADDR  payout address for solo mining\n\
       --coinbase-sig=TEXT  data to insert in the coinbase when possible\n\
       --no-longpoll     disable long polling support\n\
-      --no-getwork      disable getwork support\n\
       --no-gbt          disable getblocktemplate support\n\
       --no-stratum      disable X-Stratum support\n\
       --no-redirect     ignore requests to change the URL of the mining server\n\
@@ -232,7 +230,6 @@ static struct option const options[] = {
 	{ "debug", 0, NULL, 'D' },
 	{ "help", 0, NULL, 'h' },
 	{ "no-gbt", 0, NULL, 1011 },
-	{ "no-getwork", 0, NULL, 1010 },
 	{ "no-longpoll", 0, NULL, 1003 },
 	{ "no-redirect", 0, NULL, 1009 },
 	{ "no-stratum", 0, NULL, 1007 },
@@ -448,11 +445,6 @@ static bool gbt_work_decode(const json_t *val, struct work *work)
 	} else {
 		int64_t cbvalue;
 		if (!pk_script_size) {
-			if (allow_getwork) {
-				applog(LOG_INFO, "No payout address provided, switching to getwork");
-				have_gbt = false;
-			} else
-				applog(LOG_ERR, "No payout address provided");
 			goto out;
 		}
 		tmp = json_object_get(val, "coinbasevalue");
@@ -661,6 +653,7 @@ out:
 	return rc;
 }
 
+
 static void share_result(int result, const char *reason)
 {
 	char s[345];
@@ -722,7 +715,8 @@ static bool submit_upstream_work(CURL *curl, struct work *work)
 			applog(LOG_ERR, "submit_upstream_work stratum_send_line failed");
 			goto out;
 		}
-	} else if (work->txs) {
+	} 
+	else if (work->txs) {
 		char *req;
 
 		for (i = 0; i < ARRAY_SIZE(work->data); i++)
@@ -771,39 +765,14 @@ static bool submit_upstream_work(CURL *curl, struct work *work)
 			share_result(json_is_null(res), json_string_value(res));
 
 		json_decref(val);
-	} else {
-		/* build hex string */
-		for (i = 0; i < ARRAY_SIZE(work->data); i++)
-			le32enc(work->data + i, work->data[i]);
-		bin2hex(data_str, (unsigned char *)work->data, sizeof(work->data));
-
-		/* build JSON-RPC request */
-		sprintf(s,
-			"{\"method\": \"getwork\", \"params\": [ \"%s\" ], \"id\":1}\r\n",
-			data_str);
-
-		/* issue JSON-RPC request */
-		val = json_rpc_call(curl, rpc_url, rpc_userpass, s, NULL, 0);
-		if (unlikely(!val)) {
-			applog(LOG_ERR, "submit_upstream_work json_rpc_call failed");
-			goto out;
-		}
-
-		res = json_object_get(val, "result");
-		reason = json_object_get(val, "reject-reason");
-		share_result(json_is_true(res), reason ? json_string_value(reason) : NULL);
-
-		json_decref(val);
-	}
-
+	} 
+	
 	rc = true;
 
 out:
 	return rc;
 }
 
-static const char *getwork_req =
-	"{\"method\": \"getwork\", \"params\": [], \"id\":0}\r\n";
 
 #define GBT_CAPABILITIES "[\"coinbasetxn\", \"coinbasevalue\", \"longpoll\", \"workid\"]"
 #define GBT_RULES "[\"segwit\"]"
@@ -824,8 +793,7 @@ static bool get_upstream_work(CURL *curl, struct work *work)
 
 start:
 	gettimeofday(&tv_start, NULL);
-	val = json_rpc_call(curl, rpc_url, rpc_userpass,
-			    have_gbt ? gbt_req : getwork_req,
+	val = json_rpc_call(curl, rpc_url, rpc_userpass, gbt_req ,
 			    &err, have_gbt ? JSON_RPC_QUIET_404 : 0);
 	gettimeofday(&tv_end, NULL);
 
@@ -835,14 +803,14 @@ start:
 		return true;
 	}
 
-	if (!have_gbt && !allow_getwork) {
+	if (!have_gbt) {
 		applog(LOG_ERR, "No usable protocol");
 		if (val)
 			json_decref(val);
 		return false;
 	}
 
-	if (have_gbt && allow_getwork && !val && err == CURLE_OK) {
+	if (have_gbt && !val && err == CURLE_OK) {
 		applog(LOG_INFO, "getblocktemplate failed, falling back to getwork");
 		have_gbt = false;
 		goto start;
@@ -1316,8 +1284,7 @@ start:
 			req = malloc(strlen(gbt_lp_req) + strlen(lp_id) + 1);
 			sprintf(req, gbt_lp_req, lp_id);
 		}
-		val = json_rpc_call(curl, lp_url, rpc_userpass,
-				    req ? req : getwork_req, &err,
+		val = json_rpc_call(curl, lp_url, rpc_userpass, req , &err,
 				    JSON_RPC_LONGPOLL);
 		free(req);
 		if (have_stratum) {
@@ -1735,9 +1702,6 @@ static void parse_arg(int key, char *arg, char *pname)
 		break;
 	case 1009:
 		opt_redirect = false;
-		break;
-	case 1010:
-		allow_getwork = false;
 		break;
 	case 1011:
 		have_gbt = false;

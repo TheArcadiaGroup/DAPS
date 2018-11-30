@@ -7,14 +7,14 @@ minerd \- CPU miner for Bitcoin and Litecoin
 .SH DESCRIPTION
 .B minerd
 is a multi-threaded CPU miner for Bitcoin, Litecoin and other cryptocurrencies.
-It supports the getwork and getblocktemplate (BIP 22) methods,
+It supports the getblocktemplate (BIP 22) methods,
 as well as the Stratum mining protocol.
 .PP
 In its normal mode of operation, \fBminerd\fR connects to a mining server
 (specified with the \fB\-o\fR option), receives work from it and starts hashing.
 As soon as a solution is found, it is submitted to the same mining server,
 which can accept or reject it.
-When using getwork or getblocktemplate,
+When using getblocktemplate,
 \fBminerd\fR can take advantage of long polling, if the server supports it;
 in any case, fresh work is fetched as needed.
 When using the Stratum protocol this is not possible,
@@ -123,9 +123,6 @@ Print a help message and exit.
 \fB\-\-no\-gbt\fR
 Do not use the getblocktemplate RPC method.
 .TP
-\fB\-\-no\-getwork\fR
-Do not use the getwork RPC method.
-.TP
 \fB\-\-no\-longpoll\fR
 Do not use long polling.
 .TP
@@ -144,10 +141,8 @@ Specifying a \fIPATH\fR is only supported for HTTP and HTTPS.
 Specifying credentials has the same effect as using the \fB\-O\fR option.
 
 By default, on HTTP and HTTPS,
-the miner tries to use the getblocktemplate RPC method,
-and falls back to using getwork if getblocktemplate is unavailable.
-This behavior can be modified by using the \fB\-\-no\-gbt\fR
-and \fB\-\-no\-getwork\fR options.
+the miner tries to use the getblocktemplate RPC method.
+This behavior can be modified by using the \fB\-\-no\-gbt\fR options.
 .TP
 \fB\-O\fR, \fB\-\-userpass\fR=\fIUSERNAME\fR:\fIPASSWORD\fR
 Set the credentials to use for connecting to the mining server.

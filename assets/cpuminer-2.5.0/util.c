@@ -443,8 +443,7 @@ json_t *json_rpc_call(CURL *curl, const char *url,
 	}
 
 	/* If X-Long-Polling was found, activate long polling */
-	if (!have_longpoll && want_longpoll && hi.lp_path && !have_gbt &&
-	    allow_getwork && !have_stratum) {
+	if (!have_longpoll && want_longpoll && hi.lp_path && !have_gbt  && !have_stratum) {
 		have_longpoll = true;
 		tq_push(thr_info[longpoll_thr_id].q, hi.lp_path);
 		hi.lp_path = NULL;
