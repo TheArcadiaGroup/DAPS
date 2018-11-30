@@ -583,7 +583,18 @@ static inline int scanhash_sha256d_8way(int thr_id, uint32_t *pdata,
 }
 
 #endif /* HAVE_SHA256_8WAY */
-
+/*
+ * data for mining: uint32
+ * version: 1
+ * time: 1
+ * bits: 1
+ * nonce: 1
+ * hashMerkleRoot: 8
+ * hashPoAInterated: 8 ==> hash of hashPrevPoABlock and hashPoAMerkleRoot
+ *
+ * pdata structure
+ *
+ * */
 int scanhash_sha256d(int thr_id, uint32_t *pdata, const uint32_t *ptarget,
 	uint32_t max_nonce, unsigned long *hashes_done)
 {

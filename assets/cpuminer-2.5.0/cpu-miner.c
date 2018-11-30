@@ -187,7 +187,7 @@ Options:\n\
       --coinbase-addr=ADDR  payout address for solo mining\n\
       --coinbase-sig=TEXT  data to insert in the coinbase when possible\n\
       --no-longpoll     disable long polling support\n\
-      --no-gbt          disable getblocktemplate support\n\
+      --no-gpoabt          disable getpoablocktemplate support\n\
       --no-stratum      disable X-Stratum support\n\
       --no-redirect     ignore requests to change the URL of the mining server\n\
   -q, --quiet           disable per-thread hashmeter output\n\
@@ -252,18 +252,44 @@ static struct option const options[] = {
 	{ 0, 0, 0, 0 }
 };
 
+/*
+ * PoA block has the following info
+ * version
+ * previouspoablockhash
+ * transactions
+ * coinbasevalue
+ * noncerange
+ * curtime
+ * bits
+ * height
+ * posblocksaudited {
+ *   {
+      "data": "3c8808918e261978f631dd810b14ed8881dfca595115d9a0d1d09b07cdb0656a",
+     }
+ * }
+ * */
 struct work {
 	uint32_t data[32];
 	uint32_t target[8];
 
 	int height;
-	char *txs;
+	uint32_t merkleRoot[8];
+	char *txs;		//streamed transactions
+	char *pos_data; //streamed pos audited blocks
 	char *workid;
+	uint32_t previousPoABlockHash[8];
+	uint32_t hashPoAMerkleRoot[8]; //
+	uint32_t integratedHash[8];
+	uint32_t minedHash[8];
+	uint32_t version;
+	uint32_t time;
+	uint32_t bits;
 
 	char *job_id;
 	size_t xnonce2_len;
 	unsigned char *xnonce2;
 };
+
 
 static struct work g_work;
 static time_t g_work_time;
@@ -277,6 +303,7 @@ static inline void work_free(struct work *w)
 	free(w->workid);
 	free(w->job_id);
 	free(w->xnonce2);
+	free(w->pos_data);
 }
 
 static inline void work_copy(struct work *dest, const struct work *src)
@@ -284,6 +311,8 @@ static inline void work_copy(struct work *dest, const struct work *src)
 	memcpy(dest, src, sizeof(struct work));
 	if (src->txs)
 		dest->txs = strdup(src->txs);
+	if (src->pos_data)
+		dest->pos_data = strdup(src->pos_data);
 	if (src->workid)
 		dest->workid = strdup(src->workid);
 	if (src->job_id)
@@ -653,21 +682,47 @@ out:
 	return rc;
 }
 
+/*
+ * PoA block has the following info
+ * version
+ * previouspoablockhash
+ * poamerkleroot
+ * coinbasetxn
+ * transactions
+ * coinbasevalue
+ * noncerange
+ * curtime
+ * bits
+ * height
+ * posblocksaudited {
+ *   {
+      "data": "3c8808918e261978f631dd810b14ed8881dfca595115d9a0d1d09b07cdb0656a"
+	 },...
+ * }
+ *
+ * work->data format: unit in uint32_t
+ * version: 1
+ * time: 1
+ * bits: 1
+ * nonce: 1
+ * hashMerkleRoot: 8
+ * hashPoAInterated: 8 ==> hash of hashPrevPoABlock and hashPoAMerkleRoot
+ * */
 static bool gpoabt_work_decode(const json_t *val, struct work *work)
 {
 	int i, n;
 	uint32_t version, curtime, bits;
-	uint32_t prevhash[8];
+	uint32_t prevpoahash[8], hashPoAMerkleRoot[8], integratedHash[8];
 	uint32_t target[8];
 	int cbtx_size;
 	unsigned char *cbtx = NULL;
-	int tx_count, tx_size;
+	int tx_count, tx_size, pos_count, pos_size;
 	unsigned char txc_vi[9];
 	unsigned char(*merkle_tree)[32] = NULL;
 	bool coinbase_append = false;
 	bool submit_coinbase = false;
 	bool segwit = false;
-	json_t *tmp, *txa;
+	json_t *tmp, *txa, *pos_audited;
 	bool rc = false;
 
 	tmp = json_object_get(val, "height");
@@ -683,11 +738,7 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 		goto out;
 	}
 	version = json_integer_value(tmp);
-
-	if (unlikely(!jobj_binary(val, "previousblockhash", prevhash, sizeof(prevhash)))) {
-		applog(LOG_ERR, "JSON invalid previousblockhash");
-		goto out;
-	}
+	work->version = version;
 
 	tmp = json_object_get(val, "curtime");
 	if (!tmp || !json_is_integer(tmp)) {
@@ -695,29 +746,57 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 		goto out;
 	}
 	curtime = json_integer_value(tmp);
+	work->time = curtime;
 
 	if (unlikely(!jobj_binary(val, "bits", &bits, sizeof(bits)))) {
 		applog(LOG_ERR, "JSON invalid bits");
 		goto out;
 	}
+	memcpy(&(work->bits), &bits, sizeof(bits));
+
+	if (unlikely(!jobj_binary(val, "previouspoablockhash", prevpoahash, sizeof(prevpoahash)))) {
+		applog(LOG_ERR, "JSON invalid previouspoablockhash");
+		goto out;
+	}
+	memcpy(work->previousPoABlockHash, prevpoahash, sizeof(prevpoahash));
+
+	if (unlikely(!jobj_binary(val, "poamerkleroot", hashPoAMerkleRoot, sizeof(hashPoAMerkleRoot)))) {
+		applog(LOG_ERR, "JSON invalid poamerkleroot");
+		goto out;
+	}
+	memcpy(work->hashPoAMerkleRoot, hashPoAMerkleRoot, sizeof(hashPoAMerkleRoot));
+
+	//build integrated hash
+	char *integratedHashData = malloc(64);
+	memcpy(integratedHashData, prevpoahash, 32);
+	memcpy(integratedHashData + 32, hashPoAMerkleRoot, 32);
+	sha256d(integratedHash, integratedHashData, 64);
+	memcpy(work->integratedHash, integratedHash, 32);
 
 	/* find count and size of posblocksaudited  transactions */
-	txa = json_object_get(val, "posblocksaudited");
-	if (!txa || !json_is_array(txa)) {
+	pos_audited = json_object_get(val, "posblocksaudited");
+	if (!pos_audited || !json_is_array(pos_audited)) {
 		applog(LOG_ERR, "JSON invalid transactions");
 		goto out;
 	}
-	tx_count = json_array_size(txa);
-	tx_size = 0;
-	for (i = 0; i < tx_count; i++) {
-		const json_t *tx = json_array_get(txa, i);
-		const char *tx_hex = json_string_value(json_object_get(tx, "hash"));
-		if (!tx_hex) {
-			applog(LOG_ERR, "JSON invalid transactions");
+	pos_count = json_array_size(pos_audited);
+	pos_size = 0;
+	char *pos_data = malloc(pos_count * 40 + 1); //the size of posinfo = 40 byte
+	for (i = 0; i < pos_count; i++) {
+		const json_t *pos = json_array_get(pos_audited, i);
+		const char *pos_hex = json_string_value(json_object_get(pos, "data"));
+		if (!pos_hex) {
+			applog(LOG_ERR, "JSON invalid PoS block info");
 			goto out;
 		}
-		tx_size += strlen(tx_hex) / 2;
+		strcat(pos_data, pos_hex);
+		pos_size += strlen(pos_hex) / 2;
 	}
+
+	int n_pos = varint_encode(txc_vi, pos_count);
+	work->pos_data = malloc(2 * (n + pos_size) + 1);
+	bin2hex(work->pos_data, txc_vi, n_pos);
+	strncpy(work->pos_data + 2*n, pos_data, sizeof(pos_data));
 
 	/* build coinbase transaction */
 	tmp = json_object_get(val, "coinbasetxn");
@@ -729,7 +808,7 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 			applog(LOG_ERR, "JSON invalid coinbasetxn");
 			goto out;
 		}
-	}
+	} //PoA block always has a coinbasetxn, the following will possible be never executed
 	else {
 		int64_t cbvalue;
 		if (!pk_script_size) {
@@ -764,40 +843,7 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 		cbtx[cbtx_size++] = pk_script_size; /* txout-script length */
 		memcpy(cbtx + cbtx_size, pk_script, pk_script_size);
 		cbtx_size += pk_script_size;
-		if (segwit) {
-			unsigned char(*wtree)[32] = calloc(tx_count + 2, 32);
-			memset(cbtx + cbtx_size, 0, 8); /* value */
-			cbtx_size += 8;
-			cbtx[cbtx_size++] = 38; /* txout-script length */
-			cbtx[cbtx_size++] = 0x6a; /* txout-script */
-			cbtx[cbtx_size++] = 0x24;
-			cbtx[cbtx_size++] = 0xaa;
-			cbtx[cbtx_size++] = 0x21;
-			cbtx[cbtx_size++] = 0xa9;
-			cbtx[cbtx_size++] = 0xed;
-			for (i = 0; i < tx_count; i++) {
-				const json_t *tx = json_array_get(txa, i);
-				const json_t *hash = json_object_get(tx, "hash");
-				if (!hash || !hex2bin(wtree[1 + i], json_string_value(hash), 32)) {
-					applog(LOG_ERR, "JSON invalid transaction hash");
-					free(wtree);
-					goto out;
-				}
-				memrev(wtree[1 + i], 32);
-			}
-			n = tx_count + 1;
-			while (n > 1) {
-				if (n % 2)
-					memcpy(wtree[n], wtree[n - 1], 32);
-				n = (n + 1) / 2;
-				for (i = 0; i < n; i++)
-					sha256d(wtree[i], wtree[2 * i], 64);
-			}
-			memset(wtree[1], 0, 32);  /* witness reserved value = 0 */
-			sha256d(cbtx + cbtx_size, wtree[0], 64);
-			cbtx_size += 32;
-			free(wtree);
-		}
+
 		le32enc((uint32_t *)(cbtx + cbtx_size), 0); /* lock time */
 		cbtx_size += 4;
 		coinbase_append = true;
@@ -810,8 +856,7 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 			if (cbtx[41] + xsig_len + n <= 100) {
 				memcpy(xsig + xsig_len, coinbase_sig, n);
 				xsig_len += n;
-			}
-			else {
+			} else {
 				applog(LOG_WARNING, "Signature does not fit in coinbase, skipping");
 			}
 		}
@@ -836,7 +881,7 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 		if (xsig_len) {
 			unsigned char *ssig_end = cbtx + 42 + cbtx[41];
 			int push_len = cbtx[41] + xsig_len < 76 ? 1 :
-				cbtx[41] + 2 + xsig_len > 100 ? 0 : 2;
+						   cbtx[41] + 2 + xsig_len > 100 ? 0 : 2;
 			n = xsig_len + push_len;
 			memmove(ssig_end + n, ssig_end, cbtx_size - 42 - cbtx[41]);
 			cbtx[41] += n;
@@ -857,7 +902,8 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 	/* generate merkle root */
 	merkle_tree = malloc(32 * ((1 + tx_count + 1) & ~1));
 	sha256d(merkle_tree[0], cbtx, cbtx_size);
-	for (i = 0; i < tx_count; i++) {
+	//PoA block has only one transaction: the coinbase transaction
+	/*for (i = 0; i < tx_count; i++) {
 		tmp = json_array_get(txa, i);
 		const char *tx_hex = json_string_value(json_object_get(tmp, "data"));
 		const int tx_size = tx_hex ? strlen(tx_hex) / 2 : 0;
@@ -881,8 +927,9 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 		}
 		if (!submit_coinbase)
 			strcat(work->txs, tx_hex);
-	}
+	}*/
 	n = 1 + tx_count;
+	//Will never be executed because n is always 1
 	while (n > 1) {
 		if (n % 2) {
 			memcpy(merkle_tree[n], merkle_tree[n - 1], 32);
@@ -896,7 +943,7 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 	/* assemble block header */
 	work->data[0] = swab32(version);
 	for (i = 0; i < 8; i++)
-		work->data[8 - i] = le32dec(prevhash + i);
+		work->data[8 - i] = le32dec(integratedHash + i);
 	for (i = 0; i < 8; i++)
 		work->data[9 + i] = be32dec((uint32_t *)merkle_tree[0] + i);
 	work->data[17] = swab32(curtime);
@@ -921,8 +968,9 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 		work->workid = strdup(json_string_value(tmp));
 	}
 
+	//Temporarily disable polling
 	/* Long polling */
-	tmp = json_object_get(val, "longpollid");
+	/*tmp = json_object_get(val, "longpollid");
 	if (want_longpoll && json_is_string(tmp)) {
 		free(lp_id);
 		lp_id = strdup(json_string_value(tmp));
@@ -933,7 +981,7 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 			have_longpoll = true;
 			tq_push(thr_info[longpoll_thr_id].q, lp_uri);
 		}
-	}
+	}*/
 
 	rc = true;
 
@@ -971,7 +1019,8 @@ static void share_result(int result, const char *reason)
 static bool submit_upstream_work(CURL *curl, struct work *work)
 {
 	json_t *val, *res, *reason;
-	char data_str[2 * sizeof(work->data) + 1];
+	char data_str[2 * 176 + 1];	//hex format for header data, poa block header size = 80 + 96 = 176
+	data_str[2 * 176] = "\0";
 	char s[345];
 	int i;
 	bool rc = false;
@@ -1010,23 +1059,72 @@ static bool submit_upstream_work(CURL *curl, struct work *work)
 
 		for (i = 0; i < ARRAY_SIZE(work->data); i++)
 			be32enc(work->data + i, work->data[i]);
-		bin2hex(data_str, (unsigned char *)work->data, 80);
+		char temp[2*80 + 1];
+		bin2hex(temp, (unsigned char *)work->data, 80);
+		int point_size = 0;
+		//version
+		strncpy(data_str + point_size, temp, 2 * 4);
+		point_size += 2* 4;
+
+		//hashPrevPblock will be added by daemon
+		char hashPrevBlock[2*32 + 1];
+		hashPrevBlock[2 * 32] = "\0";
+		memset(hashPrevBlock, 0, 2*32);
+		strcpy(data_str + point_size, hashPrevBlock);
+		point_size += 2*32;
+
+		//hash merkle root
+		strncpy(data_str + point_size, temp + 2 * (4 + 32), 2*32);
+		point_size += 2*32;
+
+		//hashPrevPoABlock
+		char hashPrevPoABlockHex[2*32 + 1];
+		hashPrevPoABlockHex[2*32] = "\0";
+		bin2hex(hashPrevPoABlockHex, work->previousPoABlockHash, 32);
+		strncpy(data_str + point_size, hashPrevPoABlockHex, 2*32);
+		point_size += 2*32;
+
+		//hashPrevPoABlock
+		char merkleRootHex[2*32 + 1];
+		merkleRootHex[2*32] = "\0";
+		bin2hex(merkleRootHex, work->hashPoAMerkleRoot, 32);
+		strncpy(data_str + point_size, merkleRootHex, 2*32);
+		point_size += 2*32;
+
+		//minedHash
+		char minedHashHex[2*32 + 1];
+		minedHashHex[2*32] = "\0";
+		bin2hex(minedHashHex, work->minedHash, 32);
+		strncpy(data_str + point_size, minedHashHex, 2*32);
+		point_size += 2*32;
+
+		//time
+		strncpy(data_str + point_size, temp + 136, 2 * 4);
+		point_size += 2* 4;
+
+		//bit
+		strncpy(data_str + point_size, temp + 144, 2 * 4);
+		point_size += 2* 4;
+
+		//nonce
+		strncpy(data_str + point_size, temp + 152, 2 * 4);
+
 		if (work->workid) {
 			char *params;
 			val = json_object();
 			json_object_set_new(val, "workid", json_string(work->workid));
 			params = json_dumps(val, 0);
 			json_decref(val);
-			req = malloc(128 + 2*80 + strlen(work->txs) + strlen(params));
+			req = malloc(128 + 2*176 + strlen(work->txs) + strlen(work->pos_data) + strlen(params));
 			sprintf(req,
-				"{\"method\": \"submitblock\", \"params\": [\"%s%s\", %s], \"id\":1}\r\n",
-				data_str, work->txs, params);
+				"{\"method\": \"submitblock\", \"params\": [\"%s%s%s\", %s], \"id\":1}\r\n",
+				data_str, work->txs, work->pos_data, params);
 			free(params);
 		} else {
-			req = malloc(128 + 2*80 + strlen(work->txs));
+			req = malloc(128 + 2*176 + strlen(work->txs) + strlen(work->pos_data));
 			sprintf(req,
-				"{\"method\": \"submitblock\", \"params\": [\"%s%s\"], \"id\":1}\r\n",
-				data_str, work->txs);
+				"{\"method\": \"submitblock\", \"params\": [\"%s%s%s\"], \"id\":1}\r\n",
+				data_str, work->txs, work->pos_data);
 		}
 		val = json_rpc_call(curl, rpc_url, rpc_userpass, req, NULL, 0);
 		free(req);
@@ -1085,7 +1183,7 @@ static bool get_upstream_work(CURL *curl, struct work *work)
 
 start:
 	gettimeofday(&tv_start, NULL);
-	val = json_rpc_call(curl, rpc_url, rpc_userpass, gbt_req ,
+	val = json_rpc_call(curl, rpc_url, rpc_userpass, gpoabt_req ,
 			    &err, have_gbt ? JSON_RPC_QUIET_404 : 0);
 	gettimeofday(&tv_end, NULL);
 
@@ -1103,7 +1201,7 @@ start:
 	}
 
 	if (have_gbt && !val && err == CURLE_OK) {
-		applog(LOG_INFO, "getblocktemplate failed, falling back to getwork");
+		applog(LOG_INFO, "getpoablocktemplate failed, falling back to getwork");
 		have_gbt = false;
 		goto start;
 	}
@@ -1112,7 +1210,7 @@ start:
 		return false;
 
 	if (have_gbt) {
-		rc = gbt_work_decode(json_object_get(val, "result"), work);
+		rc = gpoabt_work_decode(json_object_get(val, "result"), work);
 		if (!have_gbt) {
 			json_decref(val);
 			goto start;
@@ -1471,7 +1569,7 @@ static void *miner_thread(void *userdata)
 		switch (opt_algo) {
 		case ALGO_SCRYPT:
 			rc = scanhash_scrypt(thr_id, work.data, scratchbuf, work.target,
-			                     max_nonce, &hashes_done, opt_scrypt_n);
+			                     max_nonce, &hashes_done, opt_scrypt_n, work.minedHash);
 			break;
 
 		case ALGO_SHA256D:

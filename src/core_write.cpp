@@ -6,6 +6,7 @@
 
 #include "base58.h"
 #include "primitives/transaction.h"
+#include "primitives/block.h"
 #include "script/script.h"
 #include "script/standard.h"
 #include "serialize.h"
@@ -59,6 +60,13 @@ string EncodeHexTx(const CTransaction& tx)
     CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
     ssTx << tx;
     return HexStr(ssTx.begin(), ssTx.end());
+}
+
+string EncodeHexPoSBlockSummary(const PoSBlockSummary& pos)
+{
+    CDataStream ssPoS(SER_NETWORK, PROTOCOL_VERSION);
+    ssPoS << pos;
+    return HexStr(ssPoS.begin(), ssPoS.end());
 }
 
 void ScriptPubKeyToUniv(const CScript& scriptPubKey,

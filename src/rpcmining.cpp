@@ -31,6 +31,9 @@
 using namespace json_spirit;
 using namespace std;
 
+static bool PoABlockBeingMined = false;
+static uint256 PoAMerkleRoot;
+
 /**
  * Return average network hashes per second based on the last 'lookup' blocks,
  * or from the last difficulty change if 'lookup' is nonpositive.
@@ -668,6 +671,8 @@ Value getpoablocktemplate(const Array& params, bool fHelp)
             "{\n"
             "  \"version\" : n,                    (numeric) The block version\n"
             "  \"previouspoablockhash\" : \"xxxx\",    (string) The hash of current highest block\n"
+            "  \"poamerkleroot\" : \"xxxx\",    (string) The PoA merkle root\n"
+            "  \"poahashintegrated\" : \"xxxx\",    (string) hash of previouspoablockhash and poamerkleroot\n"
             "  \"coinbasevalue\" : n,               (numeric) maximum allowable input to coinbase transaction, including the generation award and transaction fees (in duffs)\n"
             "  \"coinbasetxn\" : { ... },           (json object) information for coinbase transaction\n"
             "  \"noncerange\" : \"00000000ffffffff\",   (string) A range of valid nonces\n"
@@ -767,6 +772,11 @@ Value getpoablocktemplate(const Array& params, bool fHelp)
         transactions.push_back(entry);
     }
 
+    Object coinbasetxn;
+    CTransaction& tx = pblock->vtx[0];
+    coinbasetxn.push_back(Pair("data", EncodeHexTx(tx)));
+    coinbasetxn.push_back(Pair("hash", tx.GetHash().GetHex()));
+
     Object aux;
     aux.push_back(Pair("flags", HexStr(COINBASE_FLAGS.begin(), COINBASE_FLAGS.end())));
 
@@ -784,18 +794,19 @@ Value getpoablocktemplate(const Array& params, bool fHelp)
     for (int idx = 0; idx < pblock->posBlocksAudited.size(); idx++) {
     	Object entry;
     	PoSBlockSummary pos = pblock->posBlocksAudited.at(idx);
-    	entry.push_back(Pair("hash", pos.hash.GetHex()));
-    	entry.push_back(Pair("time", (int64_t)(pos.nTime)));
-    	entry.push_back(Pair("height", (int64_t)(pos.height)));
+    	entry.push_back(Pair("data", EncodeHexPoSBlockSummary(pos)));
     	posBlocksAudited.push_back(entry);
     }
 
+    uint256 poaMerkleRoot = pblock->BuildPoAMerkleTree();
 
     pblock->SetVersionPoABlock();
     Object result;
     result.push_back(Pair("version", pblock->nVersion));
     result.push_back(Pair("previouspoablockhash", pblock->hashPrevPoABlock.GetHex()));
+    result.push_back(Pair("poamerkleroot", poaMerkleRoot.GetHex()));
     result.push_back(Pair("transactions", transactions));
+    result.push_back(Pair("coinbasetxn", coinbasetxn));
     result.push_back(Pair("coinbasevalue", (int64_t)pblock->vtx[0].GetValueOut()));
     //result.push_back(Pair("longpollid", chainActive.Tip()->GetBlockHash().GetHex() + i64tostr(nTransactionsUpdatedLast)));
     result.push_back(Pair("noncerange", "00000000ffffffff"));
@@ -805,8 +816,6 @@ Value getpoablocktemplate(const Array& params, bool fHelp)
     result.push_back(Pair("bits", strprintf("%08x", pblock->nBits)));
     result.push_back(Pair("height", (int64_t)(pindexPrev->nHeight + 1)));
     result.push_back(Pair("posblocksaudited", posBlocksAudited));
-
-
 
     if (pblock->payee != CScript()) {
         CTxDestination address1;
