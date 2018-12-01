@@ -512,6 +512,8 @@ static inline void scrypt_core(uint32_t *X, uint32_t *V, int N)
 
 unsigned char *scrypt_buffer_alloc(int N)
 {
+	applog(LOG_INFO, "SCRYPT_MAX_WAYS = %d", SCRYPT_MAX_WAYS);
+	applog(LOG_INFO, "Scrypt buffer allocation size = %d", (size_t)N * SCRYPT_MAX_WAYS * 128 + 63);
 	return malloc((size_t)N * SCRYPT_MAX_WAYS * 128 + 63);
 }
 

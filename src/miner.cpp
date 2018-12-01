@@ -561,7 +561,9 @@ CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, CWallet* pwalle
 		pblock->hashPrevPoABlock.SetNull();
 	}
 
-	pblock->nBits = GetNextWorkRequired(pindexPrev, pblock);
+	//ATTENTION: This is used for setting always the easiest difficulty for PoA miners
+	pblock->nBits = 0x008000;
+	//pblock->nBits = GetNextWorkRequired(pindexPrev, pblock);
 	pblock->nNonce = 0;
 
 	pblocktemplate->vTxSigOps[0] = GetLegacySigOpCount(pblock->vtx[0]);

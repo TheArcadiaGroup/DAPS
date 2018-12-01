@@ -879,7 +879,7 @@ Value submitblock(const Array& params, bool fHelp)
     CBlock block;
     if (!DecodeHexBlk(block, params[0].get_str()))
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
-
+    std::cout << "Block is parsed, version = " << block.nVersion << std::endl;
     block.hashPrevBlock = chainActive.Tip()->GetBlockHash();
 
     uint256 hash = block.GetHash();
