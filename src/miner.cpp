@@ -562,8 +562,8 @@ CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, CWallet* pwalle
 	}
 
 	//ATTENTION: This is used for setting always the easiest difficulty for PoA miners
-	pblock->nBits = 0x008000;
-	//pblock->nBits = GetNextWorkRequired(pindexPrev, pblock);
+	//pblock->nBits = 0x008000;
+	pblock->nBits = GetNextWorkRequired(pindexPrev, pblock);
 	pblock->nNonce = 0;
 
 	pblocktemplate->vTxSigOps[0] = GetLegacySigOpCount(pblock->vtx[0]);
