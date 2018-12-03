@@ -753,7 +753,7 @@ int scanhash_scrypt(int thr_id, uint32_t *pdata,
 			if (hash[i * 8 + 7] <= Htarg && fulltest(hash + i * 8, ptarget)) {
 				*hashes_done = n - pdata[19] + 1;
 				pdata[19] = data[i * 20 + 19];
-				memcpy(minedHash, hash, 32);
+				memcpy(minedHash, hash + i*8, 32);
 				return 1;
 			}
 		}

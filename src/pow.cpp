@@ -15,9 +15,19 @@
 
 #include <math.h>
 
+bool CheckPoAMiningBlockHeight(const CBlockHeader* pblock) {
+    CBlockIndex *pindex = mapBlockIndex[pblock->hashPrevBlock];
+    if (pindex->nHeight < 10800) {
+        return true;
+    }
+    return false;
+}
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock)
 {
+    if (pblock->IsPoABlockByVersion() && !CheckPoAMiningBlockHeight(pblock)) {
+        return 0x207fffff;
+    }
     /* current difficulty formula, dapscoin - DarkGravity v3, written by Evan Duffield - evan@dashpay.io */
     const CBlockIndex* BlockLastSolved = pindexLast;
     const CBlockIndex* BlockReading = pindexLast;
@@ -242,8 +252,7 @@ bool CheckPoABlockMinedHash(const CBlockHeader& block) {
 
         //The current mainnet is at 10800 blocks, this check will ignore these first blocks
         if (mapBlockIndex.count(block.hashPrevBlock) != 0) {
-            CBlockIndex *pindex = mapBlockIndex[block.hashPrevBlock];
-            if (pindex->nHeight < 10800) {
+            if (CheckPoAMiningBlockHeight(&block)) {
                 return true;
             }
         }
@@ -256,20 +265,17 @@ bool CheckPoABlockMinedHash(const CBlockHeader& block) {
 
         // Check proof of work matches claimed amount
         if (minedHash > bnTarget) {
-            std::cout << "Block mined hash not satisfied" << std::endl;
+            LogPrintf("Block mined hash not satisfied");
             return error("CheckProofOfWork() : hash doesn't match nBits");
         }
 
         return true;
-    } else {
-        std::cout << "Mined hash not equal" << std::endl;
     }
     return false;
 }
 
 //A PoA block should contains previous PoA block hash
 bool CheckPrevPoABlockHash(const CBlockHeader& block, int blockHeight) {
-    uint256 blockHash = block.hashPrevPoABlock;
     int currentHeight = chainActive.Tip()->nHeight;
     if (blockHeight != - 1) {
         currentHeight = blockHeight - 1;

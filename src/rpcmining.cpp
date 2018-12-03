@@ -726,8 +726,8 @@ Value getpoablocktemplate(const Array& params, bool fHelp)
             delete pblocktemplate;
             pblocktemplate = NULL;
         }
-        CScript scriptDummy = CScript() << OP_TRUE;
-        pblocktemplate = CreateNewPoABlock(scriptDummy, pwalletMain);
+        CReserveKey reservekey(pwalletMain);
+        pblocktemplate = CreateNewPoABlockWithKey(reservekey, pwalletMain);
         if (!pblocktemplate)
             throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
 
@@ -877,9 +877,21 @@ Value submitblock(const Array& params, bool fHelp)
 
     //block received from miner does not have up-to-date previous block, need to update that before calling ProcessNewBlock
     CBlock block;
-    if (!DecodeHexBlk(block, params[0].get_str()))
+    std::string datastr(params[0].get_str());
+
+    for (int i = 0; i < datastr.size(); i++) {
+        if (('0' <= datastr[i] && datastr[i] <= '9') || ('a' <= datastr[i] && datastr[i] <= 'f') || ('A' <= datastr[i] && datastr[i] <= 'F')) {
+
+        } else {
+            datastr.erase(i, 1);
+            break;
+        }
+    }
+    if (!DecodeHexBlk(block, datastr)) {
+        LogPrintf("Cannot decode block\n");
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
-    std::cout << "Block is parsed, version = " << block.nVersion << std::endl;
+    }
+
     block.hashPrevBlock = chainActive.Tip()->GetBlockHash();
 
     uint256 hash = block.GetHash();

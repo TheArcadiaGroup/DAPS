@@ -724,7 +724,6 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 	bool segwit = false;
 	json_t *tmp, *txa, *pos_audited;
 	bool rc = false;
-	applog(LOG_INFO, "%s: Start decoding work", __func__);
 
 	tmp = json_object_get(val, "height");
 	if (!tmp || !json_is_integer(tmp)) {
@@ -750,31 +749,32 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 	}
 	curtime = json_integer_value(tmp);
 	work->time = curtime;
-    applog(LOG_INFO, "%s: curtime = %d", __func__, work->time);
 
 	if (unlikely(!jobj_binary(val, "bits", &bits, sizeof(bits)))) {
 		applog(LOG_ERR, "JSON invalid bits");
 		goto out;
 	}
 	memcpy(&(work->bits), &bits, sizeof(bits));
-    applog(LOG_INFO, "%s: bits = %d", __func__, work->bits);
+    applog(LOG_INFO, "%s: bits = %x", __func__, work->bits);
 
 	if (unlikely(!jobj_binary(val, "previouspoablockhash", prevpoahash, sizeof(prevpoahash)))) {
 		applog(LOG_ERR, "JSON invalid previouspoablockhash");
 		goto out;
 	}
-	memcpy(work->previousPoABlockHash, prevpoahash, sizeof(prevpoahash));
+	for (i = 0; i < 8; i++)
+		work->previousPoABlockHash[7 - i] = le32dec(prevpoahash + i);
 
 	if (unlikely(!jobj_binary(val, "poamerkleroot", hashPoAMerkleRoot, sizeof(hashPoAMerkleRoot)))) {
 		applog(LOG_ERR, "JSON invalid poamerkleroot");
 		goto out;
 	}
-	memcpy(work->hashPoAMerkleRoot, hashPoAMerkleRoot, sizeof(hashPoAMerkleRoot));
+	for (i = 0; i < 8; i++)
+		work->hashPoAMerkleRoot[7 - i] = le32dec(hashPoAMerkleRoot + i);
 
 	//build integrated hash
 	char *integratedHashData = malloc(64);
-	memcpy(integratedHashData, prevpoahash, 32);
-	memcpy(integratedHashData + 32, hashPoAMerkleRoot, 32);
+	memcpy(integratedHashData, work->previousPoABlockHash, 32);
+	memcpy(integratedHashData + 32, work->hashPoAMerkleRoot, 32);
 	sha256d(integratedHash, integratedHashData, 64);
 	memcpy(work->integratedHash, integratedHash, 32);
 
@@ -788,7 +788,6 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 	pos_size = 0;
     applog(LOG_INFO, "%s: pos_count = %d", __func__, pos_count);
 	char *pos_data = malloc(pos_count * 40 * 2 + 1); //the size of posinfo = 40 byte
-    applog(LOG_INFO, "%s: pos_data malloc size = %d", __func__, pos_count * 40 + 1);
 	for (i = 0; i < pos_count; i++) {
 		const json_t *pos = json_array_get(pos_audited, i);
 		const char *pos_hex = json_string_value(json_object_get(pos, "data"));
@@ -799,27 +798,26 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 		strcat(pos_data, pos_hex);
 		pos_size += strlen(pos_hex) / 2;
 	}
-    applog(LOG_INFO, "%s:pos_data:%s", __func__, pos_data);
+    //applog(LOG_INFO, "%s:pos_data:%s", __func__, pos_data);
 
 	int n_pos = varint_encode(txc_vi, pos_count);
-    applog(LOG_INFO, "%s: work->pos_data malloc size = %d", __func__, 2 * (n_pos + pos_size) + 1);
 	work->pos_data = malloc(2 * (n_pos + pos_size) + 1);
-	if (work->pos_data == NULL) {
+	/*if (work->pos_data == NULL) {
         applog(LOG_INFO, "%s: malloc pos data failed", __func__);
-	}
-    applog(LOG_INFO, "%s: success work->pos_data malloc size = %d", __func__, 2 * (n_pos + pos_size) + 1);
-    applog(LOG_INFO, "%s: copy txc_vi", __func__);
+	}*/
+    //applog(LOG_INFO, "%s: success work->pos_data malloc size = %d", __func__, 2 * (n_pos + pos_size) + 1);
+    //applog(LOG_INFO, "%s: copy txc_vi", __func__);
 	bin2hex(work->pos_data, txc_vi, n_pos);
-    applog(LOG_INFO, "%s: strncpy", __func__);
+    //applog(LOG_INFO, "%s: strncpy", __func__);
 	strcpy(work->pos_data + 2*n_pos, pos_data + 1);
 	free(pos_data);
 
 	/* build coinbase transaction */
-    applog(LOG_INFO, "%s: build coinbase transaction", __func__);
+    //applog(LOG_INFO, "%s: build coinbase transaction", __func__);
 	tmp = json_object_get(val, "coinbasetxn");
 	if (tmp) {
 		const char *cbtx_hex = json_string_value(json_object_get(tmp, "data"));
-        applog(LOG_INFO, "%s: Found coinbasetxn, data = %s", __func__, cbtx_hex);
+        //applog(LOG_INFO, "%s: Found coinbasetxn, data = %s", __func__, cbtx_hex);
 		cbtx_size = cbtx_hex ? strlen(cbtx_hex) / 2 : 0;
 		cbtx = malloc(cbtx_size + 100);
         applog(LOG_INFO, "%s: Malloc cbtx, size = %d", __func__, cbtx_size + 100);
@@ -827,7 +825,7 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 			applog(LOG_ERR, "JSON invalid coinbasetxn");
 			goto out;
 		}
-        applog(LOG_INFO, "%s: Success build coinbase", __func__);
+        //applog(LOG_INFO, "%s: Success build coinbase", __func__);
 	} //PoA block always has a coinbasetxn, the following will possible be never executed
 	else {
 		int64_t cbvalue;
@@ -915,7 +913,6 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 	}
 
 	n = varint_encode(txc_vi, 1);
-    applog(LOG_INFO, "%s: work->txs malloc size = %d", __func__, 2 * (n + cbtx_size) + 1);
 	work->txs = malloc(2 * (n + cbtx_size) + 1);
 	bin2hex(work->txs, txc_vi, n);
 	bin2hex(work->txs + 2 * n, cbtx, cbtx_size);
@@ -953,7 +950,7 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 	/* assemble block header */
 	work->data[0] = swab32(version);
 	for (i = 0; i < 8; i++)
-		work->data[8 - i] = le32dec(integratedHash + i);
+		work->data[1 + i] = be32dec(integratedHash + i);
 	for (i = 0; i < 8; i++)
 		work->data[9 + i] = be32dec((uint32_t *)merkle_tree[0] + i);
 	work->data[17] = swab32(curtime);
@@ -969,6 +966,8 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 
 	for (i = 0; i < ARRAY_SIZE(work->target); i++)
 		work->target[7 - i] = be32dec(target + i);
+	char targetHex[2*32 + 1];
+	bin2hex(targetHex, target, 32);
 
 	tmp = json_object_get(val, "workid");
 	if (tmp) {
@@ -1076,58 +1075,53 @@ static bool submit_upstream_work(CURL *curl, struct work *work)
 		int point_size = 0;
 		//version
 		memcpy(data_str + point_size, temp, 2 * 4);
-        applog(LOG_INFO, "%s:version:%s", __func__, data_str + point_size);
 		point_size += 2*4;
 
 		//hashPrevPblock will be added by daemon
 		char hashPrevBlock[2*32];
 		memset(hashPrevBlock, 'c', 2*32);
 		memcpy(data_str + point_size, hashPrevBlock, 2 * 32);
-        applog(LOG_INFO, "%s:hashPrevBlock:%s", __func__, data_str + point_size);
 		point_size += 2*32;
 
 		//hash merkle root
 		memcpy(data_str + point_size, temp + 2 * (4 + 32), 2*32);
-        applog(LOG_INFO, "%s:merkle root:%s", __func__, data_str + point_size);
 		point_size += 2*32;
 
 		//hashPrevPoABlock
 		char hashPrevPoABlockHex[2*32];
+		for (i = 0; i < ARRAY_SIZE(work->previousPoABlockHash); i++)
+			be32enc(work->previousPoABlockHash + i, work->previousPoABlockHash[i]);
 		bin2hex(hashPrevPoABlockHex, work->previousPoABlockHash, 32);
 		memcpy(data_str + point_size, hashPrevPoABlockHex, 2*32);
-        applog(LOG_INFO, "%s:hashPrevPoABlock:%s", __func__, data_str + point_size);
 		point_size += 2*32;
 
 		//hashPrevPoABlock
 		char merkleRootHex[2*32];
+        for (i = 0; i < ARRAY_SIZE(work->hashPoAMerkleRoot); i++)
+            be32enc(work->hashPoAMerkleRoot + i, work->hashPoAMerkleRoot[i]);
 		bin2hex(merkleRootHex, work->hashPoAMerkleRoot, 32);
 		memcpy(data_str + point_size, merkleRootHex, 2*32);
-        applog(LOG_INFO, "%s:hashPoAMerkleRoot:%s", __func__, data_str + point_size);
 		point_size += 2*32;
 
 		//minedHash
 		char minedHashHex[2*32];
+        for (i = 0; i < ARRAY_SIZE(work->minedHash); i++)
+            be32enc(work->minedHash + i, work->minedHash[i]);
 		bin2hex(minedHashHex, work->minedHash, 32);
 		memcpy(data_str + point_size, minedHashHex, 2*32);
-        applog(LOG_INFO, "%s:mindhashs:%s", __func__, data_str + point_size);
 		point_size += 2*32;
 
 		//time
 		memcpy(data_str + point_size, temp + 136, 2 * 4);
-        applog(LOG_INFO, "%s:time:%s", __func__, data_str + point_size);
 		point_size += 2* 4;
 
 		//bit
 		memcpy(data_str + point_size, temp + 144, 2 * 4);
-        applog(LOG_INFO, "%s:bit:%s", __func__, data_str + point_size);
 		point_size += 2* 4;
 
 		//nonce
 		memcpy(data_str + point_size, temp + 152, 2 * 4);
 
-        applog(LOG_INFO, "%s:data str:%s", __func__, data_str);
-        applog(LOG_INFO, "%s:txs:%s", __func__, work->txs);
-        applog(LOG_INFO, "%s:pos_data:%s", __func__, work->pos_data);
 		if (work->workid) {
 			char *params;
 			val = json_object();
@@ -1142,11 +1136,10 @@ static bool submit_upstream_work(CURL *curl, struct work *work)
 		} else {
 			req = malloc(128 + 2*176 + strlen(work->txs) + strlen(work->pos_data));
 			sprintf(req,
-				"{\"method\": \"submitblock\", \"params\": [\"%s%s%s\"], \"id\":1}\r\n",
+				"{\"method\": \"submitblock\", \"params\": [\"%s%s%s\"]}\r\n",
 				data_str, work->txs, work->pos_data);
 		}
-		applog(LOG_INFO, "REQ: %s", req);
-		val = json_rpc_call(curl, rpc_url, rpc_userpass, req, NULL, 0);
+		val = json_rpc_call(curl, rpc_url, rpc_userpass, req, NULL, have_gbt ? JSON_RPC_QUIET_404 : 0);
 		free(req);
 		if (unlikely(!val)) {
 			applog(LOG_ERR, "submit_upstream_work json_rpc_call failed");
@@ -1533,7 +1526,7 @@ static void *miner_thread(void *userdata)
 			if (work.data[19] >= end_nonce && !memcmp(work.data, g_work.data, 76))
 				stratum_gen_work(&stratum, &g_work);
 		} else {
-            applog(LOG_INFO, "%s: Mine without stratum", __func__);
+            //applog(LOG_INFO, "%s: Mine without stratum", __func__);
 			int min_scantime = have_longpoll ? LP_SCANTIME : opt_scantime;
 			/* obtain new work from internal workio thread */
 			pthread_mutex_lock(&g_work_lock);

@@ -4285,7 +4285,7 @@ bool CheckBlockHeader(const CBlockHeader &block, CValidationState &state, bool f
 
     //Check that the PoA header contains valid for PoA previous block hash, this check will use a PoA consensus rule
     if (block.IsPoABlockByVersion() && !CheckPrevPoABlockHash(block)) {
-        return state.DoS(50, error("CheckBlockHeader() : proof of work PoA failed"),
+        return state.DoS(50, error("CheckBlockHeader() : Previous PoA block hash is not matched => failed"),
         	                         REJECT_INVALID, "high-hash");
     }
 
@@ -4311,7 +4311,7 @@ bool CheckBlock(const CBlock &block, CValidationState &state, bool fCheckPOW, bo
     if (!CheckBlockHeader(block, state, block.IsProofOfWork()))
         return state.DoS(100, error("CheckBlock() : CheckBlockHeader failed"),
                          REJECT_INVALID, "bad-header", true);
-
+    LogPrintf("%s:Time stamp", __func__);
     // Check timestamp
     LogPrint("debug", "%s: block=%s  is proof of stake=%d, is proof of audit=%d\n", __func__, block.GetHash().ToString().c_str(),
              block.IsProofOfStake(), block.IsProofOfAudit());
@@ -4320,6 +4320,7 @@ bool CheckBlock(const CBlock &block, CValidationState &state, bool fCheckPOW, bo
         return state.Invalid(error("CheckBlock() : block timestamp too far in the future"),
                              REJECT_INVALID, "time-too-new");
 
+    LogPrintf("%s:PoA block time", __func__);
     //Check PoA block time
     if (block.IsPoABlockByVersion() && !CheckPoAblockTime(block)) {
     	return state.Invalid(error("CheckBlock() : Time elapsed between two PoA blocks is too short"),
