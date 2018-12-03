@@ -15,6 +15,7 @@
 
 #include <math.h>
 
+unsigned int N_BITS = 0x207fffff;
 bool CheckPoAMiningBlockHeight(const CBlockHeader* pblock) {
     CBlockIndex *pindex = mapBlockIndex[pblock->hashPrevBlock];
     if (pindex->nHeight < 10800) {
@@ -25,8 +26,8 @@ bool CheckPoAMiningBlockHeight(const CBlockHeader* pblock) {
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock)
 {
-    if (pblock->IsPoABlockByVersion() && !CheckPoAMiningBlockHeight(pblock)) {
-       return 0x207fffff;
+    if (N_BITS != 0 && pblock->IsPoABlockByVersion() && !CheckPoAMiningBlockHeight(pblock)) {
+       return N_BITS;
     }
     /* current difficulty formula, dapscoin - DarkGravity v3, written by Evan Duffield - evan@dashpay.io */
     const CBlockIndex* BlockLastSolved = pindexLast;

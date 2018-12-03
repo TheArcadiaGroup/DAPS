@@ -836,6 +836,21 @@ Value getpoablocktemplate(const Array& params, bool fHelp)
     return result;
 }
 
+Value setminingnbits(const Array& params, bool fHelp) {
+    if (fHelp || params.size() != 2)
+        throw runtime_error(
+                "setminingnbits value 1/0\n");
+    unsigned int nbits = (uint) params[0].get_int64();
+    int changed= params[1].get_int();
+    Object result;
+    result.push_back(Pair("previous_bits", strprintf("%08x", N_BITS)));
+    if (changed) {
+        N_BITS = nbits;
+    }
+    result.push_back(Pair("current_bits", strprintf("%08x", N_BITS)));
+    return result;
+}
+
 
 class submitblock_StateCatcher : public CValidationInterface
 {

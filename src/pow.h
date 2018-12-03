@@ -29,6 +29,7 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits);
 uint256 GetBlockProof(const CBlockIndex& block);
 
 extern const uint32_t POA_BLOCK_PERIOD;
+extern unsigned int N_BITS;
 //unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock);
 
 //Check PoA block header consensus rules
@@ -45,5 +46,6 @@ bool CheckPoABlockNotContainingPoABlockInfo(const CBlock& block, int blockheight
 
 bool CheckPoAblockTime(const CBlock& block);
 bool CheckPoABlockNotAuditingOverlap(const CBlock& block);
+
 
 #endif // BITCOIN_POW_H
