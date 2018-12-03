@@ -26,7 +26,7 @@ bool CheckPoAMiningBlockHeight(const CBlockHeader* pblock) {
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock)
 {
     if (pblock->IsPoABlockByVersion() && !CheckPoAMiningBlockHeight(pblock)) {
-       return 0x1d800001;
+       return 0x207fffff;
     }
     /* current difficulty formula, dapscoin - DarkGravity v3, written by Evan Duffield - evan@dashpay.io */
     const CBlockIndex* BlockLastSolved = pindexLast;
