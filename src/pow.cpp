@@ -26,7 +26,7 @@ bool CheckPoAMiningBlockHeight(const CBlockHeader* pblock) {
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock)
 {
     if (pblock->IsPoABlockByVersion() && !CheckPoAMiningBlockHeight(pblock)) {
-        return 0x207fffff;
+       return 0x1d800004;
     }
     /* current difficulty formula, dapscoin - DarkGravity v3, written by Evan Duffield - evan@dashpay.io */
     const CBlockIndex* BlockLastSolved = pindexLast;
@@ -258,7 +258,7 @@ bool CheckPoABlockMinedHash(const CBlockHeader& block) {
         }
 
         bnTarget.SetCompact(block.nBits, &fNegative, &fOverflow);
-
+	LogPrintf("Target:%s, minedHash:%s", bnTarget.GetHex(), minedHash.GetHex());
         // Check range
         //if (fNegative || bnTarget == 0 || fOverflow || bnTarget > Params().ProofOfWorkLimit())
         //    return error("CheckProofOfWork() : nBits below minimum work");

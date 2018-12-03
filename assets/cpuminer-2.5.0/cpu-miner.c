@@ -1105,8 +1105,8 @@ static bool submit_upstream_work(CURL *curl, struct work *work)
 
 		//minedHash
 		char minedHashHex[2*32];
-        for (i = 0; i < ARRAY_SIZE(work->minedHash); i++)
-            be32enc(work->minedHash + i, work->minedHash[i]);
+       // for (i = 0; i < ARRAY_SIZE(work->minedHash); i++)
+         //   be32enc(work->minedHash + i, work->minedHash[i]);
 		bin2hex(minedHashHex, work->minedHash, 32);
 		memcpy(data_str + point_size, minedHashHex, 2*32);
 		point_size += 2*32;
