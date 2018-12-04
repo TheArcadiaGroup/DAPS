@@ -300,10 +300,15 @@ static char *lp_id;
 static inline void work_free(struct work *w)
 {
 	free(w->txs);
+	w->txs = NULL;
 	free(w->workid);
+	w->workid = NULL;
 	free(w->job_id);
+	w->job_id = NULL;
 	free(w->xnonce2);
+	w->xnonce2 = NULL;
 	free(w->pos_data);
+	w->pos_data = NULL;
 }
 
 static inline void work_copy(struct work *dest, const struct work *src)
