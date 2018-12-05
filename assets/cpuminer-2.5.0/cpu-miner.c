@@ -790,9 +790,18 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 		goto out;
 	}
 	pos_count = json_array_size(pos_audited);
-	pos_size = 0;
+    int n_pos = varint_encode(txc_vi, pos_count);
+    pos_size = pos_count * 40;
+    work->pos_data = malloc(2 * (n_pos + pos_size) + 1);
+    /*if (work->pos_data == NULL) {
+        applog(LOG_INFO, "%s: malloc pos data failed", __func__);
+    }*/
+    //applog(LOG_INFO, "%s: success work->pos_data malloc size = %d", __func__, 2 * (n_pos + pos_size) + 1);
+    //applog(LOG_INFO, "%s: copy txc_vi", __func__);
+    bin2hex(work->pos_data, txc_vi, n_pos);
+    //applog(LOG_INFO, "%s: strncpy", __func__);
     applog(LOG_INFO, "%s: pos_count = %d", __func__, pos_count);
-	char *pos_data = malloc(pos_count * 40 * 2 + 1); //the size of posinfo = 40 byte
+	//char *pos_data = malloc(pos_count * 40 * 2 + 1); //the size of posinfo = 40 byte
 	for (i = 0; i < pos_count; i++) {
 		const json_t *pos = json_array_get(pos_audited, i);
 		const char *pos_hex = json_string_value(json_object_get(pos, "data"));
@@ -800,22 +809,8 @@ static bool gpoabt_work_decode(const json_t *val, struct work *work)
 			applog(LOG_ERR, "JSON invalid PoS block info");
 			goto out;
 		}
-		strcat(pos_data, pos_hex);
-		pos_size += strlen(pos_hex) / 2;
+		strcat(work->pos_data, pos_hex);
 	}
-    //applog(LOG_INFO, "%s:pos_data:%s", __func__, pos_data);
-
-	int n_pos = varint_encode(txc_vi, pos_count);
-	work->pos_data = malloc(2 * (n_pos + pos_size) + 1);
-	/*if (work->pos_data == NULL) {
-        applog(LOG_INFO, "%s: malloc pos data failed", __func__);
-	}*/
-    //applog(LOG_INFO, "%s: success work->pos_data malloc size = %d", __func__, 2 * (n_pos + pos_size) + 1);
-    //applog(LOG_INFO, "%s: copy txc_vi", __func__);
-	bin2hex(work->pos_data, txc_vi, n_pos);
-    //applog(LOG_INFO, "%s: strncpy", __func__);
-	strcpy(work->pos_data + 2*n_pos, pos_data + 1);
-	free(pos_data);
 
 	/* build coinbase transaction */
     //applog(LOG_INFO, "%s: build coinbase transaction", __func__);
