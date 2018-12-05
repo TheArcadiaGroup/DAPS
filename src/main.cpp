@@ -30,6 +30,7 @@
 #include "ui_interface.h"
 #include "util.h"
 #include "utilmoneystr.h"
+#include "poa.h"
 
 #include "primitives/zerocoin.h"
 #include "libzerocoin/Denominations.h"
@@ -2170,8 +2171,29 @@ int64_t GetBlockValue(int nHeight) {
         nSubsidy = 60001 * COIN;
     } else {
         if (Params().NetworkID() == CBaseChainParams::TESTNET) {
-            if (nHeight < 200 && nHeight > 0)
+        	if (nHeight < 10) {
+        		nSubsidy = 10000000 * COIN;
+        	} else if (nHeight < 200 && nHeight > 0)
                 nSubsidy = 250000 * COIN;
+            else if(nHeight > 4800) {
+                if (nHeight % 60 == 0) {
+                    nSubsidy = 60 * 100 * COIN;
+                } else {
+                    nSubsidy = 950 * COIN;
+                }
+            } else if(nHeight > 4500 && nHeight <= 4800) {
+                if (nHeight % 60 == 0) {
+                    nSubsidy = 60 * 100 * COIN;
+                } else {
+                    nSubsidy = 1050 * COIN;
+                }
+            } else if(nHeight > 2990 && nHeight <= 4500 && nHeight % 60 == 0){
+                nSubsidy = 50 * 100 * COIN;
+            } else if(nHeight > Params().START_POA_BLOCK() && nHeight <= 2990 && nHeight % 60 == 0) {
+                nSubsidy = 550 * 59 * COIN;
+            } else {
+                nSubsidy = 550 * COIN;
+            }
         } else {
             nSubsidy = 1050 * COIN;
         }
@@ -2257,15 +2279,22 @@ CAmount GetSeeSaw(const CAmount& blockValue, int nMasternodeCount, int nHeight)
 int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount) {
     int64_t ret = 0;
 
+    int64_t blockValueForSeeSaw = blockValue - 50 * COIN;
+
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
         if (nHeight < 200)
             return 0;
+        if (nHeight < 4500)
+            ret = blockValue / 5;
+        else if (nHeight >= 4500) {
+            return  GetSeeSaw(blockValueForSeeSaw, nMasternodeCount, nHeight);
+        }
     }
 
     if (nHeight <= 10500) {
         ret = blockValue / 5;
     } else if (nHeight > Params().LAST_POW_BLOCK()) {
-        return GetSeeSaw(blockValue, nMasternodeCount, nHeight);
+        return GetSeeSaw(blockValueForSeeSaw, nMasternodeCount, nHeight);
     }
 
     return ret;
@@ -2419,7 +2448,7 @@ void static InvalidBlockFound(CBlockIndex *pindex, const CValidationState &state
 void
 UpdateCoins(const CTransaction &tx, CValidationState &state, CCoinsViewCache &inputs, CTxUndo &txundo, int nHeight) {
     // mark inputs spent
-    if (!tx.IsCoinBase() && !tx.IsZerocoinSpend()) {
+    if (!tx.IsCoinAudit() && !tx.IsCoinBase() && !tx.IsZerocoinSpend()) {
         txundo.vprevout.reserve(tx.vin.size());
         BOOST_FOREACH(
         const CTxIn &txin, tx.vin) {
@@ -2961,7 +2990,7 @@ bool RecalculateDAPSSupply(int nHeightStart) {
         CAmount nValueOut = 0;
         for (const CTransaction tx : block.vtx) {
             for (unsigned int i = 0; i < tx.vin.size(); i++) {
-                if (tx.IsCoinBase())
+                if (tx.IsCoinBase() || tx.IsCoinAudit())
                     break;
 
                 if (tx.vin[i].scriptSig.IsZerocoinSpend()) {
@@ -2989,7 +3018,7 @@ bool RecalculateDAPSSupply(int nHeightStart) {
         nSupplyPrev = pindex->nMoneySupply;
 
         // Add fraudulent funds to the supply and remove any recovered funds.
-        if (pindex->nHeight == Params().Zerocoin_Block_RecalculateAccumulators()) {
+        if (!block.IsProofOfAudit() && pindex->nHeight == Params().Zerocoin_Block_RecalculateAccumulators()) {
             PopulateInvalidOutPointMap();
             LogPrintf("%s : Original money supply=%s\n", __func__, FormatMoney(pindex->nMoneySupply));
 
@@ -3123,7 +3152,7 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
                                                         uint256("0x00000000000a4d0a398161ffc163c503763b1f4360639393e0e4c8e300e0caec")) ||
                            (pindex->nHeight == 91880 && pindex->GetBlockHash() ==
                                                         uint256("0x00000000000743f190a18c5577a3c2d2a1f610ae9601ac046a38084ccb7cd721")));
-    if (fEnforceBIP30) {
+    if (!block.IsPoABlockByVersion() && fEnforceBIP30) {
         BOOST_FOREACH(
         const CTransaction &tx, block.vtx) {
             const CCoins *coins = view.AccessCoins(tx.GetHash());
@@ -3164,16 +3193,16 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
 
         nInputs += tx.vin.size();
         nSigOps += GetLegacySigOpCount(tx);
-        if (nSigOps > nMaxBlockSigOps)
+        if (!block.IsPoABlockByVersion() && nSigOps > nMaxBlockSigOps)
             return state.DoS(100, error("ConnectBlock() : too many sigops"),
                              REJECT_INVALID, "bad-blk-sigops");
 
         //Temporarily disable zerocoin transactions for maintenance
-        if (block.nTime > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE) && !IsInitialBlockDownload() &&
+        if (!block.IsPoABlockByVersion() && block.nTime > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE) && !IsInitialBlockDownload() &&
             tx.ContainsZerocoins())
             return state.DoS(100, error("ConnectBlock() : zerocoin transactions are currently in maintenance mode"));
 
-        if (tx.IsZerocoinSpend()) {
+        if (!block.IsPoABlockByVersion() && tx.IsZerocoinSpend()) {
             int nHeightTx = 0;
             if (IsTransactionInChain(tx.GetHash(), nHeightTx)) {
                 //when verifying blocks on init, the blocks are scanned without being disconnected - prevent that from causing an error
@@ -3218,7 +3247,7 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
                 if (!zerocoinDB->WriteCoinSpend(spend.getCoinSerialNumber(), tx.GetHash()))
                     return error("%s : failed to record coin serial to database");
             }
-        } else if (!tx.IsCoinBase()) {
+        } else if (!block.IsPoABlockByVersion() && !tx.IsCoinBase()) {
             if (!view.HaveInputs(tx))
                 return state.DoS(100, error("ConnectBlock() : inputs missing/spent"),
                                  REJECT_INVALID, "bad-txns-inputs-missingorspent");
@@ -3331,7 +3360,7 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
     if (block.IsProofOfWork())
         nExpectedMint += nFees;
 
-    if (!IsBlockValueValid(block, nExpectedMint, pindex->nMint)) {
+    if (!block.IsPoABlockByVersion() && !IsBlockValueValid(block, nExpectedMint, pindex->nMint)) {
         return state.DoS(100,
                          error("ConnectBlock() : reward pays too much (actual=%s vs limit=%s)",
                                FormatMoney(pindex->nMint), FormatMoney(nExpectedMint)),
@@ -3339,7 +3368,7 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
     }
 
     // zerocoin accumulator: if a new accumulator checkpoint was generated, check that it is the correct value
-    if (!fVerifyingBlocks && pindex->nHeight >= Params().Zerocoin_StartHeight() && pindex->nHeight % 10 == 0) {
+    if (!block.IsPoABlockByVersion() && !fVerifyingBlocks && pindex->nHeight >= Params().Zerocoin_StartHeight() && pindex->nHeight % 10 == 0) {
         uint256 nCheckpointCalculated = 0;
 
         // if IDB, invalid outpoints must be calculated or else acc checkpoint will be incorrect
@@ -3379,7 +3408,7 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
             return state.DoS(100, error("ConnectBlock() : accumulator does not match calculated value"));
         }
     } else if (!fVerifyingBlocks) {
-        if (block.nAccumulatorCheckpoint != pindex->pprev->nAccumulatorCheckpoint)
+        if (!block.IsPoABlockByVersion() && block.nAccumulatorCheckpoint != pindex->pprev->nAccumulatorCheckpoint)
             return state.DoS(100,
                              error("ConnectBlock() : new accumulator checkpoint generated on a block that is not multiple of 10"));
     }
@@ -4078,7 +4107,7 @@ CBlockIndex *AddToBlockIndex(const CBlock &block) {
         pindexNew->bnChainTrust = (pindexNew->pprev ? pindexNew->pprev->bnChainTrust : 0) + pindexNew->GetBlockTrust();
 
         // ppcoin: compute stake entropy bit for stake modifier
-        if (!pindexNew->SetStakeEntropyBit(pindexNew->GetStakeEntropyBit()))
+        if (!block.IsPoABlockByVersion() && !pindexNew->SetStakeEntropyBit(pindexNew->GetStakeEntropyBit()))
             LogPrintf("AddToBlockIndex() : SetStakeEntropyBit() failed \n");
 
         // ppcoin: record proof-of-stake hash value
@@ -4091,11 +4120,11 @@ CBlockIndex *AddToBlockIndex(const CBlock &block) {
         // ppcoin: compute stake modifier
         uint64_t nStakeModifier = 0;
         bool fGeneratedStakeModifier = false;
-        if (!ComputeNextStakeModifier(pindexNew->pprev, nStakeModifier, fGeneratedStakeModifier))
+        if (!block.IsPoABlockByVersion() && !ComputeNextStakeModifier(pindexNew->pprev, nStakeModifier, fGeneratedStakeModifier))
             LogPrintf("AddToBlockIndex() : ComputeNextStakeModifier() failed \n");
         pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
         pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
-        if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
+        if (!block.IsPoABlockByVersion() && !CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
             LogPrintf("AddToBlockIndex() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n",
                       pindexNew->nHeight, boost::lexical_cast<std::string>(nStakeModifier));
     }
@@ -4247,13 +4276,26 @@ bool CheckBlockHeader(const CBlockHeader &block, CValidationState &state, bool f
         return state.DoS(50, error("CheckBlockHeader() : proof of work failed"),
                          REJECT_INVALID, "high-hash");
 
+    //PoA specific header checks
+    //Check that the header is valid for PoA mining, this check will use a PoA consensus rule
+    if (block.IsPoABlockByVersion() && !CheckPoABlockMinedHash(block)) {
+    	return state.DoS(50, error("CheckBlockHeader() : proof of work PoA failed"),
+    	                         REJECT_INVALID, "high-hash");
+    }
+
+    //Check that the PoA header contains valid for PoA previous block hash, this check will use a PoA consensus rule
+    if (block.IsPoABlockByVersion() && !CheckPrevPoABlockHash(block)) {
+        return state.DoS(50, error("CheckBlockHeader() : Previous PoA block hash is not matched => failed"),
+        	                         REJECT_INVALID, "high-hash");
+    }
+
     // Version 4 header must be used after Params().Zerocoin_StartHeight(). And never before.
-    if (block.GetBlockTime() > Params().Zerocoin_StartTime()) {
+    if (!block.IsPoABlockByVersion() && block.GetBlockTime() > Params().Zerocoin_StartTime()) {
         if (block.nVersion < Params().Zerocoin_HeaderVersion())
             return state.DoS(50, error("CheckBlockHeader() : block version must be above 4 after ZerocoinStartHeight"),
                              REJECT_INVALID, "block-version");
     } else {
-        if (block.nVersion >= Params().Zerocoin_HeaderVersion())
+        if (!block.IsPoABlockByVersion() && block.nVersion >= Params().Zerocoin_HeaderVersion())
             return state.DoS(50, error("CheckBlockHeader() : block version must be below 4 before ZerocoinStartHeight"),
                              REJECT_INVALID, "block-version");
     }
@@ -4269,14 +4311,27 @@ bool CheckBlock(const CBlock &block, CValidationState &state, bool fCheckPOW, bo
     if (!CheckBlockHeader(block, state, block.IsProofOfWork()))
         return state.DoS(100, error("CheckBlock() : CheckBlockHeader failed"),
                          REJECT_INVALID, "bad-header", true);
-
+    LogPrintf("%s:Time stamp", __func__);
     // Check timestamp
-    LogPrint("debug", "%s: block=%s  is proof of stake=%d\n", __func__, block.GetHash().ToString().c_str(),
-             block.IsProofOfStake());
-    if (block.GetBlockTime() >
+    LogPrint("debug", "%s: block=%s  is proof of stake=%d, is proof of audit=%d\n", __func__, block.GetHash().ToString().c_str(),
+             block.IsProofOfStake(), block.IsProofOfAudit());
+    if (!block.IsPoABlockByVersion() && block.GetBlockTime() >
         GetAdjustedTime() + (block.IsProofOfStake() ? 180 : 7200)) // 3 minute future drift for PoS
         return state.Invalid(error("CheckBlock() : block timestamp too far in the future"),
                              REJECT_INVALID, "time-too-new");
+
+    LogPrintf("%s:PoA block time", __func__);
+    //Check PoA block time
+    if (block.IsPoABlockByVersion() && !CheckPoAblockTime(block)) {
+    	return state.Invalid(error("CheckBlock() : Time elapsed between two PoA blocks is too short"),
+    	                             REJECT_INVALID, "time-too-new");
+    }
+
+    //Check PoA block not auditing PoS blocks audited by its previous PoA block
+    if (block.IsPoABlockByVersion() && !CheckPoABlockNotAuditingOverlap(block)) {
+    	return state.Invalid(error("CheckBlock() : PoA block auditing PoS blocks previously audited by its parent"),
+    	    	                             REJECT_INVALID, "overlap-audit");
+    }
 
     // Check the merkle root.
     if (fCheckMerkleRoot) {
@@ -4294,6 +4349,21 @@ bool CheckBlock(const CBlock &block, CValidationState &state, bool fCheckPOW, bo
                              REJECT_INVALID, "bad-txns-duplicate", true);
     }
 
+    //Proof of Audit: Check audited PoS blocks infor merkle root
+    {
+    	bool fMutated;
+    	if (!CheckPoAMerkleRoot(block, &fMutated)) {
+    		return state.DoS(100, error("CheckBlock() : hashPoAMerkleRoot mismatch"),
+    		                             REJECT_INVALID, "bad-txnmrklroot", true);
+    	}
+    	// Check for PoA merkle tree malleability (CVE-2012-2459): repeating sequences
+		// of transactions in a block without affecting the PoA merkle root of a block,
+		// while still invalidating it.
+		if (fMutated)
+			return state.DoS(100, error("CheckBlock() : duplicate PoS block info"),
+							 REJECT_INVALID, "bad-txns-duplicate", true);
+    }
+
     // All potential-corruption validation must be done before we do any
     // transaction validation, as otherwise we may mark the header as invalid
     // because we receive the wrong transactions for it.
@@ -4306,7 +4376,7 @@ bool CheckBlock(const CBlock &block, CValidationState &state, bool fCheckPOW, bo
                          REJECT_INVALID, "bad-blk-length");
 
     // First transaction must be coinbase, the rest must not be
-    if (block.vtx.empty() || !block.vtx[0].IsCoinBase())
+    if ((!block.IsPoABlockByVersion()) && (block.vtx.empty() || !block.vtx[0].IsCoinBase()))
         return state.DoS(100, error("CheckBlock() : first tx is not coinbase"),
                          REJECT_INVALID, "bad-cb-missing");
     for (unsigned int i = 1; i < block.vtx.size(); i++)
@@ -4332,19 +4402,34 @@ bool CheckBlock(const CBlock &block, CValidationState &state, bool fCheckPOW, bo
      */
     if (block.IsProofOfAudit()) {
         // Coinbase output should be empty if proof-of-audit block
-        if (block.vtx[0].vout.size() != 1 || !block.vtx[0].vout[0].IsEmpty())
-            return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-audit block"));
+    	//Attension: This condition is now not true because PoA blocks contain only a coinbase transaction
+
+    	//if (block.vtx[0].vout.size() != 1 || !block.vtx[0].vout[0].IsEmpty())
+        //    return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-audit block"));
 
         // Second transaction must be coinstake, the rest must not be
-        if (block.vtx.empty() || !block.vtx[1].IsCoinStake())
-            return state.DoS(100, error("CheckBlock() : second tx is not coinaudit"));
-        for (unsigned int i = 2; i < block.vtx.size(); i++)
-            if (block.vtx[i].IsCoinStake())
-                return state.DoS(100, error("CheckBlock() : more than one coinaudit"));
+        //if (block.vtx.empty() || !block.vtx[1].IsCoinStake())
+        //    return state.DoS(100, error("CheckBlock() : second tx is not coinaudit"));
+        //for (unsigned int i = 2; i < block.vtx.size(); i++)
+        //    if (block.vtx[i].IsCoinStake())
+        //        return state.DoS(100, error("CheckBlock() : more than one coinaudit"));
+
+        //Check PoA consensus rules
+        if (!CheckPoAContainRecentHash(block)) {
+        	return state.DoS(100, error("CheckBlock() : PoA block should contain only non-audited recent PoS blocks"));
+        }
+
+        if (!CheckNumberOfAuditedPoSBlocks(block)) {
+        	return state.DoS(100, error("CheckBlock() : A PoA block should audit at least 59 PoS blocks"));
+        }
+
+        if (!CheckPoABlockNotContainingPoABlockInfo(block)) {
+        	return state.DoS(100, error("CheckBlock() : A PoA block should not audit any existing PoA blocks"));
+        }
     }
 
     // ----------- swiftTX transaction scanning -----------
-    if (IsSporkActive(SPORK_3_SWIFTTX_BLOCK_FILTERING)) {
+    if (!block.IsPoABlockByVersion() && IsSporkActive(SPORK_3_SWIFTTX_BLOCK_FILTERING)) {
         BOOST_FOREACH(
         const CTransaction &tx, block.vtx) {
             if (!tx.IsCoinBase()) {
@@ -4402,12 +4487,12 @@ bool CheckBlock(const CBlock &block, CValidationState &state, bool fCheckPOW, bo
     bool fZerocoinActive = block.GetBlockTime() > Params().Zerocoin_StartTime();
     vector <CBigNum> vBlockSerials;
     for (const CTransaction &tx : block.vtx) {
-        if (!CheckTransaction(tx, fZerocoinActive,
+        if (!block.IsPoABlockByVersion() && !CheckTransaction(tx, fZerocoinActive,
                               chainActive.Height() + 1 >= Params().Zerocoin_Block_EnforceSerialRange(), state))
             return error("CheckBlock() : CheckTransaction failed");
 
         // double check that there are no double spent zDaps spends in this block
-        if (tx.IsZerocoinSpend()) {
+        if (!block.IsPoABlockByVersion() && tx.IsZerocoinSpend()) {
             for (const CTxIn txIn : tx.vin) {
                 if (txIn.scriptSig.IsZerocoinSpend()) {
                     libzerocoin::CoinSpend spend = TxInToZerocoinSpend(txIn);
@@ -4466,22 +4551,6 @@ bool CheckWork(const CBlock block, CBlockIndex *const pindexPrev) {
             mapProofOfStake.insert(make_pair(hash, hashProofOfStake));
     }
 
-    /**
-     * @todo update "mapProofOfStake"
-     * update CheckProofOfStake => CheckProofOfAudit
-     */
-    if (block.IsProofOfAudit()) {
-        uint256 hashProofOfAudit;
-        uint256 hash = block.GetHash();
-
-        if (!CheckProofOfStake(block, hashProofOfAudit)) {
-            LogPrintf("WARNING: ProcessBlock(): check proof-of-audit failed for block %s\n", hash.ToString().c_str());
-            return false;
-        }
-        if (!mapProofOfStake.count(hash)) // add to mapProofOfStake
-            mapProofOfStake.insert(make_pair(hash, hashProofOfAudit));
-    }
-
     return true;
 }
 
@@ -4502,7 +4571,7 @@ bool ContextualCheckBlockHeader(const CBlockHeader &block, CValidationState &sta
                          error("%s: forked chain older than max reorganization depth (height %d)", __func__, nHeight));
 
     // Check timestamp against prev
-    if (block.GetBlockTime() <= pindexPrev->GetMedianTimePast()) {
+    if (!block.IsPoABlockByVersion() && block.GetBlockTime() <= pindexPrev->GetMedianTimePast()) {
         LogPrintf("Block time = %d , GetMedianTimePast = %d \n", block.GetBlockTime(), pindexPrev->GetMedianTimePast());
         return state.Invalid(error("%s : block's timestamp is too early", __func__),
                              REJECT_INVALID, "time-too-old");
@@ -4558,14 +4627,14 @@ bool ContextualCheckBlock(const CBlock &block, CValidationState &state, CBlockIn
     // Check that all transactions are finalized
     BOOST_FOREACH(
     const CTransaction &tx, block.vtx)
-    if (!IsFinalTx(tx, nHeight, block.GetBlockTime())) {
+    if (!block.IsProofOfAudit() && !IsFinalTx(tx, nHeight, block.GetBlockTime())) {
         return state.DoS(10, error("%s : contains a non-final transaction", __func__), REJECT_INVALID,
                          "bad-txns-nonfinal");
     }
 
     // Enforce block.nVersion=2 rule that the coinbase starts with serialized block height
     // if 750 of the last 1,000 blocks are version 2 or greater (51/100 if testnet):
-    if (block.nVersion >= 2 &&
+    if (!block.IsProofOfAudit() && block.nVersion >= 2 &&
         CBlockIndex::IsSuperMajority(2, pindexPrev, Params().EnforceBlockUpgradeMajority())) {
         CScript expect = CScript() << nHeight;
         if (block.vtx[0].vin[0].scriptSig.size() < expect.size() ||
@@ -4780,7 +4849,7 @@ bool ProcessNewBlock(CValidationState &state, CNode *pfrom, CBlock *pblock, CDis
     int nMints = 0;
     int nSpends = 0;
     for (const CTransaction tx : pblock->vtx) {
-        if (tx.ContainsZerocoins()) {
+        if (!pblock->IsPoABlockByVersion() && tx.ContainsZerocoins()) {
             for (const CTxIn in : tx.vin) {
                 if (in.scriptSig.IsZerocoinSpend())
                     nSpends++;
@@ -4801,7 +4870,7 @@ bool ProcessNewBlock(CValidationState &state, CNode *pfrom, CBlock *pblock, CDis
     //    return error("ProcessNewBlock() : duplicate proof-of-stake (%s, %d) for block %s", pblock->GetProofOfStake().first.ToString().c_str(), pblock->GetProofOfStake().second, pblock->GetHash().ToString().c_str());
 
     // NovaCoin: check proof-of-stake block signature
-    if (!pblock->CheckBlockSignature())
+    if (!pblock->IsPoABlockByVersion() && !pblock->CheckBlockSignature())
         return error("ProcessNewBlock() : bad proof-of-stake block signature");
 
     if (pblock->GetHash() != Params().HashGenesisBlock() && pfrom != NULL) {

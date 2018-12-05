@@ -94,6 +94,60 @@ void UpdateTime(CBlockHeader* pblock, const CBlockIndex* pindexPrev)
         pblock->nBits = GetNextWorkRequired(pindexPrev, pblock);
 }
 
+uint32_t GetListOfPoSInfo(uint32_t currentHeight, std::vector<PoSBlockSummary>& audits) {
+	//A PoA block should be mined only after at least 59 PoS blocks have not been audited
+	//Look for the previous PoA block
+	int nloopIdx = currentHeight;
+	while (nloopIdx >= Params().START_POA_BLOCK()) {
+		if (chainActive[nloopIdx]->GetBlockHeader().IsPoABlockByVersion()) {
+			break;
+		}
+		nloopIdx--;
+	}
+    if (nloopIdx <= Params().START_POA_BLOCK()) {
+        //this is the first PoA block ==> take all PoS blocks from LAST_POW_BLOCK up to currentHeight - 59 inclusive
+        for (uint32_t i = Params().LAST_POW_BLOCK() + 1; i <= Params().LAST_POW_BLOCK() + 59; i++) {
+            PoSBlockSummary pos;
+            pos.hash = chainActive[i]->GetBlockHash();
+            pos.nTime = chainActive[i]->GetBlockHeader().nTime;
+            pos.height = i;
+            audits.push_back(pos);
+        }
+    } else {
+        //Find the previous PoA block
+        uint32_t start = nloopIdx;
+        if (start > Params().START_POA_BLOCK()) {
+            CBlockIndex* pblockindex = chainActive[start];
+            CBlock block;
+            if (!ReadBlockFromDisk(block, pblockindex))
+                throw runtime_error("Can't read block from disk");
+            PoSBlockSummary back = block.posBlocksAudited.back();
+            uint32_t lastAuditedHeight = back.height;
+            uint32_t nextAuditHeight = lastAuditedHeight + 1;
+            
+            while (nextAuditHeight <= currentHeight) {
+                CBlockIndex* posIndex = chainActive[nextAuditHeight];
+                CBlock posBlock;
+                if (!ReadBlockFromDisk(posBlock, posIndex))
+                    throw runtime_error("Can't read block from disk");
+                if (posBlock.IsProofOfStake()) {
+                    PoSBlockSummary pos;
+                    pos.hash = chainActive[nextAuditHeight]->GetBlockHash();
+                    pos.nTime = chainActive[nextAuditHeight]->GetBlockHeader().nTime;
+                    pos.height = nextAuditHeight;
+                    audits.push_back(pos);
+                }
+                //The current number of PoS blocks audited in a PoA block is changed from 59 to 61
+                if (audits.size() == 61) {
+                    break;
+                }
+                nextAuditHeight++;
+            }
+        }
+    }
+    return nloopIdx;
+}
+
 CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, bool fProofOfStake)
 {
     CReserveKey reservekey(pwallet);
@@ -102,6 +156,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     unique_ptr<CBlockTemplate> pblocktemplate(new CBlockTemplate());
     if (!pblocktemplate.get())
         return NULL;
+
     CBlock* pblock = &pblocktemplate->block; // pointer for convenience
 
     // -regtest only: allow overriding block.nVersion with
@@ -143,23 +198,12 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         bool fStakeFound = false;
         if (nSearchTime >= nLastCoinStakeSearchTime) {
             unsigned int nTxNewTime = 0;
-            // POA miner
-            if (pindexPrev->nHeight % 60 == 0 && pindexPrev->nHeight > Params().START_POA_BLOCK()){
-                CMutableTransaction txCoinAudit;
-                if (pwallet->CreateCoinAudit(*pwallet, pblock->nBits, nSearchTime - nLastCoinStakeSearchTime, txCoinAudit, nTxNewTime)) {
-                    pblock->nTime = nTxNewTime;
-                    pblock->vtx[0].vout[0].SetEmpty();
-                    pblock->vtx.push_back(CTransaction(txCoinAudit));
-                    fStakeFound = true;
-                }
-            } else { // POS miner
-                CMutableTransaction txCoinStake;
-                if (pwallet->CreateCoinStake(*pwallet, pblock->nBits, nSearchTime - nLastCoinStakeSearchTime, txCoinStake, nTxNewTime)) {
-                    pblock->nTime = nTxNewTime;
-                    pblock->vtx[0].vout[0].SetEmpty();
-                    pblock->vtx.push_back(CTransaction(txCoinStake));
-                    fStakeFound = true;
-                }
+            CMutableTransaction txCoinStake;
+            if (pwallet->CreateCoinStake(*pwallet, pblock->nBits, nSearchTime - nLastCoinStakeSearchTime, txCoinStake, nTxNewTime)) {
+                pblock->nTime = nTxNewTime;
+                pblock->vtx[0].vout[0].SetEmpty();
+                pblock->vtx.push_back(CTransaction(txCoinStake));
+                fStakeFound = true;
             }
 
             nLastCoinStakeSearchInterval = nSearchTime - nLastCoinStakeSearchTime;
@@ -427,6 +471,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         // Compute final coinbase transaction.
         pblock->vtx[0].vin[0].scriptSig = CScript() << nHeight << OP_0;
         if (!fProofOfStake) {
+        	pblock->vtx[0].vout[0].nValue += nFees * COIN;
             pblock->vtx[0] = txNew;
             pblocktemplate->vTxFees[0] = -nFees;
         }
@@ -453,6 +498,95 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     }
 
     return pblocktemplate.release();
+}
+
+CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, CWallet* pwallet) {
+	CReserveKey reservekey(pwallet);
+
+	if (chainActive.Tip()->nHeight < Params().START_POA_BLOCK()) {
+		return NULL;
+	}
+
+	// Create new block
+	unique_ptr<CBlockTemplate> pblocktemplate(new CBlockTemplate());
+	if (!pblocktemplate.get())
+		return NULL;
+	CBlock* pblock = &pblocktemplate->block; // pointer for convenience
+
+	pblock->SetNull();
+	// Create coinbase tx
+	CMutableTransaction txNew;
+	txNew.vin.resize(1);
+	txNew.vin[0].prevout.SetNull();
+	txNew.vout.resize(1);
+	//Value of this vout coinbase will be computed based on the number of audited PoS blocks
+	//This will be computed later
+	txNew.vout[0].scriptPubKey = scriptPubKeyIn;
+
+	CBlockIndex* prev = chainActive.Tip();
+
+	pblock->vtx.push_back(txNew);
+	pblocktemplate->vTxFees.push_back(-1);   // updated at end
+	pblocktemplate->vTxSigOps.push_back(-1); // updated at end
+
+	boost::this_thread::interruption_point();
+	pblock->nTime = GetAdjustedTime();
+	CBlockIndex* pindexPrev = chainActive.Tip();
+	pblock->nBits = GetNextWorkRequired(pindexPrev, pblock);
+
+	uint32_t nprevPoAHeight;
+
+
+	nprevPoAHeight = GetListOfPoSInfo(pindexPrev->nHeight, pblock->posBlocksAudited);
+	if (pblock->posBlocksAudited.size() == 0) {
+		return NULL;
+	}
+	// Set block version to differentiate PoA blocks from PoS blocks
+	pblock->SetVersionPoABlock();
+	pblock->nTime = GetAdjustedTime();
+
+	//compute PoA block reward
+	CAmount nReward = pblock->posBlocksAudited.size() * 100 * COIN;
+	pblock->vtx[0].vout[0].nValue = nReward;
+
+	//Comment out all previous code, because a PoA block does not verify any transaction, except reward transactions to miners
+	// No need to collect memory pool transactions into the block
+	const int nHeight = pindexPrev->nHeight + 1;
+
+	// Fill in header
+	pblock->hashPrevBlock = pindexPrev->GetBlockHash();
+	if (nprevPoAHeight >= Params().START_POA_BLOCK()) {
+		pblock->hashPrevPoABlock = *(chainActive[nprevPoAHeight]->phashBlock);
+	} else {
+		pblock->hashPrevPoABlock.SetNull();
+	}
+
+	//ATTENTION: This is used for setting always the easiest difficulty for PoA miners
+	//pblock->nBits = 0x008000;
+	pblock->nBits = GetNextWorkRequired(pindexPrev, pblock);
+	pblock->nNonce = 0;
+
+	pblocktemplate->vTxSigOps[0] = GetLegacySigOpCount(pblock->vtx[0]);
+
+	// Compute final coinbase transaction.
+	CMutableTransaction txCoinbase(pblock->vtx[0]);
+	txCoinbase.vin[0].scriptSig = (CScript() << nHeight << CScriptNum(1)) + COINBASE_FLAGS;
+	assert(txCoinbase.vin[0].scriptSig.size() <= 100);
+
+	pblock->vtx[0] = txCoinbase;
+	pblock->hashMerkleRoot = pblock->BuildMerkleTree();
+
+    bool fMutated;
+    pblock->hashPoAMerkleRoot = pblock->BuildPoAMerkleTree();
+	pblock->minedHash = pblock->ComputeMinedHash();
+//        CValidationState state;
+//        if (!TestBlockValidity(state, *pblock, pindexPrev, false, false)) {
+//            LogPrintf("CreateNewBlock() : TestBlockValidity failed\n");
+//            mempool.clear();
+//            return NULL;
+//        }
+
+	return pblocktemplate.release();
 }
 
 void IncrementExtraNonce(CBlock* pblock, CBlockIndex* pindexPrev, unsigned int& nExtraNonce)
@@ -489,6 +623,16 @@ CBlockTemplate* CreateNewBlockWithKey(CReserveKey& reservekey, CWallet* pwallet,
 
     CScript scriptPubKey = CScript() << ToByteVector(pubkey) << OP_CHECKSIG;
     return CreateNewBlock(scriptPubKey, pwallet, fProofOfStake);
+}
+
+CBlockTemplate* CreateNewPoABlockWithKey(CReserveKey& reservekey, CWallet* pwallet)
+{
+    CPubKey pubkey;
+    if (!reservekey.GetReservedKey(pubkey))
+        return NULL;
+
+    CScript scriptPubKey = CScript() << ToByteVector(pubkey) << OP_CHECKSIG;
+    return CreateNewPoABlock(scriptPubKey, pwallet);
 }
 
 bool ProcessBlockFound(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
@@ -528,7 +672,7 @@ bool fGenerateBitcoins = false;
 
 // ***TODO*** that part changed in bitcoin, we are using a mix with old one here for now
 
-void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
+void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
 {
     LogPrintf("DAPScoinMiner started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
@@ -699,6 +843,40 @@ void static ThreadBitcoinMiner(void* parg)
     }
 
     LogPrintf("ThreadBitcoinMiner exiting\n");
+}
+
+void static ThreadDapscoinMiner(void* parg)
+{
+    boost::this_thread::interruption_point();
+    CWallet* pwallet = (CWallet*)parg;
+    try {
+    	//create a PoA after every 3 minute if enough PoS blocks created
+    	while (true) {
+    		boost::this_thread::sleep_for(boost::chrono::milliseconds(180 * 1000));
+    		//TODO: call CreateNewPoABlock function to create PoA blocks
+    	}
+        boost::this_thread::interruption_point();
+    } catch (std::exception& e) {
+        LogPrintf("ThreadBitcoinMiner() exception");
+    } catch (...) {
+        LogPrintf("ThreadBitcoinMiner() exception");
+    }
+
+    LogPrintf("ThreadBitcoinMiner exiting\n");
+}
+
+void GeneratePoADapscoin(CWallet* pwallet, int period)
+{
+    static boost::thread_group* minerThreads = NULL;
+
+    if (minerThreads != NULL) {
+        minerThreads->interrupt_all();
+        delete minerThreads;
+        minerThreads = NULL;
+    }
+
+    minerThreads = new boost::thread_group();
+    minerThreads->create_thread(boost::bind(&ThreadDapscoinMiner, pwallet));
 }
 
 void GenerateBitcoins(bool fGenerate, CWallet* pwallet, int nThreads)

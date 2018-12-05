@@ -11,6 +11,7 @@
 #include "script/script.h"
 #include "serialize.h"
 #include "uint256.h"
+#include <iostream>
 
 #include <list>
 
@@ -259,11 +260,14 @@ public:
 
     bool IsZerocoinSpend() const
     {
-        return (vin.size() > 0 && vin[0].prevout.IsNull() && vin[0].scriptSig[0] == OP_ZEROCOINSPEND);
+        return !IsCoinAudit() && (vin.size() > 0 && vin[0].prevout.IsNull() && vin[0].scriptSig[0] == OP_ZEROCOINSPEND);
     }
 
     bool IsZerocoinMint() const
     {
+    	if (IsCoinAudit()) {
+    		return false;
+    	}
         for(const CTxOut& txout : vout) {
             if (txout.scriptPubKey.IsZerocoinMint())
                 return true;
@@ -273,7 +277,7 @@ public:
 
     bool ContainsZerocoins() const
     {
-        return IsZerocoinSpend() || IsZerocoinMint();
+        return !IsCoinAudit() && (IsZerocoinSpend() || IsZerocoinMint());
     }
 
     CAmount GetZerocoinMinted() const;
@@ -286,6 +290,11 @@ public:
     bool IsCoinBase() const
     {
         return (vin.size() == 1 && vin[0].prevout.IsNull() && !ContainsZerocoins());
+    }
+
+    bool IsCoinAudit() const
+    {
+        return (vin.size() == 1 && vin[0].prevout.IsNull());
     }
 
     bool IsCoinStake() const

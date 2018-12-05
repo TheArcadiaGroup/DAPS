@@ -13,11 +13,14 @@
 #include "masternodeman.h"
 #include "rpcserver.h"
 #include "utilmoneystr.h"
+#include "spork.h"
 
 #include <boost/tokenizer.hpp>
 
 #include <fstream>
 using namespace json_spirit;
+
+extern CAmount GetSeeSaw(const CAmount& blockValue, int nMasternodeCount, int nHeight);
 
 void SendMoney(const CTxDestination& address, CAmount nValue, CWalletTx& wtxNew, AvailableCoinsType coin_type = ALL_COINS)
 {
@@ -342,7 +345,7 @@ Value masternodeconnect(const Array& params, bool fHelp)
 
 Value getmasternodecount (const Array& params, bool fHelp)
 {
-    if (fHelp || (params.size() > 0))
+    if (fHelp)
         throw runtime_error(
             "getmasternodecount\n"
             "\nGet masternode count values\n"
@@ -906,5 +909,100 @@ Value getmasternodescores (const Array& params, bool fHelp)
             obj.push_back(Pair(strprintf("%d", nHeight), pBestMasternode->vin.prevout.hash.ToString().c_str()));
     }
 
+    return obj;
+}
+
+Value getcurrentseesawreward (const Array& params, bool fHelp)
+{
+    if (fHelp)
+        throw runtime_error(
+            "getcurrentseesawratio\n"
+            "\nPrint Current See Saw Reward Ratio\n"
+
+            "\nNo Arguments needed\n"
+
+            "\nResult:\n"
+            "{\n"
+            "  SeeSaw reward ratio:  Masternode-Staking node : xx-xx\n"
+            "  ,...\n"
+            "}\n"
+            "\nExamples:\n" +
+            HelpExampleCli("getcurrentseesawratio", "") + HelpExampleRpc("getcurrentseesawratio", ""));
+
+    Object obj;
+    int ipv4 = 0, ipv6 = 0, onion = 0;
+    mnodeman.CountNetworks(ActiveProtocol(), ipv4, ipv6, onion);
+    int nblockHeight = chainActive.Tip()->nHeight;
+    CAmount nReward = GetBlockValue(nblockHeight);
+
+    CAmount masternodeReward = GetSeeSaw(nReward, 0, nblockHeight);
+    CAmount stakingnodeReward = nReward - masternodeReward;
+    obj.push_back(Pair("Masternode Reward", ValueFromAmount(masternodeReward)));
+    obj.push_back(Pair("Staking Reward", ValueFromAmount(stakingnodeReward)));
+    obj.push_back(Pair("Total Reward", ValueFromAmount(nReward)));
+    return obj;
+}
+
+Value getseesawrewardwithheight (const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() > 1)
+        throw runtime_error(
+            "getseesawrewardwithheight\n"
+            "\nPrint See Saw Reward With Specific block height\n"
+
+            "\nArguments:\n"
+            "1. Height of block\n"
+            "\nResult:\n"
+            "{\n"
+            "  SeeSaw reward:  Masternode-Staking node : xx-xx\n"
+            "  ,...\n"
+            "}\n"
+            "\nExamples:\n" +
+            HelpExampleCli("getseesawrewardwithheight", "") + HelpExampleRpc("getseesawrewardwithheight", ""));
+
+    int nblockHeight = chainActive.Tip()->nHeight;;
+    if (params.size() == 1) {
+        nblockHeight = params[0].get_int();
+    }
+    Object obj;
+    int ipv4 = 0, ipv6 = 0, onion = 0;
+    mnodeman.CountNetworks(ActiveProtocol(), ipv4, ipv6, onion);
+    CAmount nReward = GetBlockValue(nblockHeight);
+
+    CAmount masternodeReward = GetSeeSaw(nReward, 0, nblockHeight);
+    CAmount stakingnodeReward = nReward - masternodeReward;
+    obj.push_back(Pair("Block Height", nblockHeight));
+    obj.push_back(Pair("Masternode Reward", ValueFromAmount(masternodeReward)));
+    obj.push_back(Pair("Staking Reward", ValueFromAmount(stakingnodeReward)));
+    obj.push_back(Pair("Total Reward", ValueFromAmount(nReward)));
+    return obj;
+}
+
+Value getseesawrewardratio (const Array& params, bool fHelp)
+{
+    if (fHelp)
+        throw runtime_error(
+            "getseesawrewardratio\n"
+            "\nPrint See Saw Reward Ratio\n"
+
+            "\nNo Arguments:\n"
+            "\nResult:\n"
+            "{\n"
+            "  SeeSaw reward Ratio:  Masternode-Staking node : xx-xx\n"
+            "  ,...\n"
+            "}\n"
+            "\nExamples:\n" +
+            HelpExampleCli("getseesawrewardratio", "") + HelpExampleRpc("getseesawrewardratio", ""));
+
+    int nblockHeight = chainActive.Tip()->nHeight;;
+    Object obj;
+    int ipv4 = 0, ipv6 = 0, onion = 0;
+    mnodeman.CountNetworks(ActiveProtocol(), ipv4, ipv6, onion);
+    CAmount nReward = GetBlockValue(nblockHeight);
+
+    CAmount masternodeReward = GetSeeSaw(nReward, 0, nblockHeight);
+    int masternodeRatio = (masternodeReward * 100)/nReward;
+    obj.push_back(Pair("Masternode Reward Ratio", masternodeRatio));
+    obj.push_back(Pair("Staking Reward Ratio", 100 - masternodeRatio));
     return obj;
 }

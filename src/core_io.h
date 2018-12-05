@@ -13,6 +13,7 @@ class CScript;
 class CTransaction;
 class uint256;
 class UniValue;
+class PoSBlockSummary;
 
 // core_read.cpp
 extern CScript ParseScript(std::string s);
@@ -29,5 +30,7 @@ extern void ScriptPubKeyToUniv(const CScript& scriptPubKey,
     UniValue& out,
     bool fIncludeHex);
 extern void TxToUniv(const CTransaction& tx, const uint256& hashBlock, UniValue& entry);
+
+extern std::string EncodeHexPoSBlockSummary(const PoSBlockSummary& pos);
 
 #endif // BITCOIN_CORE_IO_H

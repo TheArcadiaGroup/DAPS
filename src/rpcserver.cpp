@@ -285,6 +285,8 @@ static const CRPCCommand vRPCCommands[] =
 
         /* Mining */
         {"mining", "getblocktemplate", &getblocktemplate, true, false, false},
+		{"mining", "getpoablocktemplate", &getpoablocktemplate, true, false, false},
+        {"mining", "setminingnbits", &setminingnbits, true, false, false},
         {"mining", "getmininginfo", &getmininginfo, true, false, false},
         {"mining", "getnetworkhashps", &getnetworkhashps, true, false, false},
         {"mining", "prioritisetransaction", &prioritisetransaction, true, false, false},
@@ -296,6 +298,7 @@ static const CRPCCommand vRPCCommands[] =
         {"generating", "getgenerate", &getgenerate, true, false, false},
         {"generating", "gethashespersec", &gethashespersec, true, false, false},
         {"generating", "setgenerate", &setgenerate, true, true, false},
+		{"generating", "generatepoa", &generatepoa, true, true, false},
 #endif
 
         /* Raw transactions */
@@ -322,6 +325,9 @@ static const CRPCCommand vRPCCommands[] =
         {"dapscoin", "masternode", &masternode, true, true, false},
         {"dapscoin", "listmasternodes", &listmasternodes, true, true, false},
         {"dapscoin", "getmasternodecount", &getmasternodecount, true, true, false},
+        {"dapscoin", "getcurrentseesawreward", &getcurrentseesawreward, true, true, false},
+        {"dapscoin", "getseesawrewardratio", &getseesawrewardratio, true, true, false},
+        {"dapscoin", "getseesawrewardwithheight", &getseesawrewardwithheight, true, true, false},
         {"dapscoin", "masternodeconnect", &masternodeconnect, true, true, false},
         {"dapscoin", "masternodecurrent", &masternodecurrent, true, true, false},
         {"dapscoin", "masternodedebug", &masternodedebug, true, true, false},
@@ -874,6 +880,9 @@ void JSONRequest::parse(const Value& valRequest)
     strMethod = valMethod.get_str();
     if (strMethod != "getblocktemplate")
         LogPrint("rpc", "ThreadRPCServer method=%s\n", SanitizeString(strMethod));
+    if (strMethod != "getpoablocktemplate") {
+    	LogPrint("rpc", "ThreadRPCServer method=%s\n", SanitizeString(strMethod));
+    }
 
     // Parse params
     Value valParams = find_value(request, "params");

@@ -292,7 +292,16 @@ elif cmd == "setgenerate":
             print access.setgenerate(gen)
     except:
         print "\n---An error occurred---\n"
-
+elif cmd == "generatepoa":
+	try:
+		gen= raw_input("Generate? (true/false): ")
+        cpus = raw_input("Max processors/cores (-1 for unlimited, optional):")
+        try:
+            print access.generatepoa(gen, cpus)
+        except:
+            print access.generatepoa(gen)
+    except:
+        print "\n---An error occurred---\n"
 elif cmd == "settxfee":
     try:
         amt = raw_input("Amount:")

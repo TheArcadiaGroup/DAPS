@@ -531,7 +531,7 @@ void CBudgetManager::FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, b
             LogPrint("masternode","CBudgetManager::FillBlockPayee - No Budget payment, nHighestCount = %d\n", nHighestCount);
         }
     } else {
-        //miners get the full amount on these blocks
+        //miners get the full amount on these blocks and transaction fee
         txNew.vout[0].nValue = blockValue;
 
         if (nHighestCount > 0) {

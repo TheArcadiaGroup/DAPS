@@ -1,0 +1,78 @@
+{
+  "name": "explorer",
+  "version": "1.7.1",
+  "lockfileVersion": 1,
+  "requires": true,
+  "dependencies": {
+    "chaincoin-node-api": {
+      "version": "1.0.5",
+      "resolved": "https://registry.npmjs.org/chaincoin-node-api/-/chaincoin-node-api-1.0.5.tgz",
+      "requires": {
+        "express": "4.16.3"
+      },
+      "dependencies": {
+        "express": {
+          "version": "4.16.3",
+          "resolved": "http://registry.npmjs.org/express/-/express-4.16.3.tgz"
+        }
+      }
+    },
+    "jade": {
+      "version": "1.3.1",
+      "resolved": "https://registry.npmjs.org/jade/-/jade-1.3.1.tgz",
+      "dependencies": {
+        "uglify-js": {
+          "version" : "3.4.9",
+          "resolved": "http://registry.npmjs.org/uglify-js/-/uglify-js-3.4.9.tgz"
+        },
+        "constantinople": {
+          "version": "2.0.1",
+          "resolved": "https://registry.npmjs.org/constantinople/-/constantinople-2.0.1.tgz",
+          "requires": {
+            "uglify-js": "3.4.9"
+          }
+        },
+        "with": {
+          "version":"6.0.0",
+          "resolved": "https://registry.npmjs.org/with/-/with-6.0.0.tgz",
+          "requires": {
+            "uglify-js": "3.4.9"
+          }
+        }
+      }
+    },
+    "transformers": {
+      "version": "2.1.0",
+      "resolved": "https://registry.npmjs.org/transformers/-/transformers-2.1.0.tgz",
+      "requires": {
+        "uglify-js": "3.4.9"
+      },
+      "dependencies": {
+        "uglify-js": {
+          "version" : "3.4.9",
+          "resolved": "http://registry.npmjs.org/uglify-js/-/uglify-js-3.4.9.tgz"
+        }
+      }
+    },
+    "constantinople": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/constantinople/-/constantinople-2.0.1.tgz",
+      "requires": {
+        "uglify-js": "3.4.9"
+      }
+    },
+    "with": {
+      "version":"6.0.0",
+      "resolved": "https://registry.npmjs.org/with/-/with-6.0.0.tgz",
+      "requires": {
+        "uglify-js": "3.4.9"
+      },
+      "dependencies": {
+        "uglify-js": {
+          "version" : "3.4.9",
+          "resolved": "http://registry.npmjs.org/uglify-js/-/uglify-js-3.4.9.tgz"
+        }
+      }
+    }
+  }
+}

@@ -124,7 +124,6 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     }
     zdapsObj.push_back(Pair("total", ValueFromAmount(blockindex->GetZerocoinSupply())));
     result.push_back(Pair("zDAPSsupply", zdapsObj));
-
     return result;
 }
 

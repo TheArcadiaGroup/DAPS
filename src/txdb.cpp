@@ -247,6 +247,11 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
                 pindexNew->nStatus = diskindex.nStatus;
                 pindexNew->nTx = diskindex.nTx;
 
+                //Proof of Audit
+                pindexNew->hashPoAMerkleRoot = diskindex.hashPoAMerkleRoot;
+                pindexNew->hashPrevPoABlock = diskindex.hashPrevPoABlock;
+                pindexNew->minedHash = diskindex.minedHash;
+
                 //zerocoin
                 pindexNew->nAccumulatorCheckpoint = diskindex.nAccumulatorCheckpoint;
                 pindexNew->mapZerocoinSupply = diskindex.mapZerocoinSupply;

@@ -155,6 +155,7 @@ public:
         BLOCK_PROOF_OF_STAKE = (1 << 0), // is proof-of-stake block
         BLOCK_STAKE_ENTROPY = (1 << 1),  // entropy bit for stake modifier
         BLOCK_STAKE_MODIFIER = (1 << 2), // regenerated stake modifier
+        BLOCK_PROOF_OF_AUDIT = (1 << 3), //Added for PoA blocks
     };
 
     // proof-of-stake specific fields
@@ -174,6 +175,11 @@ public:
     unsigned int nBits;
     unsigned int nNonce;
     uint256 nAccumulatorCheckpoint;
+
+    //! PoA block header
+    uint256 hashPoAMerkleRoot;
+    uint256 minedHash;
+    uint256 hashPrevPoABlock;
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
     uint32_t nSequenceId;
@@ -216,6 +222,10 @@ public:
             mapZerocoinSupply.insert(make_pair(denom, 0));
         }
         vMintDenominationsInBlock.clear();
+
+        hashPoAMerkleRoot = uint256();
+        minedHash = uint256();
+        hashPrevPoABlock = uint256();
     }
 
     CBlockIndex()
@@ -244,7 +254,14 @@ public:
         nStakeModifierChecksum = 0;
         hashProofOfStake = uint256();
 
-        if (block.IsProofOfStake()) {
+        if (block.IsProofOfAudit()) {
+            SetProofOfAudit();
+            hashPrevPoABlock = block.hashPrevPoABlock;
+            minedHash = block.minedHash;
+            hashPoAMerkleRoot = block.hashPoAMerkleRoot;
+            prevoutStake.SetNull();
+            nStakeTime = 0;
+        } else if (block.IsProofOfStake()) {
             SetProofOfStake();
             prevoutStake = block.vtx[1].vin[0].prevout;
             nStakeTime = block.nTime;
@@ -279,6 +296,11 @@ public:
     {
         CBlockHeader block;
         block.nVersion = nVersion;
+        if (IsProofOfAudit()) {
+            block.hashPoAMerkleRoot = hashPoAMerkleRoot;
+            block.minedHash = minedHash;
+            block.hashPrevPoABlock = hashPrevPoABlock;
+        }  
         if (pprev)
             block.hashPrevBlock = pprev->GetBlockHash();
         block.hashMerkleRoot = hashMerkleRoot;
@@ -331,17 +353,26 @@ public:
 
     bool IsProofOfWork() const
     {
-        return !(nFlags & BLOCK_PROOF_OF_STAKE);
+        return !(nFlags & BLOCK_PROOF_OF_STAKE) && !IsProofOfAudit();
     }
 
     bool IsProofOfStake() const
     {
-        return (nFlags & BLOCK_PROOF_OF_STAKE);
+        return (nFlags & BLOCK_PROOF_OF_STAKE) && !IsProofOfAudit();
     }
 
     void SetProofOfStake()
     {
         nFlags |= BLOCK_PROOF_OF_STAKE;
+    }
+
+    bool IsProofOfAudit() const {
+        return (nFlags & BLOCK_PROOF_OF_AUDIT);
+    }
+
+    void SetProofOfAudit()
+    {
+        nFlags |= BLOCK_PROOF_OF_AUDIT;
     }
 
     unsigned int GetStakeEntropyBit() const
@@ -435,6 +466,11 @@ public:
     explicit CDiskBlockIndex(CBlockIndex* pindex) : CBlockIndex(*pindex)
     {
         hashPrev = (pprev ? pprev->GetBlockHash() : uint256());
+        if (IsProofOfAudit()) {
+			hashPoAMerkleRoot = pindex->hashPoAMerkleRoot;
+			minedHash = pindex->minedHash;
+			hashPrevPoABlock = pindex->hashPrevPoABlock;
+        }
     }
 
     ADD_SERIALIZE_METHODS;
@@ -460,9 +496,14 @@ public:
         READWRITE(nMoneySupply);
         READWRITE(nFlags);
         READWRITE(nStakeModifier);
+
         if (IsProofOfStake()) {
             READWRITE(prevoutStake);
             READWRITE(nStakeTime);
+        } if (IsProofOfAudit()) {
+            READWRITE(hashPoAMerkleRoot);
+            READWRITE(minedHash);
+            READWRITE(hashPrevPoABlock);
         } else {
             const_cast<CDiskBlockIndex*>(this)->prevoutStake.SetNull();
             const_cast<CDiskBlockIndex*>(this)->nStakeTime = 0;
@@ -477,7 +518,7 @@ public:
         READWRITE(nTime);
         READWRITE(nBits);
         READWRITE(nNonce);
-        if(this->nVersion > 3) {
+        if(this->nVersion > 3 && !IsProofOfAudit()) {
             READWRITE(nAccumulatorCheckpoint);
             READWRITE(mapZerocoinSupply);
             READWRITE(vMintDenominationsInBlock);
@@ -491,6 +532,8 @@ public:
         block.nVersion = nVersion;
         block.hashPrevBlock = hashPrev;
         block.hashMerkleRoot = hashMerkleRoot;
+        block.hashPoAMerkleRoot = hashPoAMerkleRoot;
+        block.minedHash = minedHash;
         block.nTime = nTime;
         block.nBits = nBits;
         block.nNonce = nNonce;

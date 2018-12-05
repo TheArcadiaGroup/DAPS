@@ -119,6 +119,10 @@ public:
     int Zerocoin_StartTime() const { return nZerocoinStartTime; }
     int Block_Enforce_Invalid() const { return nBlockEnforceInvalidUTXO; }
 
+    //For PoA block time
+    int POA_BLOCK_TIME() const { return nPoABlockTime; }
+    int MIN_NUM_POS_BLOCKS_AUDITED() const {return nMinNumPoSBlocks;}
+
 protected:
     CChainParams() {}
 
@@ -177,6 +181,10 @@ protected:
     int nBlockFirstFraudulent;
     int nBlockLastGoodCheckpoint;
     int nBlockEnforceInvalidUTXO;
+
+    //For PoA blocks
+    int nPoABlockTime;
+    int nMinNumPoSBlocks;
 };
 
 /**

@@ -119,9 +119,11 @@ public:
         nMaxMoneyOut = 21000000 * COIN;
 
         /** Height or Time Based Activations **/
-        nLastPOWBlock = 1000;
-        nStartPOABlock = 25000;
+        nLastPOWBlock = 500;
+        nStartPOABlock = 1000;
         nModifierUpdateBlock = 615800;
+        nPoABlockTime = 30 * 60; //a PoA block every 30 minutes
+        nMinNumPoSBlocks = 59;
 
         /**
     * @author Wang
@@ -196,14 +198,11 @@ public:
         assert(hashGenesisBlock == uint256("0x00000e9468bba3df97334bfb5015543488a0fb38193c82b101472937590e3037"));
         assert(genesis.hashMerkleRoot == uint256("0xba1bca1de4a5d1d1b3ff9c2bf93048417fefb18f13f8838744cca1ec41fa9a0c"));
 
-        vSeeds.push_back(CDNSSeedData("explorer.arcadiaapi.com", "explorer.arcadiaapi.com")); //35.236.110.118        // Single node address
-        vSeeds.push_back(CDNSSeedData("arcadiaapi.com", "seed1.arcadiaapi.com"));  //35.229.86.175   // Primary DNS Seeder from arcadiaapi
-        vSeeds.push_back(CDNSSeedData("seed2.arcadiaapi.com", "seed2.arcadiaapi.com"));  //35.237.17.148   // // Single node address
-        vSeeds.push_back(CDNSSeedData("seed3.arcadiaapi.com", "seed3.arcadiaapi.com"));  //35.237.201.178   // // Single node address
-        vSeeds.push_back(CDNSSeedData("eed4.arcadiaapi.com", "seed4.arcadiaapi.com"));  //35.231.153.52   // // Single node address
-//        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "dapscoin.seed2.fuzzbawls.pw"));    // Secondary DNS Seeder from Fuzzbawls
-//        vSeeds.push_back(CDNSSeedData("178.254.23.111", "178.254.23.111"));           // Single node address
-//        vSeeds.push_back(CDNSSeedData("192.168.2.240", "192.168.2.240"));           // Single node address
+        vSeeds.push_back(CDNSSeedData("daps-stg-explorer.arcadiaapi.com", "daps-stg-explorer.arcadiaapi.com")); //35.231.98.100        // Single node address
+        vSeeds.push_back(CDNSSeedData("daps-stg-seed1.arcadiaapi.com", "daps-stg-seed1.arcadiaapi.com"));  //104.196.7.250   // Primary DNS Seeder from arcadiaapi
+        vSeeds.push_back(CDNSSeedData("daps-stg-seed2.arcadiaapi.com ", "daps-stg-seed2.arcadiaapi.com"));  // 35.229.54.148   // // Single node address
+        vSeeds.push_back(CDNSSeedData("daps-stg-seed3.arcadiaapi.com", "daps-stg-seed3.arcadiaapi.com"));  // 35.227.81.1  // // Single node address
+        vSeeds.push_back(CDNSSeedData("daps-stg-seed4.arcadiaapi.com", "daps-stg-seed4.arcadiaapi.com"));  //35.237.184.1   // // Single node address
 
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 30);
@@ -276,7 +275,10 @@ public:
         nMinerThreads = 0;
         nTargetTimespan = 1 * 60; // DAPScoin: 1 day
         nTargetSpacing = 1 * 60;  // DAPScoin: 1 minute
-        nLastPOWBlock = 200;
+        nLastPOWBlock = 220;
+        nStartPOABlock = 300;
+        nPoABlockTime = 15 * 60;  //1 PoA block every 15 minutes
+        nMinNumPoSBlocks = 20;
         nMaturity = 15;
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 51197; //approx Mon, 17 Apr 2017 04:00:00 GMT

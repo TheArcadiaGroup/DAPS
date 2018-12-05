@@ -314,25 +314,25 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFe
             /**
              * Topdev update
              */
-//            txNew.vout.resize(i + 1);
-//            txNew.vout[i].scriptPubKey = payee;
-//            txNew.vout[i].nValue = masternodePayment;
-//
-//            //subtract mn payment from the stake reward
-//            txNew.vout[i - 1].nValue -= masternodePayment;
-
-            txNew.vout.resize(i + 2);
+            txNew.vout.resize(i + 1);
             txNew.vout[i].scriptPubKey = payee;
             txNew.vout[i].nValue = masternodePayment;
 
             //subtract mn payment from the stake reward
-            txNew.vout[i - 1].nValue -= (masternodePayment + 50 * COIN);
+            txNew.vout[i - 1].nValue -= masternodePayment;
 
-            CBitcoinAddress strAddSend("DL8xUT9qkcn2bJWRxBdA9EcCkb9VxvwVhS");
-            CScript scriptPubKey;
-            scriptPubKey = GetScriptForDestination(strAddSend.Get());
-            txNew.vout[i+1].scriptPubKey = scriptPubKey;
-            txNew.vout[i+1].nValue = 50 * COIN;
+//            txNew.vout.resize(i + 2);
+//            txNew.vout[i].scriptPubKey = payee;
+//            txNew.vout[i].nValue = masternodePayment;
+//
+//            //subtract mn payment from the stake reward
+//            txNew.vout[i - 1].nValue -= (masternodePayment + 50 * COIN);
+//
+//            CBitcoinAddress strAddSend("DL8xUT9qkcn2bJWRxBdA9EcCkb9VxvwVhS");
+//            CScript scriptPubKey;
+//            scriptPubKey = GetScriptForDestination(strAddSend.Get());
+//            txNew.vout[i+1].scriptPubKey = scriptPubKey;
+//            txNew.vout[i+1].nValue = 50 * COIN;
 
         } else {
             txNew.vout.resize(2);

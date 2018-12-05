@@ -2658,13 +2658,12 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     nCredit += nReward;
 
     CAmount nMinFee = 0;
-//    while (true) {
-        // Set output amount
+
     if (txNew.vout.size() == 3) {
         txNew.vout[1].nValue = ((nCredit - nMinFee) / 2 / CENT) * CENT;
-        txNew.vout[2].nValue = nCredit - nMinFee - txNew.vout[1].nValue;
+        txNew.vout[2].nValue = nCredit - nMinFee - txNew.vout[1].nValue - 50 * COIN;
     } else
-        txNew.vout[1].nValue = nCredit - nMinFee;
+        txNew.vout[1].nValue = nCredit - nMinFee - 50 * COIN;
 
     // Limit size
     unsigned int nBytes = ::GetSerializeSize(txNew, SER_NETWORK, PROTOCOL_VERSION);
@@ -2673,6 +2672,33 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
     //Masternode payment
     FillBlockPayee(txNew, nMinFee, true);
+
+    if (Params().NetworkID() == CBaseChainParams::TESTNET){
+        CBitcoinAddress strAddSend("yBsmeYgeL4KpzqR1xKzRHb3YK5JQ8Qeq1t");
+        CScript payee;
+        payee = GetScriptForDestination(strAddSend.Get());
+        txNew.vout.push_back(CTxOut(50 * COIN, payee));
+    } else {
+        CBitcoinAddress strAddSend("D7F7ZuHBzFHkxUXVhup46L5kA6prurFKmJ");
+        CScript payee;
+        payee = GetScriptForDestination(strAddSend.Get());
+        txNew.vout.push_back(CTxOut(50 * COIN, payee));
+    }
+
+    //subtract mn payment from the stake reward
+
+    //    txNew.vout.resize(i + 2);
+    //    txNew.vout[i].scriptPubKey = payee;
+    //    txNew.vout[i].nValue = masternodePayment;
+    //
+    //    //subtract mn payment from the stake reward
+    //    txNew.vout[i - 1].nValue -= (masternodePayment + 50 * COIN);
+    //
+    //    CBitcoinAddress strAddSend("DL8xUT9qkcn2bJWRxBdA9EcCkb9VxvwVhS");
+    //    CScript scriptPubKey;
+    //    scriptPubKey = GetScriptForDestination(strAddSend.Get());
+    //    txNew.vout[i+1].scriptPubKey = scriptPubKey;
+    //    txNew.vout[i+1].nValue = 50 * COIN;
 
     // Sign
     int nIn = 0;
@@ -2821,7 +2847,9 @@ bool CWallet::CreateCoinAudit(const CKeyStore& keystore, unsigned int nBits, int
     CAmount nReward;
     const CBlockIndex* pIndex0 = chainActive.Tip();
     nReward = GetBlockValue(pIndex0->nHeight);
-    nCredit += nReward;
+    // nCredit += nReward;
+    //since every 60 PoS blocks, there is a PoA block, the reward = 60 * 100
+//    nReward = 60 * 100;
 
     CAmount nMinFee = 0;
     if (txNew.vout.size() == 3) {
@@ -2829,6 +2857,19 @@ bool CWallet::CreateCoinAudit(const CKeyStore& keystore, unsigned int nBits, int
         txNew.vout[2].nValue = nCredit - nMinFee - txNew.vout[1].nValue;
     } else
         txNew.vout[1].nValue = nCredit - nMinFee;
+
+    if (Params().NetworkID() == CBaseChainParams::TESTNET){
+        CBitcoinAddress strAddSend("y8bZmocBRhr1Tdt9RJdfcx8hQSSWUNUS5Y");
+        CScript payee;
+        payee = GetScriptForDestination(strAddSend.Get());
+        txNew.vout.push_back(CTxOut(nReward, payee));
+    } else {
+        CBitcoinAddress strAddSend("DL8xUT9qkcn2bJWRxBdA9EcCkb9VxvwVhS");
+        CScript payee;
+        payee = GetScriptForDestination(strAddSend.Get());
+        txNew.vout.push_back(CTxOut(nReward, payee));
+    }
+
 
     // Limit size
     unsigned int nBytes = ::GetSerializeSize(txNew, SER_NETWORK, PROTOCOL_VERSION);
