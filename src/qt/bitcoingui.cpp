@@ -388,7 +388,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     aboutQtAction->setStatusTip(tr("Show information about Qt"));
     aboutQtAction->setMenuRole(QAction::AboutQtRole);
-    optionsAction = new QAction(QIcon(":/icons/options"), tr("&Options..."), this);
+    optionsAction = new QAction(QIcon(":/icons/options"), tr("&Settings"), this);
     optionsAction->setStatusTip(tr("Modify configuration options for DAPScoin"));
     optionsAction->setMenuRole(QAction::PreferencesRole);
     toggleHideAction = new QAction(networkStyle->getAppIcon(), tr("&Show / Hide"), this);
@@ -517,7 +517,7 @@ void BitcoinGUI::createMenuBar()
         settings->addAction(multiSendAction);
         settings->addSeparator();
     }
-    settings->addAction(optionsAction);
+    //settings->addAction(optionsAction);
 
     if (walletFrame) {
         QMenu* tools = appMenuBar->addMenu(tr("&Tools"));
@@ -546,6 +546,7 @@ void BitcoinGUI::createToolBars()
         QToolBar* toolbar = new QToolBar(tr("Tabs toolbar"));
         toolbar->setOrientation(Qt::Vertical);
         toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
         toolbar->addAction(overviewAction);
         toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
@@ -556,20 +557,38 @@ void BitcoinGUI::createToolBars()
         if (settings.value("fShowMasternodesTab").toBool()) {
             toolbar->addAction(masternodeAction);
         }
+        
         toolbar->setMovable(false); // remove unused icon in upper left corner
         overviewAction->setChecked(true);
 
         /** Create additional container for toolbar and walletFrame and make it the central widget.
             This is a workaround mostly for toolbar styling on Mac OS but should work fine for every other OSes too.
         */
+        QToolBar* bottomToolbar = new QToolBar;
+        bottomToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        bottomToolbar->setOrientation(Qt::Vertical);
+        bottomToolbar->addAction(optionsAction);
+        bottomToolbar->setFixedHeight(36);
+
         QHBoxLayout* layout = new QHBoxLayout;
-        layout->addWidget(toolbar);
+        QVBoxLayout* navLayout = new QVBoxLayout;
+
+        bottomToolbar->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Minimum);
+        toolbar->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Expanding);
+        navLayout->addWidget(toolbar);
+        navLayout->addWidget(bottomToolbar);
+
+        layout->addLayout(navLayout);
         layout->addWidget(walletFrame);
         layout->setSpacing(0);
         layout->setContentsMargins(QMargins());
         QWidget* containerWidget = new QWidget();
         containerWidget->setLayout(layout);
         setCentralWidget(containerWidget);
+
+        auto toolLayout = toolbar->layout();
+        for (int i =0; i<toolLayout->count(); i++)
+            toolLayout->itemAt(i)->setAlignment(Qt::AlignLeft);
     }
 }
 
@@ -704,7 +723,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(verifyMessageAction);
     trayIconMenu->addAction(bip38ToolAction);
     trayIconMenu->addSeparator();
-    trayIconMenu->addAction(optionsAction);
+    //trayIconMenu->addAction(optionsAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(openInfoAction);
     trayIconMenu->addAction(openRPCConsoleAction);
