@@ -45,21 +45,23 @@ background-color:#f2f0f0;
 color:#333;
 }
 
-/*QToolBar {
-background-color:#382F44;
-border:0px solid #000;
-padding:0;
-margin:0;
-}*/
+#bottomToolbar {
+padding: 3px 0 15px;
+}
 
 QToolBar > QToolButton {
+font-family: Roboto;
+font-size: 12px;
+font-weight: 400;
 min-height:2.5em;
-padding: 0em 1em;
+padding: 7px 15px 7px 15px;
 color:#fff;
+margin: 0 5px;
 }
 
 QToolBar > QToolButton:checked {
 background: transparent;
+font-size: 15px;
 color:#83faff;
 font-weight:bold;
 }
@@ -67,6 +69,10 @@ font-weight:bold;
 #navLayout{
     /*background-image: linear-gradient(105deg, #5e0057 0%, #1f192a 100%);*/
     background: qlineargradient( x1:0 y1:0, x2:1 y2:1, stop:0 #5e0057, stop:1 #1f192a);
+}
+
+#dapsico{
+    padding:25px;
 }
 
 QMessageBox {

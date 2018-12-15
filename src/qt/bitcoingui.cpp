@@ -287,7 +287,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 {
     QActionGroup* tabGroup = new QActionGroup(this);
 
-    overviewAction = new QAction(QIcon(":/icons/overview"), tr("&Overview"), this);
+    overviewAction = new QAction(QIcon(":/icons/overview"), tr("&   Overview"), this);
     overviewAction->setStatusTip(tr("Show general overview of wallet"));
     overviewAction->setToolTip(overviewAction->statusTip());
     overviewAction->setCheckable(true);
@@ -298,7 +298,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(overviewAction);
 
-    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Send"), this);
+    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&   Send"), this);
     sendCoinsAction->setStatusTip(tr("Send coins to a DAPScoin address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
@@ -309,7 +309,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(sendCoinsAction);
 
-    receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("&Receive"), this);
+    receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("&   Receive"), this);
     receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and dapscoin: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
@@ -320,7 +320,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(receiveCoinsAction);
 
-    historyAction = new QAction(QIcon(":/icons/history"), tr("&Transactions"), this);
+    historyAction = new QAction(QIcon(":/icons/history"), tr("&   Transactions"), this);
     historyAction->setStatusTip(tr("Browse transaction history"));
     historyAction->setToolTip(historyAction->statusTip());
     historyAction->setCheckable(true);
@@ -346,7 +346,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 
     QSettings settings;
     if (settings.value("fShowMasternodesTab").toBool()) {
-        masternodeAction = new QAction(QIcon(":/icons/masternodes"), tr("&Masternodes"), this);
+        masternodeAction = new QAction(QIcon(":/icons/masternodes"), tr("&   Masternodes"), this);
         masternodeAction->setStatusTip(tr("Browse masternodes"));
         masternodeAction->setToolTip(masternodeAction->statusTip());
         masternodeAction->setCheckable(true);
@@ -569,6 +569,7 @@ void BitcoinGUI::createToolBars()
         bottomToolbar->setOrientation(Qt::Vertical);
         bottomToolbar->addAction(optionsAction);
         bottomToolbar->setFixedHeight(36);
+        bottomToolbar->setObjectName("bottomToolbar");
 
         QHBoxLayout* layout = new QHBoxLayout;
         QVBoxLayout* navLayout = new QVBoxLayout;
@@ -577,6 +578,11 @@ void BitcoinGUI::createToolBars()
 
         bottomToolbar->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Minimum);
         toolbar->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Expanding);
+        QLabel* dapsico = new QLabel;
+        dapsico->setPixmap(QIcon(":icons/bitcoin").pixmap(130,107));
+        dapsico->setObjectName("dapsico");
+
+        navLayout->addWidget(dapsico);
         navLayout->addWidget(toolbar);
         navLayout->addWidget(bottomToolbar);
         navWidget->setLayout(navLayout);
