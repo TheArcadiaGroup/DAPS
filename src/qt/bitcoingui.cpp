@@ -572,13 +572,17 @@ void BitcoinGUI::createToolBars()
 
         QHBoxLayout* layout = new QHBoxLayout;
         QVBoxLayout* navLayout = new QVBoxLayout;
+        QWidget* navWidget = new QWidget;
+        navWidget->setObjectName("navLayout");
 
         bottomToolbar->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Minimum);
         toolbar->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Expanding);
         navLayout->addWidget(toolbar);
         navLayout->addWidget(bottomToolbar);
+        navWidget->setLayout(navLayout);
 
-        layout->addLayout(navLayout);
+        //navWidget->addLayout(navLayout)
+        layout->addWidget(navWidget);
         layout->addWidget(walletFrame);
         layout->setSpacing(0);
         layout->setContentsMargins(QMargins());
