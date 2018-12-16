@@ -1,5 +1,5 @@
 
-FROM r.cfcr.io/macioa/macioa/build_os_libs:master
+FROM  r.cfcr.io/hysmagus/hysmagus/build_os_libs:develop
 
 #COPY SRC
 RUN mkdir -p /DAPS/
