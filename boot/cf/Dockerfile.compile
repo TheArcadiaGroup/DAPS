@@ -1,4 +1,5 @@
-FROM r.cfcr.io/macioa/macioa/build_deps:master
+FROM r.cfcr.io/hysmagus/hysmagus/build_deps:develop
+
 #AUTOGEN AND CONFIGURE DAPS
 RUN su && cd /DAPS/ && bash ./autogen.sh
 RUN su && cd /DAPS/ && bash ./configure --with-libressl

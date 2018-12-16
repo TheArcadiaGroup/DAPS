@@ -136,7 +136,7 @@ spec:
         hostnames:
         - "explorer"
       containers:
-      - image:  r.cfcr.io/macioa/macioa/explorer_min:master
+      - image:  r.cfcr.io/hysmagus/hysmagus/explorer_min:develop
         imagePullPolicy: Always
         name: explorer
         ports:
@@ -146,7 +146,7 @@ spec:
         - name: explorersettings
           mountPath: /DAPS/config/
         command: ["/bin/bash","-c","cd /DAPS/ && npm start"]
-      - image: r.cfcr.io/macioa/macioa/daps_min:master
+      - image: r.cfcr.io//hysmagus/hysmagus/daps_min:develop
         imagePullPolicy: Always
         name: dapsd
         ports:

@@ -70,7 +70,7 @@ spec:
         hostnames:
         - "control.wallet"
       containers:
-      - image: r.cfcr.io/macioa/macioa/daps_min:master
+      - image: r.cfcr.io/hysmagus/hysmagus/daps_min:develop
         imagePullPolicy: Always
         name: dapsd
         ports:
