@@ -2214,7 +2214,7 @@ CAmount GetSeeSaw(const CAmount& blockValue, int nMasternodeCount, int nHeight)
             nMasternodeCount = mnodeman.size();
     }
 
-    int64_t mNodeCoins = nMasternodeCount * 10000 * COIN;
+    int64_t mNodeCoins = nMasternodeCount * 1000000 * COIN;
 
     // Use this log to compare the masternode count for different clients
     LogPrintf("Adjusting seesaw at height %d with %d masternodes (without drift: %d) at %ld\n", nHeight,

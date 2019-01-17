@@ -2210,12 +2210,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+13"/>
-        <source>Use 2 separate masternodes to mix funds up to 10000 DAPS</source>
+        <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+13"/>
-        <source>Use 8 separate masternodes to mix funds up to 10000 DAPS</source>
+        <source>Use 8 separate masternodes to mix funds up to 1000000 DAPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

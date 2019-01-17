@@ -1651,12 +1651,12 @@ Please check the address and try again.</source>
         <translation>익명화 레벨을 선택해주세요.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>2개의 개별 마스터노드를 이용하여 최대 10000 DAPS 를 섞을 수 있습니다.</translation>
+        <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>2개의 개별 마스터노드를 이용하여 최대 1000000 DAPS 를 섞을 수 있습니다.</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>8개의 개별 마스터노드를 이용하여 최대 10000 DAPS 를 섞을 수 있습니다.</translation>
+        <source>Use 8 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>8개의 개별 마스터노드를 이용하여 최대 1000000 DAPS 를 섞을 수 있습니다.</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>

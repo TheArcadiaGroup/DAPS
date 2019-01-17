@@ -1544,12 +1544,12 @@ Please check the address and try again.</translation>
         <translation>Please select a privacy level.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Use 2 separate masternodes to mix funds up to 10000 DAPS</translation>
+        <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Use 2 separate masternodes to mix funds up to 1000000 DAPS</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Use 8 separate masternodes to mix funds up to 10000 DAPS</translation>
+        <source>Use 8 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Use 8 separate masternodes to mix funds up to 1000000 DAPS</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>

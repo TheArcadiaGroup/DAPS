@@ -1150,12 +1150,12 @@ Please check the address and try again.</source>
         <translation>Valitse yksityisyyden taso.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Käytä 2 erillistä masternodea sekoittaaksesi enintään 10000 DAPScoin</translation>
+        <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Käytä 2 erillistä masternodea sekoittaaksesi enintään 1000000 DAPScoin</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Käytä 8 erillistä masternodea sekoittaaksesi enintään 10000 DAPScoin</translation>
+        <source>Use 8 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Käytä 8 erillistä masternodea sekoittaaksesi enintään 1000000 DAPScoin</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>

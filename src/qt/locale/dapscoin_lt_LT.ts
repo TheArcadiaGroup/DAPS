@@ -1750,12 +1750,12 @@ Patikrinkite adresą ir bandykite dar kartą.</translation>
         <translation>Pasirinkite privatumo lygmenį.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Naudokite 2 atskirus masternod'us, kad sumaišytumėte lėšas iki 10 000 DAPS</translation>
+        <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Naudokite 2 atskirus masternod'us, kad sumaišytumėte lėšas iki 10 00000 DAPS</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Naudokite 8 atskirus masternod'us, kad sumaišytumėte lėšas iki 10 000 DAPS</translation>
+        <source>Use 8 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Naudokite 8 atskirus masternod'us, kad sumaišytumėte lėšas iki 10 00000 DAPS</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>
