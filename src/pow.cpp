@@ -17,16 +17,16 @@
 
 unsigned int N_BITS = 0x1e1fffff;
 bool CheckPoAMiningBlockHeight(const CBlockHeader* pblock) {
-    CBlockIndex *pindex = mapBlockIndex[pblock->hashPrevBlock];
-    if (pindex->nHeight < 10800) {
-        return true;
-    }
+    //CBlockIndex *pindex = mapBlockIndex[pblock->hashPrevBlock];
+    //if (pindex->nHeight < 10800) {
+    //    return true;
+    //}
     return false;
 }
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock)
 {
-    if (N_BITS != 0 && pblock->IsPoABlockByVersion() && !CheckPoAMiningBlockHeight(pblock)) {
+    if (N_BITS != 0 && pblock->IsPoABlockByVersion()) {
        return N_BITS;
     }
     /* current difficulty formula, dapscoin - DarkGravity v3, written by Evan Duffield - evan@dashpay.io */
@@ -259,7 +259,7 @@ bool CheckPoABlockMinedHash(const CBlockHeader& block) {
         }
 
         bnTarget.SetCompact(block.nBits, &fNegative, &fOverflow);
-	LogPrintf("Target:%s, minedHash:%s", bnTarget.GetHex(), minedHash.GetHex());
+	    LogPrintf("Target:%s, minedHash:%s", bnTarget.GetHex(), minedHash.GetHex());
         // Check range
         //if (fNegative || bnTarget == 0 || fOverflow || bnTarget > Params().ProofOfWorkLimit())
         //    return error("CheckProofOfWork() : nBits below minimum work");
@@ -358,12 +358,13 @@ bool CheckPoAblockTime(const CBlock& block) {
 	{
 		//For compatible with current chain 18/11/2018, all previous PoA blocks do not need to check block time
 		//This is because some primary PoA blocks are created with short block time
-		if (mapBlockIndex.count(block.hashPrevBlock) != 0) {
+        //Update 19/11/2018: Remove the check, all PoA blocks need to have block time as 60 PoS blocks
+		/*if (mapBlockIndex.count(block.hashPrevBlock) != 0) {
 			CBlockIndex* pindex = mapBlockIndex[block.hashPrevBlock];
 			if (pindex->nHeight < 6000) {
 				return true;
 			}
-		}
+		}*/
 	}
 
 	if (block.hashPrevPoABlock.IsNull()) {
