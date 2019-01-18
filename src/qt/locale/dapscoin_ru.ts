@@ -1527,12 +1527,12 @@ Please check the address and try again.</source>
         <translation>Выберите уровень конфиденциальности.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Используйте 2 разные мастерноды для смешивания средств до 10000 DAPS</translation>
+        <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Используйте 2 разные мастерноды для смешивания средств до 1000000 DAPS</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Используйте 8 разных мастернод для смешивания средств до 10000 DAPS</translation>
+        <source>Use 8 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Используйте 8 разных мастернод для смешивания средств до 1000000 DAPS</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>

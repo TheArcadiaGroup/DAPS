@@ -1563,12 +1563,12 @@ Por favor compruebe la dirección e inténtelo de nuevo.</translation>
         <translation>Por favor selecciones un nivel de privacidad.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Use 2 nodos maestros diferentes para mezclar los fondos hasta los 10000 DAPS</translation>
+        <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Use 2 nodos maestros diferentes para mezclar los fondos hasta los 1000000 DAPS</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Use 8 nodos maestros diferentes para mezclar fondos hasta los 10000 DAPS</translation>
+        <source>Use 8 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Use 8 nodos maestros diferentes para mezclar fondos hasta los 1000000 DAPS</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>

@@ -1559,12 +1559,12 @@ Favor verificar o endereço e tente novamente.</translation>
         <translation>Favor selecionar o nível de privacidade.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Use 2 masternodes separados para embaralhar fundos até 10000 DAPS</translation>
+        <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Use 2 masternodes separados para embaralhar fundos até 1000000 DAPS</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Use 8 masternodes separados para embaralhar fundos até 10000 DAPS</translation>
+        <source>Use 8 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Use 8 masternodes separados para embaralhar fundos até 1000000 DAPS</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>

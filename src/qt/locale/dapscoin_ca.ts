@@ -1161,11 +1161,11 @@
         <translation>Si us plau, selecciona un nivell de privacitat.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 DAPS</source>
+        <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
         <translation>Utilitza 2 masternodes diferents per mesclar fons de fins a 10000 DAPS</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 DAPS</source>
+        <source>Use 8 separate masternodes to mix funds up to 1000000 DAPS</source>
         <translation>Utilitza 8 masternodes diferents per mesclar fons de fins a 10000 DAPS</translation>
     </message>
     <message>

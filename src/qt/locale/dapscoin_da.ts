@@ -1519,12 +1519,12 @@ Kontroller adressen og prøv igen.</translation>
         <translation>Vælg tilsløringsniveau</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Brug 2 separate masternoder for at tilsløre beløb op til 10000 DAPS</translation>
+        <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Brug 2 separate masternoder for at tilsløre beløb op til 1000000 DAPS</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Brug 8 separate masternoder for at tilsløre op til 10000 DAPS</translation>
+        <source>Use 8 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Brug 8 separate masternoder for at tilsløre op til 1000000 DAPS</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>

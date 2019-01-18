@@ -1546,12 +1546,12 @@ Controleer het adres alsjeblieft en probeer het opnieuw.</translation>
         <translation>Selecteer de privacy level.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Gebruik 2 aparte masternodes om fondsen te mixen tot 10000 DAPS</translation>
+        <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Gebruik 2 aparte masternodes om fondsen te mixen tot 1000000 DAPS</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 DAPS</source>
-        <translation>Gebruik 8 aparte masternodes om fondsen te mixen tot 10000 DAPS</translation>
+        <source>Use 8 separate masternodes to mix funds up to 1000000 DAPS</source>
+        <translation>Gebruik 8 aparte masternodes om fondsen te mixen tot 1000000 DAPS</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>
