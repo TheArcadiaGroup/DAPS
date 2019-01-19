@@ -14,11 +14,9 @@
 #include <assert.h>
 
 #include <boost/assign/list_of.hpp>
-#include "main.h"
 
 using namespace std;
 using namespace boost::assign;
-
 struct SeedSpec6 {
     uint8_t addr[16];
     uint16_t port;
@@ -153,7 +151,7 @@ public:
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 486604799 << CScriptNum(4) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
-        txNew.vout[0].nValue = GetBlockValue(0) * COIN;
+        txNew.vout[0].nValue = 20000000 * COIN;
         txNew.vout[0].scriptPubKey = CScript() << ParseHex("041db2a1b75bc00fc1a18e9f8de27c65fede32eb9ac1c11e2587402a66732656d71f7b5de649c8dc7f94aeb433485ce3122ba856644b02e433c2d5fc94ea26bf8e") << OP_CHECKSIG;
         genesis.vtx.push_back(txNew);
         genesis.hashPrevBlock = 0;
@@ -161,8 +159,8 @@ public:
         genesis.nVersion = 1;
         genesis.nTime = 1536807892;
         genesis.nBits = 0x1e0ffff0;
-        genesis.nNonce = 5296500;
-        if(genesis.GetHash()!=uint256("0x000000c67b0baca01277ab61a7594e5d649f4132af443ab47188bb3e27786563"))
+        genesis.nNonce = 5329199;
+        if(genesis.GetHash()!=uint256("0x00000a943e1c73651477efcaa71a39cf8455ae626b6ea8df8e3bdab046c99435"))
         {
             printf("mainnet Searchingforgenesisblock...\n");
             uint256 hashTarget=uint256().SetCompact(genesis.nBits);
@@ -194,8 +192,8 @@ public:
 
 
         hashGenesisBlock = genesis.GetHash();
-        assert(hashGenesisBlock == uint256("0x000000c67b0baca01277ab61a7594e5d649f4132af443ab47188bb3e27786563"));
-        assert(genesis.hashMerkleRoot == uint256("0xb8556a31f007e7d5515aa814effccea683c01709d61830863fc6042cca30b9a9"));
+        assert(hashGenesisBlock == uint256("0x00000a943e1c73651477efcaa71a39cf8455ae626b6ea8df8e3bdab046c99435"));
+        assert(genesis.hashMerkleRoot == uint256("0x10794239bb17c0f326637b24db241cfe94b0269760a4b91aa3f819a318d53364"));
 
         vSeeds.push_back(CDNSSeedData("daps-stg-explorer.arcadiaapi.com", "daps-stg-explorer.arcadiaapi.com")); //35.231.98.100        // Single node address
         vSeeds.push_back(CDNSSeedData("daps-stg-seed1.arcadiaapi.com", "daps-stg-seed1.arcadiaapi.com"));  //104.196.7.250   // Primary DNS Seeder from arcadiaapi
@@ -292,9 +290,9 @@ public:
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1536808115;
-        genesis.nNonce = 3909535;
+        genesis.nNonce = 4904934;
 
-        if(genesis.GetHash()!=uint256("0x00000703cc0de7b4632f79c959d3c71c11d662bb1564c6774ef63c9099b3fa2"))
+        if(genesis.GetHash()!=uint256("0x0000093c35a2a62b37c6c4f7b0652a9680dcc7d5b4c5e09bd774af07907775ff"))
         {
             printf("Searchingforgenesisblock...\n");
             uint256 hashTarget=uint256().SetCompact(genesis.nBits);
@@ -325,7 +323,7 @@ public:
         }
 
         hashGenesisBlock = genesis.GetHash();
-        assert(hashGenesisBlock == uint256("00000703cc0de7b4632f79c959d3c71c11d662bb1564c6774ef63c9099b3fa24"));
+        assert(hashGenesisBlock == uint256("0x0000093c35a2a62b37c6c4f7b0652a9680dcc7d5b4c5e09bd774af07907775ff"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -395,7 +393,7 @@ public:
         genesis.nBits = 0x207fffff;
         genesis.nNonce = 3909535;
 
-        if(genesis.GetHash()!=uint256("0x5be59f09f11cad3923cbe17cb8b018a382af7021db0486b192ea9bba4ea59733"))
+        if(genesis.GetHash()!=uint256("0x36d6cab2ffa9f3aefa14db935306f0e625353e09eb214c9ba304ce96fcd2aa8a"))
         {
             printf("Searchingforgenesisblock...\n");
             uint256 hashTarget=uint256().SetCompact(genesis.nBits);
@@ -428,7 +426,7 @@ public:
         hashGenesisBlock = genesis.GetHash();
         nDefaultPort = 51476;
 
-        assert(hashGenesisBlock == uint256("0x5be59f09f11cad3923cbe17cb8b018a382af7021db0486b192ea9bba4ea59733"));
+        assert(hashGenesisBlock == uint256("0x36d6cab2ffa9f3aefa14db935306f0e625353e09eb214c9ba304ce96fcd2aa8a"));
 
         vFixedSeeds.clear(); //! Testnet mode doesn't have any fixed seeds.
         vSeeds.clear();      //! Testnet mode doesn't have any DNS seeds.
