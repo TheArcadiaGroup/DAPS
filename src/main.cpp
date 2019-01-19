@@ -4297,7 +4297,6 @@ bool CheckBlock(const CBlock &block, CValidationState &state, bool fCheckPOW, bo
     if (!CheckBlockHeader(block, state, block.IsProofOfWork()))
         return state.DoS(100, error("CheckBlock() : CheckBlockHeader failed"),
                          REJECT_INVALID, "bad-header", true);
-    LogPrintf("%s:Time stamp", __func__);
     // Check timestamp
     LogPrint("debug", "%s: block=%s  is proof of stake=%d, is proof of audit=%d\n", __func__, block.GetHash().ToString().c_str(),
              block.IsProofOfStake(), block.IsProofOfAudit());
