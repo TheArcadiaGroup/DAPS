@@ -1442,9 +1442,12 @@ bool CheckTransaction(const CTransaction &tx, bool fZerocoinActive, bool fReject
         if (txout.nValue < 0)
             return state.DoS(100, error("CheckTransaction() : txout.nValue negative"),
                              REJECT_INVALID, "bad-txns-vout-negative");
-        if (txout.nValue > Params().MaxMoneyOut())
+        if (txout.nValue > Params().MaxMoneyOut())   {
+            LogPrintf("nvalue %d", txout.nValue);
+            LogPrintf("nvalue %d", Params().MaxMoneyOut());
             return state.DoS(100, error("CheckTransaction() : txout.nValue too high"),
                              REJECT_INVALID, "bad-txns-vout-toolarge");
+        }
         nValueOut += txout.nValue;
         if (!MoneyRange(nValueOut))
             return state.DoS(100, error("CheckTransaction() : txout total out of range"),
@@ -2168,11 +2171,11 @@ int64_t GetBlockValue(int nHeight) {
     int64_t nSubsidy = 0;
 
     if (nHeight == 0) {
-        nSubsidy = 6000000 * COIN; //6M for the first block
+        nSubsidy = 20000000 * COIN; //6M for the first block
     } else {
         if (Params().NetworkID() == CBaseChainParams::MAIN) {
         	if (nHeight < 100) {
-        		nSubsidy = 1000000 * COIN;
+        		nSubsidy = 10000000 * COIN;
         	} else if (nHeight < 200 && nHeight > 0)
                 nSubsidy = 250000 * COIN;
             else if(nHeight > Params().nLastPOWBlock) {
