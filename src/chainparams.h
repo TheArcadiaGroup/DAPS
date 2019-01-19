@@ -122,6 +122,7 @@ public:
     //For PoA block time
     int POA_BLOCK_TIME() const { return nPoABlockTime; }
     int MIN_NUM_POS_BLOCKS_AUDITED() const {return nMinNumPoSBlocks;}
+    int nLastPOWBlock;
 
 protected:
     CChainParams() {}
@@ -139,7 +140,6 @@ protected:
     int nToCheckBlockUpgradeMajority;
     int64_t nTargetTimespan;
     int64_t nTargetSpacing;
-    int nLastPOWBlock;
     int nStartPOABlock;
     int nMasternodeCountDrift;
     int nMaturity;

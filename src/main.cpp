@@ -2168,31 +2168,17 @@ int64_t GetBlockValue(int nHeight) {
     int64_t nSubsidy = 0;
 
     if (nHeight == 0) {
-        nSubsidy = 600000001 * COIN; //600M for the first block
+        nSubsidy = 6000000 * COIN; //6M for the first block
     } else {
-        if (Params().NetworkID() == CBaseChainParams::TESTNET) {
-        	if (nHeight < 10) {
-        		nSubsidy = 10000000 * COIN;
+        if (Params().NetworkID() == CBaseChainParams::MAIN) {
+        	if (nHeight < 100) {
+        		nSubsidy = 1000000 * COIN;
         	} else if (nHeight < 200 && nHeight > 0)
                 nSubsidy = 250000 * COIN;
-            else if(nHeight > 4800) {
-                if (nHeight % 60 == 0) {
-                    nSubsidy = 60 * 100 * COIN;
-                } else {
-                    nSubsidy = 950 * COIN;
-                }
-            } else if(nHeight > 4500 && nHeight <= 4800) {
-                if (nHeight % 60 == 0) {
-                    nSubsidy = 60 * 100 * COIN;
-                } else {
-                    nSubsidy = 1050 * COIN;
-                }
-            } else if(nHeight > 2990 && nHeight <= 4500 && nHeight % 60 == 0){
-                nSubsidy = 50 * 100 * COIN;
-            } else if(nHeight > Params().START_POA_BLOCK() && nHeight <= 2990 && nHeight % 60 == 0) {
-                nSubsidy = 550 * 59 * COIN;
+            else if(nHeight > Params().nLastPOWBlock) {
+                nSubsidy = 950 * COIN;
             } else {
-                nSubsidy = 550 * COIN;
+                nSubsidy = 950 * COIN;
             }
         } else {
             nSubsidy = 950 * COIN;

@@ -1525,7 +1525,7 @@ Prosím zkontrolujte adresu a zkuste to znovu.</translation>
         <translation>Vyberte úrpvěň ochrany soukromí</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 DAPS</source>
+        <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
         <translation>Použí 2 oddělené masternody k promíchání prostředků až do 10000 DAPS</translation>
     </message>
     <message>

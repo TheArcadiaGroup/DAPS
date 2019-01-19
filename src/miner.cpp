@@ -473,7 +473,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         if (!fProofOfStake) {
         	pblock->vtx[0].vout[0].nValue += nFees * COIN;
             pblock->vtx[0] = txNew;
-            pblocktemplate->vTxFees[0] = -nFees;
+            pblocktemplate->vTxFees[0] = nFees;
         }
 
         // Fill in header
