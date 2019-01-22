@@ -315,7 +315,7 @@ bool IsLocal(const CService &addr) {
 /** check whether a given network is one we can probably connect to */
 bool IsReachable(enum Network net) {
     LOCK(cs_mapLocalHost);
-    return vfReachable[net] && !vfLimited[net];
+    return !vfLimited[net];
 }
 
 /** check whether a given address is in a network we can probably connect to */
