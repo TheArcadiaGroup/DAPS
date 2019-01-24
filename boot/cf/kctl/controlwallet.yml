@@ -71,7 +71,7 @@ spec:
         - "control.wallet"
       terminationGracePeriodSeconds: 3
       containers:
-      - image: r.cfcr.io/hysmagus/hysmagus/daps_min:develop
+      - image: r.cfcr.io/hysmagus/daps_min:develop
         imagePullPolicy: Always
         name: dapsd
         lifecycle:
