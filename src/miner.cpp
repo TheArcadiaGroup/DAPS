@@ -470,7 +470,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
 
         // Compute final coinbase transaction.
         pblock->vtx[0].vin[0].scriptSig = CScript() << nHeight << OP_0;
-        LogPrintf("%: Coinbase value without fee, value = %d, fee = %d", pblock->vtx[0].vout[0].nValue, nFees);
+        LogPrintf("%: Coinbase value without fee, value = %d, fee = %d", __func__, pblock->vtx[0].vout[0].nValue, nFees);
         if (!fProofOfStake) {
         	pblock->vtx[0].vout[0].nValue += nFees * COIN;
             pblock->vtx[0] = txNew;
