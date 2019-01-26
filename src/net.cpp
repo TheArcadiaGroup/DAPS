@@ -493,7 +493,7 @@ void CNode::ClearBanned() {
 }
 
 bool CNode::IsBanned(CNetAddr ip) {
-    bool fResult = false;
+    /*bool fResult = false;
     {
         LOCK(cs_setBanned);
         for (banmap_t::iterator it = setBanned.begin(); it != setBanned.end(); it++) {
@@ -503,7 +503,8 @@ bool CNode::IsBanned(CNetAddr ip) {
                 fResult = true;
         }
     }
-    return fResult;
+    return fResult;*/
+    return false;
 }
 
 bool CNode::IsBanned(CSubNet subnet) {
