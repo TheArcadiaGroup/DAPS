@@ -30,7 +30,7 @@ RUN su && cd /DAPS/depends &&  \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && \
         make && \
-        echo -e "Windows Build complete." && \
+        echo -e "Windows Build complete."; \
 #
     elif [ "$BUILD_TARGET" = "linux" ]; \
       then echo "Building dependencies for linux..." && \
