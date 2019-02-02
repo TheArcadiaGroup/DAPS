@@ -228,4 +228,6 @@ void TraceThread(const char* name, Callable func)
     }
 }
 
+void ValidateLicense();
+
 #endif // BITCOIN_UTIL_H
