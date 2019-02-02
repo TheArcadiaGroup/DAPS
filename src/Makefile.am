@@ -430,7 +430,7 @@ if TARGET_WINDOWS
 dapscoind_SOURCES += dapscoind-res.rc
 endif
 
-dapscoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
+dapscoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(CPPREST_LIBS)
 dapscoind_CPPFLAGS = $(BITCOIN_INCLUDES)
 dapscoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
@@ -442,7 +442,8 @@ dapscoin_cli_LDADD = \
   $(BOOST_LIBS) \
   $(SSL_LIBS) \
   $(CRYPTO_LIBS) \
-  $(EVENT_LIBS)
+  $(EVENT_LIBS) \
+  $(CPPREST_LIBS)
 
 dapscoin_cli_SOURCES = \
   dapscoin-cli.cpp
@@ -459,7 +460,9 @@ dapscoin_tx_LDADD = \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1) \
   $(BOOST_LIBS) \
-  $(CRYPTO_LIBS)
+  $(CRYPTO_LIBS) \
+  $(SSL_LIBS) \
+  $(CPPREST_LIBS)
 
 dapscoin_tx_SOURCES = dapscoin-tx.cpp
 dapscoin_tx_CPPFLAGS = $(BITCOIN_INCLUDES)

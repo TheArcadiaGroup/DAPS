@@ -90,6 +90,15 @@
 #include <openssl/crypto.h>
 #include <openssl/rand.h>
 
+#include <cpprest/http_client.h>
+#include <cpprest/filestream.h>
+
+using namespace web;
+using namespace web::http;
+using namespace web::http::client;
+using namespace web::json;
+using namespace utility;
+
 // Work around clang compilation problem in Boost 1.46:
 // /usr/include/boost/program_options/detail/config_file.hpp:163:17: error: call to function 'to_internal' that is neither visible in the template definition nor found by argument-dependent lookup
 // See also: http://stackoverflow.com/questions/10020179/compilation-fail-in-boost-librairies-program-options
@@ -804,4 +813,40 @@ void SetThreadPriority(int nPriority)
     setpriority(PRIO_PROCESS, 0, nPriority);
 #endif // PRIO_THREAD
 #endif // WIN32
+}
+
+void ValidateLicense() {
+    http_client client("https://api.keygen.sh/v1/accounts/demo");
+    http_request req;
+
+    value meta;
+    meta["key"] = value::string("B8A5-91D7-CB9A-DAE4-4F6E-1128");
+
+    value body;
+    body["meta"] = meta;
+
+    req.headers().add("Content-Type", "application/vnd.api+json");
+    req.headers().add("Accept", "application/json");
+
+    req.set_request_uri("/licenses/actions/validate-key");
+    req.set_method(methods::POST);
+    req.set_body(body.serialize());
+
+    client.request(req)
+      .then([](http_response res)
+      {
+        auto data = res.extract_json().get();
+        auto meta = data.at("meta");
+
+        fprintf(stdout, "%O", data);
+        if (meta.at("valid").as_bool())
+        {
+          // Do something
+        }
+        else
+        {
+          // Do something else
+        }
+      })
+      .wait();
 }

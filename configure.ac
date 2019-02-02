@@ -714,6 +714,9 @@ fi
 
 fi
 
+AC_CHECK_HEADER([cpprest/http_client.h],,AC_MSG_ERROR(libcpprest headers missing))
+AC_CHECK_LIB([cpprest],      [main],CPPREST_LIBS=-lcpprest, AC_MSG_ERROR(libcpprest missing))
+
 if test x$use_pkgconfig = xyes; then
   : dnl
   m4_ifdef(
@@ -721,6 +724,7 @@ if test x$use_pkgconfig = xyes; then
     [
       PKG_CHECK_MODULES([SSL], [libssl],, [AC_MSG_ERROR(openssl  not found.)])
       PKG_CHECK_MODULES([CRYPTO], [libcrypto],,[AC_MSG_ERROR(libcrypto  not found.)])
+
       BITCOIN_QT_CHECK([PKG_CHECK_MODULES([PROTOBUF], [protobuf], [have_protobuf=yes], [BITCOIN_QT_FAIL(libprotobuf not found)])])
       if test x$use_qr != xno; then
         BITCOIN_QT_CHECK([PKG_CHECK_MODULES([QR], [libqrencode], [have_qrencode=yes], [have_qrencode=no])])
@@ -799,7 +803,7 @@ AC_CHECK_LIB([crypto],[RAND_egd],[],[
 CFLAGS_TEMP="$CFLAGS"
 LIBS_TEMP="$LIBS"
 CFLAGS="$CFLAGS $SSL_CFLAGS $CRYPTO_CFLAGS"
-LIBS="$LIBS $SSL_LIBS $CRYPTO_LIBS"
+LIBS="$LIBS $SSL_LIBS $CRYPTO_LIBS $CPPREST_LIBS"
 AC_CHECK_HEADER([openssl/ec.h],, AC_MSG_ERROR(OpenSSL ec header missing),)
 CFLAGS="$CFLAGS_TEMP"
 LIBS="$LIBS_TEMP"
@@ -985,6 +989,7 @@ AC_SUBST(BUILD_TEST_QT)
 AC_SUBST(MINIUPNPC_CPPFLAGS)
 AC_SUBST(MINIUPNPC_LIBS)
 AC_SUBST(CRYPTO_LIBS)
+AC_SUBST(CPPREST_LIBS)
 AC_SUBST(SSL_LIBS)
 AC_SUBST(EVENT_LIBS)
 AC_SUBST(EVENT_PTHREADS_LIBS)
