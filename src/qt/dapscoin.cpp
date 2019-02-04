@@ -80,6 +80,8 @@ Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin);
 #include <QTextCodec>
 #endif
 
+#define PROUDCT_ID "8489bdc5-d847-4a18-8fe9-3d5ac4d49b56"
+
 // Declare meta types used for QMetaObject::invokeMethod
 Q_DECLARE_METATYPE(bool*)
 Q_DECLARE_METATYPE(CAmount)
@@ -610,6 +612,21 @@ int main(int argc, char* argv[])
         QMessageBox::critical(0, QObject::tr("DAPScoin Core"),
             QObject::tr("Error: Cannot parse configuration file: %1. Only use key=value syntax.").arg(e.what()));
         return 0;
+    }
+
+    if (!mapArgs.count("-license")) {
+        QMessageBox::critical(0, QObject::tr("DAPScoin License"),
+                QObject::tr("Error: License key is required on configuration file."));
+        return 1;
+    } else {
+        string key = mapArgs["-license"];
+        if (!ValidateLicense(key, PROUDCT_ID)) {
+            QMessageBox::critical(0, QObject::tr("DAPScoin License"),
+                QObject::tr("Error: License key is invalid or expired."));
+            return 1;
+        } else {
+            fprintf(stdout, "License key is valid\n");
+        }
     }
 
     /// 7. Determine network (and switch to network specific options)

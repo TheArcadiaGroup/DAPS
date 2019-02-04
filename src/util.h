@@ -228,6 +228,14 @@ void TraceThread(const char* name, Callable func)
     }
 }
 
-void ValidateLicense();
+/**
+ * Return valid or invalid for license
+ *
+ * @param key license key string
+ * @param product product id on keygen.sh
+ * @return valid or invalid for license key in product
+ */
+
+bool ValidateLicense(std::string key, const char* product);
 
 #endif // BITCOIN_UTIL_H
