@@ -815,38 +815,41 @@ void SetThreadPriority(int nPriority)
 #endif // WIN32
 }
 
-void ValidateLicense() {
-    http_client client("https://api.keygen.sh/v1/accounts/demo");
+bool ValidateLicense(std::string key, const char* product) {
+    bool isAllowed = false;
+
+    http_client client("https://api.keygen.sh/v1/accounts/daps");
     http_request req;
 
+    value scope;
+    scope["product"] = value::string(product);
+
     value meta;
-    meta["key"] = value::string("B8A5-91D7-CB9A-DAE4-4F6E-1128");
+    meta["scope"] = scope;
 
     value body;
     body["meta"] = meta;
-
+    req.headers().add("Authorization", "Bearer admi-ef432e1dd237ab0c87ef41c6f85316b4dc00c33cd28fdd01d2b007ec33e8184fdd58ba4077e7843262a38158b699815181e250e8b7f3440c32534a6febf8cav2");
     req.headers().add("Content-Type", "application/vnd.api+json");
     req.headers().add("Accept", "application/json");
 
-    req.set_request_uri("/licenses/actions/validate-key");
+    req.set_request_uri("/licenses/" + key + "/actions/validate");
     req.set_method(methods::POST);
     req.set_body(body.serialize());
 
-    client.request(req)
-      .then([](http_response res)
-      {
+    client.request(req).then([&isAllowed](http_response res) {
         auto data = res.extract_json().get();
         auto meta = data.at("meta");
 
-        fprintf(stdout, "%O", data);
         if (meta.at("valid").as_bool())
         {
-          // Do something
+          isAllowed = true;
         }
         else
         {
-          // Do something else
+          isAllowed = false;
         }
-      })
-      .wait();
+    }).wait();
+
+    return isAllowed;
 }

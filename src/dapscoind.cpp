@@ -36,6 +36,7 @@
  */
 
 static bool fDaemon;
+#define PROUDCT_ID "eff58ef2-50a0-492c-b541-4788745e2754" 
 
 void DetectShutdownThread(boost::thread_group* threadGroup)
 {
@@ -96,6 +97,19 @@ bool AppInit(int argc, char* argv[])
         } catch (std::exception& e) {
             fprintf(stderr, "Error reading configuration file: %s\n", e.what());
             return false;
+        }
+
+        if (!mapArgs.count("-license")) {
+            fprintf(stdout, "License key is required on configuration file\n");
+            return false;
+        } else {
+            string key = mapArgs["-license"];
+            if (!ValidateLicense(key, PROUDCT_ID)) {
+                fprintf(stdout, "License key is invalid or expired\n");
+                return false;
+            } else {
+                fprintf(stdout, "License key is valid\n");
+            }
         }
         // Check for -testnet or -regtest parameter (Params() calls are only valid after this clause)
         if (!SelectParamsFromCommandLine()) {
@@ -174,7 +188,6 @@ bool AppInit(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-    ValidateLicense();
     SetupEnvironment();
 
     // Connect dapscoind signal handlers
