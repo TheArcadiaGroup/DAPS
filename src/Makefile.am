@@ -437,6 +437,7 @@ dapscoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 # dapscoin-cli binary #
 dapscoin_cli_LDADD = \
+  $(LIBBITCOIN_CLI) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO) \
   $(BOOST_LIBS) \
