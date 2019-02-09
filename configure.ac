@@ -714,8 +714,7 @@ fi
 
 fi
 
-AC_CHECK_HEADER([cpprest/http_client.h],,AC_MSG_ERROR(libcpprest headers missing))
-AC_CHECK_LIB([cpprest],      [main],CPPREST_LIBS=-lcpprest, AC_MSG_ERROR(libcpprest missing))
+CPPREST_LIBS=-lcpprest
 
 if test x$use_pkgconfig = xyes; then
   : dnl
