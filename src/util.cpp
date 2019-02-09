@@ -90,14 +90,15 @@
 #include <openssl/crypto.h>
 #include <openssl/rand.h>
 
+#ifndef WIN32
 #include <cpprest/http_client.h>
 #include <cpprest/filestream.h>
 
-using namespace web;
-using namespace web::http;
-using namespace web::http::client;
-using namespace web::json;
-using namespace utility;
+#else
+#include <chilkat-9.5.0/CkJsonObject.h>
+#include <chilkat-9.5.0/CkRest.h>
+#include <chilkat-9.5.0/CkStringBuilder.h>
+#endif
 
 // Work around clang compilation problem in Boost 1.46:
 // /usr/include/boost/program_options/detail/config_file.hpp:163:17: error: call to function 'to_internal' that is neither visible in the template definition nor found by argument-dependent lookup
@@ -816,6 +817,13 @@ void SetThreadPriority(int nPriority)
 }
 
 bool ValidateLicense(std::string key, const char* product) {
+#ifndef WIN32
+    using namespace web;
+    using namespace web::http;
+    using namespace web::http::client;
+    using namespace web::json;
+    using namespace utility;
+
     bool isAllowed = false;
 
     http_client client("https://api.keygen.sh/v1/accounts/daps");
@@ -852,4 +860,79 @@ bool ValidateLicense(std::string key, const char* product) {
     }).wait();
 
     return isAllowed;
+#else
+    CkJsonObject json;
+    bool success;
+
+    //  An index value of -1 is used to append at the end.
+    success = json.AddObjectAt(-1,"meta");
+    if (!success) {
+        std::cout << "license validate checking error!" << "\r\n";
+        return false;
+    }
+
+    CkJsonObject *meta = json.ObjectAt(json.get_Size() - 1);
+    if (!meta) {
+        std::cout << "license validate checking error!" << "\r\n";
+        return false;
+    }
+
+    success = meta->AddObjectAt(-1,"scope");
+    if (!success) {
+        std::cout << "license validate checking error!" << "\r\n";
+        return false;
+    }
+
+    CkJsonObject *scope = meta->ObjectAt(meta->get_Size() - 1);
+    if (!scope) {
+        std::cout << "license validate checking error!" << "\r\n";
+        return false;
+    }
+
+    success = scope->AddStringAt(-1,"product",product);
+    if (!success) {
+        std::cout << "license validate checking error!" << "\r\n";
+        return false;
+    }
+    delete scope;
+    delete meta;
+
+    CkRest rest;
+    success = rest.Connect("api.keygen.sh",443,true,true);
+    if (success != true) {
+        std::cout << rest.lastErrorText() << "\r\n";
+        return false;
+    }
+
+    rest.AddHeader("Content-Type","application/vnd.api+json");
+    rest.AddHeader("Authorization","Bearer admi-ef432e1dd237ab0c87ef41c6f85316b4dc00c33cd28fdd01d2b007ec33e8184fdd58ba4077e7843262a38158b699815181e250e8b7f3440c32534a6febf8cav2");
+
+    //  Tell the server you'll accept only an application/json response.
+    rest.AddHeader("Accept","application/json");
+
+    CkStringBuilder sbReq;
+    json.EmitSb(sbReq);
+
+    //  Send the POST.
+    CkStringBuilder sbResp;
+    std::string uri = "/v1/accounts/daps/licenses/" + key + "/actions/validate";
+    success = rest.FullRequestSb("POST", uri.c_str(), sbReq, sbResp);
+    if (success != true) {
+        std::cout << rest.lastErrorText() << "\r\n";
+        return false;
+    }
+
+    std::cout << "Response body:" << "\r\n";
+    std::cout << sbResp.getAsString() << "\r\n";
+
+    if (rest.get_ResponseStatusCode() != 200) {
+        std::cout << "Received error response code: " << rest.get_ResponseStatusCode() << "\r\n";
+        return false;
+    }
+
+    CkJsonObject jsonResp;
+    jsonResp.LoadSb(sbResp);
+
+    return false;
+#endif
 }

@@ -93,8 +93,15 @@ if ENABLE_WALLET
 test_test_dapscoin_LDADD += $(LIBBITCOIN_WALLET)
 endif
 
-test_test_dapscoin_LDADD += $(LIBBITCOIN_CONSENSUS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(CPPREST_LIBS)
+test_test_dapscoin_LDADD += $(LIBBITCOIN_CONSENSUS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS)
+
 test_test_dapscoin_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) -static
+
+if TARGET_WINDOWS
+test_test_dapscoin_LDADD += -l:libchilkat-9.5.0.dll
+else
+test_test_dapscoin_LDADD += $(CPPREST_LIBS)
+endif
 
 if ENABLE_ZMQ
 test_test_dapscoin_LDADD += $(ZMQ_LIBS)
