@@ -41,7 +41,7 @@ qt_test_test_dapscoin_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBI
 qt_test_test_dapscoin_qt_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-qt_test_test_dapscoin_qt_LDADD += -l:libchilkat-9.5.0.dll
+qt_test_test_dapscoin_qt_LDADD += -lchilkat-9.5.0
 else
 qt_test_test_dapscoin_qt_LDADD += $(CPPREST_LIBS)
 endif
