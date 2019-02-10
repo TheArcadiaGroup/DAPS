@@ -98,6 +98,7 @@
 #include <chilkat-9.5.0/CkJsonObject.h>
 #include <chilkat-9.5.0/CkRest.h>
 #include <chilkat-9.5.0/CkStringBuilder.h>
+#include <chilkat-9.5.0/CkGlobal.h>
 #endif
 
 // Work around clang compilation problem in Boost 1.46:
@@ -861,9 +862,27 @@ bool ValidateLicense(std::string key, const char* product) {
 
     return isAllowed;
 #else
-    CkJsonObject json;
-    bool success;
+    CkGlobal glob;
+    bool success = glob.UnlockBundle("Anything for 30-day trial");
+    if (success != true) {
+        std::cout << glob.lastErrorText() << "\r\n";
+        return false;
+    }
 
+    int status = glob.get_UnlockStatus();
+    if (status == 2) {
+        std::cout << "Unlocked using purchased unlock code." << "\r\n";
+    }
+    else {
+        std::cout << "Unlocked in trial mode." << "\r\n";
+    }
+
+    // The LastErrorText can be examined in the success case to see if it was unlocked in
+    // trial more, or with a purchased unlock code.
+    std::cout << glob.lastErrorText() << "\r\n";
+
+
+    CkJsonObject json;
     //  An index value of -1 is used to append at the end.
     success = json.AddObjectAt(-1,"meta");
     if (!success) {
@@ -880,18 +899,22 @@ bool ValidateLicense(std::string key, const char* product) {
     success = meta->AddObjectAt(-1,"scope");
     if (!success) {
         std::cout << "license validate checking error!" << "\r\n";
+        delete meta;
         return false;
     }
 
     CkJsonObject *scope = meta->ObjectAt(meta->get_Size() - 1);
     if (!scope) {
         std::cout << "license validate checking error!" << "\r\n";
+        delete meta;
         return false;
     }
 
     success = scope->AddStringAt(-1,"product",product);
     if (!success) {
         std::cout << "license validate checking error!" << "\r\n";
+        delete scope;
+        delete meta;
         return false;
     }
     delete scope;
@@ -922,8 +945,8 @@ bool ValidateLicense(std::string key, const char* product) {
         return false;
     }
 
-    std::cout << "Response body:" << "\r\n";
-    std::cout << sbResp.getAsString() << "\r\n";
+    // std::cout << "Response body:" << "\r\n";
+    // std::cout << sbResp.getAsString() << "\r\n";
 
     if (rest.get_ResponseStatusCode() != 200) {
         std::cout << "Received error response code: " << rest.get_ResponseStatusCode() << "\r\n";
@@ -933,6 +956,19 @@ bool ValidateLicense(std::string key, const char* product) {
     CkJsonObject jsonResp;
     jsonResp.LoadSb(sbResp);
 
+    CkJsonObject *resp_meta = jsonResp.ObjectOf("meta");
+    if (!resp_meta) {
+        std::cout << "license validate checking error!" << "\r\n";
+        delete resp_meta;
+        return false;
+    }
+
+    if (resp_meta->BoolOf("valid")) {
+        delete resp_meta;
+        return true;
+    }
+
+    delete resp_meta;
     return false;
 #endif
 }
