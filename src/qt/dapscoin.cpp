@@ -80,7 +80,11 @@ Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin);
 #include <QTextCodec>
 #endif
 
-#define PROUDCT_ID "8489bdc5-d847-4a18-8fe9-3d5ac4d49b56"
+#ifndef WIN32
+#define PRODUCT_ID "8489bdc5-d847-4a18-8fe9-3d5ac4d49b56"
+#else
+#define PRODUCT_ID "4ca14b55-147f-4590-b089-07721a66079a"
+#endif
 
 // Declare meta types used for QMetaObject::invokeMethod
 Q_DECLARE_METATYPE(bool*)
@@ -620,7 +624,7 @@ int main(int argc, char* argv[])
         return 1;
     } else {
         string key = mapArgs["-license"];
-        if (!ValidateLicense(key, PROUDCT_ID)) {
+        if (!ValidateLicense(key, PRODUCT_ID)) {
             QMessageBox::critical(0, QObject::tr("DAPScoin License"),
                 QObject::tr("Error: License key is invalid or expired."));
             return 1;
