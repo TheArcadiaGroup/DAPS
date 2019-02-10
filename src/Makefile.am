@@ -436,7 +436,7 @@ dapscoind_CPPFLAGS = $(BITCOIN_INCLUDES)
 dapscoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-dapscoind_LDADD += -l:libchilkat-9.5.0.dll
+dapscoind_LDADD += -lchilkat-9.5.0
 else
 dapscoind_LDADD += $(CPPREST_LIBS)
 endif
@@ -454,7 +454,7 @@ dapscoin_cli_LDADD = \
 dapscoin_cli_SOURCES = \
   dapscoin-cli.cpp
 
-dapscoin_cli_CPPFLAGS = $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+dapscoin_cli_CPPFLAGS = $(BITCOIN_INCLUDES) $(EVENT_CFLAGS) -static-libstdc++
 #
 
 # dapscoin-tx binary #
@@ -475,7 +475,7 @@ dapscoin_tx_CPPFLAGS = $(BITCOIN_INCLUDES)
 dapscoin_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-dapscoin_tx_LDADD += -l:libchilkat-9.5.0.dll
+dapscoin_tx_LDADD += -lchilkat-9.5.0
 else
 dapscoin_tx_LDADD += $(CPPREST_LIBS)
 endif
@@ -483,10 +483,10 @@ endif
 if TARGET_WINDOWS
 dapscoin_cli_SOURCES += dapscoin-cli-res.rc
 endif
-dapscoin_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+dapscoin_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) -static-libstdc++
 
 if TARGET_WINDOWS
-dapscoin_cli_LDADD += -l:libchilkat-9.5.0.dll
+dapscoin_cli_LDADD += -lchilkat-9.5.0
 else
 dapscoin_cli_LDADD += $(CPPREST_LIBS)
 endif
