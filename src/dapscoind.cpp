@@ -192,9 +192,6 @@ bool AppInit(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-    std::string mac_str = GetMACAddress();
-    std::cout << mac_str << "\r\n";
-
     SetupEnvironment();
 
     // Connect dapscoind signal handlers

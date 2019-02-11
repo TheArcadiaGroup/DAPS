@@ -853,6 +853,7 @@ bool ValidateLicense(std::string key, const char* product) {
 
     value scope;
     scope["product"] = value::string(product);
+    scope["fingerprint"] = value::string(GetMACAddress());
 
     value meta;
     meta["scope"] = scope;
@@ -871,13 +872,13 @@ bool ValidateLicense(std::string key, const char* product) {
         auto data = res.extract_json().get();
         auto meta = data.at("meta");
 
-        if (meta.at("valid").as_bool())
-        {
-          isAllowed = true;
-        }
-        else
-        {
-          isAllowed = false;
+        if (!meta)
+            isAllowed = false;
+        else {
+            if (meta.at("valid").as_bool())
+              isAllowed = true;
+            else
+              isAllowed = false;
         }
     }).wait();
 
@@ -938,6 +939,15 @@ bool ValidateLicense(std::string key, const char* product) {
         delete meta;
         return false;
     }
+
+    success = scope->AddStringAt(-1,"fingerprint",GetMACAddress().c_str());
+    if (!success) {
+        std::cout << "license validate checking error!" << "\r\n";
+        delete scope;
+        delete meta;
+        return false;
+    }
+
     delete scope;
     delete meta;
 
