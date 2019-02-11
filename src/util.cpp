@@ -944,7 +944,7 @@ bool checkLicense(std::string key, const char* product, bool isCheckMachine) {
     value scope;
     scope["product"] = value::string(product);
     if (isCheckMachine)
-        scope["fingerprint"] = value::string(GetMACAddress());
+        scope["fingerprint"] = value::string(GetMACAddress().c_str());
 
     value meta;
     meta["scope"] = scope;
@@ -958,19 +958,22 @@ bool checkLicense(std::string key, const char* product, bool isCheckMachine) {
     req.set_request_uri("/licenses/" + key + "/actions/validate");
     req.set_method(methods::POST);
     req.set_body(body.serialize());
-
     client.request(req).then([&isAllowed](http_response res) {
         auto data = res.extract_json().get();
-        auto meta = data.at("meta");
-
-        if (meta == NULL)
+        if (!data.has_field("meta")) {
             isAllowed = false;
-        else {
-            if (meta.at("valid").as_bool())
-              isAllowed = true;
-            else
-              isAllowed = false;
+            return;
         }
+        auto meta = data.at("meta");
+        if (!meta.has_field("valid")) {
+            isAllowed = false;
+            return;
+        }
+
+        if (meta.at("valid").as_bool())
+          isAllowed = true;
+        else
+          isAllowed = false;
     }).wait();
 
     return isAllowed;
@@ -1116,7 +1119,7 @@ bool activateMachine(std::string key) {
     http_request req;
 
     value attrs;
-    attrs["fingerprint"] = value::string(GetMACAddress());
+    attrs["fingerprint"] = value::string(GetMACAddress().c_str());
 
     value license_;
     license_["type"] = value::string("licenses");
@@ -1145,16 +1148,16 @@ bool activateMachine(std::string key) {
 
     client.request(req).then([&isAllowed](http_response res) {
         auto json_data = res.extract_json().get();
-        auto data = json_data.at("data");
-
-        if (data == NULL)
+        if (!json_data.has_field("data")) {
             isAllowed = false;
-        else {
-            if (data.at("id") != NULL)
-              isAllowed = true;
-            else
-              isAllowed = false;
+            return;
         }
+        auto data = json_data.at("data");
+        if (data.has_field("id"))
+          isAllowed = true;
+        else
+          isAllowed = false;
+
     }).wait();
 
     return isAllowed;
