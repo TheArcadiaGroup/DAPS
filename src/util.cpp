@@ -872,7 +872,7 @@ bool ValidateLicense(std::string key, const char* product) {
         auto data = res.extract_json().get();
         auto meta = data.at("meta");
 
-        if (!meta)
+        if (meta == NULL)
             isAllowed = false;
         else {
             if (meta.at("valid").as_bool())
