@@ -865,23 +865,20 @@ bool getLicenseID(std::string key, std::string &license_id) {
     return true;
 #else
     CkGlobal glob;
-    bool success = glob.UnlockBundle("Anything for 30-day trial");
-    if (success != true) {
-        std::cout << glob.lastErrorText() << "\r\n";
-        return false;
-    }
+    bool success;
 
     int status = glob.get_UnlockStatus();
-    if (status == 2) {
-        std::cout << "Unlocked using purchased unlock code." << "\r\n";
-    }
-    else {
-        std::cout << "Unlocked in trial mode." << "\r\n";
+    if (status != 2 || status != 1) {
+        success = glob.UnlockBundle("Anything for 30-day trial");
+        if (success != true) {
+            std::cout << glob.lastErrorText() << "\r\n";
+            return false;
+        }
     }
 
     // The LastErrorText can be examined in the success case to see if it was unlocked in
     // trial more, or with a purchased unlock code.
-    std::cout << glob.lastErrorText() << "\r\n";
+    // std::cout << glob.lastErrorText() << "\r\n";
 
     CkRest rest;
     success = rest.Connect("api.keygen.sh",443,true,true);
@@ -906,11 +903,6 @@ bool getLicenseID(std::string key, std::string &license_id) {
 
     // std::cout << "Response body:" << "\r\n";
     // std::cout << sbResp.getAsString() << "\r\n";
-
-    if (rest.get_ResponseStatusCode() != 200) {
-        std::cout << "Received error response code: " << rest.get_ResponseStatusCode() << "\r\n";
-        return false;
-    }
 
     CkJsonObject jsonResp;
     jsonResp.LoadSb(sbResp);
@@ -944,7 +936,7 @@ bool checkLicense(std::string key, const char* product, bool isCheckMachine) {
     value scope;
     scope["product"] = value::string(product);
     if (isCheckMachine)
-        scope["fingerprint"] = value::string(GetMACAddress());
+        scope["fingerprint"] = value::string(GetMACAddress().c_str());
 
     value meta;
     meta["scope"] = scope;
@@ -958,42 +950,41 @@ bool checkLicense(std::string key, const char* product, bool isCheckMachine) {
     req.set_request_uri("/licenses/" + key + "/actions/validate");
     req.set_method(methods::POST);
     req.set_body(body.serialize());
-
     client.request(req).then([&isAllowed](http_response res) {
         auto data = res.extract_json().get();
-        auto meta = data.at("meta");
-
-        if (meta == NULL)
+        if (!data.has_field("meta")) {
             isAllowed = false;
-        else {
-            if (meta.at("valid").as_bool())
-              isAllowed = true;
-            else
-              isAllowed = false;
+            return;
         }
+        auto meta = data.at("meta");
+        if (!meta.has_field("valid")) {
+            isAllowed = false;
+            return;
+        }
+
+        if (meta.at("valid").as_bool())
+          isAllowed = true;
+        else
+          isAllowed = false;
     }).wait();
 
     return isAllowed;
 #else
     CkGlobal glob;
-    bool success = glob.UnlockBundle("Anything for 30-day trial");
-    if (success != true) {
-        std::cout << glob.lastErrorText() << "\r\n";
-        return false;
-    }
+    bool success;
 
     int status = glob.get_UnlockStatus();
-    if (status == 2) {
-        std::cout << "Unlocked using purchased unlock code." << "\r\n";
-    }
-    else {
-        std::cout << "Unlocked in trial mode." << "\r\n";
+    if (status != 2 || status != 1) {
+        success = glob.UnlockBundle("Anything for 30-day trial");
+        if (success != true) {
+            std::cout << glob.lastErrorText() << "\r\n";
+            return false;
+        }
     }
 
     // The LastErrorText can be examined in the success case to see if it was unlocked in
     // trial more, or with a purchased unlock code.
-    std::cout << glob.lastErrorText() << "\r\n";
-
+    // std::cout << glob.lastErrorText() << "\r\n";
 
     CkJsonObject json;
     //  An index value of -1 is used to append at the end.
@@ -1072,11 +1063,6 @@ bool checkLicense(std::string key, const char* product, bool isCheckMachine) {
     // std::cout << "Response body:" << "\r\n";
     // std::cout << sbResp.getAsString() << "\r\n";
 
-    if (rest.get_ResponseStatusCode() != 200) {
-        std::cout << "Received error response code: " << rest.get_ResponseStatusCode() << "\r\n";
-        return false;
-    }
-
     CkJsonObject jsonResp;
     jsonResp.LoadSb(sbResp);
 
@@ -1116,7 +1102,7 @@ bool activateMachine(std::string key) {
     http_request req;
 
     value attrs;
-    attrs["fingerprint"] = value::string(GetMACAddress());
+    attrs["fingerprint"] = value::string(GetMACAddress().c_str());
 
     value license_;
     license_["type"] = value::string("licenses");
@@ -1145,38 +1131,35 @@ bool activateMachine(std::string key) {
 
     client.request(req).then([&isAllowed](http_response res) {
         auto json_data = res.extract_json().get();
-        auto data = json_data.at("data");
-
-        if (data == NULL)
+        if (!json_data.has_field("data")) {
             isAllowed = false;
-        else {
-            if (data.at("id") != NULL)
-              isAllowed = true;
-            else
-              isAllowed = false;
+            return;
         }
+        auto data = json_data.at("data");
+        if (data.has_field("id"))
+          isAllowed = true;
+        else
+          isAllowed = false;
+
     }).wait();
 
     return isAllowed;
 #else
     CkGlobal glob;
-    bool success = glob.UnlockBundle("Anything for 30-day trial");
-    if (success != true) {
-        std::cout << glob.lastErrorText() << "\r\n";
-        return false;
-    }
+    bool success;
 
     int status = glob.get_UnlockStatus();
-    if (status == 2) {
-        std::cout << "Unlocked using purchased unlock code." << "\r\n";
-    }
-    else {
-        std::cout << "Unlocked in trial mode." << "\r\n";
+    if (status != 2 || status != 1) {
+        success = glob.UnlockBundle("Anything for 30-day trial");
+        if (success != true) {
+            std::cout << glob.lastErrorText() << "\r\n";
+            return false;
+        }
     }
 
     // The LastErrorText can be examined in the success case to see if it was unlocked in
     // trial more, or with a purchased unlock code.
-    std::cout << glob.lastErrorText() << "\r\n";
+    // std::cout << glob.lastErrorText() << "\r\n";
 
 
     CkJsonObject json;
@@ -1323,11 +1306,6 @@ bool activateMachine(std::string key) {
 
     // std::cout << "Response body:" << "\r\n";
     // std::cout << sbResp.getAsString() << "\r\n";
-
-    if (rest.get_ResponseStatusCode() != 200) {
-        std::cout << "Received error response code: " << rest.get_ResponseStatusCode() << "\r\n";
-        return false;
-    }
 
     CkJsonObject jsonResp;
     jsonResp.LoadSb(sbResp);
