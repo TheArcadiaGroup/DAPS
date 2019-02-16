@@ -430,10 +430,16 @@ if TARGET_WINDOWS
 dapscoind_SOURCES += dapscoind-res.rc
 endif
 
-dapscoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(CPPREST_LIBS)
+dapscoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
+
 dapscoind_CPPFLAGS = $(BITCOIN_INCLUDES)
 dapscoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
+if TARGET_WINDOWS
+dapscoind_LDADD += -lchilkat-9.5.0
+else
+dapscoind_LDADD += $(CPPREST_LIBS)
+endif
 
 # dapscoin-cli binary #
 dapscoin_cli_LDADD = \
@@ -443,13 +449,12 @@ dapscoin_cli_LDADD = \
   $(BOOST_LIBS) \
   $(SSL_LIBS) \
   $(CRYPTO_LIBS) \
-  $(EVENT_LIBS) \
-  $(CPPREST_LIBS)
+  $(EVENT_LIBS)
 
 dapscoin_cli_SOURCES = \
   dapscoin-cli.cpp
 
-dapscoin_cli_CPPFLAGS = $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+dapscoin_cli_CPPFLAGS = $(BITCOIN_INCLUDES) $(EVENT_CFLAGS) -static-libstdc++
 #
 
 # dapscoin-tx binary #
@@ -462,8 +467,7 @@ dapscoin_tx_LDADD = \
   $(LIBSECP256K1) \
   $(BOOST_LIBS) \
   $(CRYPTO_LIBS) \
-  $(SSL_LIBS) \
-  $(CPPREST_LIBS)
+  $(SSL_LIBS)
 
 dapscoin_tx_SOURCES = dapscoin-tx.cpp
 dapscoin_tx_CPPFLAGS = $(BITCOIN_INCLUDES)
@@ -471,9 +475,21 @@ dapscoin_tx_CPPFLAGS = $(BITCOIN_INCLUDES)
 dapscoin_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
+dapscoin_tx_LDADD += -lchilkat-9.5.0
+else
+dapscoin_tx_LDADD += $(CPPREST_LIBS)
+endif
+
+if TARGET_WINDOWS
 dapscoin_cli_SOURCES += dapscoin-cli-res.rc
 endif
-dapscoin_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+dapscoin_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) -static-libstdc++
+
+if TARGET_WINDOWS
+dapscoin_cli_LDADD += -lchilkat-9.5.0
+else
+dapscoin_cli_LDADD += $(CPPREST_LIBS)
+endif
 
 if BUILD_BITCOIN_LIBS
 include_HEADERS = script/bitcoinconsensus.h

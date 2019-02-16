@@ -36,7 +36,11 @@
  */
 
 static bool fDaemon;
-#define PROUDCT_ID "eff58ef2-50a0-492c-b541-4788745e2754" 
+#ifndef WIN32
+#define PROUDCT_ID "eff58ef2-50a0-492c-b541-4788745e2754"
+#else
+#define PROUDCT_ID "cab45ac5-b0a5-42ff-bee2-79a0651e1618"
+#endif
 
 void DetectShutdownThread(boost::thread_group* threadGroup)
 {
