@@ -69,6 +69,11 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, Object& entry)
     entry.push_back(Pair("txid", tx.GetHash().GetHex()));
     entry.push_back(Pair("version", tx.nVersion));
     entry.push_back(Pair("locktime", (int64_t)tx.nLockTime));
+    CPubKey txPubKey(tx.txPub);
+    entry.push_back(Pair("txpubkey", txPubKey.GetHex()));
+    if (tx.hasPaymentID) {
+        entry.push_back(Pair("paymentid", tx.paymentID));
+    }
     Array vin;
     BOOST_FOREACH (const CTxIn& txin, tx.vin) {
         Object in;

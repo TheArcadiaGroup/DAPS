@@ -30,6 +30,23 @@ static uint64_t nAccountingEntryNumber = 0;
 // CWalletDB
 //
 
+bool CWalletDB::AppendStealthAccountList(const std::string& accountName) {
+    std::string currentList;
+    if (!ReadStealthAccountList(currentList)) {
+        currentList = accountName;
+    } else {
+        currentList = currentList + "," + accountName;
+        nWalletDBUpdated++;
+        Erase(std::string("accountlist"));
+    }
+    nWalletDBUpdated++;
+    return Write(std::string("accountlist"), currentList);
+}
+
+bool CWalletDB::ReadStealthAccountList(std::string& accountList) {
+    return Read(std::string("accountlist"), accountList);
+}
+
 bool CWalletDB::WriteName(const string& strAddress, const string& strName)
 {
     nWalletDBUpdated++;
@@ -268,6 +285,21 @@ bool CWalletDB::ReadAccount(const string& strAccount, CAccount& account)
 bool CWalletDB::WriteAccount(const string& strAccount, const CAccount& account)
 {
     return Write(make_pair(string("acc"), strAccount), account);
+}
+
+bool CWalletDB::ReadStealthAccount(const std::string& strAccount, CStealthAccount& account)
+{
+    if (strAccount == "masteraccount") {
+        return ReadAccount("spendaccount", account.spendAccount) && ReadAccount("viewaccount", account.viewAccount);
+    }
+    return ReadAccount(strAccount + "spend", account.spendAccount) && ReadAccount(strAccount + "view", account.viewAccount);
+}
+
+bool CWalletDB::WriteStealthAccount(const std::string& strAccount, const CStealthAccount& account) {
+    if (strAccount == "masteraccount") {
+        return WriteAccount("spendaccount", account.spendAccount) && WriteAccount("viewaccount", account.viewAccount);
+    }
+    return WriteAccount(strAccount + "spend", account.spendAccount) && WriteAccount(strAccount + "view", account.viewAccount);
 }
 
 bool CWalletDB::WriteAccountingEntry(const uint64_t nAccEntryNum, const CAccountingEntry& acentry)

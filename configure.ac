@@ -210,6 +210,8 @@ AC_ARG_WITH([daemon],
 
 AC_LANG_PUSH([C++])
 
+#AX_CXX_CHECK_LIB([boost_regex-mt],[boost::regex::generic_category()],[BOOST_LIB_SUFFIX="-mt"],[BOOST_LIB_SUFFIX=""])
+
 use_pkgconfig=yes
 case $host in
   *mingw*)
@@ -583,6 +585,7 @@ AX_BOOST_FILESYSTEM
 AX_BOOST_PROGRAM_OPTIONS
 AX_BOOST_THREAD
 AX_BOOST_CHRONO
+AX_BOOST_REGEX
 
 
 if test x$use_reduce_exports != xno; then
@@ -656,7 +659,7 @@ fi
 
 if test x$use_boost = xyes; then
 
-BOOST_LIBS="$BOOST_LDFLAGS $BOOST_SYSTEM_LIB $BOOST_FILESYSTEM_LIB $BOOST_PROGRAM_OPTIONS_LIB $BOOST_THREAD_LIB"
+BOOST_LIBS="$BOOST_LDFLAGS $BOOST_SYSTEM_LIB $BOOST_REGEX_LIB $BOOST_FILESYSTEM_LIB $BOOST_PROGRAM_OPTIONS_LIB $BOOST_THREAD_LIB"
 
 dnl Boost >= 1.50 uses sleep_for rather than the now-deprecated sleep, however
 dnl it was broken from 1.50 to 1.52 when backed by nanosleep. Use sleep_for if

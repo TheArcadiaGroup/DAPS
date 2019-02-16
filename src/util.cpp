@@ -1327,11 +1327,11 @@ bool activateMachine(std::string key) {
 }
 
 bool ValidateLicense(std::string key, const char* product) {
-    if (checkLicense(key, product, false) == false)
-        return false;
-
     if (checkLicense(key, product, true) == true)
         return true;
+
+    if (checkLicense(key, product, false) == false)
+        return false;
 
     if (activateMachine(key) == true)
         return true;

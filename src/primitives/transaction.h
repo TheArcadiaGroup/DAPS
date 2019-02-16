@@ -216,6 +216,11 @@ public:
     std::vector<CTxIn> vin;
     std::vector<CTxOut> vout;
     const uint32_t nLockTime;
+
+    //For stealth transactions
+    std::vector<unsigned char> txPub;
+    char hasPaymentID;
+    uint64_t paymentID;
     //const unsigned int nTime;
 
     /** Construct a CTransaction that qualifies as IsNull() */
@@ -235,6 +240,11 @@ public:
         READWRITE(*const_cast<std::vector<CTxIn>*>(&vin));
         READWRITE(*const_cast<std::vector<CTxOut>*>(&vout));
         READWRITE(*const_cast<uint32_t*>(&nLockTime));
+        READWRITE(txPub);
+        READWRITE(hasPaymentID);
+        if (hasPaymentID != 0) {
+            READWRITE(paymentID);
+        }
         if (ser_action.ForRead())
             UpdateHash();
     }
@@ -325,6 +335,10 @@ struct CMutableTransaction
     std::vector<CTxIn> vin;
     std::vector<CTxOut> vout;
     uint32_t nLockTime;
+    //For stealth transactions
+    std::vector<unsigned char> txPub;
+    char hasPaymentID;
+    uint64_t paymentID;
 
     CMutableTransaction();
     CMutableTransaction(const CTransaction& tx);
@@ -338,6 +352,11 @@ struct CMutableTransaction
         READWRITE(vin);
         READWRITE(vout);
         READWRITE(nLockTime);
+        READWRITE(txPub);
+        READWRITE(hasPaymentID);
+        if (hasPaymentID != 0) {
+            READWRITE(paymentID);
+        }
     }
 
     /** Compute the hash of this CMutableTransaction. This is computed on the

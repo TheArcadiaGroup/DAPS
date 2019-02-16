@@ -19,12 +19,15 @@
 #include "walletdb.h"
 
 #include <stdint.h>
+#include <boost/algorithm/string.hpp>
 
 #include "libzerocoin/Coin.h"
 #include "json/json_spirit_utils.h"
 #include "json/json_spirit_value.h"
 #include "spork.h"
 #include <boost/assign/list_of.hpp>
+//#include "privacy/mnemonics/electrum-words.h"
+//#include "privacy/rpc/core_rpc_server_commands_defs.h"
 
 using namespace std;
 using namespace boost;
@@ -2806,3 +2809,278 @@ Value reconsiderzerocoins(const Array& params, bool fHelp)
 
     return arrRet;
 }
+
+Value createprivacywallet(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() >2 || params.size() < 1)
+        throw runtime_error(
+                "createprivacywallet \"password\" (\"language\") \n"
+                "\nCreate a new wallet for privacy with dual-key stealth address.\n"
+                "If 'language' is specified, it is used, otherwise english \n"
+                "\nArguments:\n"
+                "1. \"account\"        (string, required) password for the wallet \n"
+                "2. \"language\"        (string, optional) language for the wallet's mnemmonics \n"
+                "\nResult:\n"
+                "\"privacy wallet created\"    (string) the base address of the wallet\n"
+                "\nExamples:\n" +
+                HelpExampleCli("createprivacywallet", "") + HelpExampleCli("createprivacywallet", "\"\"") + HelpExampleCli("createprivacywallet", "\"1234567890\"") + HelpExampleRpc("createprivacywallet", "\"1234567890\""));
+
+    if (pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: Privacy wallet is alread created.");
+    }
+
+    std::string dataDir = GetDataDir().string();
+
+    std::string filepath = dataDir + std::string("wallet.dat");
+    std::string password = params[0].get_str();
+    std::string language("english");
+    if (params.size() == 2) {
+        language = params[0].get_str();
+    }
+
+    /*std::string wallet_file = filepath;
+    {
+        std::vector<std::string> languages;
+        crypto::ElectrumWords::get_language_list(languages);
+        std::vector<std::string>::iterator it;
+        std::string wallet_file;
+        char *ptr;
+
+        it = std::find(languages.begin(), languages.end(), language);
+        if (it == languages.end())
+        {
+            throw JSONRPCError(RPC_ERROR_CODE_UNKNOWN_ERROR,
+                               "Error: Unknown language.");
+        }
+    }*/
+    /*{
+        po::options_description desc("dummy");
+        const command_line::arg_descriptor<std::string, true> arg_password = {"password", "password"};
+        const char *argv[4];
+        int argc = 3;
+        argv[0] = "wallet-rpc";
+        argv[1] = "--password";
+        argv[2] = req.password.c_str();
+        argv[3] = NULL;
+        vm2 = *m_vm;
+        command_line::add_arg(desc, arg_password);
+        po::store(po::parse_command_line(argc, argv, desc), vm2);
+    }*/
+    /*std::unique_ptr<CWallet> wal = CWallet::make_new(pwalletMain->vm, true, nullptr).first;
+    if (!wal)
+    {
+        throw JSONRPCError(RPC_ERROR_CODE_UNKNOWN_ERROR,
+                           "Error: Failed to create privacy wallet.");
+    }
+    wal->set_seed_language(language);
+    cryptonote::COMMAND_RPC_GET_HEIGHT::request hreq;
+    cryptonote::COMMAND_RPC_GET_HEIGHT::response hres;
+    hres.height = 0;
+    //bool r = wal->invoke_http_json("/getheight", hreq, hres);
+    wal->set_refresh_from_block_height(hres.height);
+    crypto::secret_key dummy_key;
+    try {
+        wal->generate(wallet_file, password, dummy_key, false, false);
+    }
+    catch (const std::exception& e)
+    {
+        throw JSONRPCError(RPC_ERROR_CODE_UNKNOWN_ERROR,
+                           "Error: Failed to generate dummy key.");
+    }
+    if (!wal)
+    {
+        throw JSONRPCError(RPC_ERROR_CODE_UNKNOWN_ERROR,
+                           "Error: Failed to generate wallet.");
+    }
+
+    pwalletMain = wal.release();*/
+    Object ret;
+    //ret.emplace_back(Pair("wallet file", wallet_file));
+    return ret;
+}
+
+Value createprivacyaccount(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+                "createprivacyaccount \n"
+                "\nCreate a new wallet account for privacy.\n"
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"account address\"    (string) the address of the created account\n"
+                "\nExamples:\n" +
+                HelpExampleCli("createprivacyaccount", "") + HelpExampleCli("createprivacyaccount", "\"\"") + HelpExampleCli("createprivacyaccount", "") + HelpExampleRpc("createprivacyaccount", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+    }
+    CWalletDB walletdb(pwalletMain->strWalletFile);
+    Object ret;
+    int i = 0;
+    while (i < 10) {
+        std::string viewAccountLabel = "viewaccount";
+        std::string spendAccountLabel = "spendaccount";
+
+        CAccount viewAccount;
+        walletdb.ReadAccount(viewAccountLabel, viewAccount);
+        if (!viewAccount.vchPubKey.IsValid()) {
+            std::string viewAccountAddress = GetAccountAddress(viewAccountLabel).ToString();
+        }
+
+        CAccount spendAccount;
+        walletdb.ReadAccount(spendAccountLabel, spendAccount);
+        if (!spendAccount.vchPubKey.IsValid()) {
+            std::string spendAccountAddress = GetAccountAddress(spendAccountLabel).ToString();
+        }
+        if (viewAccount.vchPubKey.GetHex() == "" || spendAccount.vchPubKey.GetHex() == "") {
+            i++;
+            continue;
+        }
+        ret.emplace_back(Pair("viewpublickey", viewAccount.vchPubKey.GetHex()));
+
+        ret.emplace_back(Pair("spendpublickey", spendAccount.vchPubKey.GetHex()));
+
+        std::string stealthAddr;
+        pwalletMain->EncodeStealthPublicAddress(viewAccount.vchPubKey, spendAccount.vchPubKey, stealthAddr);
+        ret.emplace_back(Pair("stealthaddress", stealthAddr));
+        walletdb.AppendStealthAccountList("masteraccount");
+        break;
+    }
+    return ret;
+}
+
+Value createprivacysubaddress(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+                "createprivacysubaddress \"label\" \n"
+                "\nCreate a new wallet account subaddress for privacy transaction.\n"
+                "\nArguments:\n"
+                "1. \"label\"        (string, required) label for the wallet account address\n"
+                "\nResult:\n"
+                "\"account address\"    (string) the created address for the corresponding account\n"
+                "\"address index\"    (string) the index of the created address for the account\n"
+                "\nExamples:\n" +
+                HelpExampleCli("createprivacysubaddress", "") + HelpExampleCli("createprivacysubaddress", "\"\"") + HelpExampleCli("createprivacysubaddress", "\"address1\"") + HelpExampleRpc("createprivacysubaddress", "\"address1\""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+    }
+
+    std::string label = params[0].get_str();
+
+    CWalletDB walletdb(pwalletMain->strWalletFile);
+    std::string viewAccountLabel = label + "view";
+    std::string spendAccountLabel = label + "spend";
+    CStealthAccount account;
+    if (!walletdb.ReadStealthAccount(label, account)) {
+        int i = 0;
+        while (i < 10) {
+            CAccount viewAccount;
+            walletdb.ReadAccount(label + "view", viewAccount);
+            if (!viewAccount.vchPubKey.IsValid()) {
+                GetAccountAddress(viewAccountLabel).ToString();
+            }
+
+            CAccount spendAccount;
+            walletdb.ReadAccount(spendAccountLabel, spendAccount);
+            if (!spendAccount.vchPubKey.IsValid()) {
+                GetAccountAddress(spendAccountLabel).ToString();
+            }
+            if (viewAccount.vchPubKey.GetHex() == "" || spendAccount.vchPubKey.GetHex() == "") {
+                i++;
+                continue;
+            }
+            account.viewAccount = viewAccount;
+            account.spendAccount = spendAccount;
+            walletdb.AppendStealthAccountList(label);
+            break;
+        }
+    }
+    Object ret;
+
+    ret.emplace_back(Pair("viewpublickey", account.viewAccount.vchPubKey.GetHex()));
+
+    ret.emplace_back(Pair("spendpublickey", account.spendAccount.vchPubKey.GetHex()));
+
+    std::string stealthAddr;
+    pwalletMain->EncodeStealthPublicAddress(account.viewAccount.vchPubKey, account.spendAccount.vchPubKey, stealthAddr);
+    ret.emplace_back(Pair("stealthaddress", stealthAddr));
+    return ret;
+}
+
+Value decodestealthaddress(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+                "decodestealthaddress \n"
+                "\nDecode a stealth address into spend and view public keys.\n"
+                "\nArguments:\n"
+                "1. \"stealth_address\"        (string, required) The Base58 stealth address\n"
+                "\nResult:\n"
+                "\"public view key\"    (string) the view public key\n"
+                "\"public spend key\"   (string) the spend public key"
+                "\nExamples:\n" +
+                HelpExampleCli("decodestealthaddress", "") + HelpExampleCli("decodestealthaddress", "\"\"") + HelpExampleCli("decodestealthaddress", "") + HelpExampleRpc("decodestealthaddress", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+    }
+    std::string addr = params[0].get_str();
+
+    Object ret;
+    CPubKey viewKey, spendKey;
+    bool hasPaymentID;
+    uint64_t paymentID;
+
+    if (!CWallet::DecodeStealthAddress(addr, viewKey, spendKey, hasPaymentID, paymentID)) {
+        throw JSONRPCError(RPC_WALLET_ERROR,
+                           "Error: Stealth address is not correctly formatted.");
+    }
+    ret.emplace_back(Pair("spendpublickey", spendKey.GetHex()));
+    ret.emplace_back(Pair("viewpublickey", viewKey.GetHex()));
+    if (hasPaymentID) {
+        ret.emplace_back(Pair("paymentid", paymentID));
+    }
+
+    return ret;
+}
+
+Value sendtostealthaddress(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 2)
+        throw runtime_error(
+                "sendtostealthaddress \"dapsstealthaddress\" amount\n"
+                "\nSend an amount to a given daps stealth address address. The amount is a real and is rounded to the nearest 0.00000001\n" +
+                HelpRequiringPassphrase() +
+                "\nArguments:\n"
+                "1. \"dapsstealthaddress\"  (string, required) The dapscoin stealth address to send to.\n"
+                "2. \"amount\"      (numeric, required) The amount in btc to send. eg 0.1\n"
+                "\nResult:\n"
+                "\"transactionid\"  (string) The transaction id.\n"
+                "\nExamples:\n" +
+                HelpExampleCli("sendtostealthaddress", "\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\" 0.1") + HelpExampleCli("sendtostealthaddress", "\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\" 0.1 \"donation\" \"seans outpost\"") + HelpExampleRpc("sendtostealthaddress", "\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\", 0.1, \"donation\", \"seans outpost\""));
+
+    std::string stealthAddr = params[0].get_str();
+
+    // Amount
+    CAmount nAmount = AmountFromValue(params[1]);
+
+    // Wallet comments
+    CWalletTx wtx;
+
+    EnsureWalletIsUnlocked();
+
+    pwalletMain->SendToStealthAddress(stealthAddr, nAmount, wtx);
+
+    return wtx.GetHash().GetHex();
+}
+

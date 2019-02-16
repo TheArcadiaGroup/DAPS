@@ -49,6 +49,7 @@ EXTRA_LIBRARIES = \
 if ENABLE_WALLET
 BITCOIN_INCLUDES += $(BDB_CPPFLAGS)
 EXTRA_LIBRARIES += libbitcoin_wallet.a
+EXTRA_LIBRARIES += libboost_regex.a
 endif
 
 if ENABLE_ZMQ

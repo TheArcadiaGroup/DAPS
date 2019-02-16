@@ -117,8 +117,8 @@ void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent)
     // and this is the only place, where this address is supplied.
 
 #endif
-    widget->setValidator(new BitcoinAddressEntryValidator(parent));
-    widget->setCheckValidator(new BitcoinAddressCheckValidator(parent));
+    //widget->setValidator(new BitcoinAddressEntryValidator(parent));
+    //widget->setCheckValidator(new BitcoinAddressCheckValidator(parent));
 }
 
 void setupAmountWidget(QLineEdit* widget, QWidget* parent)

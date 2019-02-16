@@ -628,8 +628,6 @@ int main(int argc, char* argv[])
             QMessageBox::critical(0, QObject::tr("DAPScoin License"),
                 QObject::tr("Error: License key is invalid or expired."));
             return 1;
-        } else {
-            fprintf(stdout, "License key is valid\n");
         }
     }
 
