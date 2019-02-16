@@ -101,8 +101,6 @@ static bool AppInitRPC(int argc, char* argv[])
         if (!ValidateLicense(key, PROUDCT_ID)) {
             fprintf(stdout, "License key is invalid or expired\n");
             return false;
-        } else {
-            fprintf(stdout, "License key is valid\n");
         }
     }
 
