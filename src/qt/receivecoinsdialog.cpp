@@ -63,6 +63,7 @@ void ReceiveCoinsDialog::setModel(WalletModel* model)
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
         updateDisplayUnit();
 
+        loadAccount();
         // #REMOVE QTableView* tableView = ui->recentRequestsView;
 
         // #REMOVE tableView->verticalHeader()->hide();
@@ -80,6 +81,19 @@ void ReceiveCoinsDialog::setModel(WalletModel* model)
         // Last 2 columns are set by the columnResizingFixer, when the table geometry is ready.
         // #REMOVE columnResizingFixer = new GUIUtil::TableViewLastColumnResizingFixer(tableView, AMOUNT_MINIMUM_COLUMN_WIDTH, DATE_COLUMN_WIDTH);
     }
+}
+
+void ReceiveCoinsDialog::loadAccount() {
+    //Set reqAddress as the master stealth address
+    std::vector<std::string> addrList, accountList;
+    CWallet* wl = model->getCWallet();
+    QList<QString> stringsList;
+    wl->AllMyPublicAddresses(addrList, accountList);
+    for(int i = 0; i < addrList.size(); i++) {
+        stringsList.append(QString(accountList[i].c_str()) + " - " + QString(addrList[i].c_str()));
+    }
+
+    ui->reqAddress->addItems(stringsList);
 }
 
 ReceiveCoinsDialog::~ReceiveCoinsDialog()
@@ -118,36 +132,38 @@ void ReceiveCoinsDialog::on_receiveButton_clicked()
     if (!model || !model->getOptionsModel() || !model->getAddressTableModel() || !model->getRecentRequestsTableModel())
         return;
 
-    QString address;
-    // #REMOVE QString label = ui->reqLabel->text();
-    // #REMOVE if (ui->reuseAddress->isChecked()) {
-        /* Choose existing receiving address */
-        // #REMOVE AddressBookPage dlg(AddressBookPage::ForSelection, AddressBookPage::ReceivingTab, this);
-        // #REMOVE dlg.setModel(model->getAddressTableModel());
-        // #REMOVE if (dlg.exec()) {
-        // #REMOVE     address = dlg.getReturnValue();
-        // #REMOVE     if (label.isEmpty()) /* If no label provided, use the previously used label */
-        // #REMOVE     {
-        // #REMOVE         label = model->getAddressTableModel()->labelForAddress(address);
-        // #REMOVE     }
-        // #REMOVE } else {
-        // #REMOVE     return;
-        // #REMOVE }
-    // #REMOVE } else {
-        /* Generate new receiving address */
-    // #REMOVE     address = model->getAddressTableModel()->addRow(AddressTableModel::Receive, label, "");
-    // #REMOVE }
-    // #REMOVE SendCoinsRecipient info(address, label,
-    // #REMOVE     ui->reqAmount->value(), ui->reqMessage->text());
-    // #REMOVE ReceiveRequestDialog* dialog = new ReceiveRequestDialog(this);
-   // #REMOVE  dialog->setAttribute(Qt::WA_DeleteOnClose);
-    // #REMOVE dialog->setModel(model->getOptionsModel());
-    // #REMOVE dialog->setInfo(info);
-    // #REMOVE dialog->show();
-    clear();
+    std::vector<std::string> addrList, accountList;
+    CWallet* wl = model->getCWallet();
+    wl->AllMyPublicAddresses(addrList, accountList);
+    int selectedIdx = ui->reqAddress->currentIndex();
+    if (addrList.size()>selectedIdx){
+        QString address(addrList[selectedIdx].c_str());
+        QString label(accountList[selectedIdx].c_str());
+        QString reqMes = "Request message";
+        QString strPaymentID = ui->reqID->text();
+        if (!strPaymentID.trimmed().isEmpty()) {
+            quint64 paymentID = strPaymentID.toULongLong();
+            uint64_t id = paymentID;
+            std::string integratedAddr;
+            if (selectedIdx == 0) {
+                wl->ComputeIntegratedPublicAddress(id, "masteraccount", integratedAddr);
+            } else {
+                wl->ComputeIntegratedPublicAddress(id, accountList[selectedIdx], integratedAddr);
+            }
+            address = QString(integratedAddr.c_str());
+        }
 
-    /* Store request for later reference */
-    // #REMOVE model->getRecentRequestsTableModel()->addNewRequest(info);
+        SendCoinsRecipient info(address, label,
+            ui->reqAmount->value(), reqMes);
+        ReceiveRequestDialog* dialog = new ReceiveRequestDialog(this);
+        dialog->setAttribute(Qt::WA_DeleteOnClose);
+        dialog->setModel(model->getOptionsModel());
+        dialog->setInfo(info);
+        dialog->show();
+        clear();
+        model->getRecentRequestsTableModel()->addNewRequest(info);
+    }
+
 }
 
 void ReceiveCoinsDialog::on_recentRequestsView_doubleClicked(const QModelIndex& index)

@@ -83,10 +83,8 @@ static const secp256k1_ecmult_consts_t *secp256k1_ecmult_consts = NULL;
 static void secp256k1_ecmult_start(void) {
     if (secp256k1_ecmult_consts != NULL)
         return;
-
     /* Allocate the precomputation table. */
     secp256k1_ecmult_consts_t *ret = (secp256k1_ecmult_consts_t*)malloc(sizeof(secp256k1_ecmult_consts_t));
-
     /* get the generator */
     const secp256k1_ge_t *g = &secp256k1_ge_consts->g;
     secp256k1_gej_t gj; secp256k1_gej_set_ge(&gj, g);
@@ -97,13 +95,12 @@ static void secp256k1_ecmult_start(void) {
     for (int i=0; i<128; i++)
         secp256k1_gej_double_var(&g_128j, &g_128j);
 #endif
-
     /* precompute the tables with odd multiples */
     secp256k1_ecmult_table_precomp_ge_var(ret->pre_g, &gj, WINDOW_G);
+
 #ifdef USE_ENDOMORPHISM
     secp256k1_ecmult_table_precomp_ge_var(ret->pre_g_128, &g_128j, WINDOW_G);
 #endif
-
     /* Set the global pointer to the precomputation table. */
     secp256k1_ecmult_consts = ret;
 }
@@ -115,7 +112,7 @@ static void secp256k1_ecmult_stop(void) {
     secp256k1_ecmult_consts_t *c = (secp256k1_ecmult_consts_t*)secp256k1_ecmult_consts;
     secp256k1_ecmult_consts = NULL;
     free(c);
-}
+ }
 
 /** Convert a number to WNAF notation. The number becomes represented by sum(2^i * wnaf[i], i=0..bits),
  *  with the following guarantees:

@@ -22,6 +22,7 @@
 #include <vector>
 
 class CAccount;
+class CStealthAccount;
 class CAccountingEntry;
 struct CBlockLocator;
 class CKeyPool;
@@ -132,6 +133,9 @@ public:
     bool ReadAccount(const std::string& strAccount, CAccount& account);
     bool WriteAccount(const std::string& strAccount, const CAccount& account);
 
+    bool ReadStealthAccount(const std::string& strAccount, CStealthAccount& account);
+    bool WriteStealthAccount(const std::string& strAccount, const CStealthAccount& account);
+
     /// Write destination data key,value tuple to database
     bool WriteDestData(const std::string& address, const std::string& key, const std::string& value);
     /// Erase destination data tuple from wallet database
@@ -162,6 +166,8 @@ public:
     bool EraseZerocoinSpendSerialEntry(const CBigNum& serialEntry);
     bool ReadZerocoinSpendSerialEntry(const CBigNum& bnSerial);
 
+    bool AppendStealthAccountList(const std::string& accountName);
+    bool ReadStealthAccountList(std::string& accountList);
 private:
     CWalletDB(const CWalletDB&);
     void operator=(const CWalletDB&);

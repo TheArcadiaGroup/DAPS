@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2015-2017 The DAPScoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -163,10 +163,10 @@ void SendCoinsDialog::setModel(WalletModel* model)
         }
 
         setBalance(model->getBalance(), model->getUnconfirmedBalance(), model->getImmatureBalance(),
-                   model->getZerocoinBalance (), model->getUnconfirmedZerocoinBalance (), model->getImmatureZerocoinBalance (),
-                   model->getWatchBalance(), model->getWatchUnconfirmedBalance(), model->getWatchImmatureBalance());
-        connect(model, SIGNAL(balanceChanged(CAmount, CAmount,  CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this, 
-                         SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
+            model->getZerocoinBalance(), model->getUnconfirmedZerocoinBalance(), model->getImmatureZerocoinBalance(),
+            model->getWatchBalance(), model->getWatchUnconfirmedBalance(), model->getWatchImmatureBalance());
+        connect(model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
+            SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
         updateDisplayUnit();
 
@@ -220,7 +220,6 @@ SendCoinsDialog::~SendCoinsDialog()
 
 void SendCoinsDialog::on_sendButton_clicked()
 {
-
     if (!model || !model->getOptionsModel())
         return;
 
@@ -235,54 +234,21 @@ void SendCoinsDialog::on_sendButton_clicked()
     if (!valid || recipients.isEmpty()) {
         return;
     }
- 
-    //set split block in model
-    CoinControlDialog::coinControl->fSplitBlock = ui->splitBlockCheckBox->checkState() == Qt::Checked;
 
-    if (CoinControlDialog::coinControl->fSplitBlock)
-        CoinControlDialog::coinControl->nSplitBlock = int(ui->splitBlockLineEdit->text().toInt());
-
-    QString strFunds = tr("using") + " <b>" + tr("anonymous funds") + "</b>";
     QString strFee = "";
-    recipients[0].inputType = ALL_COINS;
-    strFunds = tr("using") + " <b>" + tr("any available funds (not recommended)") + "</b>";
-
-        recipients[0].useSwiftTX = false;
 
     // Format confirmation message
     QStringList formatted;
+    formatted.append("<div style='text-align:center'");
     foreach (const SendCoinsRecipient& rcp, recipients) {
-        // generate bold amount string
-        QString amount = "<b>" + BitcoinUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), rcp.amount);
-        amount.append("</b> ").append(strFunds);
-
-        // generate monospace address string
-        QString address = "<span style='font-family: monospace;'>" + rcp.address;
-        address.append("</span>");
+        QString amount = "<b>" + BitcoinUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), rcp.amount) + "</b>";
 
         QString recipientElement;
-
-        if (!rcp.paymentRequest.IsInitialized()) // normal payment
-        {
-            if (rcp.label.length() > 0) // label with address
-            {
-                recipientElement = tr("%1 to %2").arg(amount, GUIUtil::HtmlEscape(rcp.label));
-                recipientElement.append(QString(" (%1)").arg(address));
-            } else // just address
-            {
-                recipientElement = tr("%1 to %2").arg(amount, address);
-            }
-        } else if (!rcp.authenticatedMerchant.isEmpty()) // secure payment request
-        {
-            recipientElement = tr("%1 to %2").arg(amount, GUIUtil::HtmlEscape(rcp.authenticatedMerchant));
-        } else // insecure payment request
-        {
-            recipientElement = tr("%1 to %2").arg(amount, address);
-        }
-
-        if (fSplitBlock) {
-            recipientElement.append(tr(" split into %1 outputs using the UTXO splitter.").arg(CoinControlDialog::coinControl->nSplitBlock));
-        }
+        recipientElement.append("<br/><span class='h1 b'>" + amount + "</span><br/>");
+        recipientElement.append("<br/><br>");
+        if (rcp.label.length() > 0)
+            recipientElement.append("<br/><span class='h3'>" + tr("Description") + ": <br/><b>" + GUIUtil::HtmlEscape(rcp.label) + "</b></span>");
+        recipientElement.append("<br/><span class='h3'>" + tr("Destination") + ": <br/><b>" + rcp.address + "</b></span>");
 
         formatted.append(recipientElement);
     }
@@ -329,57 +295,31 @@ void SendCoinsDialog::send(QList<SendCoinsRecipient> recipients, QString strFee,
     }
 
     CAmount txFee = currentTransaction.getTransactionFee();
-    QString questionString = tr("Are you sure you want to send?");
+    QString questionString = "<br/><span class='h2'><b>" + tr("Are you sure?") + "</b></span>";
     questionString.append("<br /><br />%1");
 
-    if (txFee > 0) {
-        // append fee string if a fee is required
-        questionString.append("<hr /><span style='color:#aa0000;'>");
-        questionString.append(BitcoinUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), txFee));
-        questionString.append("</span> ");
-        questionString.append(tr("are added as transaction fee"));
-        questionString.append(" ");
-        questionString.append(strFee);
+    questionString.append("<br /><span class='h3'>" + tr("Transaction fee") + ": <br/><b>");
+    questionString.append(BitcoinUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), txFee));
+    questionString.append(strFee + "</b></span>");
 
-        // append transaction size
-        questionString.append(" (" + QString::number((double)currentTransaction.getTransactionSize() / 1000) + " kB)");
-    }
+    questionString.append("<br/><br/>");
 
-    // add total amount in all subdivision units
     questionString.append("<hr />");
-    CAmount totalAmount = currentTransaction.getTotalTransactionAmount() + txFee;
-    QStringList alternativeUnits;
-    foreach (BitcoinUnits::Unit u, BitcoinUnits::availableUnits()) {
-        if (u != model->getOptionsModel()->getDisplayUnit())
-            alternativeUnits.append(BitcoinUnits::formatHtmlWithUnit(u, totalAmount));
-    }
-
-    // Show total amount + all alternative units
-    questionString.append(tr("Total Amount = <b>%1</b><br />= %2")
-                              .arg(BitcoinUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), totalAmount))
-                              .arg(alternativeUnits.join("<br />= ")));
-
-    // Limit number of displayed entries
-    int messageEntries = formatted.size();
-    int displayedEntries = 0;
-    for (int i = 0; i < formatted.size(); i++) {
-        if (i >= MAX_SEND_POPUP_ENTRIES) {
-            formatted.removeLast();
-            i--;
-        } else {
-            displayedEntries = i + 1;
-        }
-    }
-    questionString.append("<hr />");
-    questionString.append(tr("<b>(%1 of %2 entries displayed)</b>").arg(displayedEntries).arg(messageEntries));
 
     // Display message box
-    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm send coins"),
-        questionString.arg(formatted.join("<br />")),
-        QMessageBox::Yes | QMessageBox::Cancel,
-        QMessageBox::Cancel);
 
-    if (retval != QMessageBox::Yes) {
+    QMessageBox confirmBox;
+    confirmBox.setWindowFlags(Qt::SplashScreen);
+    confirmBox.setStyleSheet(GUIUtil::loadStyleSheet());
+    confirmBox.setStyleSheet("margin-right: 25px;");
+
+    confirmBox.setText(questionString.arg(formatted.join("<br />")));
+    confirmBox.addButton(tr("Cancel"), QMessageBox::ActionRole);
+    QPushButton* sendButton = confirmBox.addButton(tr("Send"), QMessageBox::ActionRole);
+
+    confirmBox.exec();
+
+    if (confirmBox.clickedButton() != sendButton) {
         fNewRecipientAllowed = true;
         return;
     }
@@ -467,7 +407,7 @@ QWidget* SendCoinsDialog::setupTabChain(QWidget* prev)
         }
     }
     QWidget::setTabOrder(prev, ui->sendButton);
-   // #REMOVE  QWidget::setTabOrder(ui->sendButton, ui->clearButton);
+    // #REMOVE  QWidget::setTabOrder(ui->sendButton, ui->clearButton);
     // #REMOVE QWidget::setTabOrder(ui->clearButton, ui->addButton);
     return ui->addButton;
 }
@@ -518,9 +458,7 @@ bool SendCoinsDialog::handlePaymentRequest(const SendCoinsRecipient& rv)
     return true;
 }
 
-void SendCoinsDialog::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
-                                 const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
-                                 const CAmount& watchBalance, const CAmount& watchUnconfirmedBalance, const CAmount& watchImmatureBalance)
+void SendCoinsDialog::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance, const CAmount& watchBalance, const CAmount& watchUnconfirmedBalance, const CAmount& watchImmatureBalance)
 {
     Q_UNUSED(unconfirmedBalance);
     Q_UNUSED(immatureBalance);
@@ -543,9 +481,9 @@ void SendCoinsDialog::updateDisplayUnit()
     TRY_LOCK(cs_main, lockMain);
     if (!lockMain) return;
 
-    setBalance(model->getBalance(), model->getUnconfirmedBalance(), model->getImmatureBalance(), 
-               model->getZerocoinBalance (), model->getUnconfirmedZerocoinBalance (), model->getImmatureZerocoinBalance (),
-               model->getWatchBalance(), model->getWatchUnconfirmedBalance(), model->getWatchImmatureBalance());
+    setBalance(model->getBalance(), model->getUnconfirmedBalance(), model->getImmatureBalance(),
+        model->getZerocoinBalance(), model->getUnconfirmedZerocoinBalance(), model->getImmatureZerocoinBalance(),
+        model->getWatchBalance(), model->getWatchUnconfirmedBalance(), model->getWatchImmatureBalance());
     coinControlUpdateLabels();
     ui->customFee->setDisplayUnit(model->getOptionsModel()->getDisplayUnit());
     updateMinFeeLabel();
@@ -566,13 +504,27 @@ void SendCoinsDialog::processSendCoinsReturn(const WalletModel::SendCoinsReturn&
     QString error = "";
 
     switch (sendCoinsReturn.status) {
-    case WalletModel::InvalidAddress:             error = tr("Invalid address.");  break;
-    case WalletModel::InvalidAmount:              error = tr("Invalid amount."); break;
-    case WalletModel::AmountExceedsBalance:       error = tr("Insufficient funds."); break;
-    case WalletModel::AmountWithFeeExceedsBalance:error = tr("The total exceeds your balance when the %1 transaction fee is included.").arg(msgArg);break;
-    case WalletModel::DuplicateAddress:           error = tr("Duplicate address found, can only send to each address once per send operation."); break;
-    case WalletModel::TransactionCreationFailed:  error = CClientUIInterface::MSG_ERROR; break;
-    case WalletModel::TransactionCommitFailed:    error = CClientUIInterface::MSG_ERROR; break;
+    case WalletModel::InvalidAddress:
+        error = tr("Invalid address.");
+        break;
+    case WalletModel::InvalidAmount:
+        error = tr("Invalid amount.");
+        break;
+    case WalletModel::AmountExceedsBalance:
+        error = tr("Insufficient funds.");
+        break;
+    case WalletModel::AmountWithFeeExceedsBalance:
+        error = tr("The total exceeds your balance when the %1 transaction fee is included.").arg(msgArg);
+        break;
+    case WalletModel::DuplicateAddress:
+        error = tr("Duplicate address found, can only send to each address once per send operation.");
+        break;
+    case WalletModel::TransactionCreationFailed:
+        error = CClientUIInterface::MSG_ERROR;
+        break;
+    case WalletModel::TransactionCommitFailed:
+        error = CClientUIInterface::MSG_ERROR;
+        break;
     case WalletModel::OK:
     default:
         return;
@@ -595,7 +547,6 @@ void SendCoinsDialog::updateFeeSectionControls()
     ui->labelMedium->setVisible(ui->radioCustomPerKilobyte->isChecked());
     ui->labelFast->setVisible(ui->radioCustomPerKilobyte->isChecked());
     ui->labelFaster->setVisible(ui->radioCustomPerKilobyte->isChecked());
-
 }
 
 void SendCoinsDialog::updateGlobalFeeVariables()
@@ -637,14 +588,14 @@ void SendCoinsDialog::updateSmartFeeLabel()
     // #REMOVE CFeeRate feeRate = mempool.estimateFee(nBlocksToConfirm);
     // #REMOVE if (feeRate <= CFeeRate(0)) // not enough data => minfee
     // #REMOVE {
-        // #REMOVE ui->labelSmartFee->setText(BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), CWallet::minTxFee.GetFeePerK()) + "/kB");
-        // #REMOVE ui->labelSmartFee2->show(); // (Smart fee not initialized yet. This usually takes a few blocks...)
-        // #REMOVE ui->labelFeeEstimation->setText("");
+    // #REMOVE ui->labelSmartFee->setText(BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), CWallet::minTxFee.GetFeePerK()) + "/kB");
+    // #REMOVE ui->labelSmartFee2->show(); // (Smart fee not initialized yet. This usually takes a few blocks...)
+    // #REMOVE ui->labelFeeEstimation->setText("");
     // #REMOVE } else {
-        // #REMOVE ui->labelSmartFee->setText(BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), feeRate.GetFeePerK()) + "/kB");
-        // #REMOVE ui->labelSmartFee2->hide();
-        // #REMOVE ui->labelFeeEstimation->setText(tr("Estimated to begin confirmation within %n block(s).", "", nBlocksToConfirm));
-   // #REMOVE  }
+    // #REMOVE ui->labelSmartFee->setText(BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), feeRate.GetFeePerK()) + "/kB");
+    // #REMOVE ui->labelSmartFee2->hide();
+    // #REMOVE ui->labelFeeEstimation->setText(tr("Estimated to begin confirmation within %n block(s).", "", nBlocksToConfirm));
+    // #REMOVE  }
 
     updateFeeMinimizedLabel();
 }
