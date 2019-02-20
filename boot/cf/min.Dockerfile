@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get install software-properties-common -y --fix-missing && \
     add-apt-repository ppa:bitcoin/bitcoin -y && \
     apt-get update && \
-    apt-get install libminiupnpc-dev libevent-dev libzmq3-dev libboost-dev libdb4.8++-dev libdb4.8-dev nano -y --fix-missing && \
+    apt-get install libminiupnpc-dev libevent-dev libzmq3-dev libboost-all-dev libdb4.8++-dev libdb4.8-dev nano -y --fix-missing && \
 #
     mkdir -p /usr/bin && \
     mkdir -p ~/.dapscoin/

@@ -24,14 +24,15 @@ metadata:
 spec:
   storageClassName: standard
   capacity:
-    storage: 0.1Gi
+    storage: 9Gi
   accessModes:
     - ReadWriteOnce
   claimRef:
     namespace: default
     name: staker-0-pv-claim
-  hostPath:
-    path: "/tmp/pv/staker0"
+  gcePersistentDisk:
+    fsType: ext4
+    pdName: stakingnode-0-service
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -44,7 +45,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: 9Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
