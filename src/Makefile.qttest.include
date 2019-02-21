@@ -46,6 +46,11 @@ else
 qt_test_test_dapscoin_qt_LDADD += $(CPPREST_LIBS)
 endif
 
+if TARGET_DARWIN
+qt_test_test_dapscoin_qt_LDFLAGS += -framework CoreFoundation -framework IOKit -framework Security
+qt_test_test_dapscoin_qt_LDADD += -lz
+endif
+
 CLEAN_BITCOIN_QT_TEST = $(TEST_QT_MOC_CPP) qt/test/*.gcda qt/test/*.gcno
 
 CLEANFILES += $(CLEAN_BITCOIN_QT_TEST)

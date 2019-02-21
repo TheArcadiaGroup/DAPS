@@ -442,6 +442,11 @@ else
 dapscoind_LDADD += $(CPPREST_LIBS)
 endif
 
+if TARGET_DARWIN
+dapscoind_LDFLAGS += -framework CoreFoundation -framework IOKit -framework Security
+dapscoind_LDADD += -lz
+endif
+
 # dapscoin-cli binary #
 dapscoin_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
@@ -481,6 +486,11 @@ else
 dapscoin_tx_LDADD += $(CPPREST_LIBS)
 endif
 
+if TARGET_DARWIN
+dapscoin_tx_LDFLAGS += -framework CoreFoundation -framework IOKit -framework Security
+dapscoin_tx_LDADD += -lz
+endif
+
 if TARGET_WINDOWS
 dapscoin_cli_SOURCES += dapscoin-cli-res.rc
 endif
@@ -490,6 +500,11 @@ if TARGET_WINDOWS
 dapscoin_cli_LDADD += -lchilkat-9.5.0
 else
 dapscoin_cli_LDADD += $(CPPREST_LIBS)
+endif
+
+if TARGET_DARWIN
+dapscoin_cli_LDFLAGS += -framework CoreFoundation -framework IOKit -framework Security
+dapscoin_cli_LDADD += -lz
 endif
 
 if BUILD_BITCOIN_LIBS
