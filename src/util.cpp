@@ -1196,7 +1196,7 @@ bool activateMachine(std::string key) {
         delete data;
         return false;
     }
-
+    
     success = attributes->AddStringAt(-1,"fingerprint",GetMACAddress().c_str());
     if (!success) {
         std::cout << "activate machine error!" << "\r\n";
@@ -1447,7 +1447,7 @@ static kern_return_t GetMACAddress(io_iterator_t intfIterator,
                     kCFAllocatorDefault,
                     0);
             if (MACAddressAsCFData) {
-                CFShow(MACAddressAsCFData); // for display purposes only; output goes to stderr
+                // CFShow(MACAddressAsCFData); // for display purposes only; output goes to stderr
                  
                 // Get the raw bytes of the MAC address from the CFData
                 CFDataGetBytes((CFDataRef)MACAddressAsCFData,
@@ -1478,6 +1478,8 @@ long MACAddressUtility::GetMACAddressMAC(unsigned char * result)
     }
     while(false);
     (void) IOObjectRelease(intfIterator);
+
+    return kernResult;
 }
  
 #elif defined(LINUX) || defined(linux)
