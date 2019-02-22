@@ -16,7 +16,11 @@
 
 #define _(x) std::string(x) /* Keep the _() around in case gettext or such will be used later to translate non-UI */
 
+#if defined(__APPLE__)
+#define PROUDCT_ID "7d97466d-7ec0-4ad7-9ea1-4c949c6a062b"
+#else
 #define PROUDCT_ID "5dde7136-1ed8-4743-a4e3-aebf6d7fd370"
+#endif
 
 using namespace std;
 using namespace boost;
