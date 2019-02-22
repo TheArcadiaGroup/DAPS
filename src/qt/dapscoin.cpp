@@ -83,7 +83,7 @@ Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin);
 #if defined(WIN32) || defined(UNDER_CE)
 #define PRODUCT_ID "4ca14b55-147f-4590-b089-07721a66079a"
 #elif defined(__APPLE__)
-#define PROUDCT_ID "6ff70e91-bf9f-4fac-995a-5462506a0803"
+#define PRODUCT_ID "6ff70e91-bf9f-4fac-995a-5462506a0803"
 #else
 #define PRODUCT_ID "8489bdc5-d847-4a18-8fe9-3d5ac4d49b56"
 #endif
