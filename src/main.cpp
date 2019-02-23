@@ -3255,6 +3255,13 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
 
             // Check that the inputs are not marked as invalid/fraudulent
             for (CTxIn in : tx.vin) {
+                const CKeyImage& keyImage = in.keyImage;
+                bool isMine;
+                if (pblocktree->ReadKeyImage(keyImage.GetHex(), isMine)) {
+                    return state.Invalid(error("AcceptToMemoryPool : key image already spent"),
+                                         REJECT_DUPLICATE, "bad-txns-inputs-spent");
+                }
+                pblocktree->WriteKeyImage(keyImage.GetHex(), false);
                 if (!ValidOutPoint(in.prevout, pindex->nHeight)) {
                     return state.DoS(100, error("%s : tried to spend invalid input %s in tx %s", __func__,
                                                 in.prevout.ToString(),

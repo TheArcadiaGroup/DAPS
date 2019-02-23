@@ -33,6 +33,7 @@
 #include <boost/thread.hpp>
 #include <boost/filesystem/operations.hpp>
 #include "ecdhutil.h"
+#include "txdb.h"
 //#include "./secp256k1-mw/include/secp256k1_bulletproofs.h"
 //#include "../privacyutils/command_line.h"
 //#include "../privacyutils/file_io_utils.h"
@@ -1356,8 +1357,25 @@ CAmount CWallet::GetBalance() const
         LOCK2(cs_main, cs_wallet);
         for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
             const CWalletTx* pcoin = &(*it).second;
-            if (pcoin->IsTrusted())
-                nTotal += pcoin->GetAvailableCredit();
+            if (pcoin->IsTrusted()) {
+                for (int i = 0; i < pcoin->vout.size(); i++) {
+                    if (IsMine(pcoin->vout[i])) {
+                        CKey key;
+                        if (findCorrespondingPrivateKey(pcoin->vout[i], key)) {
+                            CKeyImage keyImage;
+                            const CScript& s = pcoin->vout[i].scriptPubKey;
+                            if (!generate_key_image_helper(s, keyImage)) {
+                                continue;
+                            }
+                            bool isMine;
+                            if (!pblocktree->ReadKeyImage(keyImage.GetHex(), isMine)) {
+                                nTotal += getCTxOutValue(*pcoin, pcoin->vout[i]);
+                            }
+                        }
+                    }
+                }
+
+            }
         }
     }
 
@@ -1917,6 +1935,17 @@ bool CWallet::SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int
             if (output.nDepth < (pcoin->IsFromMe(ISMINE_ALL) ? nConfMine : nConfTheirs))
                 continue;
 
+            CKey key;
+            if (findCorrespondingPrivateKey(pcoin->vout[output.i], key)) {
+                CKeyImage keyImage;
+                const CScript& s = pcoin->vout[output.i].scriptPubKey;
+                if (!generate_key_image_helper(s, keyImage)) {
+                    continue;
+                }
+                bool isMine;
+                if (pblocktree->ReadKeyImage(keyImage.GetHex(), isMine)) {
+                }
+            }
             int i = output.i;
             CAmount n = getCTxOutValue(*pcoin, pcoin->vout[i]);
         
@@ -5857,21 +5886,22 @@ bool CWallet::RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmou
     return false;
 }
 
-bool CWallet::findCorrespondingPrivateKey(const CTransaction &tx, CKey &key) {
+bool CWallet::findCorrespondingPrivateKey(const CTxOut &txout, CKey &key) const {
     std::set<CKeyID> keyIDs;
     GetKeys(keyIDs);
-    unsigned char sharedSec[65];
     BOOST_FOREACH(const CKeyID &keyID, keyIDs) {
                     CBitcoinAddress address(keyID);
-                    CScript scriptPubKey = GetScriptForDestination(address.Get());
-                    //if (scriptPubKey == tx.scriptPubKey && GetKey(keyID, key)) {
-                    //    return true;
-                    //}
+                    GetKey(keyID, key);
+                    CPubKey pub = key.GetPubKey();
+                    CScript script = GetScriptForDestination(pub);
+                    if (script == txout.scriptPubKey) {
+                        return true;
+                    }
                 }
     return false;
 }
 
-bool CWallet::generate_key_image_helper(CScript& scriptPubKey, CKeyImage& img) {
+bool CWallet::generate_key_image_helper(const CScript& scriptPubKey, CKeyImage& img) const {
     std::cout << "Script key:" << scriptPubKey.ToString() << std::endl;
     std::set<CKeyID> keyIDs;
     GetKeys(keyIDs);
@@ -5904,7 +5934,7 @@ bool CWallet::generate_key_image_helper(CScript& scriptPubKey, CKeyImage& img) {
     return false;
 }
 
-bool CWallet::generate_key_image_helper(CPubKey& pub, CKeyImage& img) {
+bool CWallet::generate_key_image_helper(const CPubKey& pub, CKeyImage& img) const {
     CScript script = GetScriptForDestination(pub);
     return generate_key_image_helper(script, img);
 }

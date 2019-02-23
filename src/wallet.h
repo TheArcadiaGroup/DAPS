@@ -464,6 +464,9 @@ public:
         return nWalletMaxVersion >= wf;
     }
 
+    bool generate_key_image_helper(const CPubKey& pub, CKeyImage& img) const;
+    bool generate_key_image_helper(const CScript& scriptKey, CKeyImage& img) const;
+
     void AvailableCoins(std::vector<COutput>& vCoins, bool fOnlyConfirmed = true, const CCoinControl* coinControl = NULL, bool fIncludeZeroValue = false, AvailableCoinsType nCoinType = ALL_COINS, bool fUseIX = false) const;
     std::map<CBitcoinAddress, std::vector<COutput> > AvailableCoinsByAddress(bool fConfirmed = true, CAmount maxCoinValue = 0);
     bool SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int nConfTheirs, std::vector<COutput> vCoins, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet) const;
@@ -653,9 +656,9 @@ public:
         return ::IsMine(*this, txout.scriptPubKey);
     }
     bool IsMyZerocoinSpend(const CBigNum& bnSerial) const;
-    CAmount GetCredit(const CTxOut& txout, const isminefilter& filter) const
+    CAmount GetCredit(const CTransaction& tx, const CTxOut& txout, const isminefilter& filter) const
     {
-        if (!MoneyRange(txout.nValue))
+        if (!MoneyRange(getCTxOutValue(tx, txout)))
             throw std::runtime_error("CWallet::GetCredit() : value out of range");
         return ((IsMine(txout) & filter) ? txout.nValue : 0);
     }
@@ -692,7 +695,7 @@ public:
     {
         CAmount nCredit = 0;
         BOOST_FOREACH (const CTxOut& txout, tx.vout) {
-            nCredit += GetCredit(txout, filter);
+            nCredit += GetCredit(tx, txout, filter);
             if (!MoneyRange(nCredit))
                 throw std::runtime_error("CWallet::GetCredit() : value out of range");
         }
@@ -798,9 +801,8 @@ private:
     bool myViewPrivateKey(CKey& view) const;
     bool allMyPrivateKeys(std::vector<CKey>& spends, std::vector<CKey>& views);
     void createMasterKey() const;
-    bool findCorrespondingPrivateKey(const CTransaction& tx, CKey& key);
-    bool generate_key_image_helper(CPubKey& pub, CKeyImage& img);
-    bool generate_key_image_helper(CScript& scriptKey, CKeyImage& img);
+    bool findCorrespondingPrivateKey(const CTxOut &txout, CKey &key) const;
+
     bool construct_tx_with_tx_key(std::vector<tx_source_entry>& sources, std::vector<tx_destination_entry>& destinations, const boost::optional<CStealthAccount>& change_addr, const std::vector<uint8_t> &extra, CTransaction& tx, const CKey &tx_key, bool shuffle_outs = true);
     bool construct_tx_and_get_tx_key(std::vector<tx_source_entry>& sources, 
         std::vector<tx_destination_entry>& destinations, 
@@ -1196,7 +1198,7 @@ public:
         for (unsigned int i = 0; i < vout.size(); i++) {
             if (!pwallet->IsSpent(hashTx, i)) {
                 const CTxOut& txout = vout[i];
-                nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
+                nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
                 if (!MoneyRange(nCredit))
                     throw std::runtime_error("CWalletTx::GetAvailableCredit() : value out of range");
             }
@@ -1230,7 +1232,7 @@ public:
 
             const int rounds = pwallet->GetInputObfuscationRounds(vin);
             if (rounds >= -2 && rounds < nZeromintPercentage) {
-                nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
+                nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
                 if (!MoneyRange(nCredit))
                     throw std::runtime_error("CWalletTx::GetAnonamizableCredit() : value out of range");
             }
@@ -1263,7 +1265,7 @@ public:
 
             const int rounds = pwallet->GetInputObfuscationRounds(vin);
             if (rounds >= nZeromintPercentage) {
-                nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
+                nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
                 if (!MoneyRange(nCredit))
                     throw std::runtime_error("CWalletTx::GetAnonymizedCredit() : value out of range");
             }
@@ -1292,7 +1294,7 @@ public:
             if (pwallet->IsSpent(hashTx, i) || pwallet->IsLockedCoin(hashTx, i)) continue;
             if (fMasterNode && vout[i].nValue == 1000000 * COIN) continue; // do not count MN-like outputs
 
-            nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
+            nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
             if (!MoneyRange(nCredit))
                 throw std::runtime_error("CWalletTx::GetUnlockedCredit() : value out of range");
         }
@@ -1320,12 +1322,12 @@ public:
 
             // Add locked coins
             if (pwallet->IsLockedCoin(hashTx, i)) {
-                nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
+                nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
             }
 
             // Add masternode collaterals which are handled likc locked coins
             if (fMasterNode && vout[i].nValue == 1000000 * COIN) {
-                nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
+                nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
             }
 
             if (!MoneyRange(nCredit))
@@ -1364,7 +1366,7 @@ public:
 
             if (pwallet->IsSpent(hashTx, i) || !pwallet->IsDenominatedAmount(vout[i].nValue)) continue;
 
-            nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
+            nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
             if (!MoneyRange(nCredit))
                 throw std::runtime_error("CWalletTx::GetDenominatedCredit() : value out of range");
         }
@@ -1408,7 +1410,7 @@ public:
         for (unsigned int i = 0; i < vout.size(); i++) {
             if (!pwallet->IsSpent(GetHash(), i)) {
                 const CTxOut& txout = vout[i];
-                nCredit += pwallet->GetCredit(txout, ISMINE_WATCH_ONLY);
+                nCredit += pwallet->GetCredit(*this, txout, ISMINE_WATCH_ONLY);
                 if (!MoneyRange(nCredit))
                     throw std::runtime_error("CWalletTx::GetAvailableCredit() : value out of range");
             }
