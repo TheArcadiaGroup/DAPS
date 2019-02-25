@@ -52,7 +52,7 @@ isminetype IsMine(const CKeyStore& keystore, const CScript& scriptPubKey)
 
         return ISMINE_NO;
     }
-    std::cout << "which type = " << whichType << std::endl;
+    //std::cout << "which type = " << whichType << std::endl;
     CKeyID keyID;
     switch (whichType) {
     case TX_NONSTANDARD:
