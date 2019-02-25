@@ -5923,10 +5923,15 @@ bool CWallet::generate_key_image_helper(const CScript& scriptPubKey, CKeyImage& 
             unsigned char ki[65];
             //copy newPubKey into ki
             memcpy(ki, newPubKey.begin(), newPubKey.size());
-            if (!secp256k1_ec_pubkey_tweak_mul(ki, newPubKey.size(), key.begin())) {
-                std::cout << "false_secp256k1" << std::endl;
-                return false;
+            while (!secp256k1_ec_pubkey_tweak_mul(ki, newPubKey.size(), key.begin())) {
+                std::cout << "continue hashing the public key" << std::endl;
+                hash = newPubKey.GetHash();
+                pubData[0] = *(newPubKey.begin());
+                memcpy(pubData + 1, hash.begin(), 32);
+                newPubKey.Set(pubData, pubData + 33);
+                memcpy(ki, newPubKey.begin(), newPubKey.size());
             }
+            std::cout << "Successfully generated key image" << std::endl;
             img = CKeyImage(ki, ki + 33);
             return true;
         }
