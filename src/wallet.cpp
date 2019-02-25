@@ -1720,16 +1720,17 @@ void CWallet::AvailableCoins(vector<COutput>& vCoins, bool fOnlyConfirmed, const
 
             for (unsigned int i = 0; i < pcoin->vout.size(); i++) {
                 bool found = false;
+                CAmount value = getCTxOutValue(*pcoin, pcoin->vout[i]);
                 if (nCoinType == ONLY_DENOMINATED) {
-                    found = IsDenominatedAmount(pcoin->vout[i].nValue);
+                    found = IsDenominatedAmount(value);
                 } else if (nCoinType == ONLY_NOT1000000IFMN) {
-                    found = !(fMasterNode && pcoin->vout[i].nValue == 1000000 * COIN);
+                    found = !(fMasterNode && value == 1000000 * COIN);
                 } else if (nCoinType == ONLY_NONDENOMINATED_NOT1000000IFMN) {
-                    if (IsCollateralAmount(pcoin->vout[i].nValue)) continue; // do not use collateral amounts
-                    found = !IsDenominatedAmount(pcoin->vout[i].nValue);
-                    if (found && fMasterNode) found = pcoin->vout[i].nValue != 1000000 * COIN; // do not use Hot MN funds
+                    if (IsCollateralAmount(value)) continue; // do not use collateral amounts
+                    found = !IsDenominatedAmount(value);
+                    if (found && fMasterNode) found = value != 1000000 * COIN; // do not use Hot MN funds
                 } else if (nCoinType == ONLY_1000000) {
-                    found = pcoin->vout[i].nValue == 1000000 * COIN;
+                    found = value == 1000000 * COIN;
                 } else {
                     found = true;
                 }
@@ -1750,7 +1751,7 @@ void CWallet::AvailableCoins(vector<COutput>& vCoins, bool fOnlyConfirmed, const
 
                 if (IsLockedCoin((*it).first, i) && nCoinType != ONLY_1000000)
                     continue;
-                if (pcoin->vout[i].nValue <= 0 && !fIncludeZeroValue)
+                if (value <= 0 && !fIncludeZeroValue)
                     continue;
                 if (coinControl && coinControl->HasSelected() && !coinControl->fAllowOtherInputs && !coinControl->IsSelected((*it).first, i))
                     continue;
@@ -1773,7 +1774,8 @@ map<CBitcoinAddress, vector<COutput> > CWallet::AvailableCoinsByAddress(bool fCo
 
     map<CBitcoinAddress, vector<COutput> > mapCoins;
     BOOST_FOREACH (COutput out, vCoins) {
-        if (maxCoinValue > 0 && out.tx->vout[out.i].nValue > maxCoinValue)
+        CAmount value = getCOutPutValue(out);
+        if (maxCoinValue > 0 && value > maxCoinValue)
             continue;
 
         CTxDestination address;
@@ -1851,7 +1853,8 @@ bool CWallet::SelectStakeCoins(std::set<std::pair<const CWalletTx*, unsigned int
 
     for (const COutput& out : vCoins) {
         //make sure not to outrun target amount
-        if (nAmountSelected + out.tx->vout[out.i].nValue > nTargetAmount)
+        CAmount value = getCOutPutValue(out);
+        if (nAmountSelected + value > nTargetAmount)
             continue;
 
         //if zerocoinspend, then use the block time
@@ -1872,7 +1875,7 @@ bool CWallet::SelectStakeCoins(std::set<std::pair<const CWalletTx*, unsigned int
 
         //add to our stake set
         setCoins.insert(make_pair(out.tx, out.i));
-        nAmountSelected += out.tx->vout[out.i].nValue;
+        nAmountSelected += value;
     }
     return true;
 }
@@ -5566,8 +5569,10 @@ bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount
     if (nValue <= 0)
         throw runtime_error("Invalid amount");
 
-    if (nValue > pwalletMain->GetBalance())
+    if (nValue > pwalletMain->GetBalance()) {
+        LogPrintf("Wallet does not have sufficient funds");
         throw runtime_error("Insufficient funds");
+    }
 
     string strError;
     if (this->IsLocked()) {
@@ -5654,7 +5659,7 @@ bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount
                                                    nFeeRequired, strError, &control, ALL_COINS, fUseIX, (CAmount)0)) {
         if (nValue + nFeeRequired > pwalletMain->GetBalance())
             strError = strprintf("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds!", FormatMoney(nFeeRequired));
-        LogPrintf("SendToStealthAddress() : %s\n", strError);
+        LogPrintf("SendToStealthAddress() : Not enough! %s\n", strError);
         throw runtime_error(strError);
     }
     if (!pwalletMain->CommitTransaction(wtxNew, reservekey, (!fUseIX ? "tx" : "ix")))
@@ -5846,7 +5851,6 @@ bool CWallet::myViewPrivateKey(CKey& view) const {
     GetKey(keyID, view);
     return true;
 }
-
 
 bool CWallet::RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmount &amount) const {
     if (tx.IsCoinBase()) {

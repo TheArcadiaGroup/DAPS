@@ -957,6 +957,7 @@ public:
     char fFromMe;
     std::string strFromAccount;
     int64_t nOrderPos; //! position in ordered transaction list
+    char fSpent = false;
 
     // memory only
     mutable bool fDebitCached;
@@ -972,6 +973,7 @@ public:
     mutable bool fImmatureWatchCreditCached;
     mutable bool fAvailableWatchCreditCached;
     mutable bool fChangeCached;
+
     mutable CAmount nDebitCached;
     mutable CAmount nCreditCached;
     mutable CAmount nImmatureCreditCached;
@@ -985,6 +987,7 @@ public:
     mutable CAmount nImmatureWatchCreditCached;
     mutable CAmount nAvailableWatchCreditCached;
     mutable CAmount nChangeCached;
+
 
     CWalletTx()
     {
@@ -1052,8 +1055,6 @@ public:
     {
         if (ser_action.ForRead())
             Init(NULL);
-        char fSpent = false;
-
         if (!ser_action.ForRead()) {
             mapValue["fromaccount"] = strFromAccount;
 

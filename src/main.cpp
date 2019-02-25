@@ -1766,11 +1766,12 @@ bool AcceptToMemoryPool(CTxMemPool &pool, CValidationState &state, const CTransa
             if (tx.IsZerocoinMint()) {
                 if (nFees < Params().Zerocoin_MintFee() * tx.GetZerocoinMintCount())
                     return state.DoS(0, false, REJECT_INSUFFICIENTFEE, "insufficient fee for zerocoinmint");
-            } else if (!tx.IsZerocoinSpend() && GetBoolArg("-relaypriority", true) &&
+            } //TODO: need to recompute the fee
+            /*else if (!tx.IsZerocoinSpend() && GetBoolArg("-relaypriority", true) &&
                        nFees < ::minRelayTxFee.GetFee(nSize) &&
                        !AllowFree(view.GetPriority(tx, chainActive.Height() + 1))) {
                 return state.DoS(0, false, REJECT_INSUFFICIENTFEE, "insufficient priority");
-            }
+            }*/
 
             // Continuously rate-limit free (really, very-low-fee) transactions
             // This mitigates 'penny-flooding' -- sending thousands of free transactions just to
@@ -1968,10 +1969,11 @@ bool AcceptableInputs(CTxMemPool &pool, CValidationState &state, const CTransact
                                  REJECT_INSUFFICIENTFEE, "insufficient fee");
 
             // Require that free transactions have sufficient priority to be mined in the next block.
-            if (GetBoolArg("-relaypriority", true) && nFees < ::minRelayTxFee.GetFee(nSize) &&
+            //TODO: @campv need to recompute the fee
+            /*if (GetBoolArg("-relaypriority", true) && nFees < ::minRelayTxFee.GetFee(nSize) &&
                 !AllowFree(view.GetPriority(tx, chainActive.Height() + 1))) {
                 return state.DoS(0, false, REJECT_INSUFFICIENTFEE, "insufficient priority");
-            }
+            }*/
 
             // Continuously rate-limit free (really, very-low-fee) transactions
             // This mitigates 'penny-flooding' -- sending thousands of free transactions just to
