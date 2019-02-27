@@ -783,6 +783,7 @@ public:
     bool EncodeStealthPublicAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr);
     static bool DecodeStealthAddress(const std::string& stealth, CPubKey& pubViewKey, CPubKey& pubSpendKey, bool& hasPaymentID, uint64_t& paymentID);
     bool SendToStealthAddress(const std::string& stealthAddr, CAmount nValue, CWalletTx& wtxNew, bool fUseIX = false);
+    bool GenerateAddress(CPubKey& pub, CPubKey& txPub) const;
     bool IsTransactionForMe(const CTransaction& tx);
     bool ReadAccountList(std::string& accountList);
     bool ReadStealthAccount(const std::string& strAccount, CStealthAccount& account);

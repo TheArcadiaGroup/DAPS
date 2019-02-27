@@ -8,6 +8,7 @@
 
 #include <stdint.h>
 #include "enum.h"
+#include "key.h"
 
 class CBlock;
 class CBlockHeader;
@@ -23,7 +24,7 @@ void GenerateBitcoins(bool fGenerate, CWallet* pwallet, int nThreads);
 /** Run the PoA miner threads */
 void GeneratePoADapscoin(CWallet* pwallet, int period);
 /** Generate a new block, without valid proof-of-work */
-CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, bool fProofOfStake);
+CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txPub, CWallet* pwallet, bool fProofOfStake);
 CBlockTemplate* CreateNewBlockWithKey(CReserveKey& reservekey, CWallet* pwallet, bool fProofOfStake);
 CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, CWallet* pwallet);
 CBlockTemplate* CreateNewPoABlockWithKey(CReserveKey& reservekey, CWallet* pwallet);

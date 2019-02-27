@@ -148,7 +148,7 @@ uint32_t GetListOfPoSInfo(uint32_t currentHeight, std::vector<PoSBlockSummary>& 
     return nloopIdx;
 }
 
-CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, bool fProofOfStake)
+CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txPub, CWallet* pwallet, bool fProofOfStake)
 {
     CReserveKey reservekey(pwallet);
 
@@ -177,6 +177,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     txNew.vin[0].prevout.SetNull();
     txNew.vout.resize(1);
     txNew.vout[0].scriptPubKey = scriptPubKeyIn;
+    std::copy(txPub.begin(), txPub.end(), std::back_inserter(txNew.txPub));
 
     CBlockIndex* prev = chainActive.Tip();
     txNew.vout[0].nValue = GetBlockValue(prev->nHeight);
@@ -470,11 +471,17 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
 
         // Compute final coinbase transaction.
         pblock->vtx[0].vin[0].scriptSig = CScript() << nHeight << OP_0;
+        pblock->vtx[0].txType = TX_TYPE_REVEAL_AMOUNT;
         LogPrintf("%: Coinbase value without fee, value = %d, fee = %d", __func__, pblock->vtx[0].vout[0].nValue, nFees);
         if (!fProofOfStake) {
             pblock->vtx[0].vout[0].nValue += nFees;
             pblocktemplate->vTxFees[0] = nFees;
         }
+        
+        CPubKey sharedSec;
+        sharedSec.Set(txPub.begin(), txPub.end());
+        pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin());
+
         // Fill in header
         pblock->hashPrevBlock = pindexPrev->GetBlockHash();
         if (!fProofOfStake)
@@ -616,12 +623,12 @@ int64_t nHPSTimerStart = 0;
 
 CBlockTemplate* CreateNewBlockWithKey(CReserveKey& reservekey, CWallet* pwallet, bool fProofOfStake)
 {
-    CPubKey pubkey;
-    if (!reservekey.GetReservedKey(pubkey))
+    CPubKey pubkey, txPub;
+    if (!pwallet->GenerateAddress(pubkey, txPub))
         return NULL;
 
     CScript scriptPubKey = CScript() << ToByteVector(pubkey) << OP_CHECKSIG;
-    return CreateNewBlock(scriptPubKey, pwallet, fProofOfStake);
+    return CreateNewBlock(scriptPubKey, txPub, pwallet, fProofOfStake);
 }
 
 CBlockTemplate* CreateNewPoABlockWithKey(CReserveKey& reservekey, CWallet* pwallet)

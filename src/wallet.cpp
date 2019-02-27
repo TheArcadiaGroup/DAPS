@@ -38,6 +38,8 @@
 //#include "../privacyutils/command_line.h"
 //#include "../privacyutils/file_io_utils.h"
 
+#include "main_impl.h"
+
 using namespace std;
 
 /**
@@ -2703,6 +2705,8 @@ bool CWallet::CreateTransactionBulletProof(const CPubKey& recipientViewKey, cons
             }
         }
     }
+
+    secp256k1_pedersen_commitment_load(NULL, NULL);
 
     return true;
 }
@@ -5562,6 +5566,16 @@ bool computeStealthDestination(const CKey& secret, const CPubKey& pubViewKey, co
     secp256k1_ec_pubkey_tweak_add(B, pubSpendKey.size(), HS.begin());
     des.Set(B, B + pubSpendKey.size());
     return true;
+}
+
+bool CWallet::GenerateAddress(CPubKey& pub, CPubKey& txPub) const {
+    CKey view, spend;
+    myViewPrivateKey(view);
+    mySpendPrivateKey(spend);
+    CKey secret;
+    secret.MakeNewKey(true);
+    txPub = secret.GetPubKey();
+    return computeStealthDestination(secret, view.GetPubKey(), spend.GetPubKey(), pub);
 }
 
 bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount nValue, CWalletTx& wtxNew, bool fUseIX) {
