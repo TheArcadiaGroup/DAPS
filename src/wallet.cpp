@@ -38,7 +38,7 @@
 //#include "../privacyutils/command_line.h"
 //#include "../privacyutils/file_io_utils.h"
 
-#include "main_impl.h"
+//#include "main_impl.h"
 
 using namespace std;
 
@@ -2715,7 +2715,7 @@ bool CWallet::CreateTransactionBulletProof(const CPubKey& recipientViewKey, cons
         }
     }
 
-    secp256k1_pedersen_commitment_load(NULL, NULL);
+    //secp256k1_pedersen_commitment_load(NULL, NULL);
 
     return true;
 }

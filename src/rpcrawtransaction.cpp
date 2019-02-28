@@ -98,6 +98,20 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, Object& entry)
                     Object decoy;
                     decoy.push_back(Pair("txid", allDecoys[i].hash.GetHex()));
                     decoy.push_back(Pair("vout", (int64_t)allDecoys[i].n));
+#ifdef ENABLE_WALLET
+                    LOCK(pwalletMain->cs_wallet);
+                    map<uint256, CWalletTx>::const_iterator mi = pwalletMain->mapWallet.find(allDecoys[i].hash);
+                    if (mi != pwalletMain->mapWallet.end()) {
+                        const CWalletTx& prev = (*mi).second;
+                        if (allDecoys[i].n < prev.vout.size()) {
+                            if (pwalletMain->IsMine(prev.vout[allDecoys[i].n])) {
+                                CAmount decodedAmount;
+                                pwalletMain->RevealTxOutAmount(prev, prev.vout[allDecoys[i].n], decodedAmount);
+                                decoy.push_back(Pair("decoded_amount", ValueFromAmount(decodedAmount)));
+                            }
+                        }
+                    }
+#endif
                     decoys.push_back(decoy);
                 }
                 in.push_back(Pair("decoys", decoys));
