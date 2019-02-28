@@ -12,8 +12,6 @@
 
 #include "include/secp256k1_bulletproofs.h"
 #include "modules/commitment/main_impl.h"
-#include "util.h"
-#include "testrand.h"
 
 typedef struct {
     int special;
@@ -160,13 +158,7 @@ int secp256k1_bulletproof_rangeproof_verify(const secp256k1_context* ctx, secp25
     return ret;
 }
 
-int secp256k1_bulletproof_rangeproof_verify_multi(const secp256k1_context *ctx, secp256k1_scratch_space *scratch,
-                                                  const secp256k1_bulletproof_generators *gens,
-                                                  const unsigned char *const *proof, size_t n_proofs, size_t plen,
-                                                  const uint64_t *const *min_value,
-                                                  const secp256k1_pedersen_commitment *const *commit, size_t n_commits,
-                                                  size_t nbits, const secp256k1_generator *value_gen,
-                                                  const unsigned char *const *extra_commit, size_t *extra_commit_len) {
+int secp256k1_bulletproof_rangeproof_verify_multi(const secp256k1_context* ctx, secp256k1_scratch_space *scratch, const secp256k1_bulletproof_generators *gens, const unsigned char* const* proof, size_t n_proofs, size_t plen, const uint64_t* const* min_value, const secp256k1_pedersen_commitment* const* commit, size_t n_commits, size_t nbits, const secp256k1_generator *value_gen, const unsigned char* const* extra_commit, size_t *extra_commit_len) {
     int ret;
     secp256k1_ge **commitp;
     secp256k1_ge *value_genp;
@@ -232,13 +224,7 @@ int secp256k1_bulletproof_rangeproof_rewind(const secp256k1_context* ctx, const 
     return ret;
 }
 
-int secp256k1_bulletproof_rangeproof_prove(const secp256k1_context *ctx, secp256k1_scratch_space *scratch,
-                                           const secp256k1_bulletproof_generators *gens, unsigned char *proof,
-                                           size_t *plen, const uint64_t *value, const uint64_t *min_value,
-                                           const unsigned char *const *blind, size_t n_commits,
-                                           const secp256k1_generator *value_gen, size_t nbits,
-                                           const unsigned char *nonce, const unsigned char *extra_commit,
-                                           size_t extra_commit_len) {
+int secp256k1_bulletproof_rangeproof_prove(const secp256k1_context* ctx, secp256k1_scratch_space *scratch, const secp256k1_bulletproof_generators *gens, unsigned char *proof, size_t *plen, const uint64_t *value, const uint64_t *min_value, const unsigned char* const* blind, size_t n_commits, const secp256k1_generator *value_gen, size_t nbits, const unsigned char *nonce, const unsigned char *extra_commit, size_t extra_commit_len) {
     int ret;
     secp256k1_ge *commitp;
     secp256k1_scalar *blinds;
@@ -638,87 +624,5 @@ void secp256k1_bulletproof_circuit_assignment_destroy(const secp256k1_context *c
         free(assn);
     }
 }
-
-int bulletproofs_prove_api(uint64_t *v, size_t nbits, size_t n_commits, size_t* plen, unsigned char *proof, unsigned char commits[][64]) {
-    if (v == NULL || plen == NULL || nbits < 1 || n_commits < 1 || proof == NULL || commits == NULL) {
-        return 0;
-    }
-    const unsigned char *proof_ptr = proof;
-    *plen = 10 * 1024;//10kb
-    printf("reach here");
-
-    secp256k1_context *both = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
-    secp256k1_scalar *blind = (secp256k1_scalar *)checked_malloc(&both->error_callback, n_commits * sizeof(*blind));
-    secp256k1_ge *commitp = (secp256k1_ge *)checked_malloc(&both->error_callback, n_commits * sizeof(*commitp));
-    const secp256k1_ge *constptr = commitp;
-    secp256k1_ge value_gen;
-    unsigned char commit[32] = {0};
-    unsigned char nonce[32] = "mary, mary quite contrary how do";
-    size_t i;
-    secp256k1_scratch *scratch = secp256k1_scratch_space_create(both, 100000000);
-    secp256k1_bulletproof_generators *gens = secp256k1_bulletproof_generators_create(both, &secp256k1_generator_const_h, 256);
-
-    secp256k1_generator_load(&value_gen, &secp256k1_generator_const_g);
-    for (i = 0; i < n_commits; i++) {
-        secp256k1_scalar vs;
-        secp256k1_gej commitj;
-
-        if (v[i] >> nbits > 0) {
-            v[i] = 0;
-        }
-        secp256k1_scalar_set_u64(&vs, v[i]);
-        //random_scalar_order(&blind[i]);
-        secp256k1_pedersen_ecmult(&commitj, &blind[i], v[i], &value_gen, &gens->blinding_gen[0]);
-        secp256k1_ge_set_gej(&commitp[i], &commitj);
-
-        secp256k1_bulletproof_update_commit(commit, &commitp[i], &value_gen);
-    }
-    int ret = secp256k1_bulletproof_rangeproof_prove_impl(both, scratch, proof, plen, nbits, v, NULL, blind, commitp, n_commits, &value_gen, gens, nonce, NULL, 0);
-    if (1) {
-        for (i = 0; i < n_commits; i++) {
-            secp256k1_pedersen_commitment commitpederson;
-            secp256k1_pedersen_commitment_save(&commitpederson, &commitp[i]);
-            secp256k1_pedersen_commitment_serialize(both, commits[i], &commitpederson);
-        }
-    }
-
-    secp256k1_scratch_destroy(scratch);
-    free(commitp);
-    //free(v);
-    free(blind);
-    secp256k1_bulletproof_generators_destroy(both, gens);
-    return ret;
-}
-
-int bulletproofs_verify_api(size_t nbits, size_t n_commits, size_t len, unsigned char *proof, unsigned char commits[][64]) {
-    const unsigned char *proof_ptr = proof;
-    secp256k1_context *both = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
-    secp256k1_ge value_gen;
-    size_t i;
-    printf("reach here");
-    secp256k1_scratch *scratch = secp256k1_scratch_space_create(both, 100000000);
-    secp256k1_bulletproof_generators *gens = secp256k1_bulletproof_generators_create(both, &secp256k1_generator_const_h, 256);
-
-
-    secp256k1_generator_load(&value_gen, &secp256k1_generator_const_g);
-
-    secp256k1_ge *commitp_reconstructed = (secp256k1_ge *)checked_malloc(&both->error_callback, n_commits * sizeof(*commitp_reconstructed));
-    for (i = 0; i < n_commits; i++) {
-        secp256k1_pedersen_commitment commitpederson;
-        secp256k1_pedersen_commitment_parse(both, &commitpederson, commits[i]);
-        secp256k1_pedersen_commitment_load(&commitp_reconstructed[i], &commitpederson);
-    }
-    const secp256k1_ge *constptr = commitp_reconstructed;
-
-    //CHECK(plen == expected_size);
-    int ret = secp256k1_bulletproof_rangeproof_verify_impl(both, scratch, &proof_ptr, 1, &len, nbits, NULL, &constptr, n_commits, &value_gen, gens, NULL, 0);
-
-    secp256k1_scratch_destroy(scratch);
-    free(commitp_reconstructed);
-    //free(v);
-    secp256k1_bulletproof_generators_destroy(both, gens);
-    return ret;
-}
-
 
 #endif

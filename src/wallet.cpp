@@ -34,7 +34,7 @@
 #include <boost/filesystem/operations.hpp>
 #include "ecdhutil.h"
 #include "txdb.h"
-//#include "./secp256k1-mw/include/secp256k1_bulletproofs.h"
+//#include "./secp256k1-mw1/include/secp256k1_bulletproofs.h"
 //#include "../privacyutils/command_line.h"
 //#include "../privacyutils/file_io_utils.h"
 
@@ -2703,6 +2703,15 @@ bool CWallet::CreateTransactionBulletProof(const CPubKey& recipientViewKey, cons
             if (wtxNew.vout[i].nValue != 1000000 * COIN) {
                 wtxNew.vout[i].nValue = 0;
             }
+        }
+
+        if (wtxNew.IsMNCollateralTx()) {
+            CKey view, spend;
+            myViewPrivateKey(view);
+            mySpendPrivateKey(spend);
+            std::string addr;
+            EncodeStealthPublicAddress(view.GetPubKey(), spend.GetPubKey(), addr);
+            std::copy(addr.begin(), addr.end(), std::back_inserter(wtxNew.masternodeStealthAddress));
         }
     }
 

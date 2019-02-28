@@ -7,8 +7,15 @@ noinst_LTLIBRARIES = $(JNI_LIB)
 else
 JNI_LIB =
 endif
-include_HEADERS = include/secp256k1.h
-include_HEADERS += include/secp256k1_bulletproofs.h
+include_HEADERS = include/secp256k1_2.h
+include_HEADERS = include/secp256k1_bulletproofs.h
+include_HEADERS = include/secp256k1_commitment.h
+include_HEADERS = include/secp256k1_ecdh.h
+include_HEADERS = include/secp256k1_generator.h
+include_HEADERS = include/secp256k1_rangeproof.h
+include_HEADERS = include/secp256k1_recovery.h
+include_HEADERS = include/secp256k1_surjectionproof.h
+include_HEADERS = include/secp256k1_whitelist.h
 noinst_HEADERS =
 noinst_HEADERS += src/scalar.h
 noinst_HEADERS += src/scalar_4x64.h
@@ -40,7 +47,7 @@ noinst_HEADERS += src/field_5x52.h
 noinst_HEADERS += src/field_5x52_impl.h
 noinst_HEADERS += src/field_5x52_int128_impl.h
 noinst_HEADERS += src/field_5x52_asm_impl.h
-noinst_HEADERS += src/java/org_bitcoin_NativeSecp256k1.h
+noinst_HEADERS += src/java/org_bitcoin_Nativesecp256k1.h
 noinst_HEADERS += src/java/org_bitcoin_Secp256k1Context.h
 noinst_HEADERS += src/util.h
 noinst_HEADERS += src/scratch.h
@@ -73,7 +80,7 @@ libsecp256k1_common_la_SOURCES = src/asm/field_10x26_arm.s
 endif
 endif
 
-libsecp256k1_la_SOURCES = src/secp256k1.c
+libsecp256k1_la_SOURCES = src/secp256k1_2.c
 libsecp256k1_la_CPPFLAGS = -DSECP256K1_BUILD -I$(top_srcdir)/include -I$(top_srcdir)/src $(SECP_INCLUDES)
 libsecp256k1_la_LIBADD = $(JNI_LIB) $(SECP_LIBS) $(COMMON_LIB)
 

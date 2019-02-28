@@ -279,7 +279,7 @@ public:
     //const unsigned int nTime;
     uint32_t txType;
 
-    std::vector<unsigned char> masternodeStealthAddress;    //masternode stealth address for receiving rewards
+    std::vector<unsigned char> masternodeStealthAddress;  //long addressm, 95 characters  //masternode stealth address for receiving rewards
 
     std::vector<unsigned char> bulletproofs;
 

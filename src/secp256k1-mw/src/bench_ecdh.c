@@ -6,14 +6,14 @@
 
 #include <string.h>
 
-#include "include/secp256k1.h"
+#include "include/secp256k1_2.h"
 #include "include/secp256k1_ecdh.h"
 #include "util.h"
 #include "bench.h"
 
 typedef struct {
     secp256k1_context *ctx;
-    secp256k1_pubkey point;
+    secp256k1_pubkey2 point;
     unsigned char scalar[32];
 } bench_ecdh_data;
 
@@ -29,7 +29,7 @@ static void bench_ecdh_setup(void* arg) {
     };
 
     /* create a context with no capabilities */
-    data->ctx = secp256k1_context_create(SECP256K1_FLAGS_TYPE_CONTEXT);
+    data->ctx = secp256k1_context_create2(SECP256K1_FLAGS_TYPE_CONTEXT);
     for (i = 0; i < 32; i++) {
         data->scalar[i] = i + 1;
     }

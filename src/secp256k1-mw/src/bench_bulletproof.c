@@ -294,7 +294,7 @@ int main(void) {
     bench_bulletproof_circuit_t c_data;
 
     data.blind_gen = secp256k1_generator_const_g;
-    data.ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    data.ctx = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
     data.scratch = secp256k1_scratch_space_create(data.ctx, 1024 * 1024 * 1024);
     data.generators = secp256k1_bulletproof_generators_create(data.ctx, &data.blind_gen, 64 * 1024);
 

@@ -7,7 +7,7 @@
 #ifndef _SECP256K1_WHITELIST_
 #define _SECP256K1_WHITELIST_
 
-#include "secp256k1.h"
+#include "secp256k1_2.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -115,10 +115,10 @@ SECP256K1_API int secp256k1_whitelist_signature_serialize(
 SECP256K1_API int secp256k1_whitelist_sign(
   const secp256k1_context* ctx,
   secp256k1_whitelist_signature *sig,
-  const secp256k1_pubkey *online_pubkeys,
-  const secp256k1_pubkey *offline_pubkeys,
+  const secp256k1_pubkey2 *online_pubkeys,
+  const secp256k1_pubkey2 *offline_pubkeys,
   const size_t n_keys,
-  const secp256k1_pubkey *sub_pubkey,
+  const secp256k1_pubkey2 *sub_pubkey,
   const unsigned char *online_seckey,
   const unsigned char *summed_seckey,
   const size_t index,
@@ -139,10 +139,10 @@ SECP256K1_API int secp256k1_whitelist_sign(
 SECP256K1_API int secp256k1_whitelist_verify(
   const secp256k1_context* ctx,
   const secp256k1_whitelist_signature *sig,
-  const secp256k1_pubkey *online_pubkeys,
-  const secp256k1_pubkey *offline_pubkeys,
+  const secp256k1_pubkey2 *online_pubkeys,
+  const secp256k1_pubkey2 *offline_pubkeys,
   const size_t n_keys,
-  const secp256k1_pubkey *sub_pubkey
+  const secp256k1_pubkey2 *sub_pubkey
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(6);
 
 #ifdef __cplusplus

@@ -5,7 +5,7 @@
  **********************************************************************/
 
 #include <string.h>
-#include <secp256k1.h>
+#include <secp256k1_2.h>
 
 #include "lax_der_privatekey_parsing.h"
 
@@ -46,7 +46,7 @@ int ec_privkey_import_der(const secp256k1_context* ctx, unsigned char *out32, co
         return 0;
     }
     memcpy(out32 + 32 - privkey[1], privkey + 2, privkey[1]);
-    if (!secp256k1_ec_seckey_verify(ctx, out32)) {
+    if (!secp256k1_ec_seckey_verify2(ctx, out32)) {
         memset(out32, 0, 32);
         return 0;
     }
@@ -54,9 +54,9 @@ int ec_privkey_import_der(const secp256k1_context* ctx, unsigned char *out32, co
 }
 
 int ec_privkey_export_der(const secp256k1_context *ctx, unsigned char *privkey, size_t *privkeylen, const unsigned char *key32, int compressed) {
-    secp256k1_pubkey pubkey;
+    secp256k1_pubkey2 pubkey;
     size_t pubkeylen = 0;
-    if (!secp256k1_ec_pubkey_create(ctx, &pubkey, key32)) {
+    if (!secp256k1_ec_pubkey_create2(ctx, &pubkey, key32)) {
         *privkeylen = 0;
         return 0;
     }

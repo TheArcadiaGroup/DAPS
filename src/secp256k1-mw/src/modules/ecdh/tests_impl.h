@@ -9,8 +9,8 @@
 
 void test_ecdh_api(void) {
     /* Setup context that just counts errors */
-    secp256k1_context *tctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-    secp256k1_pubkey point;
+    secp256k1_context *tctx = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
+    secp256k1_pubkey2 point;
     unsigned char res[32];
     unsigned char s_one[32] = { 0 };
     int32_t ecount = 0;
@@ -18,7 +18,7 @@ void test_ecdh_api(void) {
 
     secp256k1_context_set_error_callback(tctx, counting_illegal_callback_fn, &ecount);
     secp256k1_context_set_illegal_callback(tctx, counting_illegal_callback_fn, &ecount);
-    CHECK(secp256k1_ec_pubkey_create(tctx, &point, s_one) == 1);
+    CHECK(secp256k1_ec_pubkey_create2(tctx, &point, s_one) == 1);
 
     /* Check all NULLs are detected */
     CHECK(secp256k1_ecdh(tctx, res, &point, s_one) == 1);
@@ -38,7 +38,7 @@ void test_ecdh_api(void) {
 
 void test_ecdh_generator_basepoint(void) {
     unsigned char s_one[32] = { 0 };
-    secp256k1_pubkey point[2];
+    secp256k1_pubkey2 point[2];
     int i;
 
     s_one[31] = 1;
@@ -56,10 +56,10 @@ void test_ecdh_generator_basepoint(void) {
         secp256k1_scalar_get_b32(s_b32, &s);
 
         /* compute using ECDH function */
-        CHECK(secp256k1_ec_pubkey_create(ctx, &point[0], s_one) == 1);
+        CHECK(secp256k1_ec_pubkey_create2(ctx, &point[0], s_one) == 1);
         CHECK(secp256k1_ecdh(ctx, output_ecdh, &point[0], s_b32) == 1);
         /* compute "explicitly" */
-        CHECK(secp256k1_ec_pubkey_create(ctx, &point[1], s_b32) == 1);
+        CHECK(secp256k1_ec_pubkey_create2(ctx, &point[1], s_b32) == 1);
         CHECK(secp256k1_ec_pubkey_serialize(ctx, point_ser, &point_ser_len, &point[1], SECP256K1_EC_COMPRESSED) == 1);
         CHECK(point_ser_len == sizeof(point_ser));
         secp256k1_sha256_initialize(&sha);
@@ -81,12 +81,12 @@ void test_bad_scalar(void) {
     unsigned char s_rand[32] = { 0 };
     unsigned char output[32];
     secp256k1_scalar rand;
-    secp256k1_pubkey point;
+    secp256k1_pubkey2 point;
 
     /* Create random point */
     random_scalar_order(&rand);
     secp256k1_scalar_get_b32(s_rand, &rand);
-    CHECK(secp256k1_ec_pubkey_create(ctx, &point, s_rand) == 1);
+    CHECK(secp256k1_ec_pubkey_create2(ctx, &point, s_rand) == 1);
 
     /* Try to multiply it by bad values */
     CHECK(secp256k1_ecdh(ctx, output, &point, s_zero) == 0);

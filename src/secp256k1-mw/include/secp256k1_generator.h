@@ -1,7 +1,7 @@
 #ifndef _SECP256K1_GENERATOR_
 # define _SECP256K1_GENERATOR_
 
-# include "secp256k1.h"
+# include "secp256k1_2.h"
 
 # ifdef __cplusplus
 extern "C" {
@@ -82,7 +82,7 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_generator_generate(
  *        blind32: a 32-byte secret value to blind the generator with.
  *
  *  The result is equivalent to first calling secp256k1_generator_generate,
- *  converting the result to a public key, calling secp256k1_ec_pubkey_tweak_add,
+ *  converting the result to a public key, calling secp256k1_ec_pubkey_tweak_add2,
  *  and then converting back to generator form.
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_generator_generate_blinded(

@@ -5,7 +5,7 @@
  **********************************************************************/
 #include <stdio.h>
 
-#include "include/secp256k1.h"
+#include "include/secp256k1_2.h"
 
 #include "util.h"
 #include "hash_impl.h"
@@ -16,7 +16,7 @@
 #include "ecmult_const_impl.h"
 #include "ecmult_impl.h"
 #include "bench.h"
-#include "secp256k1.c"
+#include "secp256k1_2.c"
 
 typedef struct {
     secp256k1_scalar scalar_x, scalar_y;
@@ -296,7 +296,7 @@ void bench_context_verify(void* arg) {
     int i;
     (void)arg;
     for (i = 0; i < 20; i++) {
-        secp256k1_context_destroy(secp256k1_context_create(SECP256K1_CONTEXT_VERIFY));
+        secp256k1_context_destroy(secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY));
     }
 }
 
@@ -304,7 +304,7 @@ void bench_context_sign(void* arg) {
     int i;
     (void)arg;
     for (i = 0; i < 200; i++) {
-        secp256k1_context_destroy(secp256k1_context_create(SECP256K1_CONTEXT_SIGN));
+        secp256k1_context_destroy(secp256k1_context_create2(SECP256K1_CONTEXT_SIGN));
     }
 }
 

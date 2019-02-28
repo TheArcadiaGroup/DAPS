@@ -12,20 +12,20 @@
 void test_whitelist_end_to_end(const size_t n_keys) {
     unsigned char **online_seckey = (unsigned char **) malloc(n_keys * sizeof(*online_seckey));
     unsigned char **summed_seckey = (unsigned char **) malloc(n_keys * sizeof(*summed_seckey));
-    secp256k1_pubkey *online_pubkeys = (secp256k1_pubkey *) malloc(n_keys * sizeof(*online_pubkeys));
-    secp256k1_pubkey *offline_pubkeys = (secp256k1_pubkey *) malloc(n_keys * sizeof(*offline_pubkeys));
+    secp256k1_pubkey2 *online_pubkeys = (secp256k1_pubkey2 *) malloc(n_keys * sizeof(*online_pubkeys));
+    secp256k1_pubkey2 *offline_pubkeys = (secp256k1_pubkey2 *) malloc(n_keys * sizeof(*offline_pubkeys));
 
     secp256k1_scalar ssub;
     unsigned char csub[32];
-    secp256k1_pubkey sub_pubkey;
+    secp256k1_pubkey2 sub_pubkey;
 
     /* Generate random keys */
     size_t i;
     /* Start with subkey */
     random_scalar_order_test(&ssub);
     secp256k1_scalar_get_b32(csub, &ssub);
-    CHECK(secp256k1_ec_seckey_verify(ctx, csub) == 1);
-    CHECK(secp256k1_ec_pubkey_create(ctx, &sub_pubkey, csub) == 1);
+    CHECK(secp256k1_ec_seckey_verify2(ctx, csub) == 1);
+    CHECK(secp256k1_ec_pubkey_create2(ctx, &sub_pubkey, csub) == 1);
     /* Then offline and online whitelist keys */
     for (i = 0; i < n_keys; i++) {
         secp256k1_scalar son, soff;
@@ -36,18 +36,18 @@ void test_whitelist_end_to_end(const size_t n_keys) {
         /* Create two keys */
         random_scalar_order_test(&son);
         secp256k1_scalar_get_b32(online_seckey[i], &son);
-        CHECK(secp256k1_ec_seckey_verify(ctx, online_seckey[i]) == 1);
-        CHECK(secp256k1_ec_pubkey_create(ctx, &online_pubkeys[i], online_seckey[i]) == 1);
+        CHECK(secp256k1_ec_seckey_verify2(ctx, online_seckey[i]) == 1);
+        CHECK(secp256k1_ec_pubkey_create2(ctx, &online_pubkeys[i], online_seckey[i]) == 1);
 
         random_scalar_order_test(&soff);
         secp256k1_scalar_get_b32(summed_seckey[i], &soff);
-        CHECK(secp256k1_ec_seckey_verify(ctx, summed_seckey[i]) == 1);
-        CHECK(secp256k1_ec_pubkey_create(ctx, &offline_pubkeys[i], summed_seckey[i]) == 1);
+        CHECK(secp256k1_ec_seckey_verify2(ctx, summed_seckey[i]) == 1);
+        CHECK(secp256k1_ec_pubkey_create2(ctx, &offline_pubkeys[i], summed_seckey[i]) == 1);
 
         /* Make summed_seckey correspond to the sum of offline_pubkey and sub_pubkey */
         secp256k1_scalar_add(&soff, &soff, &ssub);
         secp256k1_scalar_get_b32(summed_seckey[i], &soff);
-        CHECK(secp256k1_ec_seckey_verify(ctx, summed_seckey[i]) == 1);
+        CHECK(secp256k1_ec_seckey_verify2(ctx, summed_seckey[i]) == 1);
     }
 
     /* Sign/verify with each one */

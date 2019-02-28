@@ -1,7 +1,7 @@
 #ifndef _SECP256K1_COMMITMENT_
 # define _SECP256K1_COMMITMENT_
 
-# include "secp256k1.h"
+# include "secp256k1_2.h"
 # include "secp256k1_generator.h"
 
 # ifdef __cplusplus

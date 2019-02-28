@@ -83,7 +83,7 @@ static int secp256k1_whitelist_compute_tweaked_privkey(const secp256k1_context* 
 /* Takes a list of pubkeys and combines them to form the public keys needed
  * for the ring signature; also produce a commitment to every one that will
  * be our "message". */
-static int secp256k1_whitelist_compute_keys_and_message(const secp256k1_context* ctx, unsigned char *msg32, secp256k1_gej *keys, const secp256k1_pubkey *online_pubkeys, const secp256k1_pubkey *offline_pubkeys, const int n_keys, const secp256k1_pubkey *sub_pubkey) {
+static int secp256k1_whitelist_compute_keys_and_message(const secp256k1_context* ctx, unsigned char *msg32, secp256k1_gej *keys, const secp256k1_pubkey2 *online_pubkeys, const secp256k1_pubkey2 *offline_pubkeys, const int n_keys, const secp256k1_pubkey2 *sub_pubkey) {
     unsigned char c[33];
     size_t size = 33;
     secp256k1_sha256 sha;
@@ -91,7 +91,7 @@ static int secp256k1_whitelist_compute_keys_and_message(const secp256k1_context*
     secp256k1_ge subkey_ge;
 
     secp256k1_sha256_initialize(&sha);
-    secp256k1_pubkey_load(ctx, &subkey_ge, sub_pubkey);
+    secp256k1_pubkey2_load(ctx, &subkey_ge, sub_pubkey);
 
     /* commit to sub-key */
     if (!secp256k1_eckey_pubkey_serialize(&subkey_ge, c, &size, SECP256K1_EC_COMPRESSED)) {
@@ -104,12 +104,12 @@ static int secp256k1_whitelist_compute_keys_and_message(const secp256k1_context*
         secp256k1_gej tweaked_gej;
 
         /* commit to fixed keys */
-        secp256k1_pubkey_load(ctx, &offline_ge, &offline_pubkeys[i]);
+        secp256k1_pubkey2_load(ctx, &offline_ge, &offline_pubkeys[i]);
         if (!secp256k1_eckey_pubkey_serialize(&offline_ge, c, &size, SECP256K1_EC_COMPRESSED)) {
             return 0;
         }
         secp256k1_sha256_write(&sha, c, size);
-        secp256k1_pubkey_load(ctx, &online_ge, &online_pubkeys[i]);
+        secp256k1_pubkey2_load(ctx, &online_ge, &online_pubkeys[i]);
         if (!secp256k1_eckey_pubkey_serialize(&online_ge, c, &size, SECP256K1_EC_COMPRESSED)) {
             return 0;
         }

@@ -53,7 +53,7 @@ static void bench_rangeproof(void* arg) {
 int main(void) {
     bench_rangeproof_t data;
 
-    data.ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    data.ctx = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
 
     data.min_bits = 32;
 

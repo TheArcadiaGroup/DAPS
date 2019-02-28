@@ -49,7 +49,7 @@ static void bench_generator_generate_blinded(void* arg) {
 int main(void) {
     bench_generator_t data;
 
-    data.ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    data.ctx = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
 
     run_benchmark("generator_generate", bench_generator_generate, bench_generator_setup, NULL, &data, 10, 20000);
     run_benchmark("generator_generate_blinded", bench_generator_generate_blinded, bench_generator_setup, NULL, &data, 10, 20000);

@@ -14,7 +14,6 @@
 /** Alternative generator for secp256k1.
  *  This is the sha256 of 'g' after DER encoding (without compression),
  *  which happens to be a point on the curve.
- *  which happens to be a point on the curve.
  *  sage: G2 = EllipticCurve ([F (0), F (7)]).lift_x(F(int(hashlib.sha256('0479be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8'.decode('hex')).hexdigest(),16)))
  *  sage: '%x %x' % G2.xy()
  */

@@ -4,7 +4,7 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.*
  **********************************************************************/
 
-#include "include/secp256k1.h"
+#include "include/secp256k1_2.h"
 #include "include/secp256k1_recovery.h"
 #include "util.h"
 #include "bench.h"
@@ -18,7 +18,7 @@ typedef struct {
 void bench_recover(void* arg) {
     int i;
     bench_recover_data *data = (bench_recover_data*)arg;
-    secp256k1_pubkey pubkey;
+    secp256k1_pubkey2 pubkey;
     unsigned char pubkeyc[33];
 
     for (i = 0; i < 20000; i++) {
@@ -51,7 +51,7 @@ void bench_recover_setup(void* arg) {
 int main(void) {
     bench_recover_data data;
 
-    data.ctx = secp256k1_context_create(SECP256K1_CONTEXT_VERIFY);
+    data.ctx = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
 
     run_benchmark("ecdsa_recover", bench_recover, bench_recover_setup, NULL, &data, 10, 20000);
 
