@@ -139,7 +139,7 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, Object& entry)
         out.push_back(Pair("encoded_mask", txout.maskValue.mask.GetHex()));
 
 #ifdef ENABLE_WALLET
-        if (pwalletMain->IsMine(txout) && tx.txType == TX_TYPE_FULL) {
+        if (pwalletMain->IsMine(txout)) {
             CAmount decodedAmount;
             pwalletMain->RevealTxOutAmount(tx, txout, decodedAmount);
             out.push_back(Pair("decoded_amount", ValueFromAmount(decodedAmount)));

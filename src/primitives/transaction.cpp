@@ -92,7 +92,7 @@ std::string CTxOut::ToString() const
 }
 
 CMutableTransaction::CMutableTransaction() : nVersion(CTransaction::CURRENT_VERSION), nLockTime(0), hasPaymentID(0), paymentID(0), txType(TX_TYPE_FULL), nTxFee(0) {}
-CMutableTransaction::CMutableTransaction(const CTransaction& tx) : nVersion(tx.nVersion), vin(tx.vin), vout(tx.vout), nLockTime(tx.nLockTime), txPub(tx.txPub), hasPaymentID(tx.hasPaymentID), paymentID(tx.paymentID), txType(tx.txType), masternodeStealthAddress(tx.masternodeStealthAddress), bulletproofs(tx.bulletproofs), nTxFee(tx.nTxFee) {}
+CMutableTransaction::CMutableTransaction(const CTransaction& tx) : nVersion(tx.nVersion), vin(tx.vin), vout(tx.vout), nLockTime(tx.nLockTime), txPriv(tx.txPriv), txPub(tx.txPub), txPrivM(tx.txPrivM), hasPaymentID(tx.hasPaymentID), paymentID(tx.paymentID), txType(tx.txType), masternodeStealthAddress(tx.masternodeStealthAddress), bulletproofs(tx.bulletproofs), nTxFee(tx.nTxFee) {}
 
 uint256 CMutableTransaction::GetHash() const
 {
@@ -121,7 +121,7 @@ void CTransaction::UpdateHash() const
 
 CTransaction::CTransaction() : hash(), nVersion(CTransaction::CURRENT_VERSION), vin(), vout(), nLockTime(0), hasPaymentID(0), paymentID(0), txType(TX_TYPE_FULL), nTxFee(0) { }
 
-CTransaction::CTransaction(const CMutableTransaction &tx) : nVersion(tx.nVersion), vin(tx.vin), vout(tx.vout), nLockTime(tx.nLockTime), txPub(tx.txPub), hasPaymentID(tx.hasPaymentID), paymentID(tx.paymentID), txType(tx.txType), masternodeStealthAddress(tx.masternodeStealthAddress), bulletproofs(tx.bulletproofs), nTxFee(tx.nTxFee) {
+CTransaction::CTransaction(const CMutableTransaction &tx) : nVersion(tx.nVersion), vin(tx.vin), vout(tx.vout), nLockTime(tx.nLockTime), txPriv(tx.txPriv), txPub(tx.txPub), hasPaymentID(tx.hasPaymentID), paymentID(tx.paymentID), txType(tx.txType), masternodeStealthAddress(tx.masternodeStealthAddress), bulletproofs(tx.bulletproofs), nTxFee(tx.nTxFee) {
     UpdateHash();
 }
 
@@ -131,7 +131,9 @@ CTransaction& CTransaction::operator=(const CTransaction &tx) {
     *const_cast<std::vector<CTxOut>*>(&vout) = tx.vout;
     *const_cast<unsigned int*>(&nLockTime) = tx.nLockTime;
     *const_cast<uint256*>(&hash) = tx.hash;
+    *const_cast<std::vector<unsigned char>*>(&txPriv) = tx.txPriv;
     *const_cast<std::vector<unsigned char>*>(&txPub) = tx.txPub;
+    *const_cast<CKey*>(&txPrivM) = tx.txPrivM;
     *const_cast<char*>(&hasPaymentID) = tx.hasPaymentID;
     *const_cast<uint64_t*>(&paymentID) = tx.paymentID;
     *const_cast<uint32_t*>(&txType) = tx.txType;

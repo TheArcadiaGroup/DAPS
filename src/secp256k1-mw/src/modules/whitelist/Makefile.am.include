@@ -5,6 +5,6 @@ noinst_HEADERS += src/modules/whitelist/tests_impl.h
 if USE_BENCHMARK
 noinst_PROGRAMS += bench_whitelist
 bench_whitelist_SOURCES = src/bench_whitelist.c
-bench_whitelist_LDADD = libsecp256k1.la $(SECP_LIBS)
+bench_whitelist_LDADD = libsecp256k1_2.la $(SECP_LIBS)
 bench_generator_LDFLAGS = -static
 endif

@@ -290,12 +290,13 @@ bool stakeTargetHit(uint256 hashProofOfStake, int64_t nValueIn, uint256 bnTarget
 }
 
 //instead of looping outside and reinitializing variables many times, we will give a nTimeTx and also search interval so that we can do all the hashing here
-bool CheckStakeKernelHash(unsigned int nBits, const CBlock blockFrom, const CTransaction txPrev, const COutPoint prevout, const unsigned char* encryptionKey, unsigned int& nTimeTx, unsigned int nHashDrift, bool fCheck, uint256& hashProofOfStake, bool fPrintProofOfStake)
+bool CheckStakeKernelHash(unsigned int nBits, const CBlockHeader blockFrom, const CTransaction txPrev, const COutPoint prevout, const unsigned char* encryptionKey, unsigned int& nTimeTx, unsigned int nHashDrift, bool fCheck, uint256& hashProofOfStake, bool fPrintProofOfStake)
 {
     //assign new variables to make it easier to read
     //check encryptionKey hash
     uint256 hashOfKey = Hash(encryptionKey, encryptionKey + 33);
     if (hashOfKey != txPrev.vout[prevout.n].maskValue.hashOfKey) {
+        LogPrintf("CheckStakeKernelHash: Hash key for decoding the value is not fit");
         return false;
     }
 
@@ -334,6 +335,7 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock blockFrom, const CTra
     //if wallet is simply checking to make sure a hash is valid
     if (fCheck) {
         hashProofOfStake = stakeHash(nTimeTx, ss, prevout.n, prevout.hash, nTimeBlockFrom);
+        LogPrintf("CheckStakeKernelHash: checking kernal hash target");
         return stakeTargetHit(hashProofOfStake, nValueIn, bnTargetPerCoinDay);
     }
 
@@ -341,6 +343,7 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock blockFrom, const CTra
     unsigned int nTryTime = 0;
     unsigned int i;
     int nHeightStart = chainActive.Height();
+    LogPrintf("CheckStakeKernelHash: Mining proof of stake blocks with nHashDrift %d", nHashDrift);
     for (i = 0; i < (nHashDrift); i++) //iterate the hashing
     {
         //new block came in, move on

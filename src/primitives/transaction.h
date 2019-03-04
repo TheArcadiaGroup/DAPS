@@ -92,6 +92,7 @@ public:
     std::vector<unsigned char> encryptionKey;   //33bytes
     CKeyImage keyImage;   //have the same number element as vin
     std::vector<COutPoint> decoys;
+    std::vector<unsigned char> masternodeStealthAddress;
 
     CTxIn()
     {
@@ -111,6 +112,7 @@ public:
         READWRITE(encryptionKey);
         READWRITE(keyImage);
         READWRITE(decoys);
+        READWRITE(masternodeStealthAddress);
     }
 
     bool IsFinal() const
@@ -161,6 +163,7 @@ public:
     //ECDH encoded value for the amount: the idea is the use the shared secret and a key derivation function to
     //encode the value and the mask so that only the sender and the receiver of the tx output can decode the encoded amount
     MaskValue maskValue;
+    std::vector<unsigned char> masternodeStealthAddress;  //will be clone from the tx having 1000000 daps output
 
     CTxOut()
     {
@@ -178,6 +181,7 @@ public:
         READWRITE(maskValue.amount);
         READWRITE(maskValue.mask);
         READWRITE(maskValue.hashOfKey);
+        READWRITE(masternodeStealthAddress);
     }
 
     void SetNull()
@@ -245,7 +249,8 @@ enum {
     //transaction with no hidden amount (used for collateral transaction, rewarding transaction
     // (for masternode and staking node), and PoA mining rew)
     TX_TYPE_REVEAL_AMOUNT,
-    TX_TYPE_REVEAL_SENDER    //transaction with no ring signature (used for decollateral transaction + reward transaction
+    TX_TYPE_REVEAL_SENDER,    //transaction with no ring signature (used for decollateral transaction + reward transaction
+    TX_TYPE_REVEAL_BOTH         //this is a staking transaction that consumes a staking coin and rewards the staking node and masternode
 };
 
 /** The basic transaction that is broadcasted on the network and contained in
@@ -272,8 +277,11 @@ public:
     const uint32_t nLockTime;
 
     //For stealth transactions
+    //txPriv is optional and will be used for PoS blocks to incentivize masternodes
+    //and fullnodes will use it to verify whether the reward is really sent to the registered address of masternodes
+    std::vector<unsigned char> txPriv;
     std::vector<unsigned char> txPub;
-    CKey txPriv;    //only  in-memory
+    CKey txPrivM;    //only  in-memory
     char hasPaymentID;
     uint64_t paymentID;
     //const unsigned int nTime;
@@ -302,6 +310,7 @@ public:
         READWRITE(*const_cast<std::vector<CTxIn>*>(&vin));
         READWRITE(*const_cast<std::vector<CTxOut>*>(&vout));
         READWRITE(*const_cast<uint32_t*>(&nLockTime));
+        READWRITE(txPriv);
         READWRITE(txPub);
         READWRITE(hasPaymentID);
         if (hasPaymentID != 0) {
@@ -420,7 +429,9 @@ struct CMutableTransaction
     std::vector<CTxOut> vout;
     uint32_t nLockTime;
     //For stealth transactions
+    std::vector<unsigned char> txPriv;
     std::vector<unsigned char> txPub;
+    CKey txPrivM;
     char hasPaymentID;
     uint64_t paymentID;
     uint32_t txType;
@@ -441,6 +452,7 @@ struct CMutableTransaction
         READWRITE(vin);
         READWRITE(vout);
         READWRITE(nLockTime);
+        READWRITE(txPriv);
         READWRITE(txPub);
         READWRITE(hasPaymentID);
         if (hasPaymentID != 0) {

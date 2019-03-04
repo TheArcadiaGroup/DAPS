@@ -148,7 +148,7 @@ uint32_t GetListOfPoSInfo(uint32_t currentHeight, std::vector<PoSBlockSummary>& 
     return nloopIdx;
 }
 
-CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txPub, CWallet* pwallet, bool fProofOfStake)
+CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txPub, const CKey& txPriv, CWallet* pwallet, bool fProofOfStake)
 {
     CReserveKey reservekey(pwallet);
 
@@ -178,6 +178,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
     txNew.vout.resize(1);
     txNew.vout[0].scriptPubKey = scriptPubKeyIn;
     std::copy(txPub.begin(), txPub.end(), std::back_inserter(txNew.txPub));
+    std::copy(txPriv.begin(), txPriv.end(), std::back_inserter(txNew.txPriv));
 
     CBlockIndex* prev = chainActive.Tip();
     txNew.vout[0].nValue = GetBlockValue(prev->nHeight);
@@ -506,7 +507,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
     return pblocktemplate.release();
 }
 
-CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, CWallet* pwallet) {
+CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, const CPubKey& txPub, const CKey& txPriv, CWallet* pwallet) {
 	CReserveKey reservekey(pwallet);
 
 	if (chainActive.Tip()->nHeight < Params().START_POA_BLOCK()) {
@@ -528,6 +529,8 @@ CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, CWallet* pwalle
 	//Value of this vout coinbase will be computed based on the number of audited PoS blocks
 	//This will be computed later
 	txNew.vout[0].scriptPubKey = scriptPubKeyIn;
+    std::copy(txPub.begin(), txPub.end(), std::back_inserter(txNew.txPub));
+    std::copy(txPriv.begin(), txPriv.end(), std::back_inserter(txNew.txPriv));
 
 	CBlockIndex* prev = chainActive.Tip();
 
@@ -554,6 +557,13 @@ CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, CWallet* pwalle
 	//compute PoA block reward
 	CAmount nReward = pblock->posBlocksAudited.size() * 100 * COIN;
 	pblock->vtx[0].vout[0].nValue = nReward;
+
+    pblock->vtx[0].txType = TX_TYPE_REVEAL_AMOUNT;
+    //LogPrintf("%: Coinbase value without fee, value = %d, fee = %d", __func__, pblock->vtx[0].vout[0].nValue, nFees);
+
+    CPubKey sharedSec;
+    sharedSec.Set(txPub.begin(), txPub.end());
+    pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin());
 
 	//Comment out all previous code, because a PoA block does not verify any transaction, except reward transactions to miners
 	// No need to collect memory pool transactions into the block
@@ -624,21 +634,23 @@ int64_t nHPSTimerStart = 0;
 CBlockTemplate* CreateNewBlockWithKey(CReserveKey& reservekey, CWallet* pwallet, bool fProofOfStake)
 {
     CPubKey pubkey, txPub;
-    if (!pwallet->GenerateAddress(pubkey, txPub))
+    CKey priv;
+    if (!pwallet->GenerateAddress(pubkey, txPub, priv))
         return NULL;
 
     CScript scriptPubKey = CScript() << ToByteVector(pubkey) << OP_CHECKSIG;
-    return CreateNewBlock(scriptPubKey, txPub, pwallet, fProofOfStake);
+    return CreateNewBlock(scriptPubKey, txPub, priv, pwallet, fProofOfStake);
 }
 
 CBlockTemplate* CreateNewPoABlockWithKey(CReserveKey& reservekey, CWallet* pwallet)
 {
-    CPubKey pubkey;
-    if (!reservekey.GetReservedKey(pubkey))
+    CPubKey pubkey, txPub;
+    CKey txPriv;
+    if (!pwallet->GenerateAddress(pubkey, txPub, txPriv))
         return NULL;
 
     CScript scriptPubKey = CScript() << ToByteVector(pubkey) << OP_CHECKSIG;
-    return CreateNewPoABlock(scriptPubKey, pwallet);
+    return CreateNewPoABlock(scriptPubKey, txPub, txPriv, pwallet);
 }
 
 bool ProcessBlockFound(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
@@ -712,14 +724,14 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
                     continue;
             }
 
-            if (mapHashedBlocks.count(chainActive.Tip()->nHeight)) //search our map of hashed blocks, see if bestblock has been hashed yet
+            /*if (mapHashedBlocks.count(chainActive.Tip()->nHeight)) //search our map of hashed blocks, see if bestblock has been hashed yet
             {
                 if (GetTime() - mapHashedBlocks[chainActive.Tip()->nHeight] < max(pwallet->nHashInterval, (unsigned int)1)) // wait half of the nHashDrift with max wait of 3 minutes
                 {
                     MilliSleep(5000);
                     continue;
                 }
-            }
+            }*/
         }
 
         //

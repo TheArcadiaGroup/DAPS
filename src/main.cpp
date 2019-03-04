@@ -1581,13 +1581,13 @@ bool AcceptToMemoryPool(CTxMemPool &pool, CValidationState &state, const CTransa
     AssertLockHeld(cs_main);
     if (pfMissingInputs)
         *pfMissingInputs = false;
-
+    std::cout << "1" << std::endl;
     //Temporarily disable zerocoin for maintenance
     if (GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE) && tx.ContainsZerocoins())
         return state.DoS(10,
                          error("AcceptToMemoryPool : Zerocoin transactions are temporarily disabled for maintenance"),
                          REJECT_INVALID, "bad-tx");
-
+    std::cout << "2" << std::endl;
     if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, state))
         return state.DoS(100, error("AcceptToMemoryPool: : CheckTransaction failed"), REJECT_INVALID, "bad-tx");
 
@@ -1600,7 +1600,7 @@ bool AcceptToMemoryPool(CTxMemPool &pool, CValidationState &state, const CTransa
     if (tx.IsCoinStake())
         return state.DoS(100, error("AcceptToMemoryPool: coinstake as individual tx"),
                          REJECT_INVALID, "coinstake");
-
+    std::cout << "3" << std::endl;
     // Rather not work on nonstandard transactions (unless -testnet/-regtest)
     string reason;
     if (Params().RequireStandard() && !IsStandardTx(tx, reason))
@@ -1613,10 +1613,10 @@ bool AcceptToMemoryPool(CTxMemPool &pool, CValidationState &state, const CTransa
         LogPrintf("%s tx already in mempool\n", __func__);
         return false;
     }
-
+    std::cout << "4" << std::endl;
     // ----------- swiftTX transaction scanning -----------
 
-    BOOST_FOREACH(
+    /*BOOST_FOREACH(
     const CTxIn &in, tx.vin) {
         if (mapLockedInputs.count(in.prevout)) {
             if (mapLockedInputs[in.prevout] != tx.GetHash()) {
@@ -1625,7 +1625,7 @@ bool AcceptToMemoryPool(CTxMemPool &pool, CValidationState &state, const CTransa
                                  REJECT_INVALID, "tx-lock-conflict");
             }
         }
-    }
+    }*/
 
     // Check for conflicts with in-memory transactions
     if (!tx.IsZerocoinSpend()) {
@@ -1639,7 +1639,7 @@ bool AcceptToMemoryPool(CTxMemPool &pool, CValidationState &state, const CTransa
         }
     }
 
-
+    std::cout << "5" << std::endl;
     {
         CCoinsView dummy;
         CCoinsViewCache view(&dummy);
@@ -1689,13 +1689,14 @@ bool AcceptToMemoryPool(CTxMemPool &pool, CValidationState &state, const CTransa
                         *pfMissingInputs = true;
                     return false;
                 }
-
+                std::cout << "6" << std::endl;
                 //Check for invalid/fraudulent inputs
                 if (!ValidOutPoint(txin.prevout, chainActive.Height())) {
                     return state.Invalid(
                             error("%s : tried to spend invalid input %s in tx %s", __func__, txin.prevout.ToString(),
                                   tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-inputs");
                 }
+                std::cout << "7" << std::endl;
             }
 
             // are the actual inputs available?
@@ -3264,6 +3265,9 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
                                          REJECT_DUPLICATE, "bad-txns-inputs-spent");
                 }
                 pblocktree->WriteKeyImage(keyImage.GetHex(), false);
+                if (pwalletMain->GetDebit(in, ISMINE_ALL)) {
+                    pwalletMain->keyImagesSpends[keyImage.GetHex()] = true;
+                }
                 if (!ValidOutPoint(in.prevout, pindex->nHeight)) {
                     return state.DoS(100, error("%s : tried to spend invalid input %s in tx %s", __func__,
                                                 in.prevout.ToString(),
