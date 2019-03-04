@@ -123,6 +123,7 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, Object& entry)
         }
         in.push_back(Pair("sequence", (int64_t)txin.nSequence));
         in.push_back(Pair("keyimage", txin.keyImage.GetHex()));
+        in.push_back(Pair("ringsize", (int64_t) (txin.decoys.size() + 1)));
         vin.push_back(in);
     }
     entry.push_back(Pair("vin", vin));
