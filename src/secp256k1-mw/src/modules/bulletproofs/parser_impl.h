@@ -134,7 +134,7 @@ static int secp256k1_bulletproof_matrix_decode(FILE *fh, secp256k1_bulletproof_w
 }
 
 /* Function that just does a one-pass through a circuit to allocate memory */
-static int secp256k1_bulletproof_circuit_allocate_memory(const secp256k1_context *ctx, FILE *fh, secp256k1_bulletproof_circuit **ret) {
+static int secp256k1_bulletproof_circuit_allocate_memory(const secp256k1_context2 *ctx, FILE *fh, secp256k1_bulletproof_circuit **ret) {
     unsigned char buf[32];
     size_t version;
     size_t n_gates;
@@ -279,7 +279,7 @@ static size_t secp256k1_compressed_circuit_size(const secp256k1_bulletproof_circ
     return (1 + 3 * circ->n_gates + circ->n_constraints) * sizeof(secp256k1_scalar);
 }
 
-static secp256k1_bulletproof_circuit *secp256k1_parse_circuit(const secp256k1_context *ctx, const char *c) {
+static secp256k1_bulletproof_circuit *secp256k1_parse_circuit(const secp256k1_context2 *ctx, const char *c) {
     size_t i;
     int chars_read;
     const char *cstart;

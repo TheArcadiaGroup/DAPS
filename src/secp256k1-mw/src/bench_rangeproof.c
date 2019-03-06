@@ -12,7 +12,7 @@
 #include "bench.h"
 
 typedef struct {
-    secp256k1_context* ctx;
+    secp256k1_context2* ctx;
     secp256k1_pedersen_commitment commit;
     unsigned char proof[5134];
     unsigned char blind[32];

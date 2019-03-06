@@ -17,7 +17,7 @@
 #include "include/secp256k1_commitment.h"
 #include "include/secp256k1_rangeproof.h"
 
-static void test_rangeproof_api(const secp256k1_context *none, const secp256k1_context *sign, const secp256k1_context *vrfy, const secp256k1_context *both, const int32_t *ecount) {
+static void test_rangeproof_api(const secp256k1_context2 *none, const secp256k1_context2 *sign, const secp256k1_context2 *vrfy, const secp256k1_context2 *both, const int32_t *ecount) {
     unsigned char proof[5134];
     unsigned char blind[32];
     secp256k1_pedersen_commitment commit;
@@ -171,10 +171,10 @@ static void test_rangeproof_api(const secp256k1_context *none, const secp256k1_c
 }
 
 static void test_api(void) {
-    secp256k1_context *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
-    secp256k1_context *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
-    secp256k1_context *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
-    secp256k1_context *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context2 *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
+    secp256k1_context2 *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
+    secp256k1_context2 *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context2 *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
     int32_t ecount;
     int i;
 

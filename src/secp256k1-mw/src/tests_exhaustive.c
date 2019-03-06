@@ -160,7 +160,7 @@ void test_exhaustive_addition(const secp256k1_ge *group, const secp256k1_gej *gr
     }
 }
 
-void test_exhaustive_ecmult(const secp256k1_context *ctx, const secp256k1_ge *group, const secp256k1_gej *groupj, int order) {
+void test_exhaustive_ecmult(const secp256k1_context2 *ctx, const secp256k1_ge *group, const secp256k1_gej *groupj, int order) {
     int i, j, r_log;
     for (r_log = 1; r_log < order; r_log++) {
         for (j = 0; j < order; j++) {
@@ -194,7 +194,7 @@ static int ecmult_multi_callback(secp256k1_scalar *sc, secp256k1_ge *pt, size_t 
     return 1;
 }
 
-void test_exhaustive_ecmult_multi(const secp256k1_context *ctx, const secp256k1_ge *group, int order) {
+void test_exhaustive_ecmult_multi(const secp256k1_context2 *ctx, const secp256k1_ge *group, int order) {
     int i, j, k, x, y;
     secp256k1_scratch *scratch = secp256k1_scratch_create(&ctx->error_callback, 4096);
     for (i = 0; i < order; i++) {
@@ -232,7 +232,7 @@ void r_from_k(secp256k1_scalar *r, const secp256k1_ge *group, int k) {
     secp256k1_scalar_set_b32(r, x_bin, NULL);
 }
 
-void test_exhaustive_verify(const secp256k1_context *ctx, const secp256k1_ge *group, int order) {
+void test_exhaustive_verify(const secp256k1_context2 *ctx, const secp256k1_ge *group, int order) {
     int s, r, msg, key;
     for (s = 1; s < order; s++) {
         for (r = 1; r < order; r++) {
@@ -282,7 +282,7 @@ void test_exhaustive_verify(const secp256k1_context *ctx, const secp256k1_ge *gr
     }
 }
 
-void test_exhaustive_sign(const secp256k1_context *ctx, const secp256k1_ge *group, int order) {
+void test_exhaustive_sign(const secp256k1_context2 *ctx, const secp256k1_ge *group, int order) {
     int i, j, k;
 
     /* Loop */
@@ -328,7 +328,7 @@ void test_exhaustive_sign(const secp256k1_context *ctx, const secp256k1_ge *grou
 }
 
 #ifdef ENABLE_MODULE_RECOVERY
-void test_exhaustive_recovery_sign(const secp256k1_context *ctx, const secp256k1_ge *group, int order) {
+void test_exhaustive_recovery_sign(const secp256k1_context2 *ctx, const secp256k1_ge *group, int order) {
     int i, j, k;
 
     /* Loop */
@@ -391,7 +391,7 @@ void test_exhaustive_recovery_sign(const secp256k1_context *ctx, const secp256k1
     }
 }
 
-void test_exhaustive_recovery_verify(const secp256k1_context *ctx, const secp256k1_ge *group, int order) {
+void test_exhaustive_recovery_verify(const secp256k1_context2 *ctx, const secp256k1_ge *group, int order) {
     /* This is essentially a copy of test_exhaustive_verify, with recovery added */
     int s, r, msg, key;
     for (s = 1; s < order; s++) {
@@ -457,7 +457,7 @@ int main(void) {
     secp256k1_ge group[EXHAUSTIVE_TEST_ORDER];
 
     /* Build context */
-    secp256k1_context *ctx = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context2 *ctx = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
 
     /* TODO set z = 1, then do num_tests runs with random z values */
 

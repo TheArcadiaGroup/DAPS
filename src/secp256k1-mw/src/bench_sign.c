@@ -9,7 +9,7 @@
 #include "bench.h"
 
 typedef struct {
-    secp256k1_context* ctx;
+    secp256k1_context2* ctx;
     unsigned char msg[32];
     unsigned char key[32];
 } bench_sign;

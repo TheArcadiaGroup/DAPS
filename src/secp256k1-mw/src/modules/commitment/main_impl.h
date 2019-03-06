@@ -41,7 +41,7 @@ static void secp256k1_pedersen_commitment_save(secp256k1_pedersen_commitment* co
     commit->data[0] = 9 ^ secp256k1_fe_is_quad_var(&ge->y);
 }
 
-int secp256k1_pedersen_commitment_parse(const secp256k1_context* ctx, secp256k1_pedersen_commitment* commit, const unsigned char *input) {
+int secp256k1_pedersen_commitment_parse(const secp256k1_context2* ctx, secp256k1_pedersen_commitment* commit, const unsigned char *input) {
     secp256k1_fe x;
     secp256k1_ge ge;
 
@@ -62,7 +62,7 @@ int secp256k1_pedersen_commitment_parse(const secp256k1_context* ctx, secp256k1_
     return 1;
 }
 
-int secp256k1_pedersen_commitment_serialize(const secp256k1_context* ctx, unsigned char *output, const secp256k1_pedersen_commitment* commit) {
+int secp256k1_pedersen_commitment_serialize(const secp256k1_context2* ctx, unsigned char *output, const secp256k1_pedersen_commitment* commit) {
     secp256k1_ge ge;
 
     VERIFY_CHECK(ctx != NULL);
@@ -78,7 +78,7 @@ int secp256k1_pedersen_commitment_serialize(const secp256k1_context* ctx, unsign
 }
 
 /* Generates a pedersen commitment: *commit = blind * G + value * G2. The blinding factor is 32 bytes.*/
-int secp256k1_pedersen_commit(const secp256k1_context* ctx, secp256k1_pedersen_commitment *commit, const unsigned char *blind, uint64_t value, const secp256k1_generator* value_gen, const secp256k1_generator* blind_gen) {
+int secp256k1_pedersen_commit(const secp256k1_context2* ctx, secp256k1_pedersen_commitment *commit, const unsigned char *blind, uint64_t value, const secp256k1_generator* value_gen, const secp256k1_generator* blind_gen) {
     secp256k1_ge value_genp;
     secp256k1_ge blind_genp;
     secp256k1_gej rj;
@@ -111,7 +111,7 @@ int secp256k1_pedersen_commit(const secp256k1_context* ctx, secp256k1_pedersen_c
 /** Takes a list of n pointers to 32 byte blinding values, the first negs of which are treated with positive sign and the rest
  *  negative, then calculates an additional blinding value that adds to zero.
  */
-int secp256k1_pedersen_blind_sum(const secp256k1_context* ctx, unsigned char *blind_out, const unsigned char * const *blinds, size_t n, size_t npositive) {
+int secp256k1_pedersen_blind_sum(const secp256k1_context2* ctx, unsigned char *blind_out, const unsigned char * const *blinds, size_t n, size_t npositive) {
     secp256k1_scalar acc;
     secp256k1_scalar x;
     size_t i;
@@ -139,7 +139,7 @@ int secp256k1_pedersen_blind_sum(const secp256k1_context* ctx, unsigned char *bl
 }
 
 /* Takes two lists of commitments and sums the first set and subtracts the second and verifies that they sum to excess. */
-int secp256k1_pedersen_verify_tally(const secp256k1_context* ctx, const secp256k1_pedersen_commitment * const* pos, size_t n_pos, const secp256k1_pedersen_commitment * const* neg, size_t n_neg) {
+int secp256k1_pedersen_verify_tally(const secp256k1_context2* ctx, const secp256k1_pedersen_commitment * const* pos, size_t n_pos, const secp256k1_pedersen_commitment * const* neg, size_t n_neg) {
     secp256k1_gej accj;
     secp256k1_ge add;
     size_t i;
@@ -160,7 +160,7 @@ int secp256k1_pedersen_verify_tally(const secp256k1_context* ctx, const secp256k
     return secp256k1_gej_is_infinity(&accj);
 }
 
-int secp256k1_pedersen_blind_generator_blind_sum(const secp256k1_context* ctx, const uint64_t *value, const unsigned char* const* generator_blind, unsigned char* const* blinding_factor, size_t n_total, size_t n_inputs) {
+int secp256k1_pedersen_blind_generator_blind_sum(const secp256k1_context2* ctx, const uint64_t *value, const unsigned char* const* generator_blind, unsigned char* const* blinding_factor, size_t n_total, size_t n_inputs) {
     secp256k1_scalar sum;
     secp256k1_scalar tmp;
     size_t i;

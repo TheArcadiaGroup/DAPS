@@ -37,7 +37,7 @@ typedef struct secp256k1_bulletproof_circuit_assignment secp256k1_bulletproof_ci
  *                   n: number of NUMS generators to produce
  */
 SECP256K1_API secp256k1_bulletproof_generators *secp256k1_bulletproof_generators_create(
-    const secp256k1_context* ctx,
+    const secp256k1_context2* ctx,
     const secp256k1_generator *blinding_gen,
     size_t n
 ) SECP256K1_ARG_NONNULL(1);
@@ -47,7 +47,7 @@ SECP256K1_API secp256k1_bulletproof_generators *secp256k1_bulletproof_generators
  *          gen: pointer to the generator set to be destroyed
  */
 SECP256K1_API void secp256k1_bulletproof_generators_destroy(
-    const secp256k1_context* ctx,
+    const secp256k1_context2* ctx,
     secp256k1_bulletproof_generators *gen
 ) SECP256K1_ARG_NONNULL(1);
 
@@ -68,8 +68,8 @@ SECP256K1_API void secp256k1_bulletproof_generators_destroy(
  *     extra_commit_len: length of additional data
  */
 SECP256K1_WARN_UNUSED_RESULT SECP256K1_API int secp256k1_bulletproof_rangeproof_verify(
-    const secp256k1_context* ctx,
-    secp256k1_scratch_space* scratch,
+    const secp256k1_context2* ctx,
+    secp256k1_scratch_space2* scratch,
     const secp256k1_bulletproof_generators *gens,
     const unsigned char* proof,
     size_t plen,
@@ -100,8 +100,8 @@ SECP256K1_WARN_UNUSED_RESULT SECP256K1_API int secp256k1_bulletproof_rangeproof_
  *     extra_commit_len: array of lengths of additional data
  */
 SECP256K1_WARN_UNUSED_RESULT SECP256K1_API int secp256k1_bulletproof_rangeproof_verify_multi(
-    const secp256k1_context* ctx,
-    secp256k1_scratch_space* scratch,
+    const secp256k1_context2* ctx,
+    secp256k1_scratch_space2* scratch,
     const secp256k1_bulletproof_generators *gens,
     const unsigned char* const* proof,
     size_t n_proofs,
@@ -132,7 +132,7 @@ SECP256K1_WARN_UNUSED_RESULT SECP256K1_API int secp256k1_bulletproof_rangeproof_
  * extra_commit_len: length of additional data
  */
 SECP256K1_WARN_UNUSED_RESULT SECP256K1_API int secp256k1_bulletproof_rangeproof_rewind(
-    const secp256k1_context* ctx,
+    const secp256k1_context2* ctx,
     const secp256k1_bulletproof_generators* gens,
     uint64_t* value,
     unsigned char* blind,
@@ -165,8 +165,8 @@ SECP256K1_WARN_UNUSED_RESULT SECP256K1_API int secp256k1_bulletproof_rangeproof_
  * extra_commit_len: length of additional data
  */
 SECP256K1_WARN_UNUSED_RESULT SECP256K1_API int secp256k1_bulletproof_rangeproof_prove(
-    const secp256k1_context* ctx,
-    secp256k1_scratch_space* scratch,
+    const secp256k1_context2* ctx,
+    secp256k1_scratch_space2* scratch,
     const secp256k1_bulletproof_generators *gens,
     unsigned char* proof,
     size_t* plen,
@@ -190,7 +190,7 @@ SECP256K1_WARN_UNUSED_RESULT SECP256K1_API int secp256k1_bulletproof_rangeproof_
  *  In:   description: description of the circuit
  */
 SECP256K1_API secp256k1_bulletproof_circuit *secp256k1_bulletproof_circuit_parse(
-    const secp256k1_context *ctx,
+    const secp256k1_context2 *ctx,
     const char *description
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2);
 
@@ -199,14 +199,14 @@ SECP256K1_API secp256k1_bulletproof_circuit *secp256k1_bulletproof_circuit_parse
  *  Args:         ctx: pointer to a context object (cannot be NULL)
  *  In:         fname: path to a file containing the circuit
  */
-secp256k1_bulletproof_circuit *secp256k1_bulletproof_circuit_decode(const secp256k1_context *ctx, const char *fname);
+secp256k1_bulletproof_circuit *secp256k1_bulletproof_circuit_decode(const secp256k1_context2 *ctx, const char *fname);
 
 /** Destroys a circuit
  *  Args:   ctx: pointer to a context object (cannot be NULL)
  *          gen: pointer to the circuit to be destroyed
  */
 SECP256K1_API void secp256k1_bulletproof_circuit_destroy(
-    const secp256k1_context *ctx,
+    const secp256k1_context2 *ctx,
     secp256k1_bulletproof_circuit *circ
 ) SECP256K1_ARG_NONNULL(1);
 
@@ -216,7 +216,7 @@ SECP256K1_API void secp256k1_bulletproof_circuit_destroy(
  *  In:         fname: path to a file containing the circuit
  */
 SECP256K1_API secp256k1_bulletproof_circuit_assignment *secp256k1_bulletproof_circuit_assignment_decode(
-    const secp256k1_context *ctx,
+    const secp256k1_context2 *ctx,
     const char *fname
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2);
 
@@ -225,7 +225,7 @@ SECP256K1_API secp256k1_bulletproof_circuit_assignment *secp256k1_bulletproof_ci
  *          gen: pointer to the assignment to be destroyed
  */
 SECP256K1_API void secp256k1_bulletproof_circuit_assignment_destroy(
-    const secp256k1_context *ctx,
+    const secp256k1_context2 *ctx,
     secp256k1_bulletproof_circuit_assignment *assn
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2);
 
@@ -245,8 +245,8 @@ SECP256K1_API void secp256k1_bulletproof_circuit_assignment_destroy(
  * extra_commit_len: length of additional data
  */
 SECP256K1_API int secp256k1_bulletproof_circuit_verify(
-    const secp256k1_context* ctx,
-    secp256k1_scratch_space* scratch,
+    const secp256k1_context2* ctx,
+    secp256k1_scratch_space2* scratch,
     const secp256k1_bulletproof_generators* gens,
     const secp256k1_bulletproof_circuit* circ,
     const unsigned char* proof,
@@ -275,8 +275,8 @@ SECP256K1_API int secp256k1_bulletproof_circuit_verify(
  * extra_commit_len: array of lengths of additional data
  */
 SECP256K1_API int secp256k1_bulletproof_circuit_verify_multi(
-    const secp256k1_context* ctx,
-    secp256k1_scratch_space* scratch,
+    const secp256k1_context2* ctx,
+    secp256k1_scratch_space2* scratch,
     const secp256k1_bulletproof_generators* gens,
     const secp256k1_bulletproof_circuit* const* circ,
     const unsigned char* const* proof,
@@ -307,8 +307,8 @@ SECP256K1_API int secp256k1_bulletproof_circuit_verify_multi(
  * extra_commit_len: length of additional data
  */
 SECP256K1_API int secp256k1_bulletproof_circuit_prove(
-    const secp256k1_context* ctx,
-    secp256k1_scratch_space* scratch,
+    const secp256k1_context2* ctx,
+    secp256k1_scratch_space2* scratch,
     const secp256k1_bulletproof_generators* gens,
     const secp256k1_bulletproof_circuit* circ,
     unsigned char* proof,

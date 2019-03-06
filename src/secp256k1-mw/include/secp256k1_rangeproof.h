@@ -25,7 +25,7 @@ extern "C" {
  *       max_value: pointer to a unsigned int64 which will be updated with the maximum value that commit could have. (cannot be NULL)
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_rangeproof_verify(
-  const secp256k1_context* ctx,
+  const secp256k1_context2* ctx,
   uint64_t *min_value,
   uint64_t *max_value,
   const secp256k1_pedersen_commitment *commit,
@@ -55,7 +55,7 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_rangeproof_verify(
  *        max_value: pointer to an unsigned int64 which will be updated with the maximum value that commit could have. (cannot be NULL)
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_rangeproof_rewind(
-  const secp256k1_context* ctx,
+  const secp256k1_context2* ctx,
   unsigned char *blind_out,
   uint64_t *value_out,
   unsigned char *message_out,
@@ -99,7 +99,7 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_rangeproof_rewind(
  *
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_rangeproof_sign(
-  const secp256k1_context* ctx,
+  const secp256k1_context2* ctx,
   unsigned char *proof,
   size_t *plen,
   uint64_t min_value,
@@ -128,7 +128,7 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_rangeproof_sign(
  *        max_value: pointer to an unsigned int64 which will be updated with the maximum value that commit could have. (cannot be NULL)
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_rangeproof_info(
-  const secp256k1_context* ctx,
+  const secp256k1_context2* ctx,
   int *exp,
   int *mantissa,
   uint64_t *min_value,

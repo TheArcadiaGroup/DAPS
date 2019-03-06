@@ -33,7 +33,7 @@ static int secp256k1_whitelist_hash_pubkey(secp256k1_scalar* output, secp256k1_g
     return 1;
 }
 
-static int secp256k1_whitelist_tweak_pubkey(const secp256k1_context* ctx, secp256k1_gej* pub_tweaked) {
+static int secp256k1_whitelist_tweak_pubkey(const secp256k1_context2* ctx, secp256k1_gej* pub_tweaked) {
     secp256k1_scalar tweak;
     secp256k1_scalar zero;
     int ret;
@@ -47,7 +47,7 @@ static int secp256k1_whitelist_tweak_pubkey(const secp256k1_context* ctx, secp25
     return ret;
 }
 
-static int secp256k1_whitelist_compute_tweaked_privkey(const secp256k1_context* ctx, secp256k1_scalar* skey, const unsigned char *online_key, const unsigned char *summed_key) {
+static int secp256k1_whitelist_compute_tweaked_privkey(const secp256k1_context2* ctx, secp256k1_scalar* skey, const unsigned char *online_key, const unsigned char *summed_key) {
     secp256k1_scalar tweak;
     int ret = 1;
     int overflow = 0;
@@ -83,7 +83,7 @@ static int secp256k1_whitelist_compute_tweaked_privkey(const secp256k1_context* 
 /* Takes a list of pubkeys and combines them to form the public keys needed
  * for the ring signature; also produce a commitment to every one that will
  * be our "message". */
-static int secp256k1_whitelist_compute_keys_and_message(const secp256k1_context* ctx, unsigned char *msg32, secp256k1_gej *keys, const secp256k1_pubkey2 *online_pubkeys, const secp256k1_pubkey2 *offline_pubkeys, const int n_keys, const secp256k1_pubkey2 *sub_pubkey) {
+static int secp256k1_whitelist_compute_keys_and_message(const secp256k1_context2* ctx, unsigned char *msg32, secp256k1_gej *keys, const secp256k1_pubkey2 *online_pubkeys, const secp256k1_pubkey2 *offline_pubkeys, const int n_keys, const secp256k1_pubkey2 *sub_pubkey) {
     unsigned char c[33];
     size_t size = 33;
     secp256k1_sha256 sha;

@@ -25,10 +25,10 @@ static void test_commitment_api(void) {
     unsigned char *blind_out_ptr = blind_out;
     uint64_t val = secp256k1_rand32();
 
-    secp256k1_context *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
-    secp256k1_context *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
-    secp256k1_context *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
-    secp256k1_context *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context2 *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
+    secp256k1_context2 *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
+    secp256k1_context2 *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context2 *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
     int32_t ecount;
 
     secp256k1_context_set_error_callback(none, counting_illegal_callback_fn, &ecount);

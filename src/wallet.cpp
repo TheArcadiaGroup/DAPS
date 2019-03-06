@@ -34,6 +34,8 @@
 #include <boost/filesystem/operations.hpp>
 #include "ecdhutil.h"
 #include "txdb.h"
+#include "secp256k1_bulletproofs.h"
+#include "secp256k1_commitment.h"
 //#include "./secp256k1-mw1/include/secp256k1_bulletproofs.h"
 //#include "../privacyutils/command_line.h"
 //#include "../privacyutils/file_io_utils.h"
@@ -2763,7 +2765,7 @@ bool CWallet::CreateTransactionBulletProof(const CPubKey& recipientViewKey, cons
             std::copy(addr.begin(), addr.end(), std::back_inserter(wtxNew.masternodeStealthAddress));
         }
     }
-
+    secp256k1_context2 *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
     //secp256k1_pedersen_commitment_load(NULL, NULL);
 
     return true;

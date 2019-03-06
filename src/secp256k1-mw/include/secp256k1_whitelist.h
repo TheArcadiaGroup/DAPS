@@ -58,7 +58,7 @@ typedef struct {
  *  to fail validation for any set of keys.
  */
 SECP256K1_API int secp256k1_whitelist_signature_parse(
-    const secp256k1_context* ctx,
+    const secp256k1_context2* ctx,
     secp256k1_whitelist_signature *sig,
     const unsigned char *input,
     size_t input_len
@@ -84,7 +84,7 @@ SECP256K1_API size_t secp256k1_whitelist_signature_n_keys(
  *  See secp256k1_whitelist_signature_parse for details about the encoding.
  */
 SECP256K1_API int secp256k1_whitelist_signature_serialize(
-    const secp256k1_context* ctx,
+    const secp256k1_context2* ctx,
     unsigned char *output,
     size_t *output_len,
     const secp256k1_whitelist_signature *sig
@@ -113,7 +113,7 @@ SECP256K1_API int secp256k1_whitelist_signature_serialize(
  * compressed serialization of the key.
  */
 SECP256K1_API int secp256k1_whitelist_sign(
-  const secp256k1_context* ctx,
+  const secp256k1_context2* ctx,
   secp256k1_whitelist_signature *sig,
   const secp256k1_pubkey2 *online_pubkeys,
   const secp256k1_pubkey2 *offline_pubkeys,
@@ -122,7 +122,7 @@ SECP256K1_API int secp256k1_whitelist_sign(
   const unsigned char *online_seckey,
   const unsigned char *summed_seckey,
   const size_t index,
-  secp256k1_nonce_function noncefp,
+  secp256k1_nonce_function2 noncefp,
   const void *noncedata
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(6) SECP256K1_ARG_NONNULL(7) SECP256K1_ARG_NONNULL(8);
 
@@ -137,7 +137,7 @@ SECP256K1_API int secp256k1_whitelist_sign(
  *         sub_pubkey: the key to be whitelisted
  */
 SECP256K1_API int secp256k1_whitelist_verify(
-  const secp256k1_context* ctx,
+  const secp256k1_context2* ctx,
   const secp256k1_whitelist_signature *sig,
   const secp256k1_pubkey2 *online_pubkeys,
   const secp256k1_pubkey2 *offline_pubkeys,

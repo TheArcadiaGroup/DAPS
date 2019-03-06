@@ -35,7 +35,7 @@ SECP256K1_API extern const secp256k1_generator secp256k1_generator_const_h;
  *  In:   input:    pointer to a 33-byte serialized generator
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_generator_parse(
-    const secp256k1_context* ctx,
+    const secp256k1_context2* ctx,
     secp256k1_generator* commit,
     const unsigned char *input
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
@@ -48,7 +48,7 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_generator_parse(
  *  In:     commit:     a pointer to a generator
  */
 SECP256K1_API int secp256k1_generator_serialize(
-    const secp256k1_context* ctx,
+    const secp256k1_context2* ctx,
     unsigned char *output,
     const secp256k1_generator* commit
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
@@ -67,7 +67,7 @@ SECP256K1_API int secp256k1_generator_serialize(
  *  or to the base generator G.
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_generator_generate(
-    const secp256k1_context* ctx,
+    const secp256k1_context2* ctx,
     secp256k1_generator* gen,
     const unsigned char *seed32
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
@@ -86,7 +86,7 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_generator_generate(
  *  and then converting back to generator form.
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_generator_generate_blinded(
-    const secp256k1_context* ctx,
+    const secp256k1_context2* ctx,
     secp256k1_generator* gen,
     const unsigned char *key32,
     const unsigned char *blind32

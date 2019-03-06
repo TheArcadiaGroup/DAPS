@@ -9,7 +9,7 @@
 
 void test_ecdh_api(void) {
     /* Setup context that just counts errors */
-    secp256k1_context *tctx = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
+    secp256k1_context2 *tctx = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
     secp256k1_pubkey2 point;
     unsigned char res[32];
     unsigned char s_one[32] = { 0 };
@@ -60,7 +60,7 @@ void test_ecdh_generator_basepoint(void) {
         CHECK(secp256k1_ecdh(ctx, output_ecdh, &point[0], s_b32) == 1);
         /* compute "explicitly" */
         CHECK(secp256k1_ec_pubkey_create2(ctx, &point[1], s_b32) == 1);
-        CHECK(secp256k1_ec_pubkey_serialize(ctx, point_ser, &point_ser_len, &point[1], SECP256K1_EC_COMPRESSED) == 1);
+        CHECK(secp256k1_ec_pubkey_serialize2(ctx, point_ser, &point_ser_len, &point[1], SECP256K1_EC_COMPRESSED) == 1);
         CHECK(point_ser_len == sizeof(point_ser));
         secp256k1_sha256_initialize(&sha);
         secp256k1_sha256_write(&sha, point_ser, point_ser_len);

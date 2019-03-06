@@ -12,7 +12,7 @@
 
 #define MAX_KEYS SECP256K1_WHITELIST_MAX_N_KEYS  /* shorter alias */
 
-int secp256k1_whitelist_sign(const secp256k1_context* ctx, secp256k1_whitelist_signature *sig, const secp256k1_pubkey2 *online_pubkeys, const secp256k1_pubkey2 *offline_pubkeys, const size_t n_keys, const secp256k1_pubkey2 *sub_pubkey, const unsigned char *online_seckey, const unsigned char *summed_seckey, const size_t index, secp256k1_nonce_function noncefp, const void *noncedata) {
+int secp256k1_whitelist_sign(const secp256k1_context2* ctx, secp256k1_whitelist_signature *sig, const secp256k1_pubkey2 *online_pubkeys, const secp256k1_pubkey2 *offline_pubkeys, const size_t n_keys, const secp256k1_pubkey2 *sub_pubkey, const unsigned char *online_seckey, const unsigned char *summed_seckey, const size_t index, secp256k1_nonce_function2 noncefp, const void *noncedata) {
     secp256k1_gej pubs[MAX_KEYS];
     secp256k1_scalar s[MAX_KEYS];
     secp256k1_scalar sec, non;
@@ -100,7 +100,7 @@ int secp256k1_whitelist_sign(const secp256k1_context* ctx, secp256k1_whitelist_s
     return ret;
 }
 
-int secp256k1_whitelist_verify(const secp256k1_context* ctx, const secp256k1_whitelist_signature *sig, const secp256k1_pubkey2 *online_pubkeys, const secp256k1_pubkey2 *offline_pubkeys, const size_t n_keys, const secp256k1_pubkey2 *sub_pubkey) {
+int secp256k1_whitelist_verify(const secp256k1_context2* ctx, const secp256k1_whitelist_signature *sig, const secp256k1_pubkey2 *online_pubkeys, const secp256k1_pubkey2 *offline_pubkeys, const size_t n_keys, const secp256k1_pubkey2 *sub_pubkey) {
     secp256k1_scalar s[MAX_KEYS];
     secp256k1_gej pubs[MAX_KEYS];
     unsigned char msg32[32];
@@ -136,7 +136,7 @@ size_t secp256k1_whitelist_signature_n_keys(const secp256k1_whitelist_signature 
     return sig->n_keys;
 }
 
-int secp256k1_whitelist_signature_parse(const secp256k1_context* ctx, secp256k1_whitelist_signature *sig, const unsigned char *input, size_t input_len) {
+int secp256k1_whitelist_signature_parse(const secp256k1_context2* ctx, secp256k1_whitelist_signature *sig, const unsigned char *input, size_t input_len) {
     VERIFY_CHECK(ctx != NULL);
     ARG_CHECK(sig != NULL);
     ARG_CHECK(input != NULL);
@@ -154,7 +154,7 @@ int secp256k1_whitelist_signature_parse(const secp256k1_context* ctx, secp256k1_
     return 1;
 }
 
-int secp256k1_whitelist_signature_serialize(const secp256k1_context* ctx, unsigned char *output, size_t *output_len, const secp256k1_whitelist_signature *sig) {
+int secp256k1_whitelist_signature_serialize(const secp256k1_context2* ctx, unsigned char *output, size_t *output_len, const secp256k1_whitelist_signature *sig) {
     VERIFY_CHECK(ctx != NULL);
     ARG_CHECK(output != NULL);
     ARG_CHECK(output_len != NULL);

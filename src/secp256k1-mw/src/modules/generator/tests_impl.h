@@ -21,9 +21,9 @@ void test_generator_api(void) {
     unsigned char key[32];
     unsigned char blind[32];
     unsigned char sergen[33];
-    secp256k1_context *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
-    secp256k1_context *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
-    secp256k1_context *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context2 *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
+    secp256k1_context2 *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
+    secp256k1_context2 *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
     secp256k1_generator gen;
     int32_t ecount = 0;
 

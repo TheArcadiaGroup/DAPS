@@ -44,7 +44,7 @@ void ECDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps) 
 #endif
 
 static int count = 64;
-static secp256k1_context *ctx = NULL;
+static secp256k1_context2 *ctx = NULL;
 
 static void counting_illegal_callback_fn(const char* str, void* data) {
     /* Dummy callback function that just counts. */
@@ -191,10 +191,10 @@ void run_context_tests(void) {
     unsigned char ctmp[32];
     int32_t ecount;
     int32_t ecount2;
-    secp256k1_context *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
-    secp256k1_context *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
-    secp256k1_context *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
-    secp256k1_context *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context2 *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
+    secp256k1_context2 *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
+    secp256k1_context2 *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context2 *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
 
     secp256k1_gej pubj;
     secp256k1_ge pub;
@@ -212,7 +212,7 @@ void run_context_tests(void) {
 
     /*** clone and destroy all of them to make sure cloning was complete ***/
     {
-        secp256k1_context *ctx_tmp;
+        secp256k1_context2 *ctx_tmp;
 
         ctx_tmp = none; none = secp256k1_context_clone(none); secp256k1_context_destroy(ctx_tmp);
         ctx_tmp = sign; sign = secp256k1_context_clone(sign); secp256k1_context_destroy(ctx_tmp);
@@ -300,8 +300,8 @@ void run_context_tests(void) {
 
 void run_scratch_tests(void) {
     int32_t ecount = 0;
-    secp256k1_context *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
-    secp256k1_scratch_space *scratch;
+    secp256k1_context2 *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
+    secp256k1_scratch_space2 *scratch;
 
     /* Test public API */
     secp256k1_context_set_illegal_callback(none, counting_illegal_callback_fn, &ecount);
@@ -3386,11 +3386,11 @@ void ec_pubkey_parse_pointtest(const unsigned char *input, int xvalid, int yvali
                 memset(&pubkey, 0, sizeof(pubkey));
                 VG_UNDEF(&pubkey, sizeof(pubkey));
                 ecount = 0;
-                CHECK(secp256k1_ec_pubkey_parse(ctx, &pubkey, pubkeyc, pubkeyclen) == 1);
+                CHECK(secp256k1_ec_pubkey_parse2(ctx, &pubkey, pubkeyc, pubkeyclen) == 1);
                 VG_CHECK(&pubkey, sizeof(pubkey));
                 outl = 65;
                 VG_UNDEF(pubkeyo, 65);
-                CHECK(secp256k1_ec_pubkey_serialize(ctx, pubkeyo, &outl, &pubkey, SECP256K1_EC_COMPRESSED) == 1);
+                CHECK(secp256k1_ec_pubkey_serialize2(ctx, pubkeyo, &outl, &pubkey, SECP256K1_EC_COMPRESSED) == 1);
                 VG_CHECK(pubkeyo, outl);
                 CHECK(outl == 33);
                 CHECK(memcmp(&pubkeyo[1], &pubkeyc[1], 32) == 0);
@@ -3405,7 +3405,7 @@ void ec_pubkey_parse_pointtest(const unsigned char *input, int xvalid, int yvali
                     VG_CHECK(&pubkey, sizeof(pubkey));
                     outl = 65;
                     VG_UNDEF(pubkeyo, 65);
-                    CHECK(secp256k1_ec_pubkey_serialize(ctx, pubkeyo, &outl, &pubkey, SECP256K1_EC_UNCOMPRESSED) == 1);
+                    CHECK(secp256k1_ec_pubkey_serialize2(ctx, pubkeyo, &outl, &pubkey, SECP256K1_EC_UNCOMPRESSED) == 1);
                     VG_CHECK(pubkeyo, outl);
                     CHECK(outl == 65);
                     CHECK(pubkeyo[0] == 4);
@@ -3417,7 +3417,7 @@ void ec_pubkey_parse_pointtest(const unsigned char *input, int xvalid, int yvali
                 memset(&pubkey, 0xfe, sizeof(pubkey));
                 ecount = 0;
                 VG_UNDEF(&pubkey, sizeof(pubkey));
-                CHECK(secp256k1_ec_pubkey_parse(ctx, &pubkey, pubkeyc, pubkeyclen) == 0);
+                CHECK(secp256k1_ec_pubkey_parse2(ctx, &pubkey, pubkeyc, pubkeyclen) == 0);
                 VG_CHECK(&pubkey, sizeof(pubkey));
                 CHECK(ecount == 0);
                 CHECK(secp256k1_pubkey2_load(ctx, &ge, &pubkey) == 0);
@@ -3624,7 +3624,7 @@ void run_ec_pubkey_parse_test(void) {
     ecount = 0;
     VG_UNDEF(shortkey, 2);
     VG_UNDEF(&pubkey, sizeof(pubkey));
-    CHECK(secp256k1_ec_pubkey_parse(ctx, &pubkey, shortkey, 0) == 0);
+    CHECK(secp256k1_ec_pubkey_parse2(ctx, &pubkey, shortkey, 0) == 0);
     VG_CHECK(&pubkey, sizeof(pubkey));
     CHECK(ecount == 0);
     CHECK(secp256k1_pubkey2_load(ctx, &ge, &pubkey) == 0);
@@ -3636,7 +3636,7 @@ void run_ec_pubkey_parse_test(void) {
         shortkey[0] = i;
         VG_UNDEF(&shortkey[1], 1);
         VG_UNDEF(&pubkey, sizeof(pubkey));
-        CHECK(secp256k1_ec_pubkey_parse(ctx, &pubkey, shortkey, 1) == 0);
+        CHECK(secp256k1_ec_pubkey_parse2(ctx, &pubkey, shortkey, 1) == 0);
         VG_CHECK(&pubkey, sizeof(pubkey));
         CHECK(ecount == 0);
         CHECK(secp256k1_pubkey2_load(ctx, &ge, &pubkey) == 0);
@@ -3649,7 +3649,7 @@ void run_ec_pubkey_parse_test(void) {
         shortkey[0] = i & 255;
         shortkey[1] = i >> 8;
         VG_UNDEF(&pubkey, sizeof(pubkey));
-        CHECK(secp256k1_ec_pubkey_parse(ctx, &pubkey, shortkey, 2) == 0);
+        CHECK(secp256k1_ec_pubkey_parse2(ctx, &pubkey, shortkey, 2) == 0);
         VG_CHECK(&pubkey, sizeof(pubkey));
         CHECK(ecount == 0);
         CHECK(secp256k1_pubkey2_load(ctx, &ge, &pubkey) == 0);
@@ -3659,19 +3659,19 @@ void run_ec_pubkey_parse_test(void) {
     ecount = 0;
     VG_UNDEF(&pubkey, sizeof(pubkey));
     /* 33 bytes claimed on otherwise valid input starting with 0x04, fail, zeroize output, no illegal arg error. */
-    CHECK(secp256k1_ec_pubkey_parse(ctx, &pubkey, pubkeyc, 33) == 0);
+    CHECK(secp256k1_ec_pubkey_parse2(ctx, &pubkey, pubkeyc, 33) == 0);
     VG_CHECK(&pubkey, sizeof(pubkey));
     CHECK(ecount == 0);
     CHECK(secp256k1_pubkey2_load(ctx, &ge, &pubkey) == 0);
     CHECK(ecount == 1);
     /* NULL pubkey, illegal arg error. Pubkey isn't rewritten before this step, since it's NULL into the parser. */
-    CHECK(secp256k1_ec_pubkey_parse(ctx, NULL, pubkeyc, 65) == 0);
+    CHECK(secp256k1_ec_pubkey_parse2(ctx, NULL, pubkeyc, 65) == 0);
     CHECK(ecount == 2);
     /* NULL input string. Illegal arg and zeroize output. */
     memset(&pubkey, 0xfe, sizeof(pubkey));
     ecount = 0;
     VG_UNDEF(&pubkey, sizeof(pubkey));
-    CHECK(secp256k1_ec_pubkey_parse(ctx, &pubkey, NULL, 65) == 0);
+    CHECK(secp256k1_ec_pubkey_parse2(ctx, &pubkey, NULL, 65) == 0);
     VG_CHECK(&pubkey, sizeof(pubkey));
     CHECK(ecount == 1);
     CHECK(secp256k1_pubkey2_load(ctx, &ge, &pubkey) == 0);
@@ -3680,7 +3680,7 @@ void run_ec_pubkey_parse_test(void) {
     memset(&pubkey, 0xfe, sizeof(pubkey));
     ecount = 0;
     VG_UNDEF(&pubkey, sizeof(pubkey));
-    CHECK(secp256k1_ec_pubkey_parse(ctx, &pubkey, pubkeyc, 64) == 0);
+    CHECK(secp256k1_ec_pubkey_parse2(ctx, &pubkey, pubkeyc, 64) == 0);
     VG_CHECK(&pubkey, sizeof(pubkey));
     CHECK(ecount == 0);
     CHECK(secp256k1_pubkey2_load(ctx, &ge, &pubkey) == 0);
@@ -3689,7 +3689,7 @@ void run_ec_pubkey_parse_test(void) {
     memset(&pubkey, 0xfe, sizeof(pubkey));
     ecount = 0;
     VG_UNDEF(&pubkey, sizeof(pubkey));
-    CHECK(secp256k1_ec_pubkey_parse(ctx, &pubkey, pubkeyc, 66) == 0);
+    CHECK(secp256k1_ec_pubkey_parse2(ctx, &pubkey, pubkeyc, 66) == 0);
     VG_CHECK(&pubkey, sizeof(pubkey));
     CHECK(ecount == 0);
     CHECK(secp256k1_pubkey2_load(ctx, &ge, &pubkey) == 0);
@@ -3698,7 +3698,7 @@ void run_ec_pubkey_parse_test(void) {
     memset(&pubkey, 0, sizeof(pubkey));
     ecount = 0;
     VG_UNDEF(&pubkey, sizeof(pubkey));
-    CHECK(secp256k1_ec_pubkey_parse(ctx, &pubkey, pubkeyc, 65) == 1);
+    CHECK(secp256k1_ec_pubkey_parse2(ctx, &pubkey, pubkeyc, 65) == 1);
     VG_CHECK(&pubkey, sizeof(pubkey));
     CHECK(ecount == 0);
     VG_UNDEF(&ge, sizeof(ge));
@@ -3708,38 +3708,38 @@ void run_ec_pubkey_parse_test(void) {
     VG_CHECK(&ge.infinity, sizeof(ge.infinity));
     ge_equals_ge(&secp256k1_ge_const_g, &ge);
     CHECK(ecount == 0);
-    /* secp256k1_ec_pubkey_serialize illegal args. */
+    /* secp256k1_ec_pubkey_serialize2 illegal args. */
     ecount = 0;
     len = 65;
-    CHECK(secp256k1_ec_pubkey_serialize(ctx, NULL, &len, &pubkey, SECP256K1_EC_UNCOMPRESSED) == 0);
+    CHECK(secp256k1_ec_pubkey_serialize2(ctx, NULL, &len, &pubkey, SECP256K1_EC_UNCOMPRESSED) == 0);
     CHECK(ecount == 1);
     CHECK(len == 0);
-    CHECK(secp256k1_ec_pubkey_serialize(ctx, sout, NULL, &pubkey, SECP256K1_EC_UNCOMPRESSED) == 0);
+    CHECK(secp256k1_ec_pubkey_serialize2(ctx, sout, NULL, &pubkey, SECP256K1_EC_UNCOMPRESSED) == 0);
     CHECK(ecount == 2);
     len = 65;
     VG_UNDEF(sout, 65);
-    CHECK(secp256k1_ec_pubkey_serialize(ctx, sout, &len, NULL, SECP256K1_EC_UNCOMPRESSED) == 0);
+    CHECK(secp256k1_ec_pubkey_serialize2(ctx, sout, &len, NULL, SECP256K1_EC_UNCOMPRESSED) == 0);
     VG_CHECK(sout, 65);
     CHECK(ecount == 3);
     CHECK(len == 0);
     len = 65;
-    CHECK(secp256k1_ec_pubkey_serialize(ctx, sout, &len, &pubkey, ~0) == 0);
+    CHECK(secp256k1_ec_pubkey_serialize2(ctx, sout, &len, &pubkey, ~0) == 0);
     CHECK(ecount == 4);
     CHECK(len == 0);
     len = 65;
     VG_UNDEF(sout, 65);
-    CHECK(secp256k1_ec_pubkey_serialize(ctx, sout, &len, &pubkey, SECP256K1_EC_UNCOMPRESSED) == 1);
+    CHECK(secp256k1_ec_pubkey_serialize2(ctx, sout, &len, &pubkey, SECP256K1_EC_UNCOMPRESSED) == 1);
     VG_CHECK(sout, 65);
     CHECK(ecount == 4);
     CHECK(len == 65);
     /* Multiple illegal args. Should still set arg error only once. */
     ecount = 0;
     ecount2 = 11;
-    CHECK(secp256k1_ec_pubkey_parse(ctx, NULL, NULL, 65) == 0);
+    CHECK(secp256k1_ec_pubkey_parse2(ctx, NULL, NULL, 65) == 0);
     CHECK(ecount == 1);
     /* Does the illegal arg callback actually change the behavior? */
     secp256k1_context_set_illegal_callback(ctx, uncounting_illegal_callback_fn, &ecount2);
-    CHECK(secp256k1_ec_pubkey_parse(ctx, NULL, NULL, 65) == 0);
+    CHECK(secp256k1_ec_pubkey_parse2(ctx, NULL, NULL, 65) == 0);
     CHECK(ecount == 1);
     CHECK(ecount2 == 10);
     secp256k1_context_set_illegal_callback(ctx, NULL, NULL);
@@ -3956,8 +3956,8 @@ void run_eckey_edge_case_test(void) {
     CHECK(memcmp(&pubkey, zeros, sizeof(secp256k1_pubkey2)) > 0);
     CHECK(ecount == 3);
     len = 33;
-    CHECK(secp256k1_ec_pubkey_serialize(ctx, ctmp, &len, &pubkey, SECP256K1_EC_COMPRESSED) == 1);
-    CHECK(secp256k1_ec_pubkey_serialize(ctx, ctmp2, &len, &pubkey_negone, SECP256K1_EC_COMPRESSED) == 1);
+    CHECK(secp256k1_ec_pubkey_serialize2(ctx, ctmp, &len, &pubkey, SECP256K1_EC_COMPRESSED) == 1);
+    CHECK(secp256k1_ec_pubkey_serialize2(ctx, ctmp2, &len, &pubkey_negone, SECP256K1_EC_COMPRESSED) == 1);
     CHECK(memcmp(ctmp, ctmp2, 33) == 0);
     /* Result is infinity. */
     pubkeys[0] = &pubkey_one;
@@ -3977,8 +3977,8 @@ void run_eckey_edge_case_test(void) {
     CHECK(memcmp(&pubkey, zeros, sizeof(secp256k1_pubkey2)) > 0);
     CHECK(ecount == 3);
     len = 33;
-    CHECK(secp256k1_ec_pubkey_serialize(ctx, ctmp, &len, &pubkey, SECP256K1_EC_COMPRESSED) == 1);
-    CHECK(secp256k1_ec_pubkey_serialize(ctx, ctmp2, &len, &pubkey_one, SECP256K1_EC_COMPRESSED) == 1);
+    CHECK(secp256k1_ec_pubkey_serialize2(ctx, ctmp, &len, &pubkey, SECP256K1_EC_COMPRESSED) == 1);
+    CHECK(secp256k1_ec_pubkey_serialize2(ctx, ctmp2, &len, &pubkey_one, SECP256K1_EC_COMPRESSED) == 1);
     CHECK(memcmp(ctmp, ctmp2, 33) == 0);
     /* Adds to two. */
     pubkeys[1] = &pubkey_one;
@@ -4110,9 +4110,9 @@ void test_ecdsa_end_to_end(void) {
     CHECK(secp256k1_ec_pubkey_create2(ctx, &pubkey, privkey) == 1);
 
     /* Verify exporting and importing public key. */
-    CHECK(secp256k1_ec_pubkey_serialize(ctx, pubkeyc, &pubkeyclen, &pubkey, secp256k1_rand_bits(1) == 1 ? SECP256K1_EC_COMPRESSED : SECP256K1_EC_UNCOMPRESSED));
+    CHECK(secp256k1_ec_pubkey_serialize2(ctx, pubkeyc, &pubkeyclen, &pubkey, secp256k1_rand_bits(1) == 1 ? SECP256K1_EC_COMPRESSED : SECP256K1_EC_UNCOMPRESSED));
     memset(&pubkey, 0, sizeof(pubkey));
-    CHECK(secp256k1_ec_pubkey_parse(ctx, &pubkey, pubkeyc, pubkeyclen) == 1);
+    CHECK(secp256k1_ec_pubkey_parse2(ctx, &pubkey, pubkeyc, pubkeyclen) == 1);
 
     /* Verify negation changes the key and changes it back */
     memcpy(&pubkey_tmp, &pubkey, sizeof(pubkey));

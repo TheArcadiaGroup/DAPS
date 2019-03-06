@@ -18,7 +18,7 @@
 #define MAX_N_KEYS 30
 
 typedef struct {
-    secp256k1_context* ctx;
+    secp256k1_context2* ctx;
     unsigned char online_seckey[MAX_N_KEYS][32];
     unsigned char summed_seckey[MAX_N_KEYS][32];
     secp256k1_pubkey2 online_pubkeys[MAX_N_KEYS];
