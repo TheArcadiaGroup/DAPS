@@ -1387,14 +1387,13 @@ CAmount CWallet::GetBalance()
                                 continue;
                             }
                         }
-                        bool isMine;
                         if (keyImagesSpends.count(keyImageHex) == 1) {
                             if (!keyImagesSpends[keyImageHex]) {
                                 nTotal += getCTxOutValue(*pcoin, pcoin->vout[i]);
                             }
                             continue;
                         }
-                        if (!IsSpent(pcoin->GetHash(), i) || !pblocktree->ReadKeyImage(keyImageHex, isMine)) {
+                        if (!IsSpent(pcoin->GetHash(), i) || !IsKeyImageSpend1(keyImageHex)) {
                             keyImagesSpends[keyImageHex] = false;
                             nTotal += getCTxOutValue(*pcoin, pcoin->vout[i]);
                         }

@@ -245,6 +245,24 @@ void SyncWithWallets(const CTransaction &tx, const CBlock *pblock) {
     g_signals.SyncTransaction(tx, pblock);
 }
 
+bool IsKeyImageSpend1(const std::string& kiHex) {
+    KeyImageSpendDisk kd;
+    if (!pblocktree->ReadKeyImage(kiHex, kd)) {
+        //not spent yet because not found in database
+        return false;
+    }
+    return IsKeyImageSpend2(kd);
+}
+
+bool IsKeyImageSpend2(const KeyImageSpendDisk& kd) {
+    if (!kd.fSpend || kd.nHeight < 0) return false;
+
+    if (chainActive.Tip()->nHeight > kd.nHeight && chainActive[kd.nHeight]->GetBlockHash() == kd.bHash) {
+        return true;
+    }
+    return false;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 //
 // Registration of network node signals.
@@ -1704,8 +1722,7 @@ bool AcceptToMemoryPool(CTxMemPool &pool, CValidationState &state, const CTransa
             // Check key images not duplicated with what in db
             for (const CTxIn& txin: tx.vin) {
                 const CKeyImage& keyImage = txin.keyImage;
-                bool isMine;
-                if (pblocktree->ReadKeyImage(keyImage.GetHex(), isMine)) {
+                if (IsKeyImageSpend1(keyImage.GetHex())) {
                     return state.Invalid(error("AcceptToMemoryPool : key image already spent"),
                                          REJECT_DUPLICATE, "bad-txns-inputs-spent");
                 }
@@ -3257,12 +3274,13 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
             // Check that the inputs are not marked as invalid/fraudulent
             for (CTxIn in : tx.vin) {
                 const CKeyImage& keyImage = in.keyImage;
-                bool isMine;
-                if (pblocktree->ReadKeyImage(keyImage.GetHex(), isMine)) {
+                std::string kh = keyImage.GetHex();
+                if (IsKeyImageSpend1(kh)) {
                     return state.Invalid(error("AcceptToMemoryPool : key image already spent"),
                                          REJECT_DUPLICATE, "bad-txns-inputs-spent");
                 }
-                pblocktree->WriteKeyImage(keyImage.GetHex(), false);
+                KeyImageSpendDisk kd(false, pindex->pprev->nHeight, tx.GetHash(), pindex->GetBlockHash());
+                pblocktree->WriteKeyImage(keyImage.GetHex(), kd);
                 if (pwalletMain->GetDebit(in, ISMINE_ALL)) {
                     pwalletMain->keyImagesSpends[keyImage.GetHex()] = true;
                 }
