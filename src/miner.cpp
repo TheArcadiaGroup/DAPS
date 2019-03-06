@@ -733,7 +733,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
                     continue;
                 }
             }*/
-            //MilliSleep(5000);
+            MilliSleep(3000);
 
         }
 
@@ -856,7 +856,11 @@ void static ThreadBitcoinMiner(void* parg)
     boost::this_thread::interruption_point();
     CWallet* pwallet = (CWallet*)parg;
     try {
-        BitcoinMiner(pwallet, false);
+        if (chainActive.Tip()->nHeight >= Params().LAST_POW_BLOCK()) {
+            BitcoinMiner(pwallet, true);
+        } else {
+            BitcoinMiner(pwallet, false);
+        }
         boost::this_thread::interruption_point();
     } catch (std::exception& e) {
         LogPrintf("ThreadBitcoinMiner() exception");
