@@ -6022,7 +6022,7 @@ bool CWallet::RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmou
                     GetKey(keyID, privKey);
                     CScript scriptPubKey = GetScriptForDestination(privKey.GetPubKey());
                     if (scriptPubKey == out.scriptPubKey) {
-                        std::cout << "Revealing tx amout" << std::endl;
+                        //std::cout << "Revealing tx amout" << std::endl;
                         CPubKey txPub(&(tx.txPub[0]), &(tx.txPub[0]) + 33);
                         CKey view;
                         if (myViewPrivateKey(view)
