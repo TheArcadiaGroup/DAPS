@@ -294,14 +294,14 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlockHeader blockFrom, cons
 {
     //assign new variables to make it easier to read
     //check encryptionKey hash
-LogPrintf("%s: encryption key", __func__);
+    LogPrintf("%s: encryption key", __func__);
     uint256 hashOfKey = Hash(encryptionKey, encryptionKey + 33);
-LogPrintf("%s: computed keyhash", __func__);
-    if (hashOfKey != txPrev.vout[prevout.n].maskValue.hashOfKey) {
+    LogPrintf("%s: computed keyhash", __func__);
+    if (hashOfKey != txPrev.vout[prevout.n].maskValue.hashOfKey && !txPrev.IsCoinBase() && !txPrev.IsCoinStake()) {
         LogPrintf("CheckStakeKernelHash: Hash key for decoding the value is not fit");
         return false;
     }
-LogPrintf("%s: decoding the value", __func__);
+    LogPrintf("%s: decoding the value", __func__);
     CAmount nValueIn;// = txPrev.vout[prevout.n].nValue;
     uint256 val = txPrev.vout[prevout.n].maskValue.amount;
     uint256 mask = txPrev.vout[prevout.n].maskValue.mask;
@@ -309,6 +309,9 @@ LogPrintf("%s: decoding the value", __func__);
     CPubKey sharedSec;
     sharedSec.Set(encryptionKey, encryptionKey + 33);
     ECDHInfo::Decode(mask.begin(), val.begin(), sharedSec, decodedMask, nValueIn);
+    if (txPrev.IsCoinBase() || txPrev.IsCoinStake()) {
+        nValueIn = txPrev.vout[prevout.n].nValue;
+    }
     unsigned int nTimeBlockFrom = blockFrom.GetBlockTime();
 
     if (nTimeTx < nTimeBlockFrom) // Transaction timestamp violation
