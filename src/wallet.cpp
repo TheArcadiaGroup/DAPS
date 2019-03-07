@@ -1422,6 +1422,8 @@ CAmount CWallet::GetBalance()
                         if (!IsSpent(pcoin->GetHash(), i) || !IsKeyImageSpend1(keyImageHex, chainActive.Tip()->nHeight)) {
                             keyImagesSpends[keyImageHex] = false;
                             nTotal += getCTxOutValue(*pcoin, pcoin->vout[i]);
+                        } else {
+                            keyImagesSpends[keyImageHex] = true;
                         }
                     }
                 }
