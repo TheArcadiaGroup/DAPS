@@ -253,7 +253,6 @@ bool GetKernelStakeModifier(uint256 hashBlockFrom, uint64_t& nStakeModifier, int
     int64_t nStakeModifierSelectionInterval = GetStakeModifierSelectionInterval();
     const CBlockIndex* pindex = pindexFrom;
     CBlockIndex* pindexNext = chainActive[pindexFrom->nHeight + 1];
-
     // loop to find the stake modifier later by a selection interval
     while (nStakeModifierTime < pindexFrom->GetBlockTime() + nStakeModifierSelectionInterval) {
         if (!pindexNext) {
@@ -269,6 +268,7 @@ bool GetKernelStakeModifier(uint256 hashBlockFrom, uint64_t& nStakeModifier, int
         }
     }
     nStakeModifier = pindex->nStakeModifier;
+    LogPrintf("%s: hashBlockFrom=%s, nStakeModifier=%d", __func__, hashBlockFrom.GetHex(), nStakeModifier);
     return true;
 }
 
@@ -339,7 +339,7 @@ LogPrintf("%s: get kernel staker modifier", __func__);
     if (fCheck) {
         LogPrintf("%s: checking stakehash", __func__);
         hashProofOfStake = stakeHash(nTimeTx, ss, prevout.n, prevout.hash, nTimeBlockFrom);
-        LogPrintf("%s: blockchecked hashProofOfStake=%s, nTimeTx=%d, nStakeModifier=%d, prevout.n=%d, prevout.hash=%s, nTimeBlockFrom=%d", __func__, hashProofOfStake.GetHex(), nTimeTx, nStakeModifier, prevout.n, prevout.hash.GetHex(), nTimeBlockFrom);
+        LogPrintf("%s: blockchecked hashProofOfStake=%s, nTimeTx=%d, blockfrom=%s, nStakeModifier=%d, prevout.n=%d, prevout.hash=%s, nTimeBlockFrom=%d", __func__, hashProofOfStake.GetHex(), nTimeTx, blockFrom.GetHash().GetHex(), nStakeModifier, prevout.n, prevout.hash.GetHex(), nTimeBlockFrom);
         LogPrintf("CheckStakeKernelHash: checking kernal hash target");
         return stakeTargetHit(hashProofOfStake, nValueIn, bnTargetPerCoinDay);
     }

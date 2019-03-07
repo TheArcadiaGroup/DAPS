@@ -1393,7 +1393,7 @@ CAmount CWallet::GetBalance()
                             }
                             continue;
                         }
-                        if (!IsSpent(pcoin->GetHash(), i) || !IsKeyImageSpend1(keyImageHex)) {
+                        if (!IsSpent(pcoin->GetHash(), i) || !IsKeyImageSpend1(keyImageHex, chainActive.Tip()->nHeight)) {
                             keyImagesSpends[keyImageHex] = false;
                             nTotal += getCTxOutValue(*pcoin, pcoin->vout[i]);
                         }
@@ -1992,8 +1992,7 @@ bool CWallet::SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int
                 }
             }
 
-            if (n != 0 && !IsSpent(pcoin->GetHash(), output.i) || !IsKeyImageSpend1
-            (keyImageHex)) {
+            if (n != 0 && !IsSpent(pcoin->GetHash(), output.i) || !IsKeyImageSpend1(keyImageHex, chainActive.Tip()->nHeight)) {
                 keyImagesSpends[keyImageHex] = false;
                 n = getCTxOutValue(*pcoin, pcoin->vout[output.i]);
             }

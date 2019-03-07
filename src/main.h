@@ -261,9 +261,9 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
 
 bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransaction& tx, bool fLimitFree, bool* pfMissingInputs, bool fRejectInsaneFee = false, bool isDSTX = false);
 
-bool IsKeyImageSpend1(const std::string& kiHex);
+bool IsKeyImageSpend1(const std::string& kiHex, int nHeight);
 
-bool IsKeyImageSpend2(const uint256& kd);
+bool IsKeyImageSpend2(const uint256& kd, int nHeight);
 
 int GetInputAge(CTxIn& vin);
 int GetInputAgeIX(uint256 nTXHash, CTxIn& vin);
