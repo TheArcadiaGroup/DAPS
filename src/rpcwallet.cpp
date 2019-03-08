@@ -3081,6 +3081,8 @@ Value sendtostealthaddress(const Array& params, bool fHelp)
 
     pwalletMain->SendToStealthAddress(stealthAddr, nAmount, wtx);
 
+    std::cout << "tx hex:" << EncodeHexTx(wtx) << std::endl;
+
     return wtx.GetHash().GetHex();
 }
 

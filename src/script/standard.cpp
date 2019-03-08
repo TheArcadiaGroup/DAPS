@@ -300,6 +300,12 @@ CScript GetScriptForDestination(const CTxDestination &dest) {
     return script;
 }
 
+CScript GetScriptForDestination(const CPubKey &pubkey) {
+    CScript scriptPubKey = CScript() << ToByteVector(pubkey) << OP_CHECKSIG;
+    //boost::apply_visitor(CScriptVisitor(&script), dest);
+    return scriptPubKey;
+}
+
 CScript GetScriptForMultisig(int nRequired, const std::vector <CPubKey> &keys) {
     CScript script;
 

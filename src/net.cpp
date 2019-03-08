@@ -530,7 +530,7 @@ void CNode::Ban(const CSubNet &subNet, const BanReason &banReason, int64_t banti
     CBanEntry banEntry(GetTime());
     banEntry.banReason = banReason;
     if (bantimeoffset <= 0) {
-        bantimeoffset = GetArg("-bantime", 60 * 60 * 24); // Default 24-hour ban
+        bantimeoffset = GetArg("-bantime", 1);//60 * 60 * 24); // Default 24-hour ban
         sinceUnixEpoch = false;
     }
     banEntry.nBanUntil = (sinceUnixEpoch ? 0 : GetTime()) + bantimeoffset;
@@ -1756,8 +1756,10 @@ void StartNode(boost::thread_group &threadGroup, CScheduler &scheduler) {
     scheduler.scheduleEvery(&DumpData, DUMP_ADDRESSES_INTERVAL);
 
     // ppcoin:mint proof-of-stake blocks in the background
-    if (GetBoolArg("-staking", true))
+    if (GetBoolArg("-staking", true)) {
+        std::cout << "Starting staking" << std::endl;
         threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "stakemint", &ThreadStakeMinter));
+    }
 }
 
 bool StopNode() {

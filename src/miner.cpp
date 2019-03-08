@@ -148,7 +148,7 @@ uint32_t GetListOfPoSInfo(uint32_t currentHeight, std::vector<PoSBlockSummary>& 
     return nloopIdx;
 }
 
-CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, bool fProofOfStake)
+CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txPub, const CKey& txPriv, CWallet* pwallet, bool fProofOfStake)
 {
     CReserveKey reservekey(pwallet);
 
@@ -177,6 +177,8 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     txNew.vin[0].prevout.SetNull();
     txNew.vout.resize(1);
     txNew.vout[0].scriptPubKey = scriptPubKeyIn;
+    std::copy(txPub.begin(), txPub.end(), std::back_inserter(txNew.txPub));
+    std::copy(txPriv.begin(), txPriv.end(), std::back_inserter(txNew.txPriv));
 
     CBlockIndex* prev = chainActive.Tip();
     txNew.vout[0].nValue = GetBlockValue(prev->nHeight);
@@ -184,6 +186,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     pblock->vtx.push_back(txNew);
     pblocktemplate->vTxFees.push_back(-1);   // updated at end
     pblocktemplate->vTxSigOps.push_back(-1); // updated at end
+    LogPrintf("CreateNewBlock: generated %s\n", FormatMoney(pblock->vtx[0].vout[0].nValue));
 
     // ppcoin: if coinstake available add coinstake tx
     static int64_t nLastCoinStakeSearchTime = GetAdjustedTime(); // only initialized at startup
@@ -291,7 +294,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
                     }
                     mapDependers[txin.prevout.hash].push_back(porphan);
                     porphan->setDependsOn.insert(txin.prevout.hash);
-                    nTotalIn += mempool.mapTx[txin.prevout.hash].GetTx().vout[txin.prevout.n].nValue;
+                    //nTotalIn += mempool.mapTx[txin.prevout.hash].GetTx().vout[txin.prevout.n].nValue;
                     continue;
                 }
 
@@ -305,12 +308,12 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
                 const CCoins* coins = view.AccessCoins(txin.prevout.hash);
                 assert(coins);
 
-                CAmount nValueIn = coins->vout[txin.prevout.n].nValue;
-                nTotalIn += nValueIn;
+                //CAmount nValueIn = coins->vout[txin.prevout.n].nValue;
+                //nTotalIn += nValueIn;
 
                 int nConf = nHeight - coins->nHeight;
 
-                dPriority += (double)nValueIn * nConf;
+                //dPriority += (double)nValueIn * nConf;
             }
             if (fMissingInputs) continue;
 
@@ -470,11 +473,17 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
 
         // Compute final coinbase transaction.
         pblock->vtx[0].vin[0].scriptSig = CScript() << nHeight << OP_0;
+        pblock->vtx[0].txType = TX_TYPE_REVEAL_AMOUNT;
         LogPrintf("%: Coinbase value without fee, value = %d, fee = %d", __func__, pblock->vtx[0].vout[0].nValue, nFees);
         if (!fProofOfStake) {
             pblock->vtx[0].vout[0].nValue += nFees;
             pblocktemplate->vTxFees[0] = nFees;
         }
+        
+        CPubKey sharedSec;
+        sharedSec.Set(txPub.begin(), txPub.end());
+        pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin());
+
         // Fill in header
         pblock->hashPrevBlock = pindexPrev->GetBlockHash();
         if (!fProofOfStake)
@@ -499,7 +508,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     return pblocktemplate.release();
 }
 
-CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, CWallet* pwallet) {
+CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, const CPubKey& txPub, const CKey& txPriv, CWallet* pwallet) {
 	CReserveKey reservekey(pwallet);
 
 	if (chainActive.Tip()->nHeight < Params().START_POA_BLOCK()) {
@@ -521,6 +530,8 @@ CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, CWallet* pwalle
 	//Value of this vout coinbase will be computed based on the number of audited PoS blocks
 	//This will be computed later
 	txNew.vout[0].scriptPubKey = scriptPubKeyIn;
+    std::copy(txPub.begin(), txPub.end(), std::back_inserter(txNew.txPub));
+    std::copy(txPriv.begin(), txPriv.end(), std::back_inserter(txNew.txPriv));
 
 	CBlockIndex* prev = chainActive.Tip();
 
@@ -547,6 +558,13 @@ CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, CWallet* pwalle
 	//compute PoA block reward
 	CAmount nReward = pblock->posBlocksAudited.size() * 100 * COIN;
 	pblock->vtx[0].vout[0].nValue = nReward;
+
+    pblock->vtx[0].txType = TX_TYPE_REVEAL_AMOUNT;
+    //LogPrintf("%: Coinbase value without fee, value = %d, fee = %d", __func__, pblock->vtx[0].vout[0].nValue, nFees);
+
+    CPubKey sharedSec;
+    sharedSec.Set(txPub.begin(), txPub.end());
+    pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin());
 
 	//Comment out all previous code, because a PoA block does not verify any transaction, except reward transactions to miners
 	// No need to collect memory pool transactions into the block
@@ -616,22 +634,24 @@ int64_t nHPSTimerStart = 0;
 
 CBlockTemplate* CreateNewBlockWithKey(CReserveKey& reservekey, CWallet* pwallet, bool fProofOfStake)
 {
-    CPubKey pubkey;
-    if (!reservekey.GetReservedKey(pubkey))
+    CPubKey pubkey, txPub;
+    CKey priv;
+    if (!pwallet->GenerateAddress(pubkey, txPub, priv))
         return NULL;
 
     CScript scriptPubKey = CScript() << ToByteVector(pubkey) << OP_CHECKSIG;
-    return CreateNewBlock(scriptPubKey, pwallet, fProofOfStake);
+    return CreateNewBlock(scriptPubKey, txPub, priv, pwallet, fProofOfStake);
 }
 
 CBlockTemplate* CreateNewPoABlockWithKey(CReserveKey& reservekey, CWallet* pwallet)
 {
-    CPubKey pubkey;
-    if (!reservekey.GetReservedKey(pubkey))
+    CPubKey pubkey, txPub;
+    CKey txPriv;
+    if (!pwallet->GenerateAddress(pubkey, txPub, txPriv))
         return NULL;
 
     CScript scriptPubKey = CScript() << ToByteVector(pubkey) << OP_CHECKSIG;
-    return CreateNewPoABlock(scriptPubKey, pwallet);
+    return CreateNewPoABlock(scriptPubKey, txPub, txPriv, pwallet);
 }
 
 bool ProcessBlockFound(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
@@ -698,21 +718,23 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
                 continue;
             }
 
-            while (chainActive.Tip()->nTime < 1471482000 || vNodes.empty() || pwallet->IsLocked() || !fMintableCoins || nReserveBalance >= pwallet->GetBalance() || !masternodeSync.IsSynced()) {
+            while (chainActive.Tip()->nTime < 1471482000 || vNodes.empty() || pwallet->IsLocked() || !fMintableCoins || nReserveBalance >= pwallet->GetBalance() /*|| !masternodeSync.IsSynced()*/) {
                 nLastCoinStakeSearchInterval = 0;
                 MilliSleep(5000);
                 if (!fGenerateBitcoins && !fProofOfStake)
                     continue;
             }
 
-            if (mapHashedBlocks.count(chainActive.Tip()->nHeight)) //search our map of hashed blocks, see if bestblock has been hashed yet
+            /*if (mapHashedBlocks.count(chainActive.Tip()->nHeight)) //search our map of hashed blocks, see if bestblock has been hashed yet
             {
                 if (GetTime() - mapHashedBlocks[chainActive.Tip()->nHeight] < max(pwallet->nHashInterval, (unsigned int)1)) // wait half of the nHashDrift with max wait of 3 minutes
                 {
                     MilliSleep(5000);
                     continue;
                 }
-            }
+            }*/
+            MilliSleep(3000);
+
         }
 
         //
@@ -728,6 +750,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
             continue;
 
         CBlock* pblock = &pblocktemplate->block;
+        LogPrintf("Bitcoinminer: generated %s\n", FormatMoney(pblock->vtx[0].vout[0].nValue));
         IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
 
         //Stake miner main
@@ -833,7 +856,11 @@ void static ThreadBitcoinMiner(void* parg)
     boost::this_thread::interruption_point();
     CWallet* pwallet = (CWallet*)parg;
     try {
-        BitcoinMiner(pwallet, false);
+        if (chainActive.Tip()->nHeight >= Params().LAST_POW_BLOCK()) {
+            BitcoinMiner(pwallet, true);
+        } else {
+            BitcoinMiner(pwallet, false);
+        }
         boost::this_thread::interruption_point();
     } catch (std::exception& e) {
         LogPrintf("ThreadBitcoinMiner() exception");

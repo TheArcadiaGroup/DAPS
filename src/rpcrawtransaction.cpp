@@ -18,6 +18,7 @@
 #include "script/standard.h"
 #include "uint256.h"
 #include "utilmoneystr.h"
+#include "wallet.h"
 #ifdef ENABLE_WALLET
 #include "wallet.h"
 #endif
@@ -74,20 +75,55 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, Object& entry)
     if (tx.hasPaymentID) {
         entry.push_back(Pair("paymentid", tx.paymentID));
     }
+    if (tx.masternodeStealthAddress.size() > 0) {
+        entry.push_back(Pair("masternodestealth", std::string((char*)(&tx.masternodeStealthAddress[0]))));
+    }
+    entry.push_back(Pair("txType", (int64_t)tx.txType));
+
     Array vin;
     BOOST_FOREACH (const CTxIn& txin, tx.vin) {
         Object in;
         if (tx.IsCoinBase())
             in.push_back(Pair("coinbase", HexStr(txin.scriptSig.begin(), txin.scriptSig.end())));
         else {
-            in.push_back(Pair("txid", txin.prevout.hash.GetHex()));
-            in.push_back(Pair("vout", (int64_t)txin.prevout.n));
+            {
+                //decoys
+                Array decoys;
+                int total = txin.decoys.size() + 1;
+                std::vector<COutPoint> allDecoys = txin.decoys;
+                srand (time(NULL));
+                int mytxIdx = rand() % total;
+                allDecoys.insert(allDecoys.begin() + mytxIdx, txin.prevout);
+                for (int i = 0; i < allDecoys.size(); i++) {
+                    Object decoy;
+                    decoy.push_back(Pair("txid", allDecoys[i].hash.GetHex()));
+                    decoy.push_back(Pair("vout", (int64_t)allDecoys[i].n));
+#ifdef ENABLE_WALLET
+                    LOCK(pwalletMain->cs_wallet);
+                    map<uint256, CWalletTx>::const_iterator mi = pwalletMain->mapWallet.find(allDecoys[i].hash);
+                    if (mi != pwalletMain->mapWallet.end()) {
+                        const CWalletTx& prev = (*mi).second;
+                        if (allDecoys[i].n < prev.vout.size()) {
+                            if (pwalletMain->IsMine(prev.vout[allDecoys[i].n])) {
+                                CAmount decodedAmount;
+                                pwalletMain->RevealTxOutAmount(prev, prev.vout[allDecoys[i].n], decodedAmount);
+                                decoy.push_back(Pair("decoded_amount", ValueFromAmount(decodedAmount)));
+                            }
+                        }
+                    }
+#endif
+                    decoys.push_back(decoy);
+                }
+                in.push_back(Pair("decoys", decoys));
+            }
             Object o;
             o.push_back(Pair("asm", txin.scriptSig.ToString()));
             o.push_back(Pair("hex", HexStr(txin.scriptSig.begin(), txin.scriptSig.end())));
             in.push_back(Pair("scriptSig", o));
         }
         in.push_back(Pair("sequence", (int64_t)txin.nSequence));
+        in.push_back(Pair("keyimage", txin.keyImage.GetHex()));
+        in.push_back(Pair("ringsize", (int64_t) (txin.decoys.size() + 1)));
         vin.push_back(in);
     }
     entry.push_back(Pair("vin", vin));
@@ -100,6 +136,16 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, Object& entry)
         Object o;
         ScriptPubKeyToJSON(txout.scriptPubKey, o, true);
         out.push_back(Pair("scriptPubKey", o));
+        out.push_back(Pair("encoded_amount", txout.maskValue.amount.GetHex()));
+        out.push_back(Pair("encoded_mask", txout.maskValue.mask.GetHex()));
+
+#ifdef ENABLE_WALLET
+        if (pwalletMain->IsMine(txout)) {
+            CAmount decodedAmount;
+            pwalletMain->RevealTxOutAmount(tx, txout, decodedAmount);
+            out.push_back(Pair("decoded_amount", ValueFromAmount(decodedAmount)));
+        }
+#endif
         vout.push_back(out);
     }
     entry.push_back(Pair("vout", vout));
@@ -192,9 +238,9 @@ Value getrawtransaction(const Array& params, bool fHelp)
     uint256 hashBlock = 0;
     if (!GetTransaction(hash, tx, hashBlock, true))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "No information available about transaction");
-
+    std::cout << "read tx" << std::endl;
     string strHex = EncodeHexTx(tx);
-
+    std::cout << "encode tx" << std::endl;
     if (!fVerbose)
         return strHex;
 

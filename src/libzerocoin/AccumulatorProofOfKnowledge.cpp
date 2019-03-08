@@ -101,6 +101,7 @@ AccumulatorProofOfKnowledge::AccumulatorProofOfKnowledge(const AccumulatorAndPro
 	this->s_psi = r_psi + c*r*((e-1).inverse(params->accumulatorPoKCommitmentGroup.groupOrder));
 }
 
+
 /** Verifies that a commitment c is accumulated in accumulator a
  */
 bool AccumulatorProofOfKnowledge:: Verify(const Accumulator& a, const CBigNum& valueOfCommitmentToCoin) const {

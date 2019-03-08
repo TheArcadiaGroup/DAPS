@@ -1680,7 +1680,7 @@ bool CObfuscationPool::SendRandomPaymentToSelf()
     CScript scriptChange;
     CPubKey vchPubKey;
     assert(reservekey.GetReservedKey(vchPubKey)); // should never fail, as we just unlocked
-    scriptChange = GetScriptForDestination(vchPubKey.GetID());
+    scriptChange = GetScriptForDestination(vchPubKey);
 
     CWalletTx wtx;
     CAmount nFeeRet = 0;
@@ -1722,7 +1722,7 @@ bool CObfuscationPool::MakeCollateralAmounts()
     CScript scriptCollateral;
     CPubKey vchPubKey;
     assert(reservekeyCollateral.GetReservedKey(vchPubKey)); // should never fail, as we just unlocked
-    scriptCollateral = GetScriptForDestination(vchPubKey.GetID());
+    scriptCollateral = GetScriptForDestination(vchPubKey);
 
     vecSend.push_back(make_pair(scriptCollateral, OBFUSCATION_COLLATERAL * 4));
 
@@ -1777,7 +1777,7 @@ bool CObfuscationPool::CreateDenominated(CAmount nTotalValue)
     CScript scriptCollateral;
     CPubKey vchPubKey;
     assert(reservekeyCollateral.GetReservedKey(vchPubKey)); // should never fail, as we just unlocked
-    scriptCollateral = GetScriptForDestination(vchPubKey.GetID());
+    scriptCollateral = GetScriptForDestination(vchPubKey);
 
     // ****** Add collateral outputs ************ /
     if (!pwalletMain->HasCollateralInputs()) {
@@ -1795,7 +1795,7 @@ bool CObfuscationPool::CreateDenominated(CAmount nTotalValue)
             CPubKey vchPubKey;
             //use a unique change address
             assert(reservekeyDenom.GetReservedKey(vchPubKey)); // should never fail, as we just unlocked
-            scriptDenom = GetScriptForDestination(vchPubKey.GetID());
+            scriptDenom = GetScriptForDestination(vchPubKey);
             // TODO: do not keep reservekeyDenom here
             reservekeyDenom.KeepKey();
 
@@ -2105,17 +2105,21 @@ std::string CObfuscationPool::GetMessageByID(int messageID)
 bool CObfuScationSigner::IsVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey)
 {
     CScript payee2;
-    payee2 = GetScriptForDestination(pubkey.GetID());
+    payee2 = GetScriptForDestination(pubkey);
+
+    std::cout << "IsVinAssociatedWithPubkey:" << payee2.ToString() << std::endl;
 
     CTransaction txVin;
     uint256 hash;
     if (GetTransaction(vin.prevout.hash, txVin, hash, true)) {
         BOOST_FOREACH (CTxOut out, txVin.vout) {
-            if (out.nValue == 10000 * COIN) {
+            if (txVin.IsMNCollateralTx() && out.nValue == 1000000 * COIN) {
                 if (out.scriptPubKey == payee2) return true;
             }
         }
     }
+
+    std::cout << "IsVinAssociatedWithPubkey: not match" << std::endl;
 
     return false;
 }

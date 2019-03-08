@@ -293,7 +293,21 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFe
         //no masternode detected
         CMasternode* winningNode = mnodeman.GetCurrentMasterNode(1);
         if (winningNode) {
-            payee = GetScriptForDestination(winningNode->pubKeyCollateralAddress.GetID());
+            //generate payee based on masternodeStealthAddress
+            std::vector<unsigned char> masternodeStealthAddress = winningNode->vin.masternodeStealthAddress;
+            std::string mnsa(masternodeStealthAddress.begin(), masternodeStealthAddress.end());
+            LogPrint("CMasternodePayments","masternodeStealthAddress: %s", mnsa);
+
+            //Parse stealth address
+            CPubKey pubViewKey, pubSpendKey, des;
+            bool hasPaymentID;
+            uint64_t paymentID;
+            if (!CWallet::DecodeStealthAddress(mnsa, pubViewKey, pubSpendKey, hasPaymentID, paymentID)) {
+                throw runtime_error("Stealth address mal-formatted");
+            }
+
+            if (!CWallet::ComputeStealthDestination(txNew.txPrivM, pubViewKey, pubSpendKey, des));
+            payee = GetScriptForDestination(des);
         } else {
             LogPrint("masternode","CreateNewBlock: Failed to detect masternode to pay\n");
             hasPayment = false;
@@ -341,11 +355,11 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFe
             txNew.vout[0].nValue = blockValue - masternodePayment;
         }
 
-        CTxDestination address1;
-        ExtractDestination(payee, address1);
-        CBitcoinAddress address2(address1);
+        //CTxDestination address1;
+        //ExtractDestination(payee, address1);
+        //CBitcoinAddress address2(address1);
 
-        LogPrint("masternode","Masternode payment of %s to %s\n", FormatMoney(masternodePayment).c_str(), address2.ToString().c_str());
+        LogPrint("masternode","Masternode payment of %s to %s\n", FormatMoney(masternodePayment).c_str(), payee.ToString().c_str());
     }
 }
 
@@ -426,9 +440,9 @@ void CMasternodePayments::ProcessMessageMasternodePayments(CNode* pfrom, std::st
             return;
         }
 
-        CTxDestination address1;
-        ExtractDestination(winner.payee, address1);
-        CBitcoinAddress address2(address1);
+        //CTxDestination address1;
+        //ExtractDestination(winner.payee, address1);
+        //CBitcoinAddress address2(address1);
 
         //   LogPrint("mnpayments", "mnw - winning vote - Addr %s Height %d bestHeight %d - %s\n", address2.ToString().c_str(), winner.nBlockHeight, nHeight, winner.vinMasternode.prevout.ToStringShort());
 
@@ -484,7 +498,7 @@ bool CMasternodePayments::IsScheduled(CMasternode& mn, int nNotBlockHeight)
     }
 
     CScript mnpayee;
-    mnpayee = GetScriptForDestination(mn.pubKeyCollateralAddress.GetID());
+    mnpayee = GetScriptForDestination(mn.pubKeyCollateralAddress);
 
     CScript payee;
     for (int64_t h = nHeight; h <= nHeight + 8; h++) {
@@ -560,7 +574,7 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
     // if we don't have at least 6 signatures on a payee, approve whichever is the longest chain
     if (nMaxSignatures < MNPAYMENTS_SIGNATURES_REQUIRED) return true;
 
-    BOOST_FOREACH (CMasternodePayee& payee, vecPayments) {
+    /*BOOST_FOREACH (CMasternodePayee& payee, vecPayments) {
         bool found = false;
         BOOST_FOREACH (CTxOut out, txNew.vout) {
             if (payee.scriptPubKey == out.scriptPubKey) {
@@ -584,10 +598,10 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
                 strPayeesPossible += "," + address2.ToString();
             }
         }
-    }
-
-    LogPrint("masternode","CMasternodePayments::IsTransactionValid - Missing required payment of %s to %s\n", FormatMoney(requiredMasternodePayment).c_str(), strPayeesPossible.c_str());
-    return false;
+    }*/
+    return true;
+    //LogPrint("masternode","CMasternodePayments::IsTransactionValid - Missing required payment of %s to %s\n", FormatMoney(requiredMasternodePayment).c_str(), strPayeesPossible.c_str());
+    //return false;
 }
 
 std::string CMasternodeBlockPayees::GetRequiredPaymentsString()
@@ -731,7 +745,7 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
 
             newWinner.nBlockHeight = nBlockHeight;
 
-            CScript payee = GetScriptForDestination(pmn->pubKeyCollateralAddress.GetID());
+            CScript payee = GetScriptForDestination(pmn->pubKeyCollateralAddress);
             newWinner.AddPayee(payee);
 
             CTxDestination address1;

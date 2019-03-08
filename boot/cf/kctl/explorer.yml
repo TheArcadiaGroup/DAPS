@@ -30,14 +30,15 @@ metadata:
 spec:
   storageClassName: standard
   capacity:
-    storage: 0.01Gi
+    storage: 9Gi
   accessModes:
     - ReadWriteOnce
   claimRef:
     namespace: default
     name: explorer-settings-pv-claim
-  hostPath:
-    path: "/tmp/pv/explorer/settings"
+  gcePersistentDisk:
+    fsType: ext4
+    pdName: explorer-node-service
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -48,14 +49,15 @@ metadata:
 spec:
   storageClassName: standard
   capacity:
-    storage: 0.1Gi
+    storage: 9Gi
   accessModes:
     - ReadWriteOnce
   claimRef:
     namespace: default
     name: explorer-pv-claim
-  hostPath:
-    path: "/tmp/pv/explorer/daps"
+  gcePersistentDisk:
+    fsType: ext4
+    pdName: explorer-daps-service
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -66,14 +68,15 @@ metadata:
 spec:
   storageClassName: standard
   capacity:
-    storage: 0.2Gi
+    storage: 9Gi
   accessModes:
     - ReadWriteOnce
   claimRef:
     namespace: default
     name: mongo-pv-claim
-  hostPath:
-    path: "/tmp/pv/explorer/mongo"
+  gcePersistentDisk:
+    fsType: ext4
+    pdName: explorer-mongo-service
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -86,7 +89,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 0.01Gi
+      storage: 9Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -99,7 +102,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 0.1Gi
+      storage: 9Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -112,7 +115,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 0.2Gi
+      storage: 9Gi
 ---
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
@@ -132,47 +135,57 @@ spec:
         app: explorer
     spec:
       hostAliases:
-      - ip: "10.10.10.5"
-        hostnames:
-        - "explorer"
+        - ip: "10.10.10.5"
+          hostnames:
+            - "explorer"
       terminationGracePeriodSeconds: 3
       containers:
-      - image:  r.cfcr.io/hysmagus/explorer_min:develop
-        imagePullPolicy: Always
-        name: explorer
-        ports:
-        - containerPort: 3001
+        - image: r.cfcr.io/hysmagus/explorer_min:develop
+          imagePullPolicy: Always
           name: explorer
-        volumeMounts:
-        - name: explorersettings
-          mountPath: /DAPS/config/
-        command: ["/bin/bash","-c","cd /DAPS/ && nohup npm start && trap: TERM INT; sleep infinity & wait"]
-      - image: r.cfcr.io/hysmagus/daps_min:develop
-        imagePullPolicy: Always
-        name: dapsd
-        lifecycle:
-          preStop:
-            exec:
-              command: ["/bin/bash","-c","dapscoin-cli stop"]
-        command: ["/bin/bash","-c","sleep 3 && nohup dapscoind -daemon && trap: TERM INT; sleep infinity & wait"]
-        ports:
-        - containerPort: 53575
-          name: regtest
-        - containerPort: 53573
-          name: testnet
-        - containerPort: 53572
-          name: mainnet
-        volumeMounts:
-        - name: dapsdata
-          mountPath: ~/.dapscoin/
-      - image:  mongo:latest
-        name: mongo
-        ports:
-        - containerPort: 27017
+          ports:
+            - containerPort: 3001
+              name: explorer
+          volumeMounts:
+            - name: explorersettings
+              mountPath: /DAPS/config/
+          command:
+            [
+              "/bin/bash",
+              "-c",
+              "cd /DAPS/ && nohup npm start && trap: TERM INT; sleep infinity & wait",
+            ]
+        - image: r.cfcr.io/hysmagus/daps_min:develop
+          imagePullPolicy: Always
+          name: dapsd
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/bash", "-c", "dapscoin-cli stop"]
+          command:
+            [
+              "/bin/bash",
+              "-c",
+              "sleep 3 && nohup dapscoind -daemon && trap: TERM INT; sleep infinity & wait",
+            ]
+          ports:
+            - containerPort: 53575
+              name: regtest
+            - containerPort: 53573
+              name: testnet
+            - containerPort: 53572
+              name: mainnet
+          volumeMounts:
+            - name: dapsdata
+              mountPath: /root/.dapscoin/
+        - image: mongo:latest
           name: mongo
-        volumeMounts:
-        - name: mongodata
-          mountPath: /data/db/
+          ports:
+            - containerPort: 27017
+              name: mongo
+          volumeMounts:
+            - name: mongodata
+              mountPath: /data/db/
       volumes:
         - name: dapsdata
           persistentVolumeClaim:
@@ -185,4 +198,4 @@ spec:
             claimName: explorer-settings-pv-claim
       dnsPolicy: ClusterFirst
       imagePullSecrets:
-      - name: regcred
+        - name: regcred

@@ -347,6 +347,10 @@ bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secr
     if (!fWallet) return false;
 
     vector<COutput> possibleCoins = SelectCoinsMasternode();
+    std::cout << "Masternode possible coins" << std::endl;
+    for(int i = 0; i < possibleCoins.size(); i++) {
+        std::cout << possibleCoins[i].ToString() << std::endl;
+    }
     COutput* selectedOutput;
 
     // Find the vin
@@ -398,7 +402,8 @@ bool CActiveMasternode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubke
     vin = CTxIn(out.tx->GetHash(), out.i);
     pubScript = out.tx->vout[out.i].scriptPubKey; // the inputs PubKey
 
-    CTxDestination address1;
+    pwalletMain->findCorrespondingPrivateKey(out.tx->vout[out.i], secretKey);
+    /*CTxDestination address1;
     ExtractDestination(pubScript, address1);
     CBitcoinAddress address2(address1);
 
@@ -411,9 +416,10 @@ bool CActiveMasternode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubke
     if (!pwalletMain->GetKey(keyID, secretKey)) {
         LogPrintf("CActiveMasternode::GetMasterNodeVin - Private key for address is not known\n");
         return false;
-    }
+    }*/
 
     pubkey = secretKey.GetPubKey();
+    vin.masternodeStealthAddress = out.tx->masternodeStealthAddress;
     return true;
 }
 
@@ -451,7 +457,8 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
 
     // Filter
     BOOST_FOREACH (const COutput& out, vCoins) {
-        if (out.tx->vout[out.i].nValue == 1000000 * COIN) { //exactly
+        bool isMNCollateral = out.tx->IsMNCollateralTx();
+        if (isMNCollateral && out.tx->vout[out.i].nValue == 1000000 * COIN) { //exactly
             filteredCoins.push_back(out);
         }
     }

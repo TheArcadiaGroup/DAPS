@@ -232,7 +232,7 @@ void CMasternode::Check(bool forceCheck)
 int64_t CMasternode::SecondsSincePayment()
 {
     CScript pubkeyScript;
-    pubkeyScript = GetScriptForDestination(pubKeyCollateralAddress.GetID());
+    pubkeyScript = GetScriptForDestination(pubKeyCollateralAddress);
 
     int64_t sec = (GetAdjustedTime() - GetLastPaid());
     int64_t month = 60 * 60 * 24 * 30;
@@ -253,7 +253,7 @@ int64_t CMasternode::GetLastPaid()
     if (pindexPrev == NULL) return false;
 
     CScript mnpayee;
-    mnpayee = GetScriptForDestination(pubKeyCollateralAddress.GetID());
+    mnpayee = GetScriptForDestination(pubKeyCollateralAddress);
 
     CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
     ss << vin;
@@ -491,7 +491,7 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
     }
 
     CScript pubkeyScript;
-    pubkeyScript = GetScriptForDestination(pubKeyCollateralAddress.GetID());
+    pubkeyScript = GetScriptForDestination(pubKeyCollateralAddress);
 
     if (pubkeyScript.size() != 25) {
         LogPrint("masternode","mnb - pubkey the wrong size\n");
@@ -500,7 +500,7 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
     }
 
     CScript pubkeyScript2;
-    pubkeyScript2 = GetScriptForDestination(pubKeyMasternode.GetID());
+    pubkeyScript2 = GetScriptForDestination(pubKeyMasternode);
 
     if (pubkeyScript2.size() != 25) {
         LogPrint("masternode","mnb - pubkey2 the wrong size\n");

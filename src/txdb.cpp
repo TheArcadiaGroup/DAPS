@@ -179,9 +179,21 @@ bool CBlockTreeDB::ReadTxIndex(const uint256& txid, CDiskTxPos& pos)
 bool CBlockTreeDB::WriteTxIndex(const std::vector<std::pair<uint256, CDiskTxPos> >& vect)
 {
     CLevelDBBatch batch;
-    for (std::vector<std::pair<uint256, CDiskTxPos> >::const_iterator it = vect.begin(); it != vect.end(); it++)
+    for (std::vector<std::pair<uint256, CDiskTxPos> >::const_iterator it = vect.begin(); it != vect.end(); it++) {
         batch.Write(make_pair('t', it->first), it->second);
+    }
     return WriteBatch(batch);
+}
+
+
+bool CBlockTreeDB::ReadKeyImage(const string& keyImage, uint256& hash)
+{
+    return Read(std::make_pair('ki', keyImage), hash);
+}
+
+bool CBlockTreeDB::WriteKeyImage(const string& keyImage, const uint256& hash)
+{
+    return Write(std::make_pair('ki', keyImage), hash);
 }
 
 bool CBlockTreeDB::WriteFlag(const std::string& name, bool fValue)
