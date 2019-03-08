@@ -297,10 +297,10 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlockHeader blockFrom, cons
     LogPrintf("%s: encryption key", __func__);
     uint256 hashOfKey = Hash(encryptionKey, encryptionKey + 33);
     LogPrintf("%s: computed keyhash", __func__);
-    if (hashOfKey != txPrev.vout[prevout.n].maskValue.hashOfKey && !txPrev.IsCoinBase() && !txPrev.IsCoinStake()) {
+    /*if (hashOfKey != txPrev.vout[prevout.n].maskValue.hashOfKey && !txPrev.IsCoinBase() && !txPrev.IsCoinStake()) {
         LogPrintf("CheckStakeKernelHash: Hash key for decoding the value is not fit");
         return false;
-    }
+    }*/
     LogPrintf("%s: decoding the value", __func__);
     CAmount nValueIn;// = txPrev.vout[prevout.n].nValue;
     uint256 val = txPrev.vout[prevout.n].maskValue.amount;
@@ -312,6 +312,7 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlockHeader blockFrom, cons
     if (txPrev.IsCoinBase() || txPrev.IsCoinStake()) {
         nValueIn = txPrev.vout[prevout.n].nValue;
     }
+    LogPrintf("%s: decoded amount %d", __func__, nValueIn);
     unsigned int nTimeBlockFrom = blockFrom.GetBlockTime();
 
     if (nTimeTx < nTimeBlockFrom) // Transaction timestamp violation
