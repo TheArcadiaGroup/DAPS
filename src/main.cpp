@@ -253,7 +253,9 @@ bool IsKeyImageSpend1(const std::string& kiHex, int nHeight) {
     }
     if (IsKeyImageSpend2(kd, nHeight)) {
         if (pwalletMain) {
-            pwalletMain->keyImagesSpends[kiHex] = true;
+            if (pwalletMain->keyImagesSpends.count(kiHex) == 1) {
+                pwalletMain->keyImagesSpends[kiHex] = 1;
+            };
         }
         return true;
     }
