@@ -251,7 +251,13 @@ bool IsKeyImageSpend1(const std::string& kiHex, int nHeight) {
         //not spent yet because not found in database
         return false;
     }
-    return IsKeyImageSpend2(kd, nHeight);
+    if (IsKeyImageSpend2(kd, nHeight)) {
+        if (pwalletMain) {
+            pwalletMain->keyImagesSpends[kiHex] = true;
+        }
+        return true;
+    }
+    return false;
 }
 
 bool IsKeyImageSpend2(const uint256& kd, int nHeight) {
