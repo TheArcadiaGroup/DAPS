@@ -156,7 +156,7 @@ CAmount CTransaction::GetValueOut() const
         if ((nValueOut + it->nValue) < nValueOut)
             throw std::runtime_error("CTransaction::GetValueOut() : value out of range : wraps the int64_t boundary");
 
-        //nValueOut += it->nValue;
+        if (IsCoinBase() || IsCoinStake() || IsCoinAudit()) nValueOut += it->nValue;
     }
     return nValueOut;
 }
