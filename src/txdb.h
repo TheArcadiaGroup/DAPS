@@ -68,9 +68,9 @@ public:
     bool ReadInt(const std::string& name, int& nValue);
     bool LoadBlockIndexGuts();
 
-    bool ReadKeyImage(const string& keyImage, KeyImageSpendDisk& keyImageData);
+    bool ReadKeyImage(const string& keyImage, bool& isMine);
 
-    bool WriteKeyImage(const string& keyImage, const KeyImageSpendDisk& keyImageData);
+    bool WriteKeyImage(const string& keyImage, bool isMine);
 };
 
 class CZerocoinDB : public CLevelDBWrapper
