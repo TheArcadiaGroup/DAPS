@@ -263,7 +263,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
 
 bool IsKeyImageSpend1(const std::string& kiHex, int nHeight);
 
-bool IsKeyImageSpend2(const uint256& kd, int nHeight);
+bool IsKeyImageSpend2(int kd, int nHeight);
 
 int GetInputAge(CTxIn& vin);
 int GetInputAgeIX(uint256 nTXHash, CTxIn& vin);

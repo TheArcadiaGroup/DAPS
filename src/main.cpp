@@ -246,7 +246,7 @@ void SyncWithWallets(const CTransaction &tx, const CBlock *pblock) {
 }
 
 bool IsKeyImageSpend1(const std::string& kiHex, int nHeight) {
-    uint256 kd;
+    int kd;
     if (!pblocktree->ReadKeyImage(kiHex, kd)) {
         //not spent yet because not found in database
         return false;
@@ -262,14 +262,9 @@ bool IsKeyImageSpend1(const std::string& kiHex, int nHeight) {
     return false;
 }
 
-bool IsKeyImageSpend2(const uint256& kd, int nHeight) {
-    if (mapBlockIndex.count(kd) == 0) {
-        //potentially keyimage spent in a fork chain
-        return false;
-    }
-    CBlockIndex* pindex = mapBlockIndex[kd];
-    if (pindex->nHeight < nHeight && pindex->GetBlockHash() == chainActive[pindex->nHeight]->GetBlockHash()) {
-        LogPrintf("%s: keyimage spent in block %s, pindex->nHeight=%d, chainActive.Tip()->nHeight=%d", __func__, kd.GetHex(), pindex->nHeight, chainActive.Tip()->nHeight);
+bool IsKeyImageSpend2(int kd, int nHeight) {
+    if (kd < nHeight) {
+        LogPrintf("%s: keyimage spent in nHeight=%d", __func__, kd);
         return true;
     }
 
@@ -3300,7 +3295,7 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
                     return state.Invalid(error("ConnectBlock() : key image already spent"),
                                          REJECT_DUPLICATE, "bad-txns-inputs-spent");
                 }
-                uint256 kd(pindex->GetBlockHash());
+                int kd = pindex->nHeight;
                 LogPrintf("%s: writing key image %s", __func__, kh);
                 pblocktree->WriteKeyImage(keyImage.GetHex(), kd);
                 LogPrintf("%s: done writing key image %s", __func__, kh);
