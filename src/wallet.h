@@ -268,7 +268,6 @@ typedef struct tx_destination_entry
     tx_destination_entry(CAmount a, const CStealthAccount &ad) : amount(a), addr(ad) { }
 };
 
-
 /**
  * A CWallet is an extension of a keystore, which also maintains a set of transactions and balances,
  * and provides the ability to create new transactions.

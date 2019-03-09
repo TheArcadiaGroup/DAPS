@@ -410,7 +410,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
                     continue;
             }
 
-            CAmount nTxFees = view.GetValueIn(tx) - tx.GetValueOut();
+            CAmount nTxFees = GetValueIn(view, tx) - tx.GetValueOut();
 
             nTxSigOps += GetP2SHSigOpCount(tx, view);
             if (nBlockSigOps + nTxSigOps >= nMaxBlockSigOps)

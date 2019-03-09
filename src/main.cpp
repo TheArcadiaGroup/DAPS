@@ -245,6 +245,36 @@ void SyncWithWallets(const CTransaction &tx, const CBlock *pblock) {
     g_signals.SyncTransaction(tx, pblock);
 }
 
+CAmount GetValueIn(CCoinsViewCache view, const CTransaction& tx)
+{
+    if (tx.IsCoinBase())
+        return 0;
+
+    //todo are there any security precautions to take here?
+    if (tx.IsZerocoinSpend())
+        return tx.GetZerocoinSpent();
+
+    CAmount nResult = 0;
+
+    if (tx.IsCoinStake()) {
+        for (unsigned int i = 0; i < tx.vin.size(); i++) {
+            CAmount nValueIn;// = txPrev.vout[prevout.n].nValue;
+            const CTxOut& out = view.GetOutputFor(tx.vin[i]);
+            uint256 val = out.maskValue.amount;
+            uint256 mask = out.maskValue.mask;
+            CKey decodedMask;
+            CPubKey sharedSec;
+            sharedSec.Set(tx.vin[i].encryptionKey.begin(), tx.vin[i].encryptionKey.begin() + 33);
+            ECDHInfo::Decode(mask.begin(), val.begin(), sharedSec, decodedMask, nValueIn);
+            nResult += nValueIn;
+        }
+    }
+    //for (unsigned int i = 0; i < tx.vin.size(); i++)
+    //nResult += GetOutputFor(tx.vin[i]).nValue;
+
+    return nResult;
+}
+
 bool IsKeyImageSpend1(const std::string& kiHex, int nHeight) {
     int kd;
     if (!pblocktree->ReadKeyImage(kiHex, kd)) {
@@ -1746,7 +1776,7 @@ bool AcceptToMemoryPool(CTxMemPool &pool, CValidationState &state, const CTransa
             // Bring the best block into scope
             view.GetBestBlock();
 
-            nValueIn = view.GetValueIn(tx);
+            nValueIn = GetValueIn(view, tx);
 
             // we have all inputs cached now, so switch back to dummy, so we don't need to keep lock on mempool
             view.SetBackend(dummy);
@@ -1955,7 +1985,7 @@ bool AcceptableInputs(CTxMemPool &pool, CValidationState &state, const CTransact
             // Bring the best block into scope
             view.GetBestBlock();
 
-            nValueIn = view.GetValueIn(tx);
+            nValueIn = GetValueIn(view, tx);
 
             // we have all inputs cached now, so switch back to dummy, so we don't need to keep lock on mempool
             view.SetBackend(dummy);
@@ -3327,7 +3357,7 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
             if (!tx.IsCoinStake())
                 //nFees += view.GetValueIn(tx) - tx.GetValueOut();
                 nFees += tx.nTxFee;
-            nValueIn += view.GetValueIn(tx);
+            nValueIn += GetValueIn(view, tx);
 
             std::vector <CScriptCheck> vChecks;
             //LogPrintf("%s: start checking inputs %s", __func__, tx.GetH);

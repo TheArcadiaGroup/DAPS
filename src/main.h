@@ -256,6 +256,9 @@ void Misbehaving(NodeId nodeid, int howmuch);
 void FlushStateToDisk();
 
 
+CAmount GetValueIn(CCoinsViewCache view, const CTransaction& tx);
+
+
 /** (try to) add transaction to memory pool **/
 bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransaction& tx, bool fLimitFree, bool* pfMissingInputs, bool fRejectInsaneFee = false, bool ignoreFees = false);
 
