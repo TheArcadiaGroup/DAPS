@@ -36,7 +36,7 @@ SECP256K1_API extern const secp256k1_generator *secp256k1_generator_h;
  *  In:   input:    pointer to a 33-byte serialized commitment key
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_pedersen_commitment_parse(
-    const secp256k1_context2* ctx,
+    const secp256k1_context* ctx,
     secp256k1_pedersen_commitment* commit,
     const unsigned char *input
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
@@ -50,13 +50,13 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_pedersen_commitment_par
  *                      initialized commitment
  */
 SECP256K1_API int secp256k1_pedersen_commitment_serialize(
-    const secp256k1_context2* ctx,
+    const secp256k1_context* ctx,
     unsigned char *output,
     const secp256k1_pedersen_commitment* commit
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
 
 /** Initialize a context for usage with Pedersen commitments. */
-void secp256k1_pedersen_context_initialize(secp256k1_context2* ctx);
+void secp256k1_pedersen_context_initialize(secp256k1_context* ctx);
 
 /** Generate a Pedersen commitment.
  *  Returns 1: Commitment successfully created.
@@ -73,7 +73,7 @@ void secp256k1_pedersen_context_initialize(secp256k1_context2* ctx);
  *  Blinding factors can be generated and verified in the same way as secp256k1 private keys for ECDSA.
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_pedersen_commit(
-  const secp256k1_context2* ctx,
+  const secp256k1_context* ctx,
   secp256k1_pedersen_commitment *commit,
   const unsigned char *blind,
   uint64_t value,
@@ -93,7 +93,7 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_pedersen_commit(
  *  Out:    blind_out:  pointer to a 32-byte array for the sum (cannot be NULL)
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_pedersen_blind_sum(
-  const secp256k1_context2* ctx,
+  const secp256k1_context* ctx,
   unsigned char *blind_out,
   const unsigned char * const *blinds,
   size_t n,
@@ -117,7 +117,7 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_pedersen_blind_sum(
  *
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_pedersen_verify_tally(
-  const secp256k1_context2* ctx,
+  const secp256k1_context* ctx,
   const secp256k1_pedersen_commitment * const* pos,
   size_t n_pos,
   const secp256k1_pedersen_commitment * const* neg,
@@ -155,7 +155,7 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_pedersen_verify_tally(
  *                          the last value will be modified to get the total sum to zero.
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_pedersen_blind_generator_blind_sum(
-  const secp256k1_context2* ctx,
+  const secp256k1_context* ctx,
   const uint64_t *value,
   const unsigned char* const* generator_blind,
   unsigned char* const* blinding_factor,

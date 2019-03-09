@@ -30,10 +30,10 @@ static int recovery_test_nonce_function(unsigned char *nonce32, const unsigned c
 
 void test_ecdsa_recovery_api(void) {
     /* Setup contexts that just count errors */
-    secp256k1_context2 *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
-    secp256k1_context2 *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
-    secp256k1_context2 *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
-    secp256k1_context2 *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
+    secp256k1_context *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
+    secp256k1_context *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
     secp256k1_pubkey2 pubkey;
     secp256k1_pubkey2 recpubkey;
     secp256k1_ecdsa_sign2ature2 normal_sig;

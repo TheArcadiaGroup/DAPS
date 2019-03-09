@@ -8,14 +8,14 @@ else
 JNI_LIB =
 endif
 include_HEADERS = include/secp256k1_2.h
-include_HEADERS += include/secp256k1_bulletproofs.h
-include_HEADERS += include/secp256k1_commitment.h
-include_HEADERS += include/secp256k1_ecdh.h
-include_HEADERS += include/secp256k1_generator.h
-include_HEADERS += include/secp256k1_rangeproof.h
-include_HEADERS += include/secp256k1_recovery.h
-include_HEADERS += include/secp256k1_surjectionproof.h
-include_HEADERS += include/secp256k1_whitelist.h
+include_HEADERS = include/secp256k1_bulletproofs.h
+include_HEADERS = include/secp256k1_commitment.h
+include_HEADERS = include/secp256k1_ecdh.h
+include_HEADERS = include/secp256k1_generator.h
+include_HEADERS = include/secp256k1_rangeproof.h
+include_HEADERS = include/secp256k1_recovery.h
+include_HEADERS = include/secp256k1_surjectionproof.h
+include_HEADERS = include/secp256k1_whitelist.h
 noinst_HEADERS =
 noinst_HEADERS += src/scalar.h
 noinst_HEADERS += src/scalar_4x64.h

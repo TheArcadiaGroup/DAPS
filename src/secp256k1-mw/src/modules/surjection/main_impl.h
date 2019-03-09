@@ -35,7 +35,7 @@ static size_t secp256k1_count_bits_set(const unsigned char* data, size_t count) 
     return ret;
 }
 
-int secp256k1_surjectionproof_parse(const secp256k1_context2* ctx, secp256k1_surjectionproof *proof, const unsigned char *input, size_t inputlen) {
+int secp256k1_surjectionproof_parse(const secp256k1_context* ctx, secp256k1_surjectionproof *proof, const unsigned char *input, size_t inputlen) {
     size_t n_inputs;
     size_t signature_len;
 
@@ -66,7 +66,7 @@ int secp256k1_surjectionproof_parse(const secp256k1_context2* ctx, secp256k1_sur
     return 1;
 }
 
-int secp256k1_surjectionproof_serialize(const secp256k1_context2* ctx, unsigned char *output, size_t *outputlen, const secp256k1_surjectionproof *proof) {
+int secp256k1_surjectionproof_serialize(const secp256k1_context* ctx, unsigned char *output, size_t *outputlen, const secp256k1_surjectionproof *proof) {
     size_t signature_len;
     size_t serialized_len;
 
@@ -91,21 +91,21 @@ int secp256k1_surjectionproof_serialize(const secp256k1_context2* ctx, unsigned 
     return 1;
 }
 
-size_t secp256k1_surjectionproof_n_total_inputs(const secp256k1_context2* ctx, const secp256k1_surjectionproof* proof) {
+size_t secp256k1_surjectionproof_n_total_inputs(const secp256k1_context* ctx, const secp256k1_surjectionproof* proof) {
     VERIFY_CHECK(ctx != NULL);
     ARG_CHECK(proof != NULL);
     (void) ctx;
     return proof->n_inputs;
 }
 
-size_t secp256k1_surjectionproof_n_used_inputs(const secp256k1_context2* ctx, const secp256k1_surjectionproof* proof) {
+size_t secp256k1_surjectionproof_n_used_inputs(const secp256k1_context* ctx, const secp256k1_surjectionproof* proof) {
     VERIFY_CHECK(ctx != NULL);
     ARG_CHECK(proof != NULL);
     (void) ctx;
     return secp256k1_count_bits_set(proof->used_inputs, (proof->n_inputs + 7) / 8);
 }
 
-size_t secp256k1_surjectionproof_serialized_size(const secp256k1_context2* ctx, const secp256k1_surjectionproof* proof) {
+size_t secp256k1_surjectionproof_serialized_size(const secp256k1_context* ctx, const secp256k1_surjectionproof* proof) {
     VERIFY_CHECK(ctx != NULL);
     ARG_CHECK(proof != NULL);
     return 2 + (proof->n_inputs + 7) / 8 + 32 * (1 + secp256k1_surjectionproof_n_used_inputs(ctx, proof));
@@ -151,7 +151,7 @@ static size_t secp256k1_surjectionproof_csprng_next(secp256k1_surjectionproof_cs
     }
 }
 
-int secp256k1_surjectionproof_initialize(const secp256k1_context2* ctx, secp256k1_surjectionproof* proof, size_t *input_index, const secp256k1_fixed_asset_tag* fixed_input_tags, const size_t n_input_tags, const size_t n_input_tags_to_use, const secp256k1_fixed_asset_tag* fixed_output_tag, const size_t n_max_iterations, const unsigned char *random_seed32) {
+int secp256k1_surjectionproof_initialize(const secp256k1_context* ctx, secp256k1_surjectionproof* proof, size_t *input_index, const secp256k1_fixed_asset_tag* fixed_input_tags, const size_t n_input_tags, const size_t n_input_tags_to_use, const secp256k1_fixed_asset_tag* fixed_output_tag, const size_t n_max_iterations, const unsigned char *random_seed32) {
     secp256k1_surjectionproof_csprng csprng;
     size_t n_iterations = 0;
 
@@ -208,7 +208,7 @@ int secp256k1_surjectionproof_initialize(const secp256k1_context2* ctx, secp256k
     }
 }
 
-int secp256k1_surjectionproof_generate(const secp256k1_context2* ctx, secp256k1_surjectionproof* proof, const secp256k1_generator* ephemeral_input_tags, size_t n_ephemeral_input_tags, const secp256k1_generator* ephemeral_output_tag, size_t input_index, const unsigned char *input_blinding_key, const unsigned char *output_blinding_key) {
+int secp256k1_surjectionproof_generate(const secp256k1_context* ctx, secp256k1_surjectionproof* proof, const secp256k1_generator* ephemeral_input_tags, size_t n_ephemeral_input_tags, const secp256k1_generator* ephemeral_output_tag, size_t input_index, const unsigned char *input_blinding_key, const unsigned char *output_blinding_key) {
     secp256k1_scalar blinding_key;
     secp256k1_scalar tmps;
     secp256k1_scalar nonce;
@@ -289,7 +289,7 @@ int secp256k1_surjectionproof_generate(const secp256k1_context2* ctx, secp256k1_
     return 1;
 }
 
-int secp256k1_surjectionproof_verify(const secp256k1_context2* ctx, const secp256k1_surjectionproof* proof, const secp256k1_generator* ephemeral_input_tags, size_t n_ephemeral_input_tags, const secp256k1_generator* ephemeral_output_tag) {
+int secp256k1_surjectionproof_verify(const secp256k1_context* ctx, const secp256k1_surjectionproof* proof, const secp256k1_generator* ephemeral_input_tags, size_t n_ephemeral_input_tags, const secp256k1_generator* ephemeral_output_tag) {
     size_t rsizes[1];    /* array needed for borromean sig API */
     size_t i;
     size_t n_total_pubkeys;

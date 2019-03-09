@@ -22,8 +22,8 @@
 
 typedef struct {
     /* Setup once in advance */
-    secp256k1_context2* ctx;
-    secp256k1_scratch_space2* scratch;
+    secp256k1_context* ctx;
+    secp256k1_scratch_space* scratch;
     secp256k1_scalar* scalars;
     secp256k1_ge* pubkeys;
     secp256k1_scalar* seckeys;

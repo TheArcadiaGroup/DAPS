@@ -65,7 +65,7 @@ typedef struct {
  *      is the number of set bits in the bitmap
  */
 SECP256K1_API int secp256k1_surjectionproof_parse(
-  const secp256k1_context2* ctx,
+  const secp256k1_context* ctx,
   secp256k1_surjectionproof *proof,
   const unsigned char *input,
   size_t inputlen
@@ -84,7 +84,7 @@ SECP256K1_API int secp256k1_surjectionproof_parse(
  *  See secp256k1_surjectionproof_parse for details about the encoding.
  */
 SECP256K1_API int secp256k1_surjectionproof_serialize(
-  const secp256k1_context2* ctx,
+  const secp256k1_context* ctx,
   unsigned char *output,
   size_t *outputlen,
   const secp256k1_surjectionproof *proof
@@ -107,7 +107,7 @@ typedef struct {
  *     proof: a pointer to a proof object
  */
 SECP256K1_API size_t secp256k1_surjectionproof_n_total_inputs(
-  const secp256k1_context2* ctx,
+  const secp256k1_context* ctx,
   const secp256k1_surjectionproof* proof
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2);
 
@@ -118,7 +118,7 @@ SECP256K1_API size_t secp256k1_surjectionproof_n_total_inputs(
  *     proof: a pointer to a proof object
  */
 SECP256K1_API size_t secp256k1_surjectionproof_n_used_inputs(
-  const secp256k1_context2* ctx,
+  const secp256k1_context* ctx,
   const secp256k1_surjectionproof* proof
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2);
 
@@ -129,7 +129,7 @@ SECP256K1_API size_t secp256k1_surjectionproof_n_used_inputs(
  *     proof: a pointer to a proof object
  */
 SECP256K1_API size_t secp256k1_surjectionproof_serialized_size(
-  const secp256k1_context2* ctx,
+  const secp256k1_context* ctx,
   const secp256k1_surjectionproof* proof
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2);
 
@@ -155,7 +155,7 @@ SECP256K1_API size_t secp256k1_surjectionproof_serialized_size(
  *          input_index: The index of the actual input that is secretly mapped to the output
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_surjectionproof_initialize(
-  const secp256k1_context2* ctx,
+  const secp256k1_context* ctx,
   secp256k1_surjectionproof* proof,
   size_t *input_index,
   const secp256k1_fixed_asset_tag* fixed_input_tags,
@@ -180,7 +180,7 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_surjectionproof_initial
  * In/Out: proof: The produced surjection proof. Must have already gone through `secp256k1_surjectionproof_initialize`
  */
 SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_surjectionproof_generate(
-  const secp256k1_context2* ctx,
+  const secp256k1_context* ctx,
   secp256k1_surjectionproof* proof,
   const secp256k1_generator* ephemeral_input_tags,
   size_t n_ephemeral_input_tags,
@@ -202,7 +202,7 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_surjectionproof_generat
  *      ephemeral_output_tag: the ephemeral asset tag of the output
  */
 SECP256K1_API int secp256k1_surjectionproof_verify(
-  const secp256k1_context2* ctx,
+  const secp256k1_context* ctx,
   const secp256k1_surjectionproof* proof,
   const secp256k1_generator* ephemeral_input_tags,
   size_t n_ephemeral_input_tags,

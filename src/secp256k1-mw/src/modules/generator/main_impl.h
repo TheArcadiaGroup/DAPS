@@ -54,7 +54,7 @@ static void secp256k1_generator_save(secp256k1_generator *gen, secp256k1_ge* ge)
     secp256k1_fe_get_b32(&gen->data[32], &ge->y);
 }
 
-int secp256k1_generator_parse(const secp256k1_context2* ctx, secp256k1_generator* gen, const unsigned char *input) {
+int secp256k1_generator_parse(const secp256k1_context* ctx, secp256k1_generator* gen, const unsigned char *input) {
     secp256k1_fe x;
     secp256k1_ge ge;
 
@@ -74,7 +74,7 @@ int secp256k1_generator_parse(const secp256k1_context2* ctx, secp256k1_generator
     return 1;
 }
 
-int secp256k1_generator_serialize(const secp256k1_context2* ctx, unsigned char *output, const secp256k1_generator* gen) {
+int secp256k1_generator_serialize(const secp256k1_context* ctx, unsigned char *output, const secp256k1_generator* gen) {
     secp256k1_ge ge;
 
     VERIFY_CHECK(ctx != NULL);
@@ -182,7 +182,7 @@ static void shallue_van_de_woestijne(secp256k1_ge* ge, const secp256k1_fe* t) {
     secp256k1_fe_cmov(&ge->y, &tmp, secp256k1_fe_is_odd(t));
 }
 
-static int secp256k1_generator_generate_internal(const secp256k1_context2* ctx, secp256k1_generator* gen, const unsigned char *key32, const unsigned char *blind32) {
+static int secp256k1_generator_generate_internal(const secp256k1_context* ctx, secp256k1_generator* gen, const unsigned char *key32, const unsigned char *blind32) {
     static const unsigned char prefix1[17] = "1st generation: ";
     static const unsigned char prefix2[17] = "2nd generation: ";
     secp256k1_fe t = SECP256K1_FE_CONST(0, 0, 0, 0, 0, 0, 0, 4);
@@ -228,14 +228,14 @@ static int secp256k1_generator_generate_internal(const secp256k1_context2* ctx, 
     return ret;
 }
 
-int secp256k1_generator_generate(const secp256k1_context2* ctx, secp256k1_generator* gen, const unsigned char *key32) {
+int secp256k1_generator_generate(const secp256k1_context* ctx, secp256k1_generator* gen, const unsigned char *key32) {
     VERIFY_CHECK(ctx != NULL);
     ARG_CHECK(gen != NULL);
     ARG_CHECK(key32 != NULL);
     return secp256k1_generator_generate_internal(ctx, gen, key32, NULL);
 }
 
-int secp256k1_generator_generate_blinded(const secp256k1_context2* ctx, secp256k1_generator* gen, const unsigned char *key32, const unsigned char *blind32) {
+int secp256k1_generator_generate_blinded(const secp256k1_context* ctx, secp256k1_generator* gen, const unsigned char *key32, const unsigned char *blind32) {
     VERIFY_CHECK(ctx != NULL);
     ARG_CHECK(gen != NULL);
     ARG_CHECK(key32 != NULL);

@@ -16,8 +16,8 @@
 #define CIRCUIT_DIR "src/modules/bulletproofs/bin_circuits/"
 
 typedef struct {
-    secp256k1_context2 *ctx;
-    secp256k1_scratch_space2 *scratch;
+    secp256k1_context *ctx;
+    secp256k1_scratch_space *scratch;
     unsigned char nonce[32];
     unsigned char **proof;
     secp256k1_bulletproof_generators *generators;

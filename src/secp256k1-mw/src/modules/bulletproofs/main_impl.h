@@ -69,7 +69,7 @@ struct secp256k1_bulletproof_generators {
 #include "modules/bulletproofs/rangeproof_impl.h"
 #include "modules/bulletproofs/util.h"
 
-secp256k1_bulletproof_generators *secp256k1_bulletproof_generators_create(const secp256k1_context2 *ctx, const secp256k1_generator *blinding_gen, size_t n) {
+secp256k1_bulletproof_generators *secp256k1_bulletproof_generators_create(const secp256k1_context *ctx, const secp256k1_generator *blinding_gen, size_t n) {
     secp256k1_bulletproof_generators *ret;
     secp256k1_rfc6979_hmac_sha256 rng;
     unsigned char seed[64];
@@ -111,7 +111,7 @@ secp256k1_bulletproof_generators *secp256k1_bulletproof_generators_create(const 
     return ret;
 }
 
-void secp256k1_bulletproof_generators_destroy(const secp256k1_context2* ctx, secp256k1_bulletproof_generators *gens) {
+void secp256k1_bulletproof_generators_destroy(const secp256k1_context* ctx, secp256k1_bulletproof_generators *gens) {
     (void) ctx;
     if (gens != NULL) {
         free(gens->gens);
@@ -119,7 +119,7 @@ void secp256k1_bulletproof_generators_destroy(const secp256k1_context2* ctx, sec
     }
 }
 
-int secp256k1_bulletproof_rangeproof_verify(const secp256k1_context2* ctx, secp256k1_scratch_space2 *scratch, const secp256k1_bulletproof_generators *gens, const unsigned char *proof, size_t plen,
+int secp256k1_bulletproof_rangeproof_verify(const secp256k1_context* ctx, secp256k1_scratch_space *scratch, const secp256k1_bulletproof_generators *gens, const unsigned char *proof, size_t plen,
  const uint64_t *min_value, const secp256k1_pedersen_commitment* commit, size_t n_commits, size_t nbits, const secp256k1_generator *value_gen, const unsigned char *extra_commit, size_t extra_commit_len) {
     int ret;
     size_t i;
@@ -158,7 +158,7 @@ int secp256k1_bulletproof_rangeproof_verify(const secp256k1_context2* ctx, secp2
     return ret;
 }
 
-int secp256k1_bulletproof_rangeproof_verify_multi(const secp256k1_context2* ctx, secp256k1_scratch_space2 *scratch, const secp256k1_bulletproof_generators *gens, const unsigned char* const* proof, size_t n_proofs, size_t plen, const uint64_t* const* min_value, const secp256k1_pedersen_commitment* const* commit, size_t n_commits, size_t nbits, const secp256k1_generator *value_gen, const unsigned char* const* extra_commit, size_t *extra_commit_len) {
+int secp256k1_bulletproof_rangeproof_verify_multi(const secp256k1_context* ctx, secp256k1_scratch_space *scratch, const secp256k1_bulletproof_generators *gens, const unsigned char* const* proof, size_t n_proofs, size_t plen, const uint64_t* const* min_value, const secp256k1_pedersen_commitment* const* commit, size_t n_commits, size_t nbits, const secp256k1_generator *value_gen, const unsigned char* const* extra_commit, size_t *extra_commit_len) {
     int ret;
     secp256k1_ge **commitp;
     secp256k1_ge *value_genp;
@@ -203,7 +203,7 @@ int secp256k1_bulletproof_rangeproof_verify_multi(const secp256k1_context2* ctx,
     return ret;
 }
 
-int secp256k1_bulletproof_rangeproof_rewind(const secp256k1_context2* ctx, const secp256k1_bulletproof_generators *gens, uint64_t *value, unsigned char *blind, const unsigned char *proof, size_t plen, uint64_t min_value, const secp256k1_pedersen_commitment* commit, const secp256k1_generator *value_gen, const unsigned char *nonce, const unsigned char *extra_commit, size_t extra_commit_len) {
+int secp256k1_bulletproof_rangeproof_rewind(const secp256k1_context* ctx, const secp256k1_bulletproof_generators *gens, uint64_t *value, unsigned char *blind, const unsigned char *proof, size_t plen, uint64_t min_value, const secp256k1_pedersen_commitment* commit, const secp256k1_generator *value_gen, const unsigned char *nonce, const unsigned char *extra_commit, size_t extra_commit_len) {
     secp256k1_scalar blinds;
     int ret;
 
@@ -224,7 +224,7 @@ int secp256k1_bulletproof_rangeproof_rewind(const secp256k1_context2* ctx, const
     return ret;
 }
 
-int secp256k1_bulletproof_rangeproof_prove(const secp256k1_context2* ctx, secp256k1_scratch_space2 *scratch, const secp256k1_bulletproof_generators *gens, unsigned char *proof, size_t *plen, const uint64_t *value, const uint64_t *min_value, const unsigned char* const* blind, size_t n_commits, const secp256k1_generator *value_gen, size_t nbits, const unsigned char *nonce, const unsigned char *extra_commit, size_t extra_commit_len) {
+int secp256k1_bulletproof_rangeproof_prove(const secp256k1_context* ctx, secp256k1_scratch_space *scratch, const secp256k1_bulletproof_generators *gens, unsigned char *proof, size_t *plen, const uint64_t *value, const uint64_t *min_value, const unsigned char* const* blind, size_t n_commits, const secp256k1_generator *value_gen, size_t nbits, const unsigned char *nonce, const unsigned char *extra_commit, size_t extra_commit_len) {
     int ret;
     secp256k1_ge *commitp;
     secp256k1_scalar *blinds;
@@ -276,13 +276,13 @@ int secp256k1_bulletproof_rangeproof_prove(const secp256k1_context2* ctx, secp25
     return ret;
 }
 
-secp256k1_bulletproof_circuit *secp256k1_bulletproof_circuit_parse(const secp256k1_context2 *ctx, const char *description) {
+secp256k1_bulletproof_circuit *secp256k1_bulletproof_circuit_parse(const secp256k1_context *ctx, const char *description) {
     VERIFY_CHECK(ctx != NULL);
     ARG_CHECK(description != NULL);
     return secp256k1_parse_circuit(ctx, description);
 }
 
-int secp256k1_bulletproof_circuit_prove(const secp256k1_context2* ctx, secp256k1_scratch_space2 *scratch, const secp256k1_bulletproof_generators *gens, const secp256k1_bulletproof_circuit *circ, unsigned char *proof, size_t *plen, const secp256k1_bulletproof_circuit_assignment *assn, const unsigned char** blind, size_t n_commits, const unsigned char *nonce, const secp256k1_generator *value_gen, const unsigned char *extra_commit, size_t extra_commit_len) {
+int secp256k1_bulletproof_circuit_prove(const secp256k1_context* ctx, secp256k1_scratch_space *scratch, const secp256k1_bulletproof_generators *gens, const secp256k1_bulletproof_circuit *circ, unsigned char *proof, size_t *plen, const secp256k1_bulletproof_circuit_assignment *assn, const unsigned char** blind, size_t n_commits, const unsigned char *nonce, const secp256k1_generator *value_gen, const unsigned char *extra_commit, size_t extra_commit_len) {
     int ret;
     secp256k1_ge value_genp;
     secp256k1_ge *commitp;
@@ -348,7 +348,7 @@ int secp256k1_bulletproof_circuit_prove(const secp256k1_context2* ctx, secp256k1
     return ret;
 }
 
-int secp256k1_bulletproof_circuit_verify(const secp256k1_context2* ctx, secp256k1_scratch_space2 *scratch, const secp256k1_bulletproof_generators *gens, const secp256k1_bulletproof_circuit *circ, const unsigned char *proof, size_t plen, const secp256k1_pedersen_commitment* commit, size_t n_commits, const secp256k1_generator *value_gen, const unsigned char *extra_commit, size_t extra_commit_len) {
+int secp256k1_bulletproof_circuit_verify(const secp256k1_context* ctx, secp256k1_scratch_space *scratch, const secp256k1_bulletproof_generators *gens, const secp256k1_bulletproof_circuit *circ, const unsigned char *proof, size_t plen, const secp256k1_pedersen_commitment* commit, size_t n_commits, const secp256k1_generator *value_gen, const unsigned char *extra_commit, size_t extra_commit_len) {
     int ret;
     secp256k1_ge value_genp;
     secp256k1_ge *commitp;
@@ -393,7 +393,7 @@ int secp256k1_bulletproof_circuit_verify(const secp256k1_context2* ctx, secp256k
     return ret;
 }
 
-int secp256k1_bulletproof_circuit_verify_multi(const secp256k1_context2* ctx, secp256k1_scratch_space2 *scratch, const secp256k1_bulletproof_generators *gens, const secp256k1_bulletproof_circuit* const* circ, const unsigned char* const* proof, size_t n_proofs, size_t plen, const secp256k1_pedersen_commitment** commit, size_t *n_commits, const secp256k1_generator *value_gen, const unsigned char **extra_commit, size_t *extra_commit_len) {
+int secp256k1_bulletproof_circuit_verify_multi(const secp256k1_context* ctx, secp256k1_scratch_space *scratch, const secp256k1_bulletproof_generators *gens, const secp256k1_bulletproof_circuit* const* circ, const unsigned char* const* proof, size_t n_proofs, size_t plen, const secp256k1_pedersen_commitment** commit, size_t *n_commits, const secp256k1_generator *value_gen, const unsigned char **extra_commit, size_t *extra_commit_len) {
     secp256k1_ge value_genp;
     secp256k1_ge **commitp;
     size_t i;
@@ -456,7 +456,7 @@ int secp256k1_bulletproof_circuit_verify_multi(const secp256k1_context2* ctx, se
     return ret;
 }
 
-secp256k1_bulletproof_circuit *secp256k1_bulletproof_circuit_decode(const secp256k1_context2 *ctx, const char *fname) {
+secp256k1_bulletproof_circuit *secp256k1_bulletproof_circuit_decode(const secp256k1_context *ctx, const char *fname) {
     FILE *fh;
     unsigned char buf[0x3f];
     size_t n;
@@ -520,7 +520,7 @@ fail:
     return NULL;
 }
 
-secp256k1_bulletproof_circuit_assignment *secp256k1_bulletproof_circuit_assignment_decode(const secp256k1_context2 *ctx, const char *fname) {
+secp256k1_bulletproof_circuit_assignment *secp256k1_bulletproof_circuit_assignment_decode(const secp256k1_context *ctx, const char *fname) {
     FILE *fh;
     unsigned char buf[33];
     secp256k1_bulletproof_circuit_assignment *ret = NULL;
@@ -607,7 +607,7 @@ fail:
 }
 
 
-void secp256k1_bulletproof_circuit_destroy(const secp256k1_context2 *ctx, secp256k1_bulletproof_circuit *circ) {
+void secp256k1_bulletproof_circuit_destroy(const secp256k1_context *ctx, secp256k1_bulletproof_circuit *circ) {
     VERIFY_CHECK(ctx != NULL);
     if (circ != NULL) {
         free(circ->entries);
@@ -617,7 +617,7 @@ void secp256k1_bulletproof_circuit_destroy(const secp256k1_context2 *ctx, secp25
     }
 }
 
-void secp256k1_bulletproof_circuit_assignment_destroy(const secp256k1_context2 *ctx, secp256k1_bulletproof_circuit_assignment *assn) {
+void secp256k1_bulletproof_circuit_assignment_destroy(const secp256k1_context *ctx, secp256k1_bulletproof_circuit_assignment *assn) {
     (void) ctx;
     if (assn != NULL) {
         free(assn->al);

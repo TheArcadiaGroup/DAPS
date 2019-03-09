@@ -9,7 +9,7 @@
 
 #include "include/secp256k1_recovery.h"
 
-static void secp256k1_ecdsa_recoverable_signature_load(const secp256k1_context2* ctx, secp256k1_scalar* r, secp256k1_scalar* s, int* recid, const secp256k1_ecdsa_recoverable_signature* sig) {
+static void secp256k1_ecdsa_recoverable_signature_load(const secp256k1_context* ctx, secp256k1_scalar* r, secp256k1_scalar* s, int* recid, const secp256k1_ecdsa_recoverable_signature* sig) {
     (void)ctx;
     if (sizeof(secp256k1_scalar) == 32) {
         /* When the secp256k1_scalar type is exactly 32 byte, use its
@@ -35,7 +35,7 @@ static void secp256k1_ecdsa_recoverable_signature_save(secp256k1_ecdsa_recoverab
     sig->data[64] = recid;
 }
 
-int secp256k1_ecdsa_recoverable_signature_parse_compact(const secp256k1_context2* ctx, secp256k1_ecdsa_recoverable_signature* sig, const unsigned char *input64, int recid) {
+int secp256k1_ecdsa_recoverable_signature_parse_compact(const secp256k1_context* ctx, secp256k1_ecdsa_recoverable_signature* sig, const unsigned char *input64, int recid) {
     secp256k1_scalar r, s;
     int ret = 1;
     int overflow = 0;
@@ -57,7 +57,7 @@ int secp256k1_ecdsa_recoverable_signature_parse_compact(const secp256k1_context2
     return ret;
 }
 
-int secp256k1_ecdsa_recoverable_signature_serialize_compact(const secp256k1_context2* ctx, unsigned char *output64, int *recid, const secp256k1_ecdsa_recoverable_signature* sig) {
+int secp256k1_ecdsa_recoverable_signature_serialize_compact(const secp256k1_context* ctx, unsigned char *output64, int *recid, const secp256k1_ecdsa_recoverable_signature* sig) {
     secp256k1_scalar r, s;
 
     (void)ctx;
@@ -71,7 +71,7 @@ int secp256k1_ecdsa_recoverable_signature_serialize_compact(const secp256k1_cont
     return 1;
 }
 
-int secp256k1_ecdsa_recoverable_signature_convert(const secp256k1_context2* ctx, secp256k1_ecdsa_sign2ature2* sig, const secp256k1_ecdsa_recoverable_signature* sigin) {
+int secp256k1_ecdsa_recoverable_signature_convert(const secp256k1_context* ctx, secp256k1_ecdsa_sign2ature2* sig, const secp256k1_ecdsa_recoverable_signature* sigin) {
     secp256k1_scalar r, s;
     int recid;
 
@@ -120,7 +120,7 @@ static int secp256k1_ecdsa_sig_recover(const secp256k1_ecmult_context *ctx, cons
     return !secp256k1_gej_is_infinity(&qj);
 }
 
-int secp256k1_ecdsa_sign2_recoverable(const secp256k1_context2* ctx, secp256k1_ecdsa_recoverable_signature *signature, const unsigned char *msg32, const unsigned char *seckey, secp256k1_nonce_function2 noncefp, const void* noncedata) {
+int secp256k1_ecdsa_sign2_recoverable(const secp256k1_context* ctx, secp256k1_ecdsa_recoverable_signature *signature, const unsigned char *msg32, const unsigned char *seckey, secp256k1_nonce_function noncefp, const void* noncedata) {
     secp256k1_scalar r, s;
     secp256k1_scalar sec, non, msg;
     int recid;
@@ -167,7 +167,7 @@ int secp256k1_ecdsa_sign2_recoverable(const secp256k1_context2* ctx, secp256k1_e
     return ret;
 }
 
-int secp256k1_ecdsa_recover(const secp256k1_context2* ctx, secp256k1_pubkey2 *pubkey, const secp256k1_ecdsa_recoverable_signature *signature, const unsigned char *msg32) {
+int secp256k1_ecdsa_recover(const secp256k1_context* ctx, secp256k1_pubkey2 *pubkey, const secp256k1_ecdsa_recoverable_signature *signature, const unsigned char *msg32) {
     secp256k1_ge q;
     secp256k1_scalar r, s;
     secp256k1_scalar m;

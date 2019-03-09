@@ -17,10 +17,10 @@
 #include "include/secp256k1_bulletproofs.h"
 
 static void test1() {
-    secp256k1_context2 *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
-    secp256k1_context2 *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
-    secp256k1_context2 *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
-    secp256k1_context2 *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
+    secp256k1_context *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
+    secp256k1_context *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
     secp256k1_scratch *scratch = secp256k1_scratch_space_create(ctx, 1024 * 1024);
     secp256k1_generator value_gen;
     secp256k1_bulletproof_generators *gens;
@@ -164,8 +164,8 @@ static void test1() {
 }
 
 static void test_build_verify() {
-    secp256k1_context2 *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
-    secp256k1_context2 *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
+    secp256k1_context *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
     secp256k1_scratch *scratch = secp256k1_scratch_space_create(ctx, 1024 * 1024);
     secp256k1_generator value_gen;
     secp256k1_bulletproof_generators *gens;
@@ -210,10 +210,10 @@ static void test_build_verify() {
 }
 
 static void test_bulletproof_api(void) {
-    secp256k1_context2 *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
-    secp256k1_context2 *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
-    secp256k1_context2 *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
-    secp256k1_context2 *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
+    secp256k1_context *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
+    secp256k1_context *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
     secp256k1_scratch *scratch = secp256k1_scratch_space_create(ctx, 1024 * 1024);
     secp256k1_generator value_gen;
     secp256k1_bulletproof_generators *gens;

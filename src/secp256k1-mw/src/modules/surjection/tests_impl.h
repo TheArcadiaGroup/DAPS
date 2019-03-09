@@ -15,10 +15,10 @@
 
 static void test_surjectionproof_api(void) {
     unsigned char seed[32];
-    secp256k1_context2 *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
-    secp256k1_context2 *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
-    secp256k1_context2 *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
-    secp256k1_context2 *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context *none = secp256k1_context_create2(SECP256K1_CONTEXT_NONE);
+    secp256k1_context *sign = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN);
+    secp256k1_context *vrfy = secp256k1_context_create2(SECP256K1_CONTEXT_VERIFY);
+    secp256k1_context *both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
     secp256k1_fixed_asset_tag fixed_input_tags[10];
     secp256k1_fixed_asset_tag fixed_output_tag;
     secp256k1_generator ephemeral_input_tags[10];

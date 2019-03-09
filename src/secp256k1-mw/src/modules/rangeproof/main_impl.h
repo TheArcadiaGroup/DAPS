@@ -14,7 +14,7 @@
 #include "modules/rangeproof/borromean_impl.h"
 #include "modules/rangeproof/rangeproof_impl.h"
 
-int secp256k1_rangeproof_info(const secp256k1_context2* ctx, int *exp, int *mantissa,
+int secp256k1_rangeproof_info(const secp256k1_context* ctx, int *exp, int *mantissa,
  uint64_t *min_value, uint64_t *max_value, const unsigned char *proof, size_t plen) {
     size_t offset;
     uint64_t scale;
@@ -29,7 +29,7 @@ int secp256k1_rangeproof_info(const secp256k1_context2* ctx, int *exp, int *mant
     return secp256k1_rangeproof_getheader_impl(&offset, exp, mantissa, &scale, min_value, max_value, proof, plen);
 }
 
-int secp256k1_rangeproof_rewind(const secp256k1_context2* ctx,
+int secp256k1_rangeproof_rewind(const secp256k1_context* ctx,
  unsigned char *blind_out, uint64_t *value_out, unsigned char *message_out, size_t *outlen, const unsigned char *nonce,
  uint64_t *min_value, uint64_t *max_value,
  const secp256k1_pedersen_commitment *commit, const unsigned char *proof, size_t plen, const unsigned char *extra_commit, size_t extra_commit_len, const secp256k1_generator* gen) {
@@ -52,7 +52,7 @@ int secp256k1_rangeproof_rewind(const secp256k1_context2* ctx,
      blind_out, value_out, message_out, outlen, nonce, min_value, max_value, &commitp, proof, plen, extra_commit, extra_commit_len, &genp);
 }
 
-int secp256k1_rangeproof_verify(const secp256k1_context2* ctx, uint64_t *min_value, uint64_t *max_value,
+int secp256k1_rangeproof_verify(const secp256k1_context* ctx, uint64_t *min_value, uint64_t *max_value,
  const secp256k1_pedersen_commitment *commit, const unsigned char *proof, size_t plen, const unsigned char *extra_commit, size_t extra_commit_len, const secp256k1_generator* gen) {
     secp256k1_ge commitp;
     secp256k1_ge genp;
@@ -70,7 +70,7 @@ int secp256k1_rangeproof_verify(const secp256k1_context2* ctx, uint64_t *min_val
      NULL, NULL, NULL, NULL, NULL, min_value, max_value, &commitp, proof, plen, extra_commit, extra_commit_len, &genp);
 }
 
-int secp256k1_rangeproof_sign(const secp256k1_context2* ctx, unsigned char *proof, size_t *plen, uint64_t min_value,
+int secp256k1_rangeproof_sign(const secp256k1_context* ctx, unsigned char *proof, size_t *plen, uint64_t min_value,
  const secp256k1_pedersen_commitment *commit, const unsigned char *blind, const unsigned char *nonce, int exp, int min_bits, uint64_t value,
  const unsigned char *message, size_t msg_len, const unsigned char *extra_commit, size_t extra_commit_len, const secp256k1_generator* gen){
     secp256k1_ge commitp;

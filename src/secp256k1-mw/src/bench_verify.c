@@ -18,7 +18,7 @@
 #endif
 
 typedef struct {
-    secp256k1_context2 *ctx;
+    secp256k1_context *ctx;
     unsigned char msg[32];
     unsigned char key[32];
     unsigned char sig[72];
@@ -40,7 +40,7 @@ static void benchmark_verify(void* arg) {
         data->sig[data->siglen - 1] ^= (i & 0xFF);
         data->sig[data->siglen - 2] ^= ((i >> 8) & 0xFF);
         data->sig[data->siglen - 3] ^= ((i >> 16) & 0xFF);
-        CHECK(secp256k1_ec_pubkey_parse2(data->ctx, &pubkey, data->pubkey, data->pubkeylen) == 1);
+        CHECK(secp256k1_ec_pubkey_parse(data->ctx, &pubkey, data->pubkey, data->pubkeylen) == 1);
         CHECK(secp256k1_ecdsa_sign2ature2_parse_der(data->ctx, &sig, data->sig, data->siglen) == 1);
         CHECK(secp256k1_ecdsa_verify2(data->ctx, &sig, data->msg, &pubkey) == (i == 0));
         data->sig[data->siglen - 1] ^= (i & 0xFF);
@@ -98,7 +98,7 @@ int main(void) {
     CHECK(secp256k1_ecdsa_sign2ature2_serialize_der(data.ctx, data.sig, &data.siglen, &sig));
     CHECK(secp256k1_ec_pubkey_create2(data.ctx, &pubkey, data.key));
     data.pubkeylen = 33;
-    CHECK(secp256k1_ec_pubkey_serialize2(data.ctx, data.pubkey, &data.pubkeylen, &pubkey, SECP256K1_EC_COMPRESSED) == 1);
+    CHECK(secp256k1_ec_pubkey_serialize(data.ctx, data.pubkey, &data.pubkeylen, &pubkey, SECP256K1_EC_COMPRESSED) == 1);
 
     run_benchmark("ecdsa_verify", benchmark_verify, NULL, NULL, &data, 10, 20000);
 #ifdef ENABLE_OPENSSL_TESTS
