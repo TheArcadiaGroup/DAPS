@@ -246,7 +246,7 @@ void SyncWithWallets(const CTransaction &tx, const CBlock *pblock) {
 }
 
 bool IsKeyImageSpend1(const std::string& kiHex) {
-    uint256 kd;
+    KeyImageSpendDisk kd;
     if (!pblocktree->ReadKeyImage(kiHex, kd)) {
         //not spent yet because not found in database
         return false;
@@ -254,14 +254,12 @@ bool IsKeyImageSpend1(const std::string& kiHex) {
     return IsKeyImageSpend2(kd);
 }
 
-bool IsKeyImageSpend2(const uint256& kd) {
-    if (mapBlockIndex.count(kd) == 0) {
-        //potentially keyimage spent in a fork chain
+bool IsKeyImageSpend2(const KeyImageSpendDisk& kd) {
+    if (!kd.fSpend || kd.nHeight < 0) return false;
+
+    if (chainActive.Tip()->nHeight > kd.nHeight && chainActive[kd.nHeight]->GetBlockHash() == kd.bHash) {
         return true;
     }
-    CBlockIndex* pindex = mapBlockIndex[kd];
-    if (pindex->nHeight < chainActive.Tip()->nHeight && pindex->GetBlockHash() == chainActive[pindex->nHeight]->GetBlockHash()) return true;
-
     return false;
 }
 
@@ -3234,7 +3232,7 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
                                            tx.GetHash().GetHex(), nHeightTx, pindex->nHeight),
                                      REJECT_INVALID, "bad-txns-inputs-missingorspent");
             }
-            LogPrintf("%s: check double spending %s", __func__);
+
             //Check for double spending of serial #'s
             for (const CTxIn &txIn : tx.vin) {
                 if (!txIn.scriptSig.IsZerocoinSpend())
@@ -3277,28 +3275,21 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
             for (CTxIn in : tx.vin) {
                 const CKeyImage& keyImage = in.keyImage;
                 std::string kh = keyImage.GetHex();
-                LogPrintf("%s: checking key image %s", __func__, kh);
                 if (IsKeyImageSpend1(kh)) {
                     return state.Invalid(error("AcceptToMemoryPool : key image already spent"),
                                          REJECT_DUPLICATE, "bad-txns-inputs-spent");
                 }
-                uint256 kd(pindex->GetBlockHash());
-                LogPrintf("%s: writing key image %s", __func__, kh);
+                KeyImageSpendDisk kd(false, pindex->pprev->nHeight, tx.GetHash(), pindex->GetBlockHash());
                 pblocktree->WriteKeyImage(keyImage.GetHex(), kd);
-                LogPrintf("%s: done writing key image %s", __func__, kh);
-                if (pwalletMain != NULL) {
-                    if (pwalletMain->GetDebit(in, ISMINE_ALL)) {
-                        pwalletMain->keyImagesSpends[keyImage.GetHex()] = true;
-                    }
-                    pwalletMain->pendingKeyImages.remove(keyImage.GetHex());
+                if (pwalletMain->GetDebit(in, ISMINE_ALL)) {
+                    pwalletMain->keyImagesSpends[keyImage.GetHex()] = true;
                 }
-                LogPrintf("%s: checking valid point %s", __func__, kh);
+                pwalletMain->pendingKeyImages.remove(keyImage.GetHex());
                 if (!ValidOutPoint(in.prevout, pindex->nHeight)) {
                     return state.DoS(100, error("%s : tried to spend invalid input %s in tx %s", __func__,
                                                 in.prevout.ToString(),
                                                 tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-inputs");
                 }
-                LogPrintf("%s: done checking valid point %s", __func__, kh);
             }
 
             if (fStrictPayToScriptHash) {
@@ -3317,10 +3308,8 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
             nValueIn += view.GetValueIn(tx);
 
             std::vector <CScriptCheck> vChecks;
-            LogPrintf("%s: start checking inputs %s", __func__);
             if (!CheckInputs(tx, state, view, fScriptChecks, flags, false, nScriptCheckThreads ? &vChecks : NULL))
                 return false;
-            LogPrintf("%s: done checking inputs %s", __func__);
             control.Add(vChecks);
         }
         nValueOut += tx.GetValueOut();
@@ -4528,7 +4517,7 @@ bool CheckBlock(const CBlock &block, CValidationState &state, bool fCheckPOW, bo
                 LogPrintf("CheckBlock(): Masternode payment check skipped on sync - skipping IsBlockPayeeValid()\n");
         }
     }
-	LogPrintf("%s: Cchecking transactions, height=%d", __func__, nHeight);
+	LogPrintf("%s: Cchecking transactions", __func__);
     // Check transactions
     bool fZerocoinActive = block.GetBlockTime() > Params().Zerocoin_StartTime();
     vector <CBigNum> vBlockSerials;

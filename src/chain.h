@@ -627,4 +627,29 @@ public:
     const CBlockIndex* FindFork(const CBlockIndex* pindex) const;
 };
 
+class KeyImageSpendDisk {
+public:
+    bool fSpend;
+    int nHeight;
+    uint256 txHash;
+    uint256 bHash;
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
+    {
+        READWRITE(fSpend);
+        READWRITE(nHeight);
+        READWRITE(txHash);
+        READWRITE(bHash);
+    }
+    KeyImageSpendDisk() {
+        fSpend = false;
+        nHeight = -1;
+        txHash.SetNull();
+        bHash.SetNull();
+    }
+    KeyImageSpendDisk(bool _fSpend, int _nHeight, uint256 _txHash, uint256 _bHash): fSpend(_fSpend), nHeight(_nHeight), txHash(_txHash), bHash(_bHash) {}
+};
+
 #endif // BITCOIN_CHAIN_H

@@ -398,7 +398,7 @@ bool CheckProofOfStake(const CBlock block, uint256& hashProofOfStake)
     // First try finding the previous transaction in database
     uint256 hashBlock;
     CTransaction txPrev;
-LogPrintf("%s: checking txin, hash %s", __func__, txin.prevout.hash.GetHex());
+LogPrintf("%s: checking txin", __func__);
     if (!GetTransaction(txin.prevout.hash, txPrev, hashBlock, true))
         return error("CheckProofOfStake() : INFO: read txPrev failed");
 LogPrintf("%s: verify signature and script", __func__);
