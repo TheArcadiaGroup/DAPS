@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "coins.h"
-
+#include "wallet.h"
 #include "random.h"
 
 #include <assert.h>
