@@ -281,7 +281,10 @@ bool IsKeyImageSpend1(const std::string& kiHex, int nHeight) {
         //not spent yet because not found in database
         return false;
     }
-    if (IsKeyImageSpend2(kd, nHeight)) {
+    if (kd == -1) {
+        return false;
+    }
+    if (IsKeyImageSpend2(kiHex, kd, nHeight)) {
         if (pwalletMain) {
             if (pwalletMain->keyImagesSpends.count(kiHex) == 1) {
                 pwalletMain->keyImagesSpends[kiHex] = 1;
@@ -289,13 +292,28 @@ bool IsKeyImageSpend1(const std::string& kiHex, int nHeight) {
         }
         return true;
     }
+    if (pwalletMain) {
+        pwalletMain->keyImagesSpends[kiHex] = false;
+    }
     return false;
 }
 
-bool IsKeyImageSpend2(int kd, int nHeight) {
+bool IsKeyImageSpend2(const std::string& kiHex, int kd, int nHeight) {
     if (kd < nHeight) {
-        LogPrintf("%s: keyimage spent in nHeight=%d", __func__, kd);
-        return true;
+        CBlock block;
+        CBlockIndex* pblockindex = chainActive[kd];
+
+        if (ReadBlockFromDisk(block, pblockindex)) {
+            for (int i = 0; i < block.vtx.size(); i++) {
+                for (int j = 0; j < block.vtx[i].vin.size(); j++) {
+                    if (block.vtx[i].vin[j].keyImage.GetHex() == kiHex) {
+                        LogPrintf("%s: keyimage spent in nHeight=%d", __func__, kd);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     return false;
