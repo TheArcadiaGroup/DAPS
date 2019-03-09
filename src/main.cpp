@@ -245,25 +245,22 @@ void SyncWithWallets(const CTransaction &tx, const CBlock *pblock) {
     g_signals.SyncTransaction(tx, pblock);
 }
 
-bool IsKeyImageSpend1(const std::string& kiHex, int nHeight) {
+bool IsKeyImageSpend1(const std::string& kiHex) {
     uint256 kd;
     if (!pblocktree->ReadKeyImage(kiHex, kd)) {
         //not spent yet because not found in database
         return false;
     }
-    return IsKeyImageSpend2(kd, nHeight);
+    return IsKeyImageSpend2(kd);
 }
 
-bool IsKeyImageSpend2(const uint256& kd, int nHeight) {
+bool IsKeyImageSpend2(const uint256& kd) {
     if (mapBlockIndex.count(kd) == 0) {
         //potentially keyimage spent in a fork chain
         return false;
     }
     CBlockIndex* pindex = mapBlockIndex[kd];
-    if (pindex->nHeight < nHeight && pindex->GetBlockHash() == chainActive[pindex->nHeight]->GetBlockHash()) {
-        LogPrintf("%s: keyimage spent in block %s, pindex->nHeight=%d, chainActive.Tip()->nHeight=%d", __func__, kd.GetHex(), pindex->nHeight, chainActive.Tip()->nHeight);
-        return true;
-    }
+    if (pindex->nHeight < chainActive.Tip()->nHeight && pindex->GetBlockHash() == chainActive[pindex->nHeight]->GetBlockHash()) return true;
 
     return false;
 }
@@ -1734,7 +1731,7 @@ bool AcceptToMemoryPool(CTxMemPool &pool, CValidationState &state, const CTransa
             // Check key images not duplicated with what in db
             for (const CTxIn& txin: tx.vin) {
                 const CKeyImage& keyImage = txin.keyImage;
-                if (IsKeyImageSpend1(keyImage.GetHex(), chainActive.Tip()->nHeight)) {
+                if (IsKeyImageSpend1(keyImage.GetHex())) {
                     return state.Invalid(error("AcceptToMemoryPool : key image already spent"),
                                          REJECT_DUPLICATE, "bad-txns-inputs-spent");
                 }
@@ -3288,7 +3285,7 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
                 const CKeyImage& keyImage = in.keyImage;
                 std::string kh = keyImage.GetHex();
                 LogPrintf("%s: checking key image %s", __func__, kh);
-                if (IsKeyImageSpend1(kh, pindex->nHeight)) {
+                if (IsKeyImageSpend1(kh)) {
                     return state.Invalid(error("ConnectBlock() : key image already spent"),
                                          REJECT_DUPLICATE, "bad-txns-inputs-spent");
                 }
