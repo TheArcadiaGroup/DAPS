@@ -514,29 +514,6 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
         if (keyImagesSpends.count(ki) == 1) {
             return keyImagesSpends[ki];
         }
-    } else {
-        if (mapWallet.count(hash) == 1) {
-            CWalletTx wtx = mapWallet[hash];
-            CKey key;
-            std::string keyImageHex;
-            if (findCorrespondingPrivateKey(wtx.vout[n], key)) {
-                CKeyImage keyImage;
-                const CScript &s = wtx.vout[n].scriptPubKey;
-                if (!generate_key_image_helper(s, keyImage)) {
-                    return true;
-                }
-                keyImageHex = keyImage.GetHex();
-                keyImageMap[std::pair<uint256, int>(wtx.GetHash(), n)] = keyImageHex;
-            } else {
-                return true;
-            }
-
-            if (!IsKeyImageSpend1(keyImageHex, chainActive.Tip()->nHeight)) {
-                keyImagesSpends[keyImageHex] = false;
-                return false;
-            }
-        }
-
     }
     pair<TxSpends::const_iterator, TxSpends::const_iterator> range;
     range = mapTxSpends.equal_range(outpoint);
