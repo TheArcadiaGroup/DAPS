@@ -257,7 +257,7 @@ bool IsKeyImageSpend1(const std::string& kiHex) {
 bool IsKeyImageSpend2(const uint256& kd) {
     if (mapBlockIndex.count(kd) == 0) {
         //potentially keyimage spent in a fork chain
-        return false;
+        return true;
     }
     CBlockIndex* pindex = mapBlockIndex[kd];
     if (pindex->nHeight < chainActive.Tip()->nHeight && pindex->GetBlockHash() == chainActive[pindex->nHeight]->GetBlockHash()) return true;
@@ -3241,7 +3241,7 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
                                            tx.GetHash().GetHex(), nHeightTx, pindex->nHeight),
                                      REJECT_INVALID, "bad-txns-inputs-missingorspent");
             }
-            //LogPrintf("%s: check double spending %s", __func__, tx.GetHash());
+            LogPrintf("%s: check double spending %s", __func__);
             //Check for double spending of serial #'s
             for (const CTxIn &txIn : tx.vin) {
                 if (!txIn.scriptSig.IsZerocoinSpend())
@@ -3286,7 +3286,7 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
                 std::string kh = keyImage.GetHex();
                 LogPrintf("%s: checking key image %s", __func__, kh);
                 if (IsKeyImageSpend1(kh)) {
-                    return state.Invalid(error("ConnectBlock() : key image already spent"),
+                    return state.Invalid(error("AcceptToMemoryPool : key image already spent"),
                                          REJECT_DUPLICATE, "bad-txns-inputs-spent");
                 }
                 uint256 kd(pindex->GetBlockHash());
@@ -3324,10 +3324,10 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
             nValueIn += view.GetValueIn(tx);
 
             std::vector <CScriptCheck> vChecks;
-            //LogPrintf("%s: start checking inputs %s", __func__, tx.GetH);
+            LogPrintf("%s: start checking inputs %s", __func__);
             if (!CheckInputs(tx, state, view, fScriptChecks, flags, false, nScriptCheckThreads ? &vChecks : NULL))
                 return false;
-            //LogPrintf("%s: done checking inputs %s", __func__);
+            LogPrintf("%s: done checking inputs %s", __func__);
             control.Add(vChecks);
         }
         nValueOut += tx.GetValueOut();

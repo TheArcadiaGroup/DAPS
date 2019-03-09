@@ -284,7 +284,7 @@ bool stakeTargetHit(uint256 hashProofOfStake, int64_t nValueIn, uint256 bnTarget
 {
     //get the stake weight - weight is equal to coin amount
     uint256 bnCoinDayWeight = uint256(nValueIn) / 100;
-    LogPrintf("%s: hashProofOfStake = %s, nValueIn = %d, bnCoinDayWeight * bnTargetPerCoinDay = %s", __func__, hashProofOfStake.GetHex(), nValueIn, (bnCoinDayWeight * bnTargetPerCoinDay).GetHex());
+
     // Now check if proof-of-stake hash meets target protocol
     return (uint256(hashProofOfStake) < bnCoinDayWeight * bnTargetPerCoinDay);
 }
@@ -337,9 +337,8 @@ LogPrintf("%s: get kernel staker modifier", __func__);
 
     //if wallet is simply checking to make sure a hash is valid
     if (fCheck) {
-        LogPrintf("%s: checking stakehash", __func__);
+LogPrintf("%s: checking stakehash", __func__);
         hashProofOfStake = stakeHash(nTimeTx, ss, prevout.n, prevout.hash, nTimeBlockFrom);
-        LogPrintf("%s: blockchecked hashProofOfStake=%s, nTimeTx=%d, nStakeModifier=%d, prevout.n=%d, prevout.hash=%s, nTimeBlockFrom=%d", __func__, hashProofOfStake.GetHex(), nTimeTx, nStakeModifier, prevout.n, prevout.hash.GetHex(), nTimeBlockFrom);
         LogPrintf("CheckStakeKernelHash: checking kernal hash target");
         return stakeTargetHit(hashProofOfStake, nValueIn, bnTargetPerCoinDay);
     }
