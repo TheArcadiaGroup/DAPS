@@ -3443,6 +3443,7 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
     // track money supply and mint amount info
     CAmount nMoneySupplyPrev = pindex->pprev ? pindex->pprev->nMoneySupply : 0;
     pindex->nMoneySupply = nMoneySupplyPrev + nValueOut - nValueIn;
+    LogPrintf("%s: nValueOut=%d, nValueIn=%d, nMoneySupplyPrev=%d, pindex->nMoneySupply=%d, nFees=%d", __func__, nValueOut, nValueIn, nMoneySupplyPrev, pindex->nMoneySupply, nFees);
     pindex->nMint = pindex->nMoneySupply - nMoneySupplyPrev + nFees;
 
 //    LogPrintf("XX69----------> ConnectBlock(): nValueOut: %s, nValueIn: %s, nFees: %s, nMint: %s zDapsSpent: %s\n",
