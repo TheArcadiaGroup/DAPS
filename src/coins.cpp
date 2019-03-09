@@ -228,6 +228,20 @@ CAmount CCoinsViewCache::GetValueIn(const CTransaction& tx) const
         return tx.GetZerocoinSpent();
 
     CAmount nResult = 0;
+
+    if (tx.IsCoinStake()) {
+        for (unsigned int i = 0; i < tx.vin.size(); i++) {
+            CAmount nValueIn;// = txPrev.vout[prevout.n].nValue;
+            const CTxOut& out = GetOutputFor(tx.vin[i]);
+            uint256 val = out.maskValue.amount;
+            uint256 mask = out.maskValue.mask;
+            CKey decodedMask;
+            CPubKey sharedSec;
+            sharedSec.Set(tx.vin[i].encryptionKey.begin(), tx.vin[i].encryptionKey.begin() + 33);
+            ECDHInfo::Decode(mask.begin(), val.begin(), sharedSec, decodedMask, nValueIn);
+            nResult += nValueIn;
+        }
+    }
     //for (unsigned int i = 0; i < tx.vin.size(); i++)
         //nResult += GetOutputFor(tx.vin[i]).nValue;
 
