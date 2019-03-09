@@ -1703,17 +1703,10 @@ bool AcceptToMemoryPool(CTxMemPool &pool, CValidationState &state, const CTransa
             // only helps filling in pfMissingInputs (to determine missing vs spent).
             for (const CTxIn txin : tx.vin) {
                 if (!view.HaveCoins(txin.prevout.hash)) {
-                    CDiskTxPos postx;
-                    if (pblocktree->ReadTxIndex(txin.prevout.hash, postx)) {
-                        CAutoFile file(OpenBlockFile(postx, true), SER_DISK, CLIENT_VERSION);
-                        if (file.IsNull())
-                            return error("%s: OpenBlockFile failed", __func__);
-                    } else {
-                        if (pfMissingInputs)
-                            *pfMissingInputs = true;
-                        LogPrintf("%s: Error: txhash not found %s", __func__, txin.prevout.hash.GetHex());
-                        return false;
-                    }
+                    if (pfMissingInputs)
+                        *pfMissingInputs = true;
+                    LogPrintf("%s: Error: txhash not found %s", __func__, txin.prevout.hash.GetHex());
+                    return false;
                 }
                 //Check for invalid/fraudulent inputs
                 if (!ValidOutPoint(txin.prevout, chainActive.Height())) {
