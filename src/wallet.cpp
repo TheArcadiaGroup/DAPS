@@ -509,14 +509,16 @@ void CWallet::SyncMetaData(pair<TxSpends::iterator, TxSpends::iterator> range)
 bool CWallet::IsSpent(const uint256& hash, unsigned int n)
 {
     const COutPoint outpoint(hash, n);
-    if (keyImageMap.count(std::pair<uint256,int>(hash, n)) == 1) {
-        std::string ki = keyImageMap[std::pair<uint256,int>(hash, n)];
+    std::string mapKey = hash.GetHex() + std::to_string(n);
+    if (keyImageMap.count(mapKey) == 1) {
+        std::string ki = keyImageMap[mapKey];
         if (keyImagesSpends.count(ki) == 1) {
             return keyImagesSpends[ki];
         }
     } else {
         std::cout << "CWallet::IsSpent: Check isSpent, hash=" << hash.GetHex() << ", n=" << n << std::endl;
         if (mapWallet.count(hash) == 1) {
+            std::cout << "CWallet::IsSpent: key image = " << keyImageHex << std::endl;
             CWalletTx wtx = mapWallet[hash];
             CKey key;
             std::string keyImageHex;
@@ -527,15 +529,14 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
                     return true;
                 }
                 keyImageHex = keyImage.GetHex();
-                keyImageMap[std::pair<uint256, int>(wtx.GetHash(), n)] = keyImageHex;
+                keyImageMap[mapKey] = keyImageHex;
             } else {
                 return true;
             }
-            std::cout << "CWallet::IsSpent: key image = " << keyImageHex << std::endl;
 
             if (!IsKeyImageSpend1(keyImageHex, chainActive.Tip()->nHeight)) {
                 keyImagesSpends[keyImageHex] = false;
-                std::cout << "CWallet::IsSpent: key image = " << keyImageHex << std::endl;
+                //std::cout << "CWallet::IsSpent: key image = " << keyImageHex << std::endl;
                 return false;
             }
         }

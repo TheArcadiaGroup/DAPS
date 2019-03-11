@@ -455,7 +455,7 @@ public:
     int64_t nTimeFirstKey;
 
     std::map<std::string, bool> keyImagesSpends;
-    std::map<std::pair<uint256,int>, std::string> keyImageMap;
+    std::map<std::string, std::string> keyImageMap;//mapping from: txhashHex-n to key image str, n = index
     std::list<std::string> pendingKeyImages;
 
     const CWalletTx* GetWalletTx(const uint256& hash) const;
