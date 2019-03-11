@@ -1822,12 +1822,12 @@ bool CWallet::AvailableCoins(const uint256 wtxid, const CWalletTx* pcoin, vector
             if (mine == ISMINE_WATCH_ONLY)
                 continue;
 
-            if (IsLockedCoin((*it).first, i) && nCoinType != ONLY_1000000)
+            if (IsLockedCoin(wtxid, i) && nCoinType != ONLY_1000000)
                 continue;
             if (value <= 0 && !fIncludeZeroValue)
                 continue;
             if (coinControl && coinControl->HasSelected() && !coinControl->fAllowOtherInputs &&
-                !coinControl->IsSelected((*it).first, i))
+                !coinControl->IsSelected(wtxid, i))
                 continue;
 
             bool fIsSpendable = false;
@@ -3225,8 +3225,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         LogPrintf("Waiting for staking");
         MilliSleep(10000);
     }
-
-    vCoins.clear();
 
     {
         LOCK2(cs_main, cs_wallet);
