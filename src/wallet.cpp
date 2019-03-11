@@ -518,7 +518,6 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
     } else {
         std::cout << "CWallet::IsSpent: Check isSpent, hash=" << hash.GetHex() << ", n=" << n << std::endl;
         if (mapWallet.count(hash) == 1) {
-            std::cout << "CWallet::IsSpent: key image = " << keyImageHex << std::endl;
             CWalletTx wtx = mapWallet[hash];
             CKey key;
             std::string keyImageHex;
@@ -531,9 +530,10 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
                 keyImageHex = keyImage.GetHex();
                 keyImageMap[mapKey] = keyImageHex;
             } else {
+                std::cout << "CWallet:Spent: Cannot generate key image" << std::endl;
                 return true;
             }
-
+            std::cout << "CWallet::IsSpent: key image = " << keyImageHex << std::endl;
             if (!IsKeyImageSpend1(keyImageHex, chainActive.Tip()->nHeight)) {
                 keyImagesSpends[keyImageHex] = false;
                 //std::cout << "CWallet::IsSpent: key image = " << keyImageHex << std::endl;
