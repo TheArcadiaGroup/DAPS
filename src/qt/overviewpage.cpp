@@ -132,7 +132,7 @@ OverviewPage::OverviewPage(QWidget* parent) : QDialog(parent),
     pingNetworkInterval = new QTimer();
 
     initSyncCircle(.8);
-    updateRecentTransactions();
+    // updateRecentTransactions();
 }
 
 void OverviewPage::handleTransactionClicked(const QModelIndex& index)

@@ -8,6 +8,7 @@
 #include "walletmodel.h"
 
 #include <QStackedWidget>
+#include <QSpinBox>
 
 class WalletModel;
 

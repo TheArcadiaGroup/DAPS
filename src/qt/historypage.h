@@ -44,7 +44,7 @@ public:
 public slots:
     void updateFilter();
     void syncTime(QDateTimeEdit* calendar, QTimeEdit* clock);
-
+    void txalert();
 
 
 protected:
