@@ -1771,8 +1771,8 @@ bool CWallet::AvailableCoins(const uint256 wtxid, const CWalletTx* pcoin, vector
     {
         //LOCK2(cs_main, cs_wallet);
         //for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
-        const uint256 &wtxid = it->first;
-        const CWalletTx *pcoin = &(*it).second;
+        //const uint256 &wtxid = it->first;
+        //const CWalletTx *pcoin = &(*it).second;
 
         if (!CheckFinalTx(*pcoin))
             return false;
@@ -3235,10 +3235,8 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             const CWalletTx* pcoin = &(*it).second;
 
             //int nDepth = pcoin->GetDepthInMainChain(false);
-            vector<COutput>& vCoins;
-            AvailableCoins(wtxid, pcoin, vCoins, true, NULL, false, STAKABLE_COINS);
             vector<COutput> vCoins;
-            AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS, false);
+            AvailableCoins(wtxid, pcoin, vCoins, true, NULL, false, STAKABLE_COINS, false);
             CAmount nAmountSelected = 0;
             for (const COutput& out : vCoins) {
                 //make sure not to outrun target amount
@@ -3381,7 +3379,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                                 break; // if kernel is found stop searching
                             }
                         }
-            if (nCredit == 0 || nCredit > nBalance - nReserveBalance)
+            if (nCredit == 0)
                 continue;
 
             // Calculate reward
