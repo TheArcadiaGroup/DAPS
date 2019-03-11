@@ -1398,8 +1398,9 @@ CAmount CWallet::GetBalance()
                 for (int i = 0; i < pcoin->vout.size(); i++) {
                     if (IsMine(pcoin->vout[i])) {
                         std::string keyImageHex;
-                        if (keyImageMap.count(std::pair<uint256, int>(pcoin->GetHash(), i)) == 1) {
-                            keyImageHex = keyImageMap[std::pair<uint256, int>(pcoin->GetHash(), i)];
+                        std::string mapKey = pcoin->GetHash().GetHex() + std::to_string(i);
+                        if (keyImageMap.count(mapKey) == 1) {
+                            keyImageHex = keyImageMap[mapKey];
                         } else {
                             CKey key;
                             if (findCorrespondingPrivateKey(pcoin->vout[i], key)) {
@@ -1409,7 +1410,7 @@ CAmount CWallet::GetBalance()
                                     continue;
                                 }
                                 keyImageHex = keyImage.GetHex();
-                                keyImageMap[std::pair<uint256, int>(pcoin->GetHash(), i)] = keyImageHex;
+                                keyImageMap[mapKey] = keyImageHex;
                             } else {
                                 continue;
                             }
@@ -1992,8 +1993,9 @@ bool CWallet::SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int
             if (output.nDepth < (pcoin->IsFromMe(ISMINE_ALL) ? nConfMine : nConfTheirs))
                 continue;
             std::string keyImageHex;
-            if (keyImageMap.count(std::pair<uint256, int>(pcoin->GetHash(), output.i)) == 1) {
-                keyImageHex = keyImageMap[std::pair<uint256, int>(pcoin->GetHash(), output.i)];
+            std::string mapKey = pcoin->GetHash().GetHex() + std::to_string(output.i);
+            if (keyImageMap.count(mapKey) == 1) {
+                keyImageHex = keyImageMap[mapKey];
             } else {
                 CKey key;
                 if (findCorrespondingPrivateKey(pcoin->vout[output.i], key)) {
@@ -2003,7 +2005,7 @@ bool CWallet::SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int
                         continue;
                     }
                     keyImageHex = keyImage.GetHex();
-                    keyImageMap[std::pair<uint256, int>(pcoin->GetHash(), output.i)] = keyImageHex;
+                    keyImageMap[mapKey] = keyImageHex;
                 } else {
                     continue;
                 }
