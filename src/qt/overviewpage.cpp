@@ -303,8 +303,6 @@ void OverviewPage::showBalanceSync(bool fShow){
         ui->labelUnconfirmed->setVisible(fShow);
         ui->labelBalanceText->setVisible(fShow);
         isSyncingBalance = fShow;
-        ui->labelBlockCurrent->setAlignment(!fShow? (Qt::AlignRight | Qt::AlignVCenter) : (Qt::AlignHCenter | Qt::AlignTop));
-
 }
 
 void OverviewPage::showBlockSync(bool fShow)
@@ -316,6 +314,8 @@ void OverviewPage::showBlockSync(bool fShow)
     isSyncingBlocks = fShow;
 
     ui->labelBlockCurrent->setText(QString::number(clientModel->getNumBlocks()));
+    // if (!fShow)
+        ui->labelBlockCurrent->setAlignment(fShow? (Qt::AlignRight|Qt::AlignVCenter):(Qt::AlignHCenter|Qt::AlignTop));
 }
 
 void OverviewPage::initSyncCircle(float ratioToParent)

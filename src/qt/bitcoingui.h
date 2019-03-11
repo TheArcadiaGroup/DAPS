@@ -182,6 +182,8 @@ public slots:
 
     void setStakingStatus();
 
+    void exitApp();
+
 #ifdef ENABLE_WALLET
     /** Set the encryption status as shown in the UI.
        @param[in] status            current encryption status

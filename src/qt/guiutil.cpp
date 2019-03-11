@@ -829,7 +829,7 @@ QString loadStyleSheet()
 {
     QString styleSheet;
     QSettings settings;
-    QVariant theme = settings.value("theme", "");
+    QVariant theme = settings.value("theme");
     QString cssName = QString(":/css/"+theme.toString());
 
         // Build-in CSS
