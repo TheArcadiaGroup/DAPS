@@ -521,6 +521,10 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
             CWalletTx wtx = mapWallet[hash];
             CKey key;
             std::string keyImageHex;
+            bool found = findCorrespondingPrivateKey(wtx.vout[n], key);
+            if (!found) {
+                IsTransactionForMe(wtx);
+            }
             if (findCorrespondingPrivateKey(wtx.vout[n], key)) {
                 CKeyImage keyImage;
                 const CScript &s = wtx.vout[n].scriptPubKey;
