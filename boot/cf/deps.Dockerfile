@@ -63,10 +63,8 @@ RUN su && cd /DAPS/depends &&  \
         mkdir -p SDKs && \
         curl -LO "https://github.com/phracker/MacOSX-SDKs/releases/download/MacOSX10.11.sdk/MacOSX10.11.sdk.tar.xz" && \
         tar xvf MacOSX10.11.sdk.tar.xz -C ./SDKs/ && \
-        #GET no-fail script and make depedencies
-        curl -Lo ex.pct "https://drive.google.com/uc?export=download&id=15EcY5OCHW4D0s0-x6yV3_L-UYHvpvwA5" && \
-        set -e && make HOST="x86_64-apple-darwin11" DARWIN_SDK_PATH=$PWD/SDKs/MacOSX10.11.sdk/ || true && \
-        expect ex.pct && cd .. && \
+        make HOST="x86_64-apple-darwin11" DARWIN_SDK_PATH=$PWD/SDKs/MacOSX10.11.sdk/ || true && \
+        cd .. && \
         #
         ./autogen.sh --with-gui=yes && CONFIG_SITE=$PWD/depends/x86_64-apple-darwin11/share/config.site ./configure --prefix=/ && \
         export PATH="/usr/local/bin:/usr/local/sbin:$PATH" && \
