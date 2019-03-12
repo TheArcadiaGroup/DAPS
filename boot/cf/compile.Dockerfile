@@ -16,12 +16,19 @@ COPY . /DAPS/
 
 RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #     
-    if [ "$BUILD_TARGET" = "windows" ]; \
+    if [ "$BUILD_TARGET" = "windowsx64" ]; \
       then echo "Compiling for win64" && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && \
         make HOST=x86_64-w64-mingw32 && \
         make install HOST=x86_64-w64-mingw32 DESTDIR=/BUILD/; \
+#
+    elif [ "$BUILD_TARGET" = "windowsx86" ]; \
+      then echo "Compiling for win86" && \
+        ./autogen.sh && \
+        CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
+        make HOST=i686-w64-mingw32 && \
+        make install HOST=i686-w64-mingw32 DESTDIR=/BUILD/; \
 #
     elif [ "$BUILD_TARGET" = "linux" ]; \
        then echo "Compiling for linux" && \
