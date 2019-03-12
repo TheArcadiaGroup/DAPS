@@ -51,6 +51,7 @@ public slots:
     void clear();
     void reject();
     void accept();
+    void copyAddress();
 
 protected:
     virtual void keyPressEvent(QKeyEvent* event);
