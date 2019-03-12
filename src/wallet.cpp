@@ -1422,6 +1422,8 @@ CAmount CWallet::GetBalance()
                         if (keyImagesSpends.count(keyImageHex) == 1) {
                             if (!keyImagesSpends[keyImageHex]) {
                                 nTotal += getCTxOutValue(*pcoin, pcoin->vout[i]);
+                            } else {
+                                mapWallet.erase(it);
                             }
                             continue;
                         }
@@ -1430,6 +1432,7 @@ CAmount CWallet::GetBalance()
                             nTotal += getCTxOutValue(*pcoin, pcoin->vout[i]);
                         } else {
                             keyImagesSpends[keyImageHex] = true;
+                            mapWallet.erase(it);
                         }
                     }
                 }
