@@ -17,8 +17,8 @@ COPY . /DAPS/
 RUN su && cd /DAPS/depends &&  \
     apt-get update && \
 #    
-    if [ "$BUILD_TARGET" = "windows" ]; \
-      then echo "Building dependencies for windows cross-compile..." && \
+    if [ "$BUILD_TARGET" = "windowsx64" ]; \
+      then echo "Building dependencies for windows x64 cross-compile..." && \
         DEBIAN_FRONTEND=noninteractive apt-get install libssl1.0-dev g++-mingw-w64-x86-64 -y --fix-missing && \
         #use posix G++ compiler
         echo "1\n" | update-alternatives --config x86_64-w64-mingw32-g++; \
@@ -30,7 +30,7 @@ RUN su && cd /DAPS/depends &&  \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && \
         make && \
-        echo -e "Windows Build complete."; \
+        echo -e "Windows x64 Build complete."; \
 #
     elif [ "$BUILD_TARGET" = "linux" ]; \
       then echo "Building dependencies for linux..." && \
