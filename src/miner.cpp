@@ -105,8 +105,8 @@ uint32_t GetListOfPoSInfo(uint32_t currentHeight, std::vector<PoSBlockSummary>& 
 		nloopIdx--;
 	}
     if (nloopIdx <= Params().START_POA_BLOCK()) {
-        //this is the first PoA block ==> take all PoS blocks from LAST_POW_BLOCK up to currentHeight - 59 inclusive
-        for (uint32_t i = Params().LAST_POW_BLOCK() + 1; i <= Params().LAST_POW_BLOCK() + 59; i++) {
+        //this is the first PoA block ==> take all PoS blocks from LAST_POW_BLOCK up to currentHeight - 60 inclusive
+        for (uint32_t i = Params().LAST_POW_BLOCK() + 1; i <= Params().LAST_POW_BLOCK() + 60; i++) {
             PoSBlockSummary pos;
             pos.hash = chainActive[i]->GetBlockHash();
             pos.nTime = chainActive[i]->GetBlockHeader().nTime;
