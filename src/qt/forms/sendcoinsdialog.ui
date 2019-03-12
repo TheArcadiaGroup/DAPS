@@ -2,9 +2,6 @@
 <ui version="4.0">
  <class>SendCoinsDialog</class>
  <widget class="QDialog" name="SendCoinsDialog">
-      <property name="styleSheet">
-       <string notr="true">QDialog{border-image: url(':/images/background') 0 0 0 0 stretch stretch;}</string>
-      </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -15,6 +12,9 @@
   </property>
   <property name="windowTitle">
    <string>Send Coins</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog{border-image: url(':/images/background') 0 0 0 0 stretch stretch;}</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
    <property name="bottomMargin">
@@ -702,7 +702,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-3</y>
         <width>813</width>
         <height>421</height>
        </rect>
@@ -754,7 +754,7 @@
             <string>Add &amp;Recipient</string>
            </property>
            <property name="icon">
-            <iconset resource="../../Downloads/DAPS-develop/src/qt/dapscoin.qrc">
+            <iconset>
              <normaloff>:/icons/add</normaloff>:/icons/add</iconset>
            </property>
            <property name="autoDefault">
@@ -804,6 +804,9 @@
             <layout class="QHBoxLayout" name="horizontalLayout_11">
              <item>
               <widget class="QLabel" name="label_6">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                  <horstretch>0</horstretch>
@@ -820,6 +823,9 @@
              </item>
              <item>
               <widget class="QLabel" name="labelFeeValue">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="text">
                 <string>0.0001</string>
                </property>
@@ -853,7 +859,7 @@
                <item>
                 <widget class="QSlider" name="sliderSmartFee">
                  <property name="enabled">
-                  <bool>true</bool>
+                  <bool>false</bool>
                  </property>
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -903,6 +909,9 @@
                </property>
                <item>
                 <widget class="QLabel" name="labelSlow">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                    <horstretch>0</horstretch>
@@ -922,6 +931,9 @@
                </item>
                <item>
                 <widget class="QLabel" name="labelMedium">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                    <horstretch>0</horstretch>
@@ -938,6 +950,9 @@
                </item>
                <item>
                 <widget class="QLabel" name="labelFaster">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                    <horstretch>0</horstretch>
@@ -954,6 +969,9 @@
                </item>
                <item>
                 <widget class="QLabel" name="labelFast">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                    <horstretch>0</horstretch>
@@ -976,6 +994,9 @@
             <layout class="QHBoxLayout" name="horizontalLayoutFee">
              <item>
               <widget class="QRadioButton" name="radioCustomPerKilobyte">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="toolTip">
                 <string>If the custom fee is set to 1000 uDAPSs and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 uDAPSs in fee,&lt;br /&gt;while &quot;at least&quot; pays 1000 uDAPSs. For transactions bigger than a kilobyte both pay by kilobyte.</string>
                </property>
@@ -995,6 +1016,9 @@
              </item>
              <item>
               <widget class="QRadioButton" name="radioCustomAtLeast">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1017,6 +1041,9 @@
              </item>
              <item>
               <widget class="BitcoinAmountField" name="customFee">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1070,9 +1097,9 @@
             <layout class="QHBoxLayout" name="horizontalLayoutRingSizeTitle">
              <item>
               <widget class="QLabel" name="labelRingSize">
-              <property name="enabled">
+               <property name="enabled">
                 <bool>false</bool>
-              </property>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                  <horstretch>0</horstretch>
@@ -1089,9 +1116,9 @@
              </item>
              <item>
               <widget class="QLabel" name="labelRingSizeValue">
-              <property name="enabled">
+               <property name="enabled">
                 <bool>false</bool>
-              </property>
+               </property>
                <property name="text">
                 <string>7</string>
                </property>
@@ -1122,9 +1149,9 @@
              </item>
              <item>
               <widget class="QSlider" name="horizontalSliderRingSize">
-              <property name="enabled">
+               <property name="enabled">
                 <bool>false</bool>
-              </property>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
                  <horstretch>0</horstretch>
@@ -1170,9 +1197,9 @@
             <layout class="QHBoxLayout" name="horizontalLayoutRingSizeLabels_2">
              <item>
               <widget class="QLabel" name="labelRingSize6">
-              <property name="enabled">
+               <property name="enabled">
                 <bool>false</bool>
-              </property>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                  <horstretch>0</horstretch>
@@ -1189,9 +1216,9 @@
              </item>
              <item>
               <widget class="QLabel" name="labelRingSize7">
-              <property name="enabled">
+               <property name="enabled">
                 <bool>false</bool>
-              </property>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                  <horstretch>0</horstretch>
@@ -1208,9 +1235,9 @@
              </item>
              <item>
               <widget class="QLabel" name="labelRingSize8">
-              <property name="enabled">
+               <property name="enabled">
                 <bool>false</bool>
-              </property>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                  <horstretch>0</horstretch>
@@ -1227,9 +1254,9 @@
              </item>
              <item>
               <widget class="QLabel" name="labelRingSize9">
-              <property name="enabled">
+               <property name="enabled">
                 <bool>false</bool>
-              </property>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                  <horstretch>0</horstretch>
@@ -1246,9 +1273,9 @@
              </item>
              <item>
               <widget class="QLabel" name="labelRingSize10">
-              <property name="enabled">
+               <property name="enabled">
                 <bool>false</bool>
-              </property>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                  <horstretch>0</horstretch>
@@ -1265,9 +1292,9 @@
              </item>
              <item>
               <widget class="QLabel" name="labelRingSize11">
-              <property name="enabled">
+               <property name="enabled">
                 <bool>false</bool>
-              </property>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                  <horstretch>0</horstretch>
@@ -1284,9 +1311,9 @@
              </item>
              <item>
               <widget class="QLabel" name="labelRingSize12">
-              <property name="enabled">
+               <property name="enabled">
                 <bool>false</bool>
-              </property>
+               </property>
                <property name="text">
                 <string>12</string>
                </property>
@@ -1298,10 +1325,10 @@
             </layout>
            </item>
            <item>
-            <widget class="QLabel" name="labelRingSizeNote_2">      
-            <property name="enabled">
-               <bool>false</bool>
-            </property>
+            <widget class="QLabel" name="labelRingSizeNote_2">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                <horstretch>0</horstretch>
@@ -1370,7 +1397,7 @@
               <string>S&amp;end</string>
              </property>
              <property name="icon">
-              <iconset resource="../../Downloads/DAPS-develop/src/qt/dapscoin.qrc">
+              <iconset>
                <normaloff>:/icons/send</normaloff>:/icons/send</iconset>
              </property>
              <property name="autoDefault">
@@ -1409,20 +1436,17 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QValidatedLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qvalidatedlineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>BitcoinAmountField</class>
    <extends>QLineEdit</extends>
    <header>bitcoinamountfield.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QValidatedLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qvalidatedlineedit.h</header>
+  </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../Downloads/DAPS-develop/src/qt/dapscoin.qrc"/>
- </resources>
  <connections/>
  <buttongroups>
   <buttongroup name="groupFee"/>
