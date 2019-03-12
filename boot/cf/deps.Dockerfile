@@ -32,6 +32,21 @@ RUN su && cd /DAPS/depends &&  \
         make && \
         echo -e "Windows x64 Build complete."; \
 #
+    elif [ "$BUILD_TARGET" = "windowsx86" ]; \
+      then echo "Building dependencies for windows x86 cross-compile..." && \
+        DEBIAN_FRONTEND=noninteractive apt-get install libssl1.0-dev g++-mingw-w64-i686 mingw-w64-i686-dev -y --fix-missing && \
+        #use posix G++ compiler
+        echo "1\n" | update-alternatives --config i686-w64-mingw32-g++; \
+        #strip PATH
+        PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && \
+        #make dependencies
+        make HOST=i686-w64-mingw32 && cd .. && \
+        #
+        ./autogen.sh && \
+        CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
+        make && \
+        echo -e "Windows x86 Build complete."; \
+#
     elif [ "$BUILD_TARGET" = "linux" ]; \
       then echo "Building dependencies for linux..." && \
         make HOST=x86_64-pc-linux-gnu && cd .. && \
