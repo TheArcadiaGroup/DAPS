@@ -15,6 +15,7 @@
 #include "walletmodel.h"
 
 #include <QAction>
+#include <QClipboard>
 #include <QCursor>
 #include <QItemSelection>
 #include <QMessageBox>
@@ -50,6 +51,16 @@ ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent),
     connect(copyLabelAction, SIGNAL(triggered()), this, SLOT(copyLabel()));
     connect(copyMessageAction, SIGNAL(triggered()), this, SLOT(copyMessage()));
     connect(copyAmountAction, SIGNAL(triggered()), this, SLOT(copyAmount()));
+
+    // Show privacy account address
+    ui->lineEditAddress->setStyleSheet("border:none; background: transparent; text-align:center;");
+    std::string pubAddress;
+    pwalletMain->ComputeStealthPublicAddress("masteraccount", pubAddress);
+    ui->lineEditAddress->setText(pubAddress.c_str());
+
+    ui->pushButtonCP->setStyleSheet("background:transparent;");
+    ui->pushButtonCP->setIcon(QIcon(":/icons/editcopy"));
+    connect(ui->pushButtonCP, SIGNAL(clicked()), this, SLOT(copyAddress()));
 
     // #REMOVE connect(ui->clearButton, SIGNAL(clicked()), this, SLOT(clear()));
 }
@@ -269,4 +280,9 @@ void ReceiveCoinsDialog::copyMessage()
 void ReceiveCoinsDialog::copyAmount()
 {
     // #REMOVE copyColumnToClipboard(RecentRequestsTableModel::Amount);
+}
+
+void ReceiveCoinsDialog::copyAddress(){
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(ui->lineEditAddress->text());
 }

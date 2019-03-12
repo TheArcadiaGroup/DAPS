@@ -26,10 +26,6 @@
 #include <QTime>
 #include <QTextStream>
 
-QTextStream& print(){
-    static QTextStream ts(stdout);
-    return ts;
-}
 
 HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent),
                                             ui(new Ui::HistoryPage),
@@ -42,7 +38,7 @@ HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent),
     connectWidgets();
     updateTableData(pwalletMain);
     updateAddressBookData(pwalletMain);
-    //connect(parent, SIGNAL(incomingTransaction()), this, SLOT(txalert()));
+    connect(parent, SIGNAL(incomingTransaction()), this, SLOT(txalert()));
 }
 
 
@@ -193,5 +189,5 @@ void HistoryPage::syncTime(QDateTimeEdit* calendar, QTimeEdit* clock)
 }
 
 void HistoryPage::txalert(){
-    print()<<endl<<'Incoming Transaction Alert'<<endl;
+    updateTableData(pwalletMain);
 }
