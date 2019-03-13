@@ -23,10 +23,12 @@
 #include "utilmoneystr.h"
 #include "wallet.h"
 
+#include <regex>
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QSettings>
 #include <QTextDocument>
+
 
 SendCoinsDialog::SendCoinsDialog(QWidget* parent) : QDialog(parent),
                                                     ui(new Ui::SendCoinsDialog),
@@ -218,7 +220,47 @@ SendCoinsDialog::~SendCoinsDialog()
     delete ui;
 }
 
-void SendCoinsDialog::on_sendButton_clicked()
+void SendCoinsDialog::on_sendButton_clicked(){
+    if (!ui->entries->count()) 
+        return;
+    SendCoinsEntry* form = qobject_cast<SendCoinsEntry*>(ui->entries->itemAt(0)->widget());
+    SendCoinsRecipient recipient = form->getValue();
+
+    QString address = recipient.address;
+    bool isValidAddresss = (regex_match(address.toStdString(), regex("[a-zA-z0-9]+")))&&(address.length()==99||address.length()==110);
+    bool isValidAmount = ((recipient.amount>0) && (recipient.amount<=model->getBalance()));
+
+    form->errorAddress(isValidAddresss);
+    form->errorAmount(isValidAmount);
+
+    if (!isValidAddresss||!isValidAmount)
+        return;
+
+    CWalletTx resultTx; 
+    bool success=NULL;
+    try {
+    success = pwalletMain->SendToStealthAddress(
+            recipient.address.toStdString(),
+            CAmount(recipient.amount),
+            resultTx,
+            false
+        );
+    } catch (const std::exception& err) {
+        auto errorbox = QMessageBox::warning(this, "Could not send", QString(err.what()));
+        return;
+    }
+
+    if (success){
+        QMessageBox txcomplete;// = new QMessageBox::information(this, "Transaction Sent", resultTx.ToString().c_str());
+        txcomplete.setText("Transaction initialized.");
+        txcomplete.setInformativeText(resultTx.ToString().c_str());
+        txcomplete.setStyleSheet(GUIUtil::loadStyleSheet());
+        txcomplete.setStyleSheet("QMessageBox {messagebox-text-interaction-flags: 5;}");
+        txcomplete.exec();
+    }
+}
+
+void SendCoinsDialog::on_sendButton_clicked2()
 {
     if (!model || !model->getOptionsModel())
         return;

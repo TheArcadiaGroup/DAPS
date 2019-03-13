@@ -248,3 +248,15 @@ bool SendCoinsEntry::updateLabel(const QString& address)
 
     return false;
 }
+
+void SendCoinsEntry::errorAddress(bool valid){
+    if (valid)
+        ui->payTo->setStyleSheet(GUIUtil::loadStyleSheet());
+    else ui->payTo->setStyleSheet("border-color: red;");
+}
+
+void SendCoinsEntry::errorAmount(bool valid){
+    if (valid)
+        ui->payAmount->setStyleSheet(GUIUtil::loadStyleSheet());
+    else ui->payAmount->setStyleSheet("border-color: red;");
+}

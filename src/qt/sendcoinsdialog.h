@@ -74,6 +74,7 @@ private:
 
 private slots:
     void on_sendButton_clicked();
+    void on_sendButton_clicked2();
     void removeEntry(SendCoinsEntry* entry);
     void updateDisplayUnit();
     void updateSwiftTX();
