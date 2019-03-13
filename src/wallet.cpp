@@ -546,14 +546,7 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
         }
 
     }
-    pair<TxSpends::const_iterator, TxSpends::const_iterator> range;
-    range = mapTxSpends.equal_range(outpoint);
-    for (TxSpends::const_iterator it = range.first; it != range.second; ++it) {
-        const uint256& wtxid = it->second;
-        std::map<uint256, CWalletTx>::const_iterator mit = mapWallet.find(wtxid);
-        if (mit != mapWallet.end() && mit->second.GetDepthInMainChain() >= 0)
-            return true; // Spent
-    }
+
     return false;
 }
 
@@ -1397,6 +1390,11 @@ CAmount CWallet::GetBalance()
     {
         LOCK2(cs_main, cs_wallet);
         for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
+            for (map<uint256, CWalletTx>::const_iterator cs: notAbleToSpend) {
+                if (it == cs) {
+                    continue;
+                }
+            }
             const CWalletTx* pcoin = &(*it).second;
             if (pcoin->IsTrusted()) {
                 for (int i = 0; i < pcoin->vout.size(); i++) {
@@ -1762,15 +1760,16 @@ void CWallet::AvailableCoins(vector<COutput>& vCoins, bool fOnlyConfirmed, const
             const CWalletTx* pcoin = &(*it).second;
 
             int nDepth = pcoin->GetDepthInMainChain(false);
-            AvailableCoins(wtxid, pcoin, vCoins, fOnlyConfirmed, coinControl, fIncludeZeroValue, nCoinType, fUseIX);
+            int cannotSpend = 0;
+            AvailableCoins(wtxid, pcoin, vCoins, cannotSpend, fOnlyConfirmed, coinControl, fIncludeZeroValue, nCoinType, fUseIX);
         }
     }
 }
 
-bool CWallet::AvailableCoins(const uint256 wtxid, const CWalletTx* pcoin, vector<COutput>& vCoins, bool fOnlyConfirmed, const CCoinControl* coinControl, bool fIncludeZeroValue, AvailableCoinsType nCoinType, bool fUseIX)
+bool CWallet::AvailableCoins(const uint256 wtxid, const CWalletTx* pcoin, vector<COutput>& vCoins, int cannotSpend, bool fOnlyConfirmed, const CCoinControl* coinControl, bool fIncludeZeroValue, AvailableCoinsType nCoinType, bool fUseIX)
 {
+    cannotSpend = 0;
     //vCoins.clear();
-
     {
         //LOCK2(cs_main, cs_wallet);
         //for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
@@ -1797,6 +1796,10 @@ bool CWallet::AvailableCoins(const uint256 wtxid, const CWalletTx* pcoin, vector
             return false;
 
         for (unsigned int i = 0; i < pcoin->vout.size(); i++) {
+            if (pcoin->vout[i].IsEmpty()) {
+                cannotSpend++;
+                continue;
+            }
             bool found = false;
             CAmount value = getCTxOutValue(*pcoin, pcoin->vout[i]);
             if (nCoinType == ONLY_DENOMINATED) {
@@ -1839,8 +1842,10 @@ bool CWallet::AvailableCoins(const uint256 wtxid, const CWalletTx* pcoin, vector
             if ((mine & ISMINE_MULTISIG) != ISMINE_NO)
                 fIsSpendable = true;
 
-            if (IsSpent(wtxid, i))
+            if (IsSpent(wtxid, i)) {
+                cannotSpend++;
                 continue;
+            }
 
             vCoins.emplace_back(COutput(pcoin, i, nDepth, fIsSpendable));
         }
@@ -1978,7 +1983,8 @@ bool CWallet::MintableCoins()
         const CWalletTx* pcoin = &(*it).second;
 
         int nDepth = pcoin->GetDepthInMainChain(false);
-        AvailableCoins(wtxid, pcoin, vCoins, true);
+        int cannotSpend = 0;
+        AvailableCoins(wtxid, pcoin, vCoins, cannotSpend, true);
         if (!vCoins.empty()) {
             for (const COutput& out : vCoins) {
                 int64_t nTxTime = out.tx->GetTxTime();
@@ -3231,13 +3237,25 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
     {
         LOCK2(cs_main, cs_wallet);
+        std::vector<map<uint256, CWalletTx>::const_iterator> tobeRemoveds;
         for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
             const uint256& wtxid = it->first;
             const CWalletTx* pcoin = &(*it).second;
+            for (map<uint256, CWalletTx>::const_iterator cs: notAbleToSpend) {
+                if (it == cs) {
+                    continue;
+                }
+            }
 
             //int nDepth = pcoin->GetDepthInMainChain(false);
             vector<COutput> vCoins;
-            AvailableCoins(wtxid, pcoin, vCoins, true, NULL, false, STAKABLE_COINS, false);
+            int cannotSpend = 0;
+            AvailableCoins(wtxid, pcoin, vCoins, cannotSpend, true, NULL, false, STAKABLE_COINS, false);
+            if (vCoins.empty() && cannotSpend == pcoin->vout.size()) {
+                //tobeRemoveds.push_back(it);
+                notAbleToSpend.push_back(it);
+                continue;
+            }
             CAmount nAmountSelected = 0;
             for (const COutput& out : vCoins) {
                 //make sure not to outrun target amount
