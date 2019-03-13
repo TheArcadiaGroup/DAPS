@@ -25,7 +25,7 @@ RUN su && cd /DAPS/depends &&  \
         #strip PATH
         PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && \
         #make dependencies
-        make HOST=x86_64-w64-mingw32
+        make HOST=x86_64-w64-mingw32 -j2
         echo -e "Windows x64 Dependencies Build complete."; \
 #
     elif [ "$BUILD_TARGET" = "windowsx86" ]; \
@@ -36,12 +36,12 @@ RUN su && cd /DAPS/depends &&  \
         #strip PATH
         PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && \
         #make dependencies
-        make HOST=i686-w64-mingw32 && cd .. && \
+        make HOST=i686-w64-mingw32 -j2 && \
         echo -e "Windows x86 Dependencies Build complete."; \
 #
     elif [ "$BUILD_TARGET" = "linux" ]; \
       then echo "Building dependencies for linux..." && \
-        make HOST=x86_64-pc-linux-gnu && cd .. && \
+        make HOST=x86_64-pc-linux-gnu -j2 && \
         echo -e "Linux (x86_64-pc-linux-gnu) Dependencies Build complete."; \
 #
     elif [ "$BUILD_TARGET" = "mac" ]; \
@@ -51,7 +51,7 @@ RUN su && cd /DAPS/depends &&  \
         mkdir -p SDKs && \
         curl -LO "https://github.com/phracker/MacOSX-SDKs/releases/download/MacOSX10.11.sdk/MacOSX10.11.sdk.tar.xz" && \
         tar xvf MacOSX10.11.sdk.tar.xz -C ./SDKs/ && \
-        make HOST="x86_64-apple-darwin11" DARWIN_SDK_PATH=$PWD/SDKs/MacOSX10.11.sdk/ || true && \
+        make HOST="x86_64-apple-darwin11" DARWIN_SDK_PATH=$PWD/SDKs/MacOSX10.11.sdk/ -j2 || true && \
         echo "Mac Dependencies Build complete."; \
 #
     else echo "Build target not recognized."; \
