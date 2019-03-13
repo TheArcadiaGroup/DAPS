@@ -25,7 +25,7 @@ RUN su && cd /DAPS/depends &&  \
         #strip PATH
         PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && \
         #make dependencies
-        make HOST=x86_64-w64-mingw32 -j2
+        make HOST=x86_64-w64-mingw32 -j2 && \
         echo -e "Windows x64 Dependencies Build complete."; \
 #
     elif [ "$BUILD_TARGET" = "windowsx86" ]; \
