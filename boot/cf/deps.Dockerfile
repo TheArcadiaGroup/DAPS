@@ -42,10 +42,6 @@ RUN su && cd /DAPS/depends &&  \
     elif [ "$BUILD_TARGET" = "linux" ]; \
       then echo "Building dependencies for linux..." && \
         make HOST=x86_64-pc-linux-gnu && cd .. && \
-        #
-        ./autogen.sh && \
-        CONFIG_SITE=$PWD/depends/x86_64-pc-linux-gnu/share/config.site ./configure --prefix=/ && \
-        make && \
         echo -e "Linux (x86_64-pc-linux-gnu) Dependencies Build complete."; \
 #
     elif [ "$BUILD_TARGET" = "mac" ]; \
