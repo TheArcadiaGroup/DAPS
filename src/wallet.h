@@ -550,6 +550,8 @@ public:
     typedef std::pair<CWalletTx*, CAccountingEntry*> TxPair;
     typedef std::multimap<int64_t, TxPair> TxItems;
 
+    std::vector<map<uint256, CWalletTx>::const_iterator> notAbleToSpend;
+
     /**
      * Get the wallet's activity log
      * @return multimap of ordered transactions and accounting entries
@@ -801,7 +803,7 @@ public:
     CAmount getCOutPutValue(const COutput& output) const;
     CAmount getCTxOutValue(const CTransaction &tx, const CTxOut &out) const;
     bool findCorrespondingPrivateKey(const CTxOut &txout, CKey &key) const;
-    bool AvailableCoins(const uint256 wtxid, const CWalletTx* pcoin, vector<COutput>& vCoins, bool fOnlyConfirmed = true, const CCoinControl* coinControl = NULL, bool fIncludeZeroValue = false, AvailableCoinsType nCoinType = ALL_COINS, bool fUseIX = false);
+    bool AvailableCoins(const uint256 wtxid, const CWalletTx* pcoin, vector<COutput>& vCoins, int cannotSpend, bool fOnlyConfirmed = true, const CCoinControl* coinControl = NULL, bool fIncludeZeroValue = false, AvailableCoinsType nCoinType = ALL_COINS, bool fUseIX = false);
 private:
     bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth);
     bool mySpendPrivateKey(CKey& spend) const;
@@ -821,6 +823,7 @@ private:
     bool generateRingSignature(CTransaction& tx);
     bool verifyRingSignature(const CTransaction& tx);
     bool computeSharedSec(const CTransaction& tx, CPubKey& sharedSec) const;
+    int walletIdxCache = 0;
 };
 
 
