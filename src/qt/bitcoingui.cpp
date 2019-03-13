@@ -53,6 +53,7 @@
 #include <QTimer>
 #include <QToolBar>
 #include <QVBoxLayout>
+#include <QPushButton>
 
 #if QT_VERSION < 0x050000
 #include <QTextDocument>
@@ -106,13 +107,13 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
                                                                             prevBlocks(0),
                                                                             spinnerFrame(0)
 {
-    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    // this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     /* Open CSS when configured */
     this->setStyleSheet(GUIUtil::loadStyleSheet());
 
     GUIUtil::restoreWindowGeometry("nWindow", QSize(850, 550), this);
 
-    QString windowTitle = tr("DAPScoin Core") + " - ";
+    QString windowTitle = tr("DAPScoin") + " - ";
 #ifdef ENABLE_WALLET
     /* if compiled with wallet support, -disablewallet can still disable the wallet */
     enableWallet = !GetBoolArg("-disablewallet", false);
@@ -207,7 +208,6 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
     frameBlocksLayout->addStretch();
     frameBlocksLayout->addWidget(labelBlocksIcon);
     frameBlocksLayout->addStretch();
-
 
     // Jump directly to tabs in RPC-console
     connect(openInfoAction, SIGNAL(triggered()), rpcConsole, SLOT(showInfo()));
@@ -407,6 +407,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     openInfoAction->setStatusTip(tr("Show diagnostic information"));
     openRPCConsoleAction = new QAction(QIcon(":/icons/debugwindow"), tr("&Debug console"), this);
     openRPCConsoleAction->setStatusTip(tr("Open debugging console"));
+    openRPCConsoleAction->setShortcut(Qt::Key_F1);
     openNetworkAction = new QAction(QIcon(":/icons/connect_4"), tr("&Network Monitor"), this);
     openNetworkAction->setStatusTip(tr("Show network monitor"));
     openPeersAction = new QAction(QIcon(":/icons/connect_4"), tr("&Peers list"), this);
@@ -509,6 +510,7 @@ void BitcoinGUI::createMenuBar()
     //settings->addAction(optionsAction);
 
     if (walletFrame) {
+        walletFrame->addAction(openRPCConsoleAction);
         QMenu* tools = appMenuBar->addMenu(tr("&Tools"));
         tools->addAction(openInfoAction);
         tools->addAction(openRPCConsoleAction);
@@ -571,6 +573,12 @@ void BitcoinGUI::createToolBars()
         dapsico->setPixmap(QIcon(":icons/bitcoin").pixmap(130, 107));
         dapsico->setObjectName("dapsico");
 
+        // QPushButton* exitButton = new QPushButton;
+        // exitButton->setIcon(QIcon(":icons/quit").pixmap(40,40));
+        // exitButton->setStyleSheet("width: 10px; height: 10px; background:transparent;");
+        // connect(exitButton, SIGNAL(clicked()), this, SLOT(exitApp()));
+
+        // navLayout->addWidget(exitButton);
         navLayout->addWidget(dapsico);
         navLayout->addWidget(toolbar);
         navLayout->addWidget(bottomToolbar);
@@ -1278,6 +1286,10 @@ static bool ThreadSafeMessageBox(BitcoinGUI* gui, const std::string& message, co
     return ret;
 }
 
+void BitcoinGUI::exitApp(){
+    QApplication::quit();
+}
+
 void BitcoinGUI::subscribeToCoreSignals()
 {
     // Connect signals to client
@@ -1364,4 +1376,3 @@ void UnitDisplayStatusBarControl::onMenuSelection(QAction* action)
         optionsModel->setDisplayUnit(action->data());
     }
 }
-

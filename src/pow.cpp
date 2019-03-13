@@ -15,7 +15,7 @@
 
 #include <math.h>
 
-unsigned int N_BITS = 0x1e1fffff;
+unsigned int N_BITS = 0x1e1ffff0;
 bool CheckPoAMiningBlockHeight(const CBlockHeader* pblock) {
     //CBlockIndex *pindex = mapBlockIndex[pblock->hashPrevBlock];
     //if (pindex->nHeight < 10800) {

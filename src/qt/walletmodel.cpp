@@ -34,8 +34,7 @@
 #include <QtCore>
 #include <QtMath>
 #include <stdint.h>
-
-
+#include <QTextStream>
 
 using namespace std;
 
@@ -760,6 +759,15 @@ vector<std::map<QString, QString> > getTXs(CWallet* wallet)
 
 std::map<QString, QString> getTx(CWallet* wallet, CWalletTx tx)
 {
+
+    // get stx amount
+    CAmount totalamount = CAmount(0);
+    for (CTxOut out: tx.vout){
+        CAmount vamount;
+        if (wallet->RevealTxOutAmount(tx,out,vamount))
+            totalamount+=vamount;
+    }
+
     QList<TransactionRecord> decomposedTx = TransactionRecord::decomposeTransaction(wallet, tx);
     QList<QString> addressBook = getAddressBookData(wallet);
     std::map<QString, QString> txData;
@@ -773,22 +781,27 @@ std::map<QString, QString> getTx(CWallet* wallet, CWalletTx tx)
         if (!txData["address"].length())
             txData["address"] = QString(TxRecord.address.c_str());
         //
-        CAmount amount = TxRecord.credit + TxRecord.debit;
-        txData["amount"] = BitcoinUnits::format(0, (amount > 0 ? amount : -amount)); //absolute value of total amount
+        // CAmount amount = TxRecord.credit + TxRecord.debit;
+        txData["amount"] = BitcoinUnits::format(0, totalamount); //absolute value of total amount
         //
         txData["id"] = QString(TxRecord.idx);
         // parse transaction type
         switch (TxRecord.type) {
+        case 1:
         case TransactionRecord::SendToSelf:
         case TransactionRecord::SendToAddress:
         case TransactionRecord::SendToOther:
             txData["type"] = QString("Sent");
             break;
+        case 0:
         case TransactionRecord::RecvWithAddress:
         case TransactionRecord::RecvFromOther:
         case TransactionRecord::RecvFromZerocoinSpend:
         case TransactionRecord::RecvWithObfuscation:
             txData["type"] = QString("Received");
+            break;
+        case 2:
+            txData["type"] = QString("Minted");
             break;
         default:
             txData["type"] = QString("Unknown");

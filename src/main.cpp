@@ -4534,6 +4534,10 @@ bool CheckBlock(const CBlock &block, CValidationState &state, bool fCheckPOW, bo
         if (!CheckPoABlockNotContainingPoABlockInfo(block)) {
         	return state.DoS(100, error("CheckBlock() : A PoA block should not audit any existing PoA blocks"));
         }
+
+        if (chainActive.Tip()->nHeight < Params().START_POA_BLOCK()) {
+            return state.DoS(100, error("CheckBlock() : PoA block should only start at block height=%d", Params().START_POA_BLOCK()));
+        }
     }
 
     // ----------- swiftTX transaction scanning -----------

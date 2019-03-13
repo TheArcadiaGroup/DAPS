@@ -241,7 +241,7 @@ void SendCoinsDialog::on_sendButton_clicked()
     QStringList formatted;
     formatted.append("<div style='text-align:center'");
     foreach (const SendCoinsRecipient& rcp, recipients) {
-        QString amount = "<b>" + BitcoinUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), rcp.amount) + "</b>";
+        QString amount = "<b>" + BitcoinUnits::formatHtmlWithUnit(0, rcp.amount) + "</b>";
 
         QString recipientElement;
         recipientElement.append("<br/><span class='h1 b'>" + amount + "</span><br/>");
@@ -287,7 +287,7 @@ void SendCoinsDialog::send(QList<SendCoinsRecipient> recipients, QString strFee,
 
     // process prepareStatus and on error generate message shown to user
     processSendCoinsReturn(prepareStatus,
-        BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), currentTransaction.getTransactionFee()), true);
+        BitcoinUnits::formatWithUnit(0, currentTransaction.getTransactionFee()), true);
 
     if (prepareStatus.status != WalletModel::OK) {
         fNewRecipientAllowed = true;
@@ -299,7 +299,7 @@ void SendCoinsDialog::send(QList<SendCoinsRecipient> recipients, QString strFee,
     questionString.append("<br /><br />%1");
 
     questionString.append("<br /><span class='h3'>" + tr("Transaction fee") + ": <br/><b>");
-    questionString.append(BitcoinUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), txFee));
+    questionString.append(BitcoinUnits::formatHtmlWithUnit(0, txFee));
     questionString.append(strFee + "</b></span>");
 
     questionString.append("<br/><br/>");
