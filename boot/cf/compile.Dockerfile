@@ -33,8 +33,8 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
     elif [ "$BUILD_TARGET" = "linux" ]; \
        then echo "Compiling for linux" && \
          ./autogen.sh && \
-		 ./configure && \
-         make -j2 && \
+		 CONFIG_SITE=$PWD/depends/x86_64-pc-linux-gnu/share/config.site ./configure --prefix=/ && \
+         make HOST=x86_64-pc-linux-gnu -j2 && \
          make install DESTDIR=/BUILD/; \
 #
     elif [ "$BUILD_TARGET" = "mac" ]; \
