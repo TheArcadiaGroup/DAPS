@@ -42,7 +42,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
          ./autogen.sh --with-gui=yes && \
 		 CONFIG_SITE=$PWD/depends/x86_64-apple-darwin11/share/config.site ./configure --prefix=/ && \
          make HOST="x86_64-apple-darwin11" -j2 && \
-		 make deploy && \
+		 make deploy DESTDIR=/BUILD/ && \
          make install HOST="x86_64-apple-darwin11" DESTDIR=/BUILD/; \
 #
     else echo "Build target not recognized."; \
