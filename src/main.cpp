@@ -3330,9 +3330,9 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
                     return error("%s : failed to record coin serial to database");
             }
         } else if (!block.IsPoABlockByVersion() && !tx.IsCoinBase()) {
-            if (!view.HaveInputs(tx))
+            /*if (!view.HaveInputs(tx))
                 return state.DoS(100, error("ConnectBlock() : inputs missing/spent"),
-                                 REJECT_INVALID, "bad-txns-inputs-missingorspent");
+                                 REJECT_INVALID, "bad-txns-inputs-missingorspent");*/
 
             // Check that the inputs are not marked as invalid/fraudulent
             for (CTxIn in : tx.vin) {

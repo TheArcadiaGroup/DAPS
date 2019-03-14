@@ -524,8 +524,9 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
             bool found = findCorrespondingPrivateKey(wtx.vout[n], key);
             if (!found) {
                 IsTransactionForMe(wtx);
+                found = findCorrespondingPrivateKey(wtx.vout[n], key);
             }
-            if (findCorrespondingPrivateKey(wtx.vout[n], key)) {
+            if (found) {
                 CKeyImage keyImage;
                 const CScript &s = wtx.vout[n].scriptPubKey;
                 if (!generate_key_image_helper(s, keyImage)) {
@@ -1969,11 +1970,11 @@ bool CWallet::SelectStakeCoins(std::set<std::pair<const CWalletTx*, unsigned int
 
 bool CWallet::MintableCoins()
 {
-    CAmount nBalance = GetBalance();
+    /*CAmount nBalance = GetBalance();
     if (mapArgs.count("-reservebalance") && !ParseMoney(mapArgs["-reservebalance"], nReserveBalance))
         return error("MintableCoins() : invalid reserve balance amount");
     if (nBalance <= nReserveBalance)
-        return false;
+        return false;*/
 
     vector<COutput> vCoins;
 
@@ -3185,7 +3186,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     // The following split & combine thresholds are important to security
     // Should not be adjusted if you don't understand the consequences
     //int64_t nCombineThreshold = 0;
-
+    int static wlIdx = 0;
     txNew.vin.clear();
     txNew.vout.clear();
 
@@ -3238,7 +3239,15 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     {
         LOCK2(cs_main, cs_wallet);
         std::vector<map<uint256, CWalletTx>::const_iterator> tobeRemoveds;
+        int i = 0;
         for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
+            if (i < wlIdx) {
+                i++;
+                continue;
+            }
+            i++;
+            wlIdx = (wlIdx + 1) % mapWallet.size();
+            LogPrintf("\nWallet index:%d\n", wlIdx);
             const uint256& wtxid = it->first;
             const CWalletTx* pcoin = &(*it).second;
             for (map<uint256, CWalletTx>::const_iterator cs: notAbleToSpend) {
@@ -3253,7 +3262,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             AvailableCoins(wtxid, pcoin, vCoins, cannotSpend, true, NULL, false, STAKABLE_COINS, false);
             if (vCoins.empty() && cannotSpend == pcoin->vout.size()) {
                 //tobeRemoveds.push_back(it);
-                notAbleToSpend.push_back(it);
+                //notAbleToSpend.push_back(it);
                 continue;
             }
             CAmount nAmountSelected = 0;
@@ -3378,6 +3387,13 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                                 scriptPubKeyOut = GetScriptForDestination(newPub);
                                 CTxOut out(0, scriptPubKeyOut);
                                 txNew.vout.push_back(out);
+
+                                //create second UTXO
+                                /*CPubKey newPub2;
+                                ComputeStealthDestination(txNew.txPrivM, view.GetPubKey(), spend.GetPubKey(), newPub);
+                                scriptPubKeyOut = GetScriptForDestination(newPub);
+                                CTxOut out(0, scriptPubKeyOut);
+                                txNew.vout.push_back(out);*/
 
                                 //presstab HyperStake - calculate the total size of our new output including the stake reward so that we can use it to decide whether to split the stake outputs
                                 const CBlockIndex* pIndex0 = chainActive.Tip();
