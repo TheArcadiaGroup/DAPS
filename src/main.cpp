@@ -2264,17 +2264,10 @@ double ConvertBitsToDouble(unsigned int nBits) {
 int64_t GetBlockValue(int nHeight) {
     int64_t nSubsidy = 0;
 
-<<<<<<< HEAD
-    if (nHeight == 0) {
-        nSubsidy = 20000000 * COIN; //6M for the first block
-    } else {
-        if (Params().NetworkID() == CBaseChainParams::MAIN) {
-=======
     /*if (nHeight == 0) {
         nSubsidy = 200000000 * COIN; //6M for the first block
     } else {*/
         //if (Params().NetworkID() == CBaseChainParams::MAIN) {
->>>>>>> origin/develop
         	if (nHeight <= Params().nLastPOWBlock) {
         		nSubsidy = 200000000 * COIN;
         	} else {
