@@ -32,18 +32,18 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #
     elif [ "$BUILD_TARGET" = "linux" ]; \
        then echo "Compiling for linux" && \
-         ./autogen.sh && \
-		 CONFIG_SITE=$PWD/depends/x86_64-pc-linux-gnu/share/config.site ./configure --prefix=/ && \
-         make HOST=x86_64-pc-linux-gnu -j2 && \
-         make install DESTDIR=/BUILD/; \
+        ./autogen.sh && \
+        CONFIG_SITE=$PWD/depends/x86_64-pc-linux-gnu/share/config.site ./configure --prefix=/ && \
+        make HOST=x86_64-pc-linux-gnu -j2 && \
+        make install DESTDIR=/BUILD/; \
 #
     elif [ "$BUILD_TARGET" = "mac" ]; \
        then echo "Compiling for mac" && \
-         ./autogen.sh --with-gui=yes && \
-		 CONFIG_SITE=$PWD/depends/x86_64-apple-darwin11/share/config.site ./configure --prefix=/ && \
-         make HOST="x86_64-apple-darwin11" -j2 && \
-		 make deploy DESTDIR=/BUILD/ && \
-         make install HOST="x86_64-apple-darwin11" DESTDIR=/BUILD/; \
+        ./autogen.sh --with-gui=yes && \
+        CONFIG_SITE=$PWD/depends/x86_64-apple-darwin11/share/config.site ./configure --prefix=/ && \
+        make HOST="x86_64-apple-darwin11" -j2 && \
+        make deploy DESTDIR=/BUILD/ && \
+        make install HOST="x86_64-apple-darwin11" DESTDIR=/BUILD/; \
 #
     else echo "Build target not recognized."; \
       exit 127; \

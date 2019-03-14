@@ -45,7 +45,7 @@ steps:
       - gcloud auth activate-service-account --key-file auth.json
       - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
       - rm -r /codefresh/volume/out/*
-   BuildingDAPSWinx86:
+  BuildingDAPSWinx86:
     title: Building DAPS for Windows x86
     type: build
     image_name: build_src_winx86
