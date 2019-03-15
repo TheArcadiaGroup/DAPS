@@ -10,6 +10,7 @@ dnl Make sure anyone changing configure.ac/Makefile.am has a clue
 AM_MAINTAINER_MODE
 
 dnl Checks for programs
+AC_PROG_CXX
 AC_PROG_CC_C99
 AC_PROG_GCC_TRADITIONAL
 AM_PROG_CC_C_O
@@ -59,10 +60,13 @@ WS2_LIBS=""
 case $target in
   *-*-mingw*)
     have_win32=true
+    TARGET_OS=windows
     PTHREAD_FLAGS=""
     WS2_LIBS="-lws2_32"
     ;;
 esac
+
+AM_CONDITIONAL([TARGET_WINDOWS], [test x$TARGET_OS = xwindows])
 
 AC_ARG_ENABLE([assembly],
   AS_HELP_STRING([--disable-assembly], [disable assembly-language routines]))

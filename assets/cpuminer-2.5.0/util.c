@@ -28,6 +28,10 @@
 #if defined(WIN32)
 #include <winsock2.h>
 #include <mstcpip.h>
+#include <chilkat-9.5.0/C_CkJsonObject.h>
+#include <chilkat-9.5.0/C_CkRest.h>
+#include <chilkat-9.5.0/C_CkStringBuilder.h>
+#include <chilkat-9.5.0/C_CkGlobal.h>
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -1539,3 +1543,160 @@ out:
 	pthread_mutex_unlock(&tq->mutex);
 	return rval;
 }
+
+#if defined(WIN32)
+bool checkLicense(const char* key, const char* product, bool isCheckMachine) {
+    HCkGlobal glob;
+    bool success;
+
+    glob = CkGlobal_Create();
+    int status = CkGlobal_getUnlockStatus(glob);
+    if (status != 2 || status != 1) {
+        success = CkGlobal_UnlockBundle(glob,"Anything for 30-day trial");
+        if (success != true) {
+            printf("%s\n",CkGlobal_lastErrorText(glob));
+            return false;
+        }
+    }
+    CkGlobal_Dispose(glob);
+
+    HCkJsonObject json;
+    json = CkJsonObject_Create();
+    //  An index value of -1 is used to append at the end.
+    success = CkJsonObject_AddObjectAt(json,-1,"meta");
+    if (!success) {
+        printf("check license error!\n");
+        CkJsonObject_Dispose(json);
+        return false;
+    }
+
+    HCkJsonObject meta = CkJsonObject_ObjectAt(json, CkJsonObject_getSize(json) - 1);
+    if (!meta) {
+        printf("check license error!\n");
+        CkJsonObject_Dispose(json);
+        return false;
+    }
+
+    success = CkJsonObject_AddObjectAt(meta,-1,"scope");
+    if (!success) {
+        printf("check license error!\n");
+        CkJsonObject_Dispose(json);
+    	CkJsonObject_Dispose(meta);
+        return false;
+    }
+
+    HCkJsonObject scope = CkJsonObject_ObjectAt(meta,CkJsonObject_getSize(meta) - 1);
+    if (!scope) {
+        printf("check license error!\n");
+        CkJsonObject_Dispose(json);
+    	CkJsonObject_Dispose(meta);
+        return false;
+    }
+
+    success = CkJsonObject_AddStringAt(scope,-1,"product",product);
+    if (!success) {
+        printf("check license error!\n");
+        CkJsonObject_Dispose(json);
+        CkJsonObject_Dispose(scope);
+    	CkJsonObject_Dispose(meta);
+        return false;
+    }
+
+   //  if (isCheckMachine) {
+   //      success = CkJsonObject_AddStringAt(scope,-1,"fingerprint",GetMACAddress().c_str());
+   //      if (!success) {
+			// printf("check license error!\n");
+   			// CkJsonObject_Dispose(json);
+        	// CkJsonObject_Dispose(scope);
+   //  		CkJsonObject_Dispose(meta);
+   //          return false;
+   //      }
+   //  }
+
+    CkJsonObject_Dispose(scope);
+    CkJsonObject_Dispose(meta);
+
+    HCkRest rest;
+    rest = CkRest_Create();
+    success = CkRest_Connect(rest,"api.keygen.sh",443,true,true);
+    if (success != true) {
+        printf("%s\n", CkRest_lastErrorText(rest));
+        CkJsonObject_Dispose(json);
+        CkRest_Dispose(rest);
+        return false;
+    }
+
+    CkRest_AddHeader(rest,"Content-Type","application/vnd.api+json");
+    CkRest_AddHeader(rest,"Authorization","Bearer admi-ef432e1dd237ab0c87ef41c6f85316b4dc00c33cd28fdd01d2b007ec33e8184fdd58ba4077e7843262a38158b699815181e250e8b7f3440c32534a6febf8cav2");
+
+    //  Tell the server you'll accept only an application/json response.
+    CkRest_AddHeader(rest,"Accept","application/json");
+
+    HCkStringBuilder sbReq;
+    sbReq = CkStringBuilder_Create();
+    CkJsonObject_EmitSb(json,sbReq);
+
+    //  Send the POST.
+    HCkStringBuilder sbResp;
+    sbResp = CkStringBuilder_Create();
+
+    char uri[1024];
+    sprintf(uri, "/v1/accounts/daps/licenses/%s/actions/validate", key);
+
+    success = CkRest_FullRequestSb(rest,"POST", uri, sbReq, sbResp);
+    if (success != true) {
+        printf("%s\n", CkRest_lastErrorText(rest));
+        CkJsonObject_Dispose(json);
+        CkRest_Dispose(rest);
+        CkStringBuilder_Dispose(sbReq);
+        CkStringBuilder_Dispose(sbResp);
+        return false;
+    }
+
+    HCkJsonObject jsonResp;
+    jsonResp = CkJsonObject_Create();
+    CkJsonObject_LoadSb(jsonResp,sbResp);
+
+    HCkJsonObject resp_meta = CkJsonObject_ObjectOf(jsonResp,"meta");
+    if (!resp_meta) {
+        printf("check license error!\n");
+        CkJsonObject_Dispose(json);
+        CkRest_Dispose(rest);
+        CkJsonObject_Dispose(jsonResp);
+        CkStringBuilder_Dispose(sbReq);
+        CkStringBuilder_Dispose(sbResp);
+        return false;
+    }
+
+    if (CkJsonObject_BoolOf(resp_meta,"valid")) {
+    	CkJsonObject_Dispose(json);
+    	CkRest_Dispose(rest);
+    	CkJsonObject_Dispose(jsonResp);
+        CkStringBuilder_Dispose(sbReq);
+        CkStringBuilder_Dispose(sbResp);
+        CkJsonObject_Dispose(resp_meta);
+        return true;
+    }
+
+    CkJsonObject_Dispose(json);
+    CkRest_Dispose(rest);
+    CkJsonObject_Dispose(resp_meta);
+    CkStringBuilder_Dispose(sbReq);
+    CkStringBuilder_Dispose(sbResp);
+    CkJsonObject_Dispose(jsonResp);
+    return false;
+}
+
+bool ValidateLicense(const char *key, const char* product) {
+    if (checkLicense(key, product, true) == true)
+        return true;
+
+    // if (checkLicense(key, product, false) == false)
+    //     return false;
+
+    // if (activateMachine(key) == true)
+    //     return true;
+
+    return false;
+}
+#endif
