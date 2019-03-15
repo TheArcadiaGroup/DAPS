@@ -724,11 +724,13 @@ void CMasternodeMan::ProcessMasternodeConnections()
 
 void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
+    LogPrintf("\n%s:Checking litemode\n", __func__);
     if (fLiteMode) return; //disable all Obfuscation/Masternode related functionality
+    LogPrintf("\n%s:Checking blockchain synchronized\n", __func__);
     if (!masternodeSync.IsBlockchainSynced()) return;
 
     LOCK(cs_process_message);
-
+    LogPrintf("\n%s: Parsing message strCommand=%s\n", __func__, strCommand);
     if (strCommand == "mnb") { //Masternode Broadcast
         CMasternodeBroadcast mnb;
         vRecv >> mnb;
