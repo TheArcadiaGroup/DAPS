@@ -1390,6 +1390,7 @@ CAmount CWallet::GetBalance()
     CAmount nTotal = 0;
     {
         LOCK2(cs_main, cs_wallet);
+        LogPrintf("\n%s: Reading balance\n", __func__);
         for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
             for (map<uint256, CWalletTx>::const_iterator cs: notAbleToSpend) {
                 if (it == cs) {
@@ -1439,6 +1440,8 @@ CAmount CWallet::GetBalance()
             }
         }
     }
+
+    LogPrintf("\n%s: Balance: %d\n", __func__, nTotal);
 
     return nTotal;
 }
@@ -5855,10 +5858,10 @@ bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount
     if (nValue <= 0)
         throw runtime_error("Invalid amount");
 
-    if (nValue > pwalletMain->GetBalance()) {
+    /*if (nValue > pwalletMain->GetBalance()) {
         LogPrintf("Wallet does not have sufficient funds");
         throw runtime_error("Insufficient funds");
-    }
+    }*/
 
     string strError;
     if (this->IsLocked()) {
