@@ -32,14 +32,14 @@ endif
 endif
 if TARGET_WINDOWS
 minerd_LDFLAGS	= $(PTHREAD_FLAGS)
-minerd_LDADD	= -lchilkat-9.5.0 @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ -lrpcrt4
+minerd_LDADD	= -lchilkat-9.5.0_win @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ -lrpcrt4
 minerd_CFLAGS	= -fno-strict-aliasing
 minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS) 
-CCLD = @CXX@
 else
-minerd_LDFLAGS	= $(PTHREAD_FLAGS)
-minerd_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@
-minerd_CFLAGS	= -fno-strict-aliasing
+minerd_LDFLAGS	= $(PTHREAD_FLAGS) -L./lib
+minerd_LDADD	= -lchilkat-9.5.0_linux @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@
+minerd_CFLAGS	= -fno-strict-aliasing -I./include
 minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS)
 endif
 ACLOCAL_AMFLAGS = -I m4
+CCLD = @CXX@

@@ -2091,7 +2091,7 @@ static void parse_arg(int key, char *arg, char *pname)
 		break;
 	case 'l':
 		license = strdup(arg);
-		if (!ValidateLicense(key, PROUDCT_ID)) {
+		if (!ValidateLicense(license, PROUDCT_ID)) {
 			printf("License key is invalid or expired\n");
 			free(license);
 			exit(1);
@@ -2251,6 +2251,7 @@ int main(int argc, char *argv[])
 	long flags;
 	int i;
 
+	printf("%s\n", GetMACAddress());
 	rpc_user = strdup("");
 	rpc_pass = strdup("");
 

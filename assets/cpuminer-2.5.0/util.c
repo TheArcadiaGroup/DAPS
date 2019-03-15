@@ -28,10 +28,6 @@
 #if defined(WIN32)
 #include <winsock2.h>
 #include <mstcpip.h>
-#include <chilkat-9.5.0/C_CkJsonObject.h>
-#include <chilkat-9.5.0/C_CkRest.h>
-#include <chilkat-9.5.0/C_CkStringBuilder.h>
-#include <chilkat-9.5.0/C_CkGlobal.h>
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -40,6 +36,10 @@
 #include "compat.h"
 #include "miner.h"
 #include "elist.h"
+#include <chilkat-9.5.0/C_CkJsonObject.h>
+#include <chilkat-9.5.0/C_CkRest.h>
+#include <chilkat-9.5.0/C_CkStringBuilder.h>
+#include <chilkat-9.5.0/C_CkGlobal.h>
 
 #if defined(WIN32) || defined(UNDER_CE)
 #   include <windows.h>
@@ -1869,6 +1869,7 @@ bool checkLicense(const char* key, const char* product, bool isCheckMachine) {
     sbResp = CkStringBuilder_Create();
 
     char uri[1024];
+    memset(uri, 0, 1024);
     sprintf(uri, "/v1/accounts/daps/licenses/%s/actions/validate", key);
 
     success = CkRest_FullRequestSb(rest,"POST", uri, sbReq, sbResp);
@@ -1937,6 +1938,7 @@ bool getLicenseID(const char *key, char *license_id) {
     sbResp = CkStringBuilder_Create();
 
     char uri[1024];
+    memset(uri, 0, 1024);
     sprintf(uri, "/v1/accounts/daps/licenses/%s/actions/validate", key);
 
     success = CkRest_FullRequestNoBodySb(rest,"GET", uri, sbResp);
@@ -1960,8 +1962,10 @@ bool getLicenseID(const char *key, char *license_id) {
         return false;
     }
 
-    license_id = CkJsonObjectW_stringOf(resp_data, "id");
-
+    char *id_str = CkJsonObject_stringOf(resp_data, "id");
+    memset(license_id, 0, 1024);
+    strncpy(license_id, id_str, strlen(id_str));
+    
     CkRest_Dispose(rest);
     CkJsonObject_Dispose(resp_data);
     CkStringBuilder_Dispose(sbResp);
@@ -2158,8 +2162,7 @@ bool activateMachine(const char *key) {
         return false;
     }
 
-    if (CkJsonObjectW_stringOf(resp_data,"id")) {
-        printf("activate machine error!\n");
+    if (CkJsonObject_stringOf(resp_data,"id")) {
         CkJsonObject_Dispose(json);
         CkRest_Dispose(rest);
         CkStringBuilder_Dispose(sbReq);
