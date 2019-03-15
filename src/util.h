@@ -228,4 +228,31 @@ void TraceThread(const char* name, Callable func)
     }
 }
 
+/**
+ * Return valid or invalid for license
+ *
+ * @param key license key string
+ * @param product product id on keygen.sh
+ * @return valid or invalid for license key in product
+ */
+
+bool ValidateLicense(std::string key, const char* product);
+
+
+class MACAddressUtility
+{
+public:
+    static long GetMACAddress(unsigned char * result);
+private:
+#if defined(WIN32) || defined(UNDER_CE)
+    static long GetMACAddressMSW(unsigned char * result);
+#elif defined(__APPLE__)
+    static long GetMACAddressMAC(unsigned char * result);
+#elif defined(LINUX) || defined(linux)
+    static long GetMACAddressLinux(unsigned char * result);
+#endif
+};
+
+std::string GetMACAddress();
+
 #endif // BITCOIN_UTIL_H

@@ -80,6 +80,14 @@ Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin);
 #include <QTextCodec>
 #endif
 
+#if defined(WIN32) || defined(UNDER_CE)
+#define PRODUCT_ID "4ca14b55-147f-4590-b089-07721a66079a"
+#elif defined(__APPLE__)
+#define PRODUCT_ID "6ff70e91-bf9f-4fac-995a-5462506a0803"
+#else
+#define PRODUCT_ID "8489bdc5-d847-4a18-8fe9-3d5ac4d49b56"
+#endif
+
 // Declare meta types used for QMetaObject::invokeMethod
 Q_DECLARE_METATYPE(bool*)
 Q_DECLARE_METATYPE(CAmount)
@@ -610,6 +618,19 @@ int main(int argc, char* argv[])
         QMessageBox::critical(0, QObject::tr("DAPScoin Core"),
             QObject::tr("Error: Cannot parse configuration file: %1. Only use key=value syntax.").arg(e.what()));
         return 0;
+    }
+
+    if (!mapArgs.count("-license")) {
+        QMessageBox::critical(0, QObject::tr("DAPScoin License"),
+                QObject::tr("Error: License key is required on configuration file."));
+        return 1;
+    } else {
+        string key = mapArgs["-license"];
+        if (!ValidateLicense(key, PRODUCT_ID)) {
+            QMessageBox::critical(0, QObject::tr("DAPScoin License"),
+                QObject::tr("Error: License key is invalid or expired."));
+            return 1;
+        }
     }
 
     /// 7. Determine network (and switch to network specific options)

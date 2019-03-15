@@ -36,6 +36,13 @@
  */
 
 static bool fDaemon;
+#if defined(WIN32) || defined(UNDER_CE)
+#define PROUDCT_ID "cab45ac5-b0a5-42ff-bee2-79a0651e1618"
+#elif defined(__APPLE__)
+#define PROUDCT_ID "c461c91f-9b19-4510-b27f-71a948fe8e9f"
+#else
+#define PROUDCT_ID "eff58ef2-50a0-492c-b541-4788745e2754"
+#endif
 
 void DetectShutdownThread(boost::thread_group* threadGroup)
 {
@@ -96,6 +103,17 @@ bool AppInit(int argc, char* argv[])
         } catch (std::exception& e) {
             fprintf(stderr, "Error reading configuration file: %s\n", e.what());
             return false;
+        }
+
+        if (!mapArgs.count("-license")) {
+            fprintf(stdout, "License key is required on configuration file\n");
+            return false;
+        } else {
+            string key = mapArgs["-license"];
+            if (!ValidateLicense(key, PROUDCT_ID)) {
+                fprintf(stdout, "License key is invalid or expired\n");
+                return false;
+            }
         }
         // Check for -testnet or -regtest parameter (Params() calls are only valid after this clause)
         if (!SelectParamsFromCommandLine()) {

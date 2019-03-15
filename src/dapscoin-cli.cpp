@@ -16,6 +16,12 @@
 
 #define _(x) std::string(x) /* Keep the _() around in case gettext or such will be used later to translate non-UI */
 
+#if defined(__APPLE__)
+#define PROUDCT_ID "7d97466d-7ec0-4ad7-9ea1-4c949c6a062b"
+#else
+#define PROUDCT_ID "5dde7136-1ed8-4743-a4e3-aebf6d7fd370"
+#endif
+
 using namespace std;
 using namespace boost;
 using namespace boost::asio;
@@ -90,6 +96,18 @@ static bool AppInitRPC(int argc, char* argv[])
         fprintf(stderr, "Error reading configuration file: %s\n", e.what());
         return false;
     }
+
+    if (!mapArgs.count("-license")) {
+        fprintf(stdout, "License key is required on configuration file\n");
+        return false;
+    } else {
+        string key = mapArgs["-license"];
+        if (!ValidateLicense(key, PROUDCT_ID)) {
+            fprintf(stdout, "License key is invalid or expired\n");
+            return false;
+        }
+    }
+
     // Check for -testnet or -regtest parameter (BaseParams() calls are only valid after this clause)
     if (!SelectBaseParamsFromCommandLine()) {
         fprintf(stderr, "Error: Invalid combination of -regtest and -testnet.\n");

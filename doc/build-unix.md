@@ -33,6 +33,7 @@ These dependencies are required:
  ------------|------------------|----------------------
  libssl      | SSL Support      | Secure communications
  libboost    | Boost            | C++ Library
+ libcpprest  | CPP RestAPI      | C++ Library
 
 Optional dependencies:
 
@@ -75,6 +76,10 @@ For Ubuntu 12.04 and later or Debian 7 and later libboost-all-dev has to be inst
 For other Debian & Ubuntu (with ppa):
 
 	sudo apt-get install libdb4.8-dev libdb4.8++-dev
+
+For libcpprest you need the following:
+    https://github.com/Microsoft/cpprestsdk/wiki/How-to-build-for-Linux
+    (please remove libssl-dev and install libssl1.0-dev)
 
 Optional:
 

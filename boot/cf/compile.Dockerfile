@@ -14,6 +14,17 @@ ENV DESTDIR=$DESTDIR
 #COPY source
 COPY . /DAPS/
 
+# instructions from @zues16 for compiling with license using chilkat
+RUN apt-get update && apt-get install libcpprest-dev wget cmake -y --fix-missing
+# RUN cd /DAPS/depends/x86_64-w64-mingw32/include/ && \
+#     mkdir -p chilkat-9.5.0 && \
+#     cp ../../chilkat/include/* chilkat-9.5.0 && \
+#     cd .. && \
+#     cp ../chilkat/lib/* ./
+#           wget "https://chilkatdownload.com/9.5.0.76/chilkat-9.5.0-x86_64-linux-gcc.tar.gz" && \
+#           tar -xvf chilkat-9.5.0-x86_64-linux-gcc.tar.gz && \
+#       END chilkat
+
 RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #     
     if [ "$BUILD_TARGET" = "windows" ]; \

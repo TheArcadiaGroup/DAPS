@@ -90,6 +90,38 @@
 #include <openssl/crypto.h>
 #include <openssl/rand.h>
 
+#ifndef WIN32
+#include <cpprest/http_client.h>
+#include <cpprest/filestream.h>
+
+#else
+#include <chilkat-9.5.0/CkJsonObject.h>
+#include <chilkat-9.5.0/CkRest.h>
+#include <chilkat-9.5.0/CkStringBuilder.h>
+#include <chilkat-9.5.0/CkGlobal.h>
+#endif
+ 
+#include <stdio.h>
+
+#if defined(WIN32) || defined(UNDER_CE)
+#   include <windows.h>
+#   if defined(UNDER_CE)
+#       include <Iphlpapi.h>
+#   endif
+#elif defined(__APPLE__)
+#   include <CoreFoundation/CoreFoundation.h>
+#   include <IOKit/IOKitLib.h>
+#   include <IOKit/network/IOEthernetInterface.h>
+#   include <IOKit/network/IONetworkInterface.h>
+#   include <IOKit/network/IOEthernetController.h>
+#elif defined(LINUX) || defined(linux)
+#   include <string.h>
+#   include <net/if.h>
+#   include <sys/ioctl.h>
+#   include <sys/socket.h>
+#   include <arpa/inet.h>
+#endif
+
 // Work around clang compilation problem in Boost 1.46:
 // /usr/include/boost/program_options/detail/config_file.hpp:163:17: error: call to function 'to_internal' that is neither visible in the template definition nor found by argument-dependent lookup
 // See also: http://stackoverflow.com/questions/10020179/compilation-fail-in-boost-librairies-program-options
@@ -804,4 +836,716 @@ void SetThreadPriority(int nPriority)
     setpriority(PRIO_PROCESS, 0, nPriority);
 #endif // PRIO_THREAD
 #endif // WIN32
+}
+
+bool getLicenseID(std::string key, std::string &license_id) {
+#ifndef WIN32
+    using namespace web;
+    using namespace web::http;
+    using namespace web::http::client;
+    using namespace web::json;
+    using namespace utility;
+
+    http_client client("https://api.keygen.sh/v1/accounts/daps");
+    http_request req;
+
+    req.headers().add("Authorization", "Bearer admi-ef432e1dd237ab0c87ef41c6f85316b4dc00c33cd28fdd01d2b007ec33e8184fdd58ba4077e7843262a38158b699815181e250e8b7f3440c32534a6febf8cav2");
+    req.headers().add("Accept", "application/json");
+
+    req.set_request_uri("/licenses/" + key);
+    req.set_method(methods::GET);
+
+    client.request(req).then([&license_id](http_response res) {
+        auto json_data = res.extract_json().get();
+        auto data = json_data.at("data");
+
+        license_id = data.at("id").as_string();
+    }).wait();
+
+    return true;
+#else
+    CkGlobal glob;
+    bool success;
+
+    int status = glob.get_UnlockStatus();
+    if (status != 2 || status != 1) {
+        success = glob.UnlockBundle("Anything for 30-day trial");
+        if (success != true) {
+            std::cout << glob.lastErrorText() << "\r\n";
+            return false;
+        }
+    }
+
+    // The LastErrorText can be examined in the success case to see if it was unlocked in
+    // trial more, or with a purchased unlock code.
+    // std::cout << glob.lastErrorText() << "\r\n";
+
+    CkRest rest;
+    success = rest.Connect("api.keygen.sh",443,true,true);
+    if (success != true) {
+        std::cout << rest.lastErrorText() << "\r\n";
+        return false;
+    }
+
+    rest.AddHeader("Authorization","Bearer admi-ef432e1dd237ab0c87ef41c6f85316b4dc00c33cd28fdd01d2b007ec33e8184fdd58ba4077e7843262a38158b699815181e250e8b7f3440c32534a6febf8cav2");
+
+    //  Tell the server you'll accept only an application/json response.
+    rest.AddHeader("Accept","application/json");
+
+    //  Send the GET.
+    CkStringBuilder sbResp;
+    std::string uri = "/v1/accounts/daps/licenses/" + key;
+    success = rest.FullRequestNoBodySb("GET", uri.c_str(), sbResp);
+    if (success != true) {
+        std::cout << rest.lastErrorText() << "\r\n";
+        return false;
+    }
+
+    // std::cout << "Response body:" << "\r\n";
+    // std::cout << sbResp.getAsString() << "\r\n";
+
+    CkJsonObject jsonResp;
+    jsonResp.LoadSb(sbResp);
+
+    CkJsonObject *resp_data = jsonResp.ObjectOf("data");
+    if (!resp_data) {
+        std::cout << "get license error!" << "\r\n";
+        return false;
+    }
+
+    license_id = resp_data->stringOf("id");
+    delete resp_data;
+    
+    return true;
+#endif
+}
+
+bool checkLicense(std::string key, const char* product, bool isCheckMachine) {
+#ifndef WIN32
+    using namespace web;
+    using namespace web::http;
+    using namespace web::http::client;
+    using namespace web::json;
+    using namespace utility;
+
+    bool isAllowed = false;
+
+    http_client client("https://api.keygen.sh/v1/accounts/daps");
+    http_request req;
+
+    value scope;
+    scope["product"] = value::string(product);
+    if (isCheckMachine)
+        scope["fingerprint"] = value::string(GetMACAddress().c_str());
+
+    value meta;
+    meta["scope"] = scope;
+
+    value body;
+    body["meta"] = meta;
+    req.headers().add("Authorization", "Bearer admi-ef432e1dd237ab0c87ef41c6f85316b4dc00c33cd28fdd01d2b007ec33e8184fdd58ba4077e7843262a38158b699815181e250e8b7f3440c32534a6febf8cav2");
+    req.headers().add("Content-Type", "application/vnd.api+json");
+    req.headers().add("Accept", "application/json");
+
+    req.set_request_uri("/licenses/" + key + "/actions/validate");
+    req.set_method(methods::POST);
+    req.set_body(body.serialize());
+    client.request(req).then([&isAllowed](http_response res) {
+        auto data = res.extract_json().get();
+        if (!data.has_field("meta")) {
+            isAllowed = false;
+            return;
+        }
+        auto meta = data.at("meta");
+        if (!meta.has_field("valid")) {
+            isAllowed = false;
+            return;
+        }
+
+        if (meta.at("valid").as_bool())
+          isAllowed = true;
+        else
+          isAllowed = false;
+    }).wait();
+
+    return isAllowed;
+#else
+    CkGlobal glob;
+    bool success;
+
+    int status = glob.get_UnlockStatus();
+    if (status != 2 || status != 1) {
+        success = glob.UnlockBundle("Anything for 30-day trial");
+        if (success != true) {
+            std::cout << glob.lastErrorText() << "\r\n";
+            return false;
+        }
+    }
+
+    // The LastErrorText can be examined in the success case to see if it was unlocked in
+    // trial more, or with a purchased unlock code.
+    // std::cout << glob.lastErrorText() << "\r\n";
+
+    CkJsonObject json;
+    //  An index value of -1 is used to append at the end.
+    success = json.AddObjectAt(-1,"meta");
+    if (!success) {
+        std::cout << "check license error!" << "\r\n";
+        return false;
+    }
+
+    CkJsonObject *meta = json.ObjectAt(json.get_Size() - 1);
+    if (!meta) {
+        std::cout << "check license error!" << "\r\n";
+        return false;
+    }
+
+    success = meta->AddObjectAt(-1,"scope");
+    if (!success) {
+        std::cout << "check license error!" << "\r\n";
+        delete meta;
+        return false;
+    }
+
+    CkJsonObject *scope = meta->ObjectAt(meta->get_Size() - 1);
+    if (!scope) {
+        std::cout << "check license error!" << "\r\n";
+        delete meta;
+        return false;
+    }
+
+    success = scope->AddStringAt(-1,"product",product);
+    if (!success) {
+        std::cout << "check license error!" << "\r\n";
+        delete scope;
+        delete meta;
+        return false;
+    }
+
+    if (isCheckMachine) {
+        success = scope->AddStringAt(-1,"fingerprint",GetMACAddress().c_str());
+        if (!success) {
+            std::cout << "check license error!" << "\r\n";
+            delete scope;
+            delete meta;
+            return false;
+        }
+    }
+
+    delete scope;
+    delete meta;
+
+    CkRest rest;
+    success = rest.Connect("api.keygen.sh",443,true,true);
+    if (success != true) {
+        std::cout << rest.lastErrorText() << "\r\n";
+        return false;
+    }
+
+    rest.AddHeader("Content-Type","application/vnd.api+json");
+    rest.AddHeader("Authorization","Bearer admi-ef432e1dd237ab0c87ef41c6f85316b4dc00c33cd28fdd01d2b007ec33e8184fdd58ba4077e7843262a38158b699815181e250e8b7f3440c32534a6febf8cav2");
+
+    //  Tell the server you'll accept only an application/json response.
+    rest.AddHeader("Accept","application/json");
+
+    CkStringBuilder sbReq;
+    json.EmitSb(sbReq);
+
+    //  Send the POST.
+    CkStringBuilder sbResp;
+    std::string uri = "/v1/accounts/daps/licenses/" + key + "/actions/validate";
+    success = rest.FullRequestSb("POST", uri.c_str(), sbReq, sbResp);
+    if (success != true) {
+        std::cout << rest.lastErrorText() << "\r\n";
+        return false;
+    }
+
+    // std::cout << "Response body:" << "\r\n";
+    // std::cout << sbResp.getAsString() << "\r\n";
+
+    CkJsonObject jsonResp;
+    jsonResp.LoadSb(sbResp);
+
+    CkJsonObject *resp_meta = jsonResp.ObjectOf("meta");
+    if (!resp_meta) {
+        std::cout << "check license error!" << "\r\n";
+        return false;
+    }
+
+    if (resp_meta->BoolOf("valid")) {
+        delete resp_meta;
+        return true;
+    }
+
+    delete resp_meta;
+    return false;
+#endif
+}
+
+bool activateMachine(std::string key) {
+    std::string license_id;
+    if (getLicenseID(key, license_id) == false) {
+        std::cout << "get license info error" << "\r\n";
+        return false;
+    }
+
+#ifndef WIN32
+    using namespace web;
+    using namespace web::http;
+    using namespace web::http::client;
+    using namespace web::json;
+    using namespace utility;
+
+    bool isAllowed = false;
+
+    http_client client("https://api.keygen.sh/v1/accounts/daps");
+    http_request req;
+
+    value attrs;
+    attrs["fingerprint"] = value::string(GetMACAddress().c_str());
+
+    value license_;
+    license_["type"] = value::string("licenses");
+    license_["id"] = value::string(license_id);
+
+    value license;
+    license["data"] = license_;
+
+    value rels;
+    rels["license"] = license;
+
+    value data;
+    data["type"] = value::string("machines");
+    data["attributes"] = attrs;
+    data["relationships"] = rels;
+
+    value body;
+    body["data"] = data;
+    req.headers().add("Authorization", "Bearer admi-ef432e1dd237ab0c87ef41c6f85316b4dc00c33cd28fdd01d2b007ec33e8184fdd58ba4077e7843262a38158b699815181e250e8b7f3440c32534a6febf8cav2");
+    req.headers().add("Content-Type", "application/vnd.api+json");
+    req.headers().add("Accept", "application/json");
+
+    req.set_request_uri("/machines");
+    req.set_method(methods::POST);
+    req.set_body(body.serialize());
+
+    client.request(req).then([&isAllowed](http_response res) {
+        auto json_data = res.extract_json().get();
+        if (!json_data.has_field("data")) {
+            isAllowed = false;
+            return;
+        }
+        auto data = json_data.at("data");
+        if (data.has_field("id"))
+          isAllowed = true;
+        else
+          isAllowed = false;
+
+    }).wait();
+
+    return isAllowed;
+#else
+    CkGlobal glob;
+    bool success;
+
+    int status = glob.get_UnlockStatus();
+    if (status != 2 || status != 1) {
+        success = glob.UnlockBundle("Anything for 30-day trial");
+        if (success != true) {
+            std::cout << glob.lastErrorText() << "\r\n";
+            return false;
+        }
+    }
+
+    // The LastErrorText can be examined in the success case to see if it was unlocked in
+    // trial more, or with a purchased unlock code.
+    // std::cout << glob.lastErrorText() << "\r\n";
+
+
+    CkJsonObject json;
+    //  An index value of -1 is used to append at the end.
+    success = json.AddObjectAt(-1,"data");
+    if (!success) {
+        std::cout << "activate machine error!" << "\r\n";
+        return false;
+    }
+
+    CkJsonObject *data = json.ObjectAt(json.get_Size() - 1);
+    if (!data) {
+        std::cout << "activate machine error!" << "\r\n";
+        return false;
+    }
+
+    success = data->AddStringAt(-1,"type","machines");
+    if (!success) {
+        std::cout << "activate machine error!" << "\r\n";
+        delete data;
+        return false;
+    }
+
+    success = data->AddObjectAt(-1,"attributes");
+    if (!success) {
+        std::cout << "activate machine error!" << "\r\n";
+        delete data;
+        return false;
+    }
+
+    CkJsonObject *attributes = data->ObjectAt(data->get_Size() - 1);
+    if (!attributes) {
+        std::cout << "activate machine error!" << "\r\n";
+        delete data;
+        return false;
+    }
+    
+    success = attributes->AddStringAt(-1,"fingerprint",GetMACAddress().c_str());
+    if (!success) {
+        std::cout << "activate machine error!" << "\r\n";
+        delete attributes;
+        delete data;
+        return false;
+    }
+    delete attributes;
+
+    success = data->AddObjectAt(-1,"relationships");
+    if (!success) {
+        std::cout << "activate machine error!" << "\r\n";
+        delete data;
+        return false;
+    }
+
+    CkJsonObject *relationships = data->ObjectAt(data->get_Size() - 1);
+    if (!relationships) {
+        std::cout << "activate machine error!" << "\r\n";
+        delete data;
+        return false;
+    }
+
+    success = relationships->AddObjectAt(-1,"license");
+    if (!success) {
+        std::cout << "activate machine error!" << "\r\n";
+        delete relationships;
+        delete data;
+        return false;
+    }
+
+    CkJsonObject *license = relationships->ObjectAt(relationships->get_Size() - 1);
+    if (!license) {
+        std::cout << "activate machine error!" << "\r\n";
+        delete relationships;
+        delete data;
+        return false;
+    }
+
+    success = license->AddObjectAt(-1,"data");
+    if (!success) {
+        std::cout << "activate machine error!" << "\r\n";
+        delete license;
+        delete relationships;
+        delete data;
+        return false;
+    }
+
+    CkJsonObject *license_data = license->ObjectAt(license->get_Size() - 1);
+    if (!license_data) {
+        std::cout << "activate machine error!" << "\r\n";
+        delete license;
+        delete relationships;
+        delete data;
+        return false;
+    }
+
+    success = license_data->AddStringAt(-1,"type","licenses");
+    if (!success) {
+        std::cout << "activate machine error!" << "\r\n";
+        delete license_data;
+        delete license;
+        delete relationships;
+        delete data;
+        return false;
+    }
+
+    success = license_data->AddStringAt(-1,"id",license_id.c_str());
+    if (!success) {
+        std::cout << "activate machine error!" << "\r\n";
+        delete license_data;
+        delete license;
+        delete relationships;
+        delete data;
+        return false;
+    }
+
+    delete license_data;
+    delete license;
+    delete relationships;
+    delete data;
+
+    CkRest rest;
+    success = rest.Connect("api.keygen.sh",443,true,true);
+    if (success != true) {
+        std::cout << rest.lastErrorText() << "\r\n";
+        return false;
+    }
+
+    rest.AddHeader("Content-Type","application/vnd.api+json");
+    rest.AddHeader("Authorization","Bearer admi-ef432e1dd237ab0c87ef41c6f85316b4dc00c33cd28fdd01d2b007ec33e8184fdd58ba4077e7843262a38158b699815181e250e8b7f3440c32534a6febf8cav2");
+
+    //  Tell the server you'll accept only an application/json response.
+    rest.AddHeader("Accept","application/json");
+
+    CkStringBuilder sbReq;
+    json.EmitSb(sbReq);
+
+    //  Send the POST.
+    CkStringBuilder sbResp;
+    std::string uri = "/v1/accounts/daps/machines";
+    success = rest.FullRequestSb("POST", uri.c_str(), sbReq, sbResp);
+    if (success != true) {
+        std::cout << rest.lastErrorText() << "\r\n";
+        return false;
+    }
+
+    // std::cout << "Response body:" << "\r\n";
+    // std::cout << sbResp.getAsString() << "\r\n";
+
+    CkJsonObject jsonResp;
+    jsonResp.LoadSb(sbResp);
+
+    CkJsonObject *resp_data = jsonResp.ObjectOf("data");
+    if (!resp_data) {
+        std::cout << "activate machine error!" << "\r\n";
+        return false;
+    }
+
+    if (resp_data->stringOf("id")) {
+        delete resp_data;
+        return true;
+    }
+
+    delete resp_data;
+    return false;
+#endif
+}
+
+bool ValidateLicense(std::string key, const char* product) {
+    if (checkLicense(key, product, true) == true)
+        return true;
+
+    if (checkLicense(key, product, false) == false)
+        return false;
+
+    if (activateMachine(key) == true)
+        return true;
+
+    return false;
+}
+ 
+long MACAddressUtility::GetMACAddress(unsigned char * result)
+{
+    // Fill result with zeroes
+    memset(result, 0, 6);
+    // Call appropriate function for each platform
+#if defined(WIN32) || defined(UNDER_CE)
+    return GetMACAddressMSW(result);
+#elif defined(__APPLE__)
+    return GetMACAddressMAC(result);
+#elif defined(LINUX) || defined(linux)
+    return GetMACAddressLinux(result);
+#endif
+    // If platform is not supported then return error code
+    return -1;
+}
+ 
+#if defined(WIN32) || defined(UNDER_CE)
+ 
+inline long MACAddressUtility::GetMACAddressMSW(unsigned char * result)
+{
+     
+#if defined(UNDER_CE)
+    IP_ADAPTER_INFO AdapterInfo[16]; // Allocate information
+    DWORD dwBufLen = sizeof(AdapterInfo); // Save memory size of buffer
+    if(GetAdaptersInfo(AdapterInfo, &dwBufLen) == ERROR_SUCCESS)
+    {
+        memcpy(result, AdapterInfo->Address, 6);
+    }
+    else return -1;
+#else
+    UUID uuid;
+    if(UuidCreateSequential(&uuid) == RPC_S_UUID_NO_ADDRESS) return -1;
+    memcpy(result, (char*)(uuid.Data4+2), 6);
+#endif
+    return 0;
+}
+ 
+#elif defined(__APPLE__)
+ 
+static kern_return_t FindEthernetInterfaces(io_iterator_t *matchingServices)
+{
+    kern_return_t       kernResult;
+    CFMutableDictionaryRef  matchingDict;
+    CFMutableDictionaryRef  propertyMatchDict;
+ 
+    matchingDict = IOServiceMatching(kIOEthernetInterfaceClass);
+ 
+    if (NULL != matchingDict)
+    {
+        propertyMatchDict =
+            CFDictionaryCreateMutable(kCFAllocatorDefault, 0,
+                &kCFTypeDictionaryKeyCallBacks,
+                &kCFTypeDictionaryValueCallBacks);
+ 
+        if (NULL != propertyMatchDict)
+        {
+            CFDictionarySetValue(propertyMatchDict,
+                CFSTR(kIOPrimaryInterface), kCFBooleanTrue);
+            CFDictionarySetValue(matchingDict,
+                CFSTR(kIOPropertyMatchKey), propertyMatchDict);
+            CFRelease(propertyMatchDict);
+        }
+    }
+    kernResult = IOServiceGetMatchingServices(kIOMasterPortDefault,
+        matchingDict, matchingServices);
+    return kernResult;
+}
+ 
+static kern_return_t GetMACAddress(io_iterator_t intfIterator,
+                                   UInt8 *MACAddress, UInt8 bufferSize)
+{
+    io_object_t     intfService;
+    io_object_t     controllerService;
+    kern_return_t   kernResult = KERN_FAILURE;
+     
+    if (bufferSize < kIOEthernetAddressSize) {
+        return kernResult;
+    }
+     
+    bzero(MACAddress, bufferSize);
+     
+    while (intfService = IOIteratorNext(intfIterator))
+    {
+        CFTypeRef   MACAddressAsCFData;       
+         
+        // IONetworkControllers can't be found directly by the IOServiceGetMatchingServices call,
+        // since they are hardware nubs and do not participate in driver matching. In other words,
+        // registerService() is never called on them. So we've found the IONetworkInterface and will
+        // get its parent controller by asking for it specifically.
+         
+        // IORegistryEntryGetParentEntry retains the returned object,
+        // so release it when we're done with it.
+        kernResult =
+            IORegistryEntryGetParentEntry(intfService,
+                kIOServicePlane,
+                &controllerService);
+         
+        if (KERN_SUCCESS != kernResult) {
+            printf("IORegistryEntryGetParentEntry returned 0x%08x\n", kernResult);
+        }
+        else {
+            // Retrieve the MAC address property from the I/O Registry in the form of a CFData
+            MACAddressAsCFData =
+                IORegistryEntryCreateCFProperty(controllerService,
+                    CFSTR(kIOMACAddress),
+                    kCFAllocatorDefault,
+                    0);
+            if (MACAddressAsCFData) {
+                // CFShow(MACAddressAsCFData); // for display purposes only; output goes to stderr
+                 
+                // Get the raw bytes of the MAC address from the CFData
+                CFDataGetBytes((CFDataRef)MACAddressAsCFData,
+                    CFRangeMake(0, kIOEthernetAddressSize), MACAddress);
+                CFRelease(MACAddressAsCFData);
+            }
+             
+            // Done with the parent Ethernet controller object so we release it.
+            (void) IOObjectRelease(controllerService);
+        }
+         
+        // Done with the Ethernet interface object so we release it.
+        (void) IOObjectRelease(intfService);
+    }
+     
+    return kernResult;
+}
+ 
+long MACAddressUtility::GetMACAddressMAC(unsigned char * result)
+{
+    io_iterator_t   intfIterator;
+    kern_return_t   kernResult = KERN_FAILURE;
+    do
+    {
+        kernResult = ::FindEthernetInterfaces(&intfIterator);
+        if (KERN_SUCCESS != kernResult) break;
+        kernResult = ::GetMACAddress(intfIterator, (UInt8*)result, 6);
+    }
+    while(false);
+    (void) IOObjectRelease(intfIterator);
+
+    return kernResult;
+}
+ 
+#elif defined(LINUX) || defined(linux)
+ 
+long MACAddressUtility::GetMACAddressLinux(unsigned char * result)
+{
+    struct ifreq ifr;
+    struct ifreq *IFR;
+    struct ifconf ifc;
+    char buf[1024];
+    int s, i;
+    int ok = 0;
+ 
+    s = socket(AF_INET, SOCK_DGRAM, 0);
+    if (s == -1)
+    {
+        return -1;
+    }
+ 
+    ifc.ifc_len = sizeof(buf);
+    ifc.ifc_buf = buf;
+    ioctl(s, SIOCGIFCONF, &ifc);
+ 
+    IFR = ifc.ifc_req;
+    for (i = ifc.ifc_len / sizeof(struct ifreq); --i >= 0; IFR++)
+    {
+        strcpy(ifr.ifr_name, IFR->ifr_name);
+        if (ioctl(s, SIOCGIFFLAGS, &ifr) == 0)
+        {
+            if (! (ifr.ifr_flags & IFF_LOOPBACK))
+            {
+                if (ioctl(s, SIOCGIFHWADDR, &ifr) == 0)
+                {
+                    ok = 1;
+                    break;
+                }
+            }
+        }
+    }
+ 
+    shutdown(s, SHUT_RDWR);
+    if (ok)
+    {
+        bcopy( ifr.ifr_hwaddr.sa_data, result, 6);
+    }
+    else
+    {
+        return -1;
+    }
+    return 0;
+}
+#endif
+
+std::string GetMACAddress()
+{
+    unsigned char result[6];
+    if(MACAddressUtility::GetMACAddress(result) == 0)
+    {
+        char mac_address[18];
+        memset(mac_address, 0, 18);
+        snprintf(mac_address, sizeof(mac_address), "%02X:%02X:%02X:%02X:%02X:%02X",
+            (unsigned int)result[0], (unsigned int)result[1], (unsigned int)result[2],
+            (unsigned int)result[3], (unsigned int)result[4], (unsigned int)result[5]);
+
+        std::string retValue = mac_address;
+        return retValue;
+    }
+    return "";
 }
