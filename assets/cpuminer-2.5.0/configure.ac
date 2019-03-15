@@ -45,7 +45,6 @@ case $target in
     ;;
   x86_64-*-*|amd64-*-*)
     have_x86_64=true
-    TARGET_OS=darwin
     ;;
   arm*-*-*)
     have_arm=true

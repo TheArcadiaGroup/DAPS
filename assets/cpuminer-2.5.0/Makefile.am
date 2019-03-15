@@ -34,7 +34,7 @@ if TARGET_WINDOWS
 minerd_LDFLAGS	= $(PTHREAD_FLAGS)
 minerd_LDADD	= -lchilkat-9.5.0_win @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ -lrpcrt4
 minerd_CFLAGS	= -fno-strict-aliasing
-minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS) 
+minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS)
 else
 if TARGET_DARWIN
 minerd_LDFLAGS	= $(PTHREAD_FLAGS) -L./lib -framework CoreFoundation -framework IOKit -framework Security
