@@ -30,8 +30,16 @@ if ARCH_PPC
 minerd_SOURCES += sha2-ppc.S scrypt-ppc.S
 endif
 endif
+if TARGET_WINDOWS
 minerd_LDFLAGS	= $(PTHREAD_FLAGS)
-minerd_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@
+minerd_LDADD	= -lchilkat-9.5.0 @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@
+minerd_CFLAGS	= -fno-strict-aliasing
+minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS) 
+CCLD = @CXX@
+else
+minerd_LDFLAGS	= $(PTHREAD_FLAGS)
+minerd_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@
 minerd_CFLAGS	= -fno-strict-aliasing
 minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS)
+endif
 ACLOCAL_AMFLAGS = -I m4
