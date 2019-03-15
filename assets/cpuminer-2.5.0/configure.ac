@@ -45,6 +45,7 @@ case $target in
     ;;
   x86_64-*-*|amd64-*-*)
     have_x86_64=true
+    TARGET_OS=darwin
     ;;
   arm*-*-*)
     have_arm=true
@@ -52,7 +53,9 @@ case $target in
   powerpc*-*-*)
     have_ppc=true
     ;;
+
 esac
+
 
 PTHREAD_FLAGS="-pthread"
 WS2_LIBS=""
@@ -64,9 +67,11 @@ case $target in
     PTHREAD_FLAGS=""
     WS2_LIBS="-lws2_32"
     ;;
-esac
+  *-*-darwin*)
+    TARGET_OS=darwin
+    ;;
 
-AM_CONDITIONAL([TARGET_WINDOWS], [test x$TARGET_OS = xwindows])
+esac
 
 AC_ARG_ENABLE([assembly],
   AS_HELP_STRING([--disable-assembly], [disable assembly-language routines]))
@@ -116,6 +121,8 @@ AM_CONDITIONAL([ARCH_x86], [test x$have_x86 = xtrue])
 AM_CONDITIONAL([ARCH_x86_64], [test x$have_x86_64 = xtrue])
 AM_CONDITIONAL([ARCH_ARM], [test x$have_arm = xtrue])
 AM_CONDITIONAL([ARCH_PPC], [test x$have_ppc = xtrue])
+AM_CONDITIONAL([TARGET_WINDOWS], [test x$TARGET_OS = xwindows])
+AM_CONDITIONAL([TARGET_DARWIN], [test x$TARGET_OS = xdarwin])
 
 if test x$request_jansson = xtrue
 then
