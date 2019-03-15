@@ -188,21 +188,23 @@ uint256 CMasternode::CalculateScore(int mod, int64_t nBlockHeight)
 
 void CMasternode::Check(bool forceCheck)
 {
+    LogPrintf("\n%s: Checking ShutdownRequested\n", __func__);
     if (ShutdownRequested()) return;
-
+    LogPrintf("\n%s:Checking masternode lasttime\n", __func__);
     if (!forceCheck && (GetTime() - lastTimeChecked < MASTERNODE_CHECK_SECONDS)) return;
     lastTimeChecked = GetTime();
 
-
+    LogPrintf("\n%s:Checking masternode vin spent\n", __func__);
     //once spent, stop doing the checks
     if (activeState == MASTERNODE_VIN_SPENT) return;
 
-
+    LogPrintf("\n%s:Checking PingedWithin\n", __func__);
     if (!IsPingedWithin(MASTERNODE_REMOVAL_SECONDS)) {
         activeState = MASTERNODE_REMOVE;
         return;
     }
 
+    LogPrintf("\n%s:Checking PingedWithin again\n", __func__);
     if (!IsPingedWithin(MASTERNODE_EXPIRATION_SECONDS)) {
         activeState = MASTERNODE_EXPIRED;
         return;
@@ -225,7 +227,7 @@ void CMasternode::Check(bool forceCheck)
             }
         }
     }
-
+    LogPrintf("\n%s:Masternode enabled\n", __func__);
     activeState = MASTERNODE_ENABLED; // OK
 }
 

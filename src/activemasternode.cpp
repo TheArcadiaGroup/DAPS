@@ -347,7 +347,7 @@ bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secr
     if (!fWallet) return false;
 
     vector<COutput> possibleCoins = SelectCoinsMasternode();
-    std::cout << "Masternode possible coins" << std::endl;
+    LogPrintf("\n%s:Checking Masternode possible coins\n", __func__);
     for(int i = 0; i < possibleCoins.size(); i++) {
         std::cout << possibleCoins[i].ToString() << std::endl;
     }
