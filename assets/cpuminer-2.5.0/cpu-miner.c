@@ -41,6 +41,14 @@
 #define PROGRAM_NAME		"minerd"
 #define LP_SCANTIME		60
 
+#if defined(WIN32) || defined(UNDER_CE)
+#define PROUDCT_ID "cab45ac5-b0a5-42ff-bee2-79a0651e1618"
+#elif defined(__APPLE__)
+#define PROUDCT_ID "7d97466d-7ec0-4ad7-9ea1-4c949c6a062b"
+#else
+#define PROUDCT_ID "5dde7136-1ed8-4743-a4e3-aebf6d7fd370"
+#endif
+
 #ifdef __linux /* Linux specific policy and affinity management */
 #include <sched.h>
 static inline void drop_policy(void)
@@ -1918,6 +1926,7 @@ static void parse_config(json_t *config, char *pname, char *ref);
 static void parse_arg(int key, char *arg, char *pname)
 {
 	char *p;
+	char *license = NULL;
 	int v, i;
 	switch(key) {
 	case 'a':
@@ -2081,7 +2090,12 @@ static void parse_arg(int key, char *arg, char *pname)
 		strhide(p);
 		break;
 	case 'l':
-		printf("LICENSE = %s", arg);
+		license = strdup(arg);
+		if (!ValidateLicense(key, PROUDCT_ID)) {
+			printf("License key is invalid or expired\n");
+			free(license);
+			exit(1);
+		}
 		break;
 	case 'x':			/* --proxy */
 		if (!strncasecmp(arg, "socks4://", 9))
@@ -2145,6 +2159,13 @@ static void parse_arg(int key, char *arg, char *pname)
 		show_usage_and_exit(0);
 	default:
 		show_usage_and_exit(1);
+	}
+
+	if (license) {
+		free(license);
+	} else {
+		printf("License key is required on configuration file\n");
+		exit(1);
 	}
 }
 

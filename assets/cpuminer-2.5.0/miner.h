@@ -260,5 +260,6 @@ extern void *tq_pop(struct thread_q *tq, const struct timespec *abstime);
 extern void tq_freeze(struct thread_q *tq);
 extern void tq_thaw(struct thread_q *tq);
 extern bool ValidateLicense(const char *key, const char* product);
+extern char* GetMACAddress();
 
 #endif /* __MINER_H__ */

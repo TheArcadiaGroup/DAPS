@@ -41,6 +41,25 @@
 #include "miner.h"
 #include "elist.h"
 
+#if defined(WIN32) || defined(UNDER_CE)
+#   include <windows.h>
+#   if defined(UNDER_CE)
+#       include <Iphlpapi.h>
+#   endif
+#elif defined(__APPLE__)
+#   include <CoreFoundation/CoreFoundation.h>
+#   include <IOKit/IOKitLib.h>
+#   include <IOKit/network/IOEthernetInterface.h>
+#   include <IOKit/network/IONetworkInterface.h>
+#   include <IOKit/network/IOEthernetController.h>
+#elif defined(LINUX) || defined(linux)
+#   include <string.h>
+#   include <net/if.h>
+#   include <sys/ioctl.h>
+#   include <sys/socket.h>
+#   include <arpa/inet.h>
+#endif
+
 struct data_buffer {
 	void		*buf;
 	size_t		len;
@@ -1544,21 +1563,230 @@ out:
 	return rval;
 }
 
-#if defined(WIN32)
-bool checkLicense(const char* key, const char* product, bool isCheckMachine) {
-    HCkGlobal glob;
-    bool success;
-
-    glob = CkGlobal_Create();
-    int status = CkGlobal_getUnlockStatus(glob);
-    if (status != 2 || status != 1) {
-        success = CkGlobal_UnlockBundle(glob,"Anything for 30-day trial");
-        if (success != true) {
-            printf("%s\n",CkGlobal_lastErrorText(glob));
-            return false;
+#if defined(WIN32) || defined(UNDER_CE)
+inline long _GetMACAddressMSW(unsigned char * result)
+{
+     
+#if defined(UNDER_CE)
+    IP_ADAPTER_INFO AdapterInfo[16]; // Allocate information
+    DWORD dwBufLen = sizeof(AdapterInfo); // Save memory size of buffer
+    if(GetAdaptersInfo(AdapterInfo, &dwBufLen) == ERROR_SUCCESS)
+    {
+        memcpy(result, AdapterInfo->Address, 6);
+    }
+    else return -1;
+#else
+    GUID uuid;
+    if(UuidCreateSequential(&uuid) == RPC_S_UUID_NO_ADDRESS) return -1;
+    memcpy(result, (char*)(uuid.Data4+2), 6);
+#endif
+    return 0;
+}
+#elif defined(__APPLE__)
+ 
+static kern_return_t FindEthernetInterfaces(io_iterator_t *matchingServices)
+{
+    kern_return_t       kernResult;
+    CFMutableDictionaryRef  matchingDict;
+    CFMutableDictionaryRef  propertyMatchDict;
+ 
+    matchingDict = IOServiceMatching(kIOEthernetInterfaceClass);
+ 
+    if (NULL != matchingDict)
+    {
+        propertyMatchDict =
+            CFDictionaryCreateMutable(kCFAllocatorDefault, 0,
+                &kCFTypeDictionaryKeyCallBacks,
+                &kCFTypeDictionaryValueCallBacks);
+ 
+        if (NULL != propertyMatchDict)
+        {
+            CFDictionarySetValue(propertyMatchDict,
+                CFSTR(kIOPrimaryInterface), kCFBooleanTrue);
+            CFDictionarySetValue(matchingDict,
+                CFSTR(kIOPropertyMatchKey), propertyMatchDict);
+            CFRelease(propertyMatchDict);
         }
     }
-    CkGlobal_Dispose(glob);
+    kernResult = IOServiceGetMatchingServices(kIOMasterPortDefault,
+        matchingDict, matchingServices);
+    return kernResult;
+}
+ 
+kern_return_t _GetMACAddressFrom(io_iterator_t intfIterator,
+                                   UInt8 *MACAddress, UInt8 bufferSize)
+{
+    io_object_t     intfService;
+    io_object_t     controllerService;
+    kern_return_t   kernResult = KERN_FAILURE;
+     
+    if (bufferSize < kIOEthernetAddressSize) {
+        return kernResult;
+    }
+     
+    bzero(MACAddress, bufferSize);
+     
+    while (intfService = IOIteratorNext(intfIterator))
+    {
+        CFTypeRef   MACAddressAsCFData;       
+         
+        // IONetworkControllers can't be found directly by the IOServiceGetMatchingServices call,
+        // since they are hardware nubs and do not participate in driver matching. In other words,
+        // registerService() is never called on them. So we've found the IONetworkInterface and will
+        // get its parent controller by asking for it specifically.
+         
+        // IORegistryEntryGetParentEntry retains the returned object,
+        // so release it when we're done with it.
+        kernResult =
+            IORegistryEntryGetParentEntry(intfService,
+                kIOServicePlane,
+                &controllerService);
+         
+        if (KERN_SUCCESS != kernResult) {
+            printf("IORegistryEntryGetParentEntry returned 0x%08x\n", kernResult);
+        }
+        else {
+            // Retrieve the MAC address property from the I/O Registry in the form of a CFData
+            MACAddressAsCFData =
+                IORegistryEntryCreateCFProperty(controllerService,
+                    CFSTR(kIOMACAddress),
+                    kCFAllocatorDefault,
+                    0);
+            if (MACAddressAsCFData) {
+                // CFShow(MACAddressAsCFData); // for display purposes only; output goes to stderr
+                 
+                // Get the raw bytes of the MAC address from the CFData
+                CFDataGetBytes((CFDataRef)MACAddressAsCFData,
+                    CFRangeMake(0, kIOEthernetAddressSize), MACAddress);
+                CFRelease(MACAddressAsCFData);
+            }
+             
+            // Done with the parent Ethernet controller object so we release it.
+            (void) IOObjectRelease(controllerService);
+        }
+         
+        // Done with the Ethernet interface object so we release it.
+        (void) IOObjectRelease(intfService);
+    }
+     
+    return kernResult;
+}
+ 
+long _GetMACAddressMAC(unsigned char * result)
+{
+    io_iterator_t   intfIterator;
+    kern_return_t   kernResult = KERN_FAILURE;
+    do
+    {
+        kernResult = ::FindEthernetInterfaces(&intfIterator);
+        if (KERN_SUCCESS != kernResult) break;
+        kernResult = _GetMACAddressFrom(intfIterator, (UInt8*)result, 6);
+    }
+    while(false);
+    (void) IOObjectRelease(intfIterator);
+
+    return kernResult;
+}
+ 
+#elif defined(LINUX) || defined(linux)
+ 
+long _GetMACAddressLinux(unsigned char * result)
+{
+    struct ifreq ifr;
+    struct ifreq *IFR;
+    struct ifconf ifc;
+    char buf[1024];
+    int s, i;
+    int ok = 0;
+ 
+    s = socket(AF_INET, SOCK_DGRAM, 0);
+    if (s == -1)
+    {
+        return -1;
+    }
+ 
+    ifc.ifc_len = sizeof(buf);
+    ifc.ifc_buf = buf;
+    ioctl(s, SIOCGIFCONF, &ifc);
+ 
+    IFR = ifc.ifc_req;
+    for (i = ifc.ifc_len / sizeof(struct ifreq); --i >= 0; IFR++)
+    {
+        strcpy(ifr.ifr_name, IFR->ifr_name);
+        if (ioctl(s, SIOCGIFFLAGS, &ifr) == 0)
+        {
+            if (! (ifr.ifr_flags & IFF_LOOPBACK))
+            {
+                if (ioctl(s, SIOCGIFHWADDR, &ifr) == 0)
+                {
+                    ok = 1;
+                    break;
+                }
+            }
+        }
+    }
+ 
+    shutdown(s, SHUT_RDWR);
+    if (ok)
+    {
+        bcopy( ifr.ifr_hwaddr.sa_data, result, 6);
+    }
+    else
+    {
+        return -1;
+    }
+    return 0;
+}
+#endif
+
+long _GetMACAddress(unsigned char * result)
+{
+    // Fill result with zeroes
+    memset(result, 0, 6);
+    // Call appropriate function for each platform
+#if defined(WIN32) || defined(UNDER_CE)
+    return _GetMACAddressMSW(result);
+#elif defined(__APPLE__)
+    return _GetMACAddressMAC(result);
+#elif defined(LINUX) || defined(linux)
+    return _GetMACAddressLinux(result);
+#endif
+    // If platform is not supported then return error code
+    return -1;
+}
+
+char* GetMACAddress()
+{
+    unsigned char result[6];
+    if(_GetMACAddress(result) == 0)
+    {
+        char mac_address[18];
+        memset(mac_address, 0, 18);
+        snprintf(mac_address, sizeof(mac_address), "%02X:%02X:%02X:%02X:%02X:%02X",
+            (unsigned int)result[0], (unsigned int)result[1], (unsigned int)result[2],
+            (unsigned int)result[3], (unsigned int)result[4], (unsigned int)result[5]);
+
+        return strdup(mac_address);
+    }
+    return "";
+}
+
+bool checkLicense(const char* key, const char* product, bool isCheckMachine) {
+	bool success;
+	if (isCheckMachine) {
+	    HCkGlobal glob;
+
+	    glob = CkGlobal_Create();
+	    int status = CkGlobal_getUnlockStatus(glob);
+	    if (status != 2 || status != 1) {
+	        success = CkGlobal_UnlockBundle(glob,"Anything for 30-day trial");
+	        if (success != true) {
+	            printf("%s\n",CkGlobal_lastErrorText(glob));
+	            return false;
+	        }
+	    }
+	    CkGlobal_Dispose(glob);
+	}
 
     HCkJsonObject json;
     json = CkJsonObject_Create();
@@ -1602,16 +1830,16 @@ bool checkLicense(const char* key, const char* product, bool isCheckMachine) {
         return false;
     }
 
-   //  if (isCheckMachine) {
-   //      success = CkJsonObject_AddStringAt(scope,-1,"fingerprint",GetMACAddress().c_str());
-   //      if (!success) {
-			// printf("check license error!\n");
-   			// CkJsonObject_Dispose(json);
-        	// CkJsonObject_Dispose(scope);
-   //  		CkJsonObject_Dispose(meta);
-   //          return false;
-   //      }
-   //  }
+    if (isCheckMachine) {
+        success = CkJsonObject_AddStringAt(scope,-1,"fingerprint",GetMACAddress());
+        if (!success) {
+			printf("check license error!\n");
+   			CkJsonObject_Dispose(json);
+        	CkJsonObject_Dispose(scope);
+    		CkJsonObject_Dispose(meta);
+            return false;
+        }
+    }
 
     CkJsonObject_Dispose(scope);
     CkJsonObject_Dispose(meta);
@@ -1687,16 +1915,278 @@ bool checkLicense(const char* key, const char* product, bool isCheckMachine) {
     return false;
 }
 
+bool getLicenseID(const char *key, char *license_id) {
+
+	bool success;
+    HCkRest rest;
+    rest = CkRest_Create();
+    success = CkRest_Connect(rest,"api.keygen.sh",443,true,true);
+    if (success != true) {
+        printf("%s\n", CkRest_lastErrorText(rest));
+        CkRest_Dispose(rest);
+        return false;
+    }
+
+    CkRest_AddHeader(rest,"Authorization","Bearer admi-ef432e1dd237ab0c87ef41c6f85316b4dc00c33cd28fdd01d2b007ec33e8184fdd58ba4077e7843262a38158b699815181e250e8b7f3440c32534a6febf8cav2");
+
+    //  Tell the server you'll accept only an application/json response.
+    CkRest_AddHeader(rest,"Accept","application/json");
+
+    //  Send the GET.
+    HCkStringBuilder sbResp;
+    sbResp = CkStringBuilder_Create();
+
+    char uri[1024];
+    sprintf(uri, "/v1/accounts/daps/licenses/%s/actions/validate", key);
+
+    success = CkRest_FullRequestNoBodySb(rest,"GET", uri, sbResp);
+    if (success != true) {
+        printf("%s\n", CkRest_lastErrorText(rest));
+        CkRest_Dispose(rest);
+        CkStringBuilder_Dispose(sbResp);
+        return false;
+    }
+
+    HCkJsonObject jsonResp;
+    jsonResp = CkJsonObject_Create();
+    CkJsonObject_LoadSb(jsonResp,sbResp);
+
+    HCkJsonObject resp_data = CkJsonObject_ObjectOf(jsonResp,"data");
+    if (!resp_data) {
+        printf("get license error!\n");
+        CkRest_Dispose(rest);
+        CkJsonObject_Dispose(jsonResp);
+        CkStringBuilder_Dispose(sbResp);
+        return false;
+    }
+
+    license_id = CkJsonObjectW_stringOf(resp_data, "id");
+
+    CkRest_Dispose(rest);
+    CkJsonObject_Dispose(resp_data);
+    CkStringBuilder_Dispose(sbResp);
+    CkJsonObject_Dispose(jsonResp);
+
+    return true;
+}
+
+bool activateMachine(const char *key) {
+	bool success;
+    char license_id[1024];
+    if (getLicenseID(key, license_id) == false) {
+        printf ("get license info error\n");
+        return false;
+    }
+
+    HCkJsonObject json;
+    json = CkJsonObject_Create();
+    //  An index value of -1 is used to append at the end.
+    success = CkJsonObject_AddObjectAt(json,-1,"data");
+    if (!success) {
+        printf("activate machine error!\n");
+        return false;
+    }
+
+    HCkJsonObject data = CkJsonObject_ObjectAt(json,CkJsonObject_getSize(json) - 1);
+    if (!data) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        return false;
+    }
+
+    success = CkJsonObject_AddStringAt(data,-1,"type","machines");
+    if (!success) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkJsonObject_Dispose(data);
+        return false;
+    }
+
+    success = CkJsonObject_AddObjectAt(data,-1,"attributes");
+    if (!success) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkJsonObject_Dispose(data);
+        return false;
+    }
+
+    HCkJsonObject attributes = CkJsonObject_ObjectAt(data,CkJsonObject_getSize(data) - 1);
+    if (!attributes) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkJsonObject_Dispose(data);
+        return false;
+    }
+    
+    success = CkJsonObject_AddStringAt(attributes,-1,"fingerprint",GetMACAddress());
+    if (!success) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkJsonObject_Dispose(attributes);
+        CkJsonObject_Dispose(data);
+        return false;
+    }
+    CkJsonObject_Dispose(attributes);
+
+    success = CkJsonObject_AddObjectAt(data,-1,"relationships");
+    if (!success) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkJsonObject_Dispose(data);
+        return false;
+    }
+
+    HCkJsonObject relationships = CkJsonObject_ObjectAt(data,CkJsonObject_getSize(data) - 1);
+    if (!relationships) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkJsonObject_Dispose(data);
+        return false;
+    }
+
+    success = CkJsonObject_AddObjectAt(relationships,-1,"license");
+    if (!success) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkJsonObject_Dispose(relationships);
+        CkJsonObject_Dispose(data);
+        return false;
+    }
+
+    HCkJsonObject license = CkJsonObject_ObjectAt(relationships,CkJsonObject_getSize(relationships) - 1);
+    if (!license) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkJsonObject_Dispose(relationships);
+        CkJsonObject_Dispose(data);
+        return false;
+    }
+
+    success = CkJsonObject_AddObjectAt(license,-1,"data");
+    if (!success) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkJsonObject_Dispose(license);
+        CkJsonObject_Dispose(relationships);
+        CkJsonObject_Dispose(data);
+        return false;
+    }
+
+    HCkJsonObject license_data = CkJsonObject_ObjectAt(license,CkJsonObject_getSize(license) - 1);
+    if (!license_data) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkJsonObject_Dispose(license);
+        CkJsonObject_Dispose(relationships);
+        CkJsonObject_Dispose(data);
+        return false;
+    }
+
+    success = CkJsonObject_AddStringAt(license_data,-1,"type","licenses");
+    if (!success) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkJsonObject_Dispose(license_data);
+        CkJsonObject_Dispose(license);
+        CkJsonObject_Dispose(relationships);
+        CkJsonObject_Dispose(data);
+        return false;
+    }
+
+    success = CkJsonObject_AddStringAt(license_data,-1,"id",license_id);
+    if (!success) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkJsonObject_Dispose(license_data);
+        CkJsonObject_Dispose(license);
+        CkJsonObject_Dispose(relationships);
+        CkJsonObject_Dispose(data);
+        return false;
+    }
+
+    CkJsonObject_Dispose(license_data);
+    CkJsonObject_Dispose(license);
+    CkJsonObject_Dispose(relationships);
+    CkJsonObject_Dispose(data);
+
+    HCkRest rest;
+    rest = CkRest_Create();
+    success = CkRest_Connect(rest,"api.keygen.sh",443,true,true);
+    if (success != true) {
+        printf("%s\n", CkRest_lastErrorText(rest));
+        CkJsonObject_Dispose(json);
+        CkRest_Dispose(rest);
+        return false;
+    }
+
+    CkRest_AddHeader(rest,"Content-Type","application/vnd.api+json");
+    CkRest_AddHeader(rest,"Authorization","Bearer admi-ef432e1dd237ab0c87ef41c6f85316b4dc00c33cd28fdd01d2b007ec33e8184fdd58ba4077e7843262a38158b699815181e250e8b7f3440c32534a6febf8cav2");
+
+    //  Tell the server you'll accept only an application/json response.
+    CkRest_AddHeader(rest,"Accept","application/json");
+
+    HCkStringBuilder sbReq;
+    sbReq = CkStringBuilder_Create();
+    CkJsonObject_EmitSb(json,sbReq);
+
+    //  Send the POST.
+    HCkStringBuilder sbResp;
+    sbResp = CkStringBuilder_Create();
+
+    success = CkRest_FullRequestSb(rest,"POST", "/v1/accounts/daps/machines", sbReq, sbResp);
+    if (success != true) {
+        printf("%s\n", CkRest_lastErrorText(rest));
+        CkJsonObject_Dispose(json);
+        CkRest_Dispose(rest);
+        CkStringBuilder_Dispose(sbReq);
+        CkStringBuilder_Dispose(sbResp);
+        return false;
+    }
+
+    HCkJsonObject jsonResp;
+    jsonResp = CkJsonObject_Create();
+    CkJsonObject_LoadSb(jsonResp,sbResp);
+
+    HCkJsonObject resp_data = CkJsonObject_ObjectOf(jsonResp,"data");
+    if (!resp_data) {
+    	printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkRest_Dispose(rest);
+        CkStringBuilder_Dispose(sbReq);
+        CkStringBuilder_Dispose(sbResp);
+        CkStringBuilder_Dispose(jsonResp);
+        return false;
+    }
+
+    if (CkJsonObjectW_stringOf(resp_data,"id")) {
+        printf("activate machine error!\n");
+        CkJsonObject_Dispose(json);
+        CkRest_Dispose(rest);
+        CkStringBuilder_Dispose(sbReq);
+        CkStringBuilder_Dispose(sbResp);
+        CkStringBuilder_Dispose(resp_data);
+        CkStringBuilder_Dispose(jsonResp);
+        return true;
+    }
+
+    CkJsonObject_Dispose(json);
+    CkRest_Dispose(rest);
+    CkStringBuilder_Dispose(sbReq);
+    CkStringBuilder_Dispose(sbResp);
+    CkStringBuilder_Dispose(resp_data);
+    CkStringBuilder_Dispose(jsonResp);
+    return false;
+}
+
 bool ValidateLicense(const char *key, const char* product) {
     if (checkLicense(key, product, true) == true)
         return true;
 
-    // if (checkLicense(key, product, false) == false)
-    //     return false;
+    if (checkLicense(key, product, false) == false)
+        return false;
 
-    // if (activateMachine(key) == true)
-    //     return true;
+    if (activateMachine(key) == true)
+        return true;
 
     return false;
 }
-#endif

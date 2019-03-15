@@ -4,4 +4,4 @@ autoreconf -fi -I${DEPS}/share/aclocal
 CFLAGS="-DWIN32 -DCURL_STATICLIB -O3 -std=c99 -I${DEPS}/include -I./include -DPTW32_STATIC_LIB" \
 --with-libcurl=${DEPS} LDFLAGS="-static -L${DEPS}/lib -L./lib"
 
-# make
+make
