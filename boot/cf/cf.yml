@@ -28,7 +28,7 @@ steps:
     commands: 
       - mkdir -p /codefresh/volume/out/bin/
       - cp -r /daps/bin/* /codefresh/volume/out/bin/
-      - rm -r /codefresh/volume/DAPS/.git
+      - rm -rf /codefresh/volume/DAPS/.git
       - find /codefresh/ -type f | xargs du -sh
     no_cache: true
     no_cf_cache: true
@@ -44,7 +44,7 @@ steps:
       - echo $auth>auth.json
       - gcloud auth activate-service-account --key-file auth.json
       - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
-      - rm -r /codefresh/volume/out/*
+      - rm -rf /codefresh/volume/out/*
   BuildingDAPSWinx86:
     title: Building DAPS for Windows x86
     type: build
@@ -66,7 +66,7 @@ steps:
     commands: 
       - mkdir -p /codefresh/volume/out/bin/
       - cp -r /daps/bin/* /codefresh/volume/out/bin/
-      - rm -r /codefresh/volume/DAPS/.git
+      - rm -rf /codefresh/volume/DAPS/.git
       - find /codefresh/ -type f | xargs du -sh
     no_cache: true
     no_cf_cache: true
@@ -82,7 +82,7 @@ steps:
       - echo $auth>auth.json
       - gcloud auth activate-service-account --key-file auth.json
       - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
-      - rm -r /codefresh/volume/out/*
+      - rm -rf /codefresh/volume/out/*
   BuildingDAPSMac:
     title: Building DAPS for MacOS
     type: build
@@ -118,7 +118,7 @@ steps:
       - echo $auth>auth.json
       - gcloud auth activate-service-account --key-file auth.json
       - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
-      - rm -r /codefresh/volume/out/*
+      - rm -rf /codefresh/volume/out/*
   BuildingDAPS:
     title: Building DAPS
     type: build
@@ -139,11 +139,11 @@ steps:
       - cp -r /daps/bin/* /codefresh/volume/out/bin/
       - cp /BUILD/usr/local/bin/dapscoind ./
       - cp /BUILD/usr/local/bin/dapscoin-cli ./
-      - rm -r /codefresh/volume/DAPS/src
-      - rm -r /codefresh/volume/DAPS/depends
-      - rm -r /codefresh/volume/DAPS/contrib
-      - rm -r /codefresh/volume/DAPS/build-aux
-      - rm -r /codefresh/volume/DAPS/share
+      - rm -rf /codefresh/volume/DAPS/src
+      - rm -rf /codefresh/volume/DAPS/depends
+      - rm -rf /codefresh/volume/DAPS/contrib
+      - rm -rf /codefresh/volume/DAPS/build-aux
+      - rm -rf /codefresh/volume/DAPS/share
     no_cache: true
     no_cf_cache: true
     stage: Store
@@ -157,7 +157,7 @@ steps:
       - echo $auth>auth.json
       - gcloud auth activate-service-account --key-file auth.json
       - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
-      - rm -r /codefresh/volume/out/*
+      - rm -rf /codefresh/volume/out/*
     stage: Store
   RunQtTests:
     title: Running QT Tests
