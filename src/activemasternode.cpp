@@ -273,7 +273,7 @@ bool CActiveMasternode::CreateBroadcast(CTxIn vin, CService service, CKey keyCol
 {
     // wait for reindex and/or import to finish
     if (fImporting || fReindex) return false;
-
+    LogPrintf("\n%s: CMasternodePing\n", __func__);
     CMasternodePing mnp(vin);
     if (!mnp.Sign(keyMasternode, pubKeyMasternode)) {
         errorMessage = strprintf("Failed to sign ping, vin: %s", vin.ToString());
@@ -320,10 +320,12 @@ bool CActiveMasternode::CreateBroadcast(CTxIn vin, CService service, CKey keyCol
         LogPrintf("CActiveMasternode::Register() - Error: %s\n", errorMessage.c_str());
         return false;
     }
-
+    LogPrintf("\n%s: about to send dsee\n", __func__);
     LOCK(cs_vNodes);
     BOOST_FOREACH (CNode* pnode, vNodes)
     pnode->PushMessage("dsee", vin, service, vchMasterNodeSignature, masterNodeSignatureTime, pubKeyCollateralAddress, pubKeyMasternode, -1, -1, masterNodeSignatureTime, PROTOCOL_VERSION, donationAddress, donationPercantage);
+
+    LogPrintf("\n%s: Sent dsee\n", __func__);
 
     /*
      * END OF "REMOVE"
