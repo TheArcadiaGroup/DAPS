@@ -16,14 +16,14 @@ COPY . /DAPS/
 
 RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #     
-    if [ "$BUILD_TARGET" = "windowsx64" ]; \
+    if [ "$BUILD_TARGET" = "x86_64-w64-mingw32" ]; \
       then echo "Compiling for win64" && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && \
         make HOST=x86_64-w64-mingw32 -j2 && \
         make install HOST=x86_64-w64-mingw32 DESTDIR=/BUILD/; \
 #
-    elif [ "$BUILD_TARGET" = "windowsx86" ]; \
+    elif [ "$BUILD_TARGET" = "i686-w64-mingw32" ]; \
       then echo "Compiling for win86" && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
@@ -37,7 +37,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
         make HOST=x86_64-pc-linux-gnu -j2 && \
         make install DESTDIR=/BUILD/; \
 #
-    elif [ "$BUILD_TARGET" = "mac" ]; \
+    elif [ "$BUILD_TARGET" = "x86_64-apple-darwin11" ]; \
        then echo "Compiling for mac" && \
         ./autogen.sh --with-gui=yes && \
         CONFIG_SITE=$PWD/depends/x86_64-apple-darwin11/share/config.site ./configure --prefix=/ && \

@@ -19,7 +19,7 @@ steps:
     fail-fast: false
     build_arguments:
       - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
-      - BUILD_TARGET=windowsx64
+      - BUILD_TARGET=x86_64-w64-mingw32
       - SRC_NAME=build_deps_winx64
   SaveBinWinx64:
     title: Saving Executables for Windows x64
@@ -57,7 +57,7 @@ steps:
     fail-fast: false
     build_arguments:
       - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
-      - BUILD_TARGET=windowsx86
+      - BUILD_TARGET=i686-w64-mingw32
       - SRC_NAME=build_deps_winx86
   SaveBinWinx86:
     title: Saving Executables for Windows x86
@@ -95,7 +95,7 @@ steps:
     fail-fast: false
     build_arguments:
       - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
-      - BUILD_TARGET=mac
+      - BUILD_TARGET=x86_64-apple-darwin11
       - SRC_NAME=build_deps_mac
   SaveBinMac:
     title: Saving Binaries for MacOS
