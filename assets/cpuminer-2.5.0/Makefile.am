@@ -38,7 +38,7 @@ minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS)
 else
 if TARGET_DARWIN
 minerd_LDFLAGS	= $(PTHREAD_FLAGS) -L./lib -framework CoreFoundation -framework IOKit -framework Security
-minerd_LDADD	= -lchilkat-9.5.0_mac @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ -lz
+minerd_LDADD	= -lchilkat-9.5.0_mac /tmp/curl/lib/libcurl.a /usr/local/Cellar/nghttp2/1.36.0/lib/libnghttp2.a /usr/local/lib/libidn2.a /usr/local/lib/librtmp.a /usr/local/Cellar/zlib/1.2.11/lib/libz.a /usr/local/lib/libbrotlidec.a /usr/local/Cellar/openssl/1.0.2q/lib/libssl.a /usr/local/Cellar/libunistring/0.9.10/lib/libunistring.a /usr/local/Cellar/openssl/1.0.2q/lib/libcrypto.a -liconv @JANSSON_LIBS@ @PTHREAD_LIBS@ -lz
 minerd_CFLAGS	= -fno-strict-aliasing -I./include
 minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS)
 else
