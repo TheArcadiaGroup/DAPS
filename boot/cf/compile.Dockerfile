@@ -39,6 +39,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #
     elif [ "$BUILD_TARGET" = "mac" ]; \
        then echo "Compiling for mac" && \
+        RUN apt-get install -y librsvg2-bin libtiff-tools
         ./autogen.sh --with-gui=yes && \
         CONFIG_SITE=$PWD/depends/x86_64-apple-darwin11/share/config.site ./configure --prefix=/ && \
         make HOST="x86_64-apple-darwin11" -j2 && \
