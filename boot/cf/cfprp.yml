@@ -48,7 +48,7 @@ steps:
     no_cf_cache: true
     build_arguments:
       - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
-      - BUILD_TARGET=i686-w64-mingw32
+      - BUILD_TARGET=windowsx86
       - SRC_NAME=build_os_libs_18
     stage: Windows
   BuildingDepenenciesWinx64:
@@ -61,7 +61,7 @@ steps:
     no_cf_cache: true
     build_arguments:
       - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
-      - BUILD_TARGET=x86_64-w64-mingw32
+      - BUILD_TARGET=windowsx64
       - SRC_NAME=build_os_libs_18
     stage: Windows
   BuildingDepenenciesMac:
@@ -74,6 +74,6 @@ steps:
     no_cf_cache: true
     build_arguments:
       - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
-      - BUILD_TARGET=x86_64-apple-darwin11
+      - BUILD_TARGET=mac
       - SRC_NAME=build_os_libs_18
     stage: MacOS

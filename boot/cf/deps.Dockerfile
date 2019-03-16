@@ -17,7 +17,7 @@ COPY . /DAPS/
 RUN su && cd /DAPS/depends &&  \
     apt-get update && \
 #    
-    if [ "$BUILD_TARGET" = "x86_64-w64-mingw32" ]; \
+    if [ "$BUILD_TARGET" = "windowsx64" ]; \
       then echo "Building dependencies for windows x64 cross-compile..." && \
         DEBIAN_FRONTEND=noninteractive apt-get install libssl1.0-dev g++-mingw-w64-x86-64 -y --fix-missing && \
         #use posix G++ compiler
@@ -28,7 +28,7 @@ RUN su && cd /DAPS/depends &&  \
         make HOST=x86_64-w64-mingw32 -j2 && \
         echo -e "Windows x64 Dependencies Build complete."; \
 #
-    elif [ "$BUILD_TARGET" = "i686-w64-mingw32" ]; \
+    elif [ "$BUILD_TARGET" = "windowsx86" ]; \
       then echo "Building dependencies for windows x86 cross-compile..." && \
         DEBIAN_FRONTEND=noninteractive apt-get install libssl1.0-dev g++-mingw-w64-i686 mingw-w64-i686-dev -y --fix-missing && \
         #use posix G++ compiler
@@ -44,7 +44,7 @@ RUN su && cd /DAPS/depends &&  \
         make HOST=x86_64-pc-linux-gnu -j2 && \
         echo -e "Linux (x86_64-pc-linux-gnu) Dependencies Build complete."; \
 #
-    elif [ "$BUILD_TARGET" = "x86_64-apple-darwin11" ]; \
+    elif [ "$BUILD_TARGET" = "mac" ]; \
       then echo "Building dependencies for mac cross-compile..." && \
         DEBIAN_FRONTEND=noninteractive apt-get install python-setuptools dpkg-dev libdvdnav-dev libcap-dev cmake libleveldb-dev clang clang++-3.8 libfuse-dev libbz2-dev expect libssl1.0-dev -y --fix-missing && \
         #GET MacOS SDK
