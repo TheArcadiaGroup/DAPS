@@ -46,7 +46,7 @@ RUN su && cd /DAPS/depends &&  \
 #
     elif [ "$BUILD_TARGET" = "mac" ]; \
       then echo "Building dependencies for mac cross-compile..." && \
-        DEBIAN_FRONTEND=noninteractive apt-get install python-setuptools dpkg-dev libdvdnav-dev libcap-dev cmake libleveldb-dev clang clang++-3.8 libfuse-dev libbz2-dev expect libssl1.0-dev librsvg2-bin libtiff-tools -y --fix-missing && \
+        DEBIAN_FRONTEND=noninteractive apt-get install python-setuptools dpkg-dev libdvdnav-dev libcap-dev cmake libleveldb-dev clang clang++-3.8 libfuse-dev libbz2-dev librsvg2-bin libtiff-tools imagemagick expect libssl1.0-dev -y --fix-missing && \
         #GET MacOS SDK
         mkdir -p SDKs && \
         curl -LO "https://github.com/phracker/MacOSX-SDKs/releases/download/MacOSX10.11.sdk/MacOSX10.11.sdk.tar.xz" && \
