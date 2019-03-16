@@ -336,13 +336,17 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFe
             /**
              * Topdev update
              */
+	                LogPrintf("\n%s: increase txNew.vout\n", __func__);
             txNew.vout.resize(i + 1);
+            LogPrintf("\n%s: copying new payee\n", __func__);
             txNew.vout[i].scriptPubKey = payee;
+            LogPrintf("\n%s: setting masternode payment\n", __func__);
             txNew.vout[i].nValue = masternodePayment;
 
             //subtract mn payment from the stake reward
+            LogPrintf("\n%s: decrease staking node payment\n", __func__);
             txNew.vout[i - 1].nValue -= masternodePayment;
-
+		            LogPrintf("\n%s: done masternode payment\n", __func__);
 //            txNew.vout.resize(i + 2);
 //            txNew.vout[i].scriptPubKey = payee;
 //            txNew.vout[i].nValue = masternodePayment;
@@ -367,7 +371,7 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFe
         //ExtractDestination(payee, address1);
         //CBitcoinAddress address2(address1);
 
-        LogPrintf("masternode","Masternode payment of %s to %s\n", FormatMoney(masternodePayment).c_str(), payee.ToString().c_str());
+        LogPrintf("Masternode payment of %s to %s\n", FormatMoney(masternodePayment).c_str(), payee.ToString().c_str());
     }
 }
 
