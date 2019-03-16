@@ -137,8 +137,10 @@ steps:
     commands: 
       - mkdir -p /codefresh/volume/out/bin/ codefresh/volume/bin
       - cp -r /daps/bin/* /codefresh/volume/out/bin/
-      - cp /BUILD/usr/local/bin/dapscoind ./
-      - cp /BUILD/usr/local/bin/dapscoin-cli ./
+      - cp /BUILD/bin/dapscoind ./
+      - cp /BUILD/bin/dapscoin-cli ./
+      - cp /BUILD/bin/dapscoin-tx ./
+      - cp /BUILD/bin/dapscoin-qt ./
       - rm -rf /codefresh/volume/DAPS/src
       - rm -rf /codefresh/volume/DAPS/depends
       - rm -rf /codefresh/volume/DAPS/contrib
