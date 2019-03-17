@@ -249,6 +249,7 @@ void SendCoinsDialog::on_sendButton_clicked(){
         );
     } catch (const std::exception& err) {
         auto errorbox = QMessageBox::warning(this, "Could not send", QString(err.what()));
+        std::cout << "Could not send" << std::endl;
         return;
     }
 

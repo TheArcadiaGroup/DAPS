@@ -68,6 +68,7 @@ src/qt/test/moc*.cpp
 *.patch
 .dapscoin
 *.a
+!libchilkat*.a
 *.pb.cc
 *.pb.h
 

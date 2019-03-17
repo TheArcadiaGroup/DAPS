@@ -7,10 +7,10 @@ stages:
   - Build
   - Deploy
 steps:
-  BuildingDAPSWin:
-    title: Building DAPS for Windows
+  BuildingDAPSWinx64:
+    title: Building DAPS for Windows x64
     type: build
-    image_name: build_src_win
+    image_name: build_src_winx64
     working_directory: ./
     dockerfile: boot/cf/compile.Dockerfile
     no_cache: true
@@ -18,22 +18,22 @@ steps:
     stage: Compile
     fail-fast: false
     build_arguments:
-#      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
-      - BUILD_TARGET=windows
-      - SRC_NAME=build_deps_win
-  SaveBinWin:
-    title: Saving Executables for Windows
-    image: r.cfcr.io/hysmagus/build_src_win:${{CF_BRANCH_TAG_NORMALIZED}}
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - BUILD_TARGET=windowsx64
+      - SRC_NAME=build_deps_winx64
+  SaveBinWinx64:
+    title: Saving Executables for Windows x64
+    image: r.cfcr.io/hysmagus/build_src_winx64:${{CF_BRANCH_TAG_NORMALIZED}}
     working_directory: ./
     commands: 
       - mkdir -p /codefresh/volume/out/bin/
       - cp -r /daps/bin/* /codefresh/volume/out/bin/
-      - rm -r /codefresh/volume/DAPS/.git
+      - rm -rf /codefresh/volume/DAPS/.git
       - find /codefresh/ -type f | xargs du -sh
     no_cache: true
     no_cf_cache: true
     stage: Store
-  UploadToCloudStorageWin:
+  UploadToCloudStorageWinx64:
     title: Upload Binaries and Executables
     image: google/cloud-sdk:latest
     stage: Store
@@ -44,7 +44,45 @@ steps:
       - echo $auth>auth.json
       - gcloud auth activate-service-account --key-file auth.json
       - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
-      - rm -r /codefresh/volume/out/*
+      - rm -rf /codefresh/volume/out/*
+  BuildingDAPSWinx86:
+    title: Building DAPS for Windows x86
+    type: build
+    image_name: build_src_winx86
+    working_directory: ./
+    dockerfile: boot/cf/compile.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    stage: Compile
+    fail-fast: false
+    build_arguments:
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - BUILD_TARGET=windowsx86
+      - SRC_NAME=build_deps_winx86
+  SaveBinWinx86:
+    title: Saving Executables for Windows x86
+    image: r.cfcr.io/hysmagus/build_src_winx86:${{CF_BRANCH_TAG_NORMALIZED}}
+    working_directory: ./
+    commands: 
+      - mkdir -p /codefresh/volume/out/bin/
+      - cp -r /daps/bin/* /codefresh/volume/out/bin/
+      - rm -rf /codefresh/volume/DAPS/.git
+      - find /codefresh/ -type f | xargs du -sh
+    no_cache: true
+    no_cf_cache: true
+    stage: Store
+  UploadToCloudStorageWinx86:
+    title: Upload Binaries and Executables
+    image: google/cloud-sdk:latest
+    stage: Store
+    working_directory: ./
+    environment:
+      - auth=${{GCS_AUTH}}
+    commands: 
+      - echo $auth>auth.json
+      - gcloud auth activate-service-account --key-file auth.json
+      - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
+      - rm -rf /codefresh/volume/out/*
   BuildingDAPSMac:
     title: Building DAPS for MacOS
     type: build
@@ -56,7 +94,7 @@ steps:
     stage: Compile
     fail-fast: false
     build_arguments:
-#      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
       - BUILD_TARGET=mac
       - SRC_NAME=build_deps_mac
   SaveBinMac:
@@ -80,7 +118,7 @@ steps:
       - echo $auth>auth.json
       - gcloud auth activate-service-account --key-file auth.json
       - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
-      - rm -r /codefresh/volume/out/*
+      - rm -rf /codefresh/volume/out/*
   BuildingDAPS:
     title: Building DAPS
     type: build
@@ -99,13 +137,15 @@ steps:
     commands: 
       - mkdir -p /codefresh/volume/out/bin/ codefresh/volume/bin
       - cp -r /daps/bin/* /codefresh/volume/out/bin/
-      - cp /BUILD/usr/local/bin/dapscoind ./
-      - cp /BUILD/usr/local/bin/dapscoin-cli ./
-      - rm -r /codefresh/volume/DAPS/src
-      - rm -r /codefresh/volume/DAPS/depends
-      - rm -r /codefresh/volume/DAPS/contrib
-      - rm -r /codefresh/volume/DAPS/build-aux
-      - rm -r /codefresh/volume/DAPS/share
+      - cp /BUILD/bin/dapscoind ./
+      - cp /BUILD/bin/dapscoin-cli ./
+      - cp /BUILD/bin/dapscoin-tx ./
+      - cp /BUILD/bin/dapscoin-qt ./
+      - rm -rf /codefresh/volume/DAPS/src
+      - rm -rf /codefresh/volume/DAPS/depends
+      - rm -rf /codefresh/volume/DAPS/contrib
+      - rm -rf /codefresh/volume/DAPS/build-aux
+      - rm -rf /codefresh/volume/DAPS/share
     no_cache: true
     no_cf_cache: true
     stage: Store
@@ -119,14 +159,14 @@ steps:
       - echo $auth>auth.json
       - gcloud auth activate-service-account --key-file auth.json
       - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
-      - rm -r /codefresh/volume/out/*
+      - rm -rf /codefresh/volume/out/*
     stage: Store
   RunQtTests:
     title: Running QT Tests
     image:  r.cfcr.io/hysmagus/build_src:${{CF_BRANCH_TAG_NORMALIZED}}
     working_directory: ./
     commands: 
-      - cd /BUILD/usr/local/bin/ && ./test_dapscoin-qt
+      - cd /BUILD/bin/ && ./test_dapscoin-qt
     no_cache: true
     no_cf_cache: true
     stage: Test

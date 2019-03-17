@@ -771,6 +771,15 @@ void CWallet::MarkDirty()
 bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
 {
     uint256 hash = wtxIn.GetHash();
+    const uint256& hashBlock = wtxIn.hashBlock;
+    CBlockIndex* p = mapBlockIndex[hashBlock];
+    if (p) {
+        for (CTxIn in: wtxIn.vin) {
+            std::cout << "\n Writing key image " << in.keyImage.GetHex() << ", height = " << p->nHeight << std::endl;
+            pblocktree->WriteKeyImage(in.keyImage.GetHex(), p->nHeight);
+            keyImagesSpends[in.keyImage.GetHex()] = true;
+        }
+    }
 
     if (fFromLoadWallet) {
         mapWallet[hash] = wtxIn;
@@ -1419,6 +1428,7 @@ CAmount CWallet::GetBalance()
                                 continue;
                             }
                         }
+                        LogPrintf("\n%s: Key image:%s\n", __func__, keyImageHex);
                         if (keyImagesSpends.count(keyImageHex) == 1) {
                             if (!keyImagesSpends[keyImageHex]) {
                                 nTotal += getCTxOutValue(*pcoin, pcoin->vout[i]);

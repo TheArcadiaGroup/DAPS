@@ -38,17 +38,30 @@ steps:
     build_arguments:
       - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
     stage: Linux
-  BuildingDepenenciesWin:
-    title: Building Dependencies for Windows
+  BuildingDepenenciesWinx86:
+    title: Building Dependencies for WindowsX86
     type: build
-    image_name: build_deps_win
+    image_name: build_deps_winx86
     working_directory: ./
     dockerfile: boot/cf/deps.Dockerfile
     no_cache: true
     no_cf_cache: true
     build_arguments:
       - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
-      - BUILD_TARGET=windows
+      - BUILD_TARGET=windowsx86
+      - SRC_NAME=build_os_libs_18
+    stage: Windows
+  BuildingDepenenciesWinx64:
+    title: Building Dependencies for WindowsX64
+    type: build
+    image_name: build_deps_winx64
+    working_directory: ./
+    dockerfile: boot/cf/deps.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    build_arguments:
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - BUILD_TARGET=windowsx64
       - SRC_NAME=build_os_libs_18
     stage: Windows
   BuildingDepenenciesMac:
