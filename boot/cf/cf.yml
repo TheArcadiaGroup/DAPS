@@ -166,7 +166,7 @@ steps:
     image:  r.cfcr.io/hysmagus/build_src:${{CF_BRANCH_TAG_NORMALIZED}}
     working_directory: ./
     commands: 
-      - cd /BUILD/usr/local/bin/ && ./test_dapscoin-qt
+      - cd /BUILD/bin/ && ./test_dapscoin-qt
     no_cache: true
     no_cf_cache: true
     stage: Test
