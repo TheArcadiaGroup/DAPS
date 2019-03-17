@@ -31,6 +31,12 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #
     elif [ "$BUILD_TARGET" = "windowsx86" ]; \
       then echo "Compiling for win86" && \
+# modded instructions from @zeus16 for compiling with license using chilkat - 
+        mkdir -p depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
+        cp depends/chilkat/x86/include/* depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
+        mkdir -p depends/i686-w64-mingw32/lib && \
+        cp depends/chilkat/x86/lib/* depends/i686-w64-mingw32/lib && \
+#END chilkat
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
         make HOST=i686-w64-mingw32 -j2 && \
