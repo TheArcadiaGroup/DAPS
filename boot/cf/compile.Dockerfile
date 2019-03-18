@@ -16,14 +16,14 @@ COPY . /DAPS/
 
 RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #
-    if [ "$SRC_TAG" = "public-beta" && "$BUILD_TARGET" = "windowsx64" ]; \
+    if [ "$SRC_TAG" = "public-beta" ] && [ "$BUILD_TARGET" = "windowsx64" ]; \
       then echo "Copying chilkat winx64..." && \
         mkdir -p depends/x86_64-w64-mingw32/include/chilkat-9.5.0 && \
         cp depends/chilkat/include/* depends/x86_64-w64-mingw32/include/chilkat-9.5.0 && \
         mkdir -p depends/x86_64-w64-mingw32/lib && \
         cp depends/chilkat/lib/* depends/x86_64-w64-mingw32/lib; \
 #
-    elif [ "$SRC_TAG" = "public-beta" && "$BUILD_TARGET" = "windowsx86" ]; \
+    elif [ "$SRC_TAG" = "public-beta" ] && ["$BUILD_TARGET" = "windowsx86" ]; \
       then echo "Copying chilkat winx86..." && \
         mkdir -p depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
         cp depends/chilkat/x86/include/* depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
