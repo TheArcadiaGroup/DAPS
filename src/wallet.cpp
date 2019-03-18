@@ -510,9 +510,9 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
 {
     const COutPoint outpoint(hash, n);
     std::string mapKey = hash.GetHex() + std::to_string(n);
-    if (keyImageMap.count(mapKey) == 1) {
+    if (keyImageMap.count(mapKey) != 1) {
         std::string ki = keyImageMap[mapKey];
-        if (keyImagesSpends.count(ki) == 1) {
+        if (keyImagesSpends.count(ki) != 0) {
             return keyImagesSpends[ki];
         }
     } else {
@@ -543,6 +543,8 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
                 keyImagesSpends[keyImageHex] = false;
                 //std::cout << "CWallet::IsSpent: key image = " << keyImageHex << std::endl;
                 return false;
+            } else {
+                keyImagesSpends[keyImageHex] = true;
             }
         }
 
@@ -3254,13 +3256,13 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         std::vector<map<uint256, CWalletTx>::const_iterator> tobeRemoveds;
         int i = 0;
         for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
-            if (i < wlIdx) {
+            /*if (i < wlIdx) {
                 i++;
                 continue;
-            }
-            i++;
-            wlIdx = (wlIdx + 1) % mapWallet.size();
-            LogPrintf("\nWallet index:%d\n", wlIdx);
+            }*/
+           // i++;
+           // wlIdx = (wlIdx + 1) % mapWallet.size();
+           // LogPrintf("\nWallet index:%d\n", wlIdx);
             const uint256& wtxid = it->first;
             const CWalletTx* pcoin = &(*it).second;
             for (map<uint256, CWalletTx>::const_iterator cs: notAbleToSpend) {
