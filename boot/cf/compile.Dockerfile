@@ -15,15 +15,31 @@ ENV DESTDIR=$DESTDIR
 COPY . /DAPS/
 
 RUN cd /DAPS/ && mkdir -p /BUILD/ && \
-#     
-    if [ "$BUILD_TARGET" = "windowsx64" ]; \
-      then echo "Compiling for win64" && \
+
+    if [ "$SRC_TAG" = "public-beta" && "$BUILD_TARGET" = "windowsx64" ]; \
+      then echo "Copying chilkat winx64..." && \
 # modded instructions from @zeus16 for compiling with license using chilkat - 
         mkdir -p depends/x86_64-w64-mingw32/include/chilkat-9.5.0 && \
         cp depends/chilkat/include/* depends/x86_64-w64-mingw32/include/chilkat-9.5.0 && \
         mkdir -p depends/x86_64-w64-mingw32/lib && \
-        cp depends/chilkat/lib/* depends/x86_64-w64-mingw32/lib && \
+        cp depends/chilkat/lib/* depends/x86_64-w64-mingw32/lib; \
 #END chilkat
+#
+    elif [ "$SRC_TAG" = "public-beta" && "$BUILD_TARGET" = "windowsx86" ]; \
+      then echo "Copying chilkat winx86..." && \
+# modded instructions from @zeus16 for compiling with license using chilkat - 
+        mkdir -p depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
+        cp depends/chilkat/x86/include/* depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
+        mkdir -p depends/i686-w64-mingw32/lib && \
+        cp depends/chilkat/x86/lib/* depends/i686-w64-mingw32/lib && \
+#END chilkat
+#
+    else echo "Not public-beta, no chilkat to add."; \
+#
+    fi
+#     
+    if [ "$BUILD_TARGET" = "windowsx64" ]; \
+      then echo "Compiling for win64" && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && \
         make HOST=x86_64-w64-mingw32 -j2 && \
@@ -31,12 +47,6 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #
     elif [ "$BUILD_TARGET" = "windowsx86" ]; \
       then echo "Compiling for win86" && \
-# modded instructions from @zeus16 for compiling with license using chilkat - 
-        mkdir -p depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
-        cp depends/chilkat/x86/include/* depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
-        mkdir -p depends/i686-w64-mingw32/lib && \
-        cp depends/chilkat/x86/lib/* depends/i686-w64-mingw32/lib && \
-#END chilkat
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
         make HOST=i686-w64-mingw32 -j2 && \
