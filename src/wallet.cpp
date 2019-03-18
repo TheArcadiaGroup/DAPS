@@ -780,6 +780,8 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
             std::cout << "\n Writing key image " << in.keyImage.GetHex() << ", height = " << p->nHeight << std::endl;
             pblocktree->WriteKeyImage(in.keyImage.GetHex(), p->nHeight);
             keyImagesSpends[in.keyImage.GetHex()] = true;
+            std::string mapKey = in.prevout.hash.GetHex() + std::to_string(in.prevout.n);
+            keyImageMap[mapKey] = in.keyImage.GetHex();
         }
     }
 
