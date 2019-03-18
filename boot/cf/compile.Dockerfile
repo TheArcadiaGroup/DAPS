@@ -36,7 +36,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #
     else echo "Not public-beta, no chilkat to add."; \
 #
-    fi
+    fi; \
 #     
     if [ "$BUILD_TARGET" = "windowsx64" ]; \
       then echo "Compiling for win64" && \
