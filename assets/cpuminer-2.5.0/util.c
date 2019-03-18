@@ -1584,7 +1584,7 @@ inline long _GetMACAddressMSW(unsigned char * result)
 }
 #elif defined(__APPLE__)
  
-static kern_return_t FindEthernetInterfaces(io_iterator_t *matchingServices)
+static kern_return_t _FindEthernetInterfaces(io_iterator_t *matchingServices)
 {
     kern_return_t       kernResult;
     CFMutableDictionaryRef  matchingDict;
@@ -1678,7 +1678,7 @@ long _GetMACAddressMAC(unsigned char * result)
     kern_return_t   kernResult = KERN_FAILURE;
     do
     {
-        kernResult = ::FindEthernetInterfaces(&intfIterator);
+        kernResult = _FindEthernetInterfaces(&intfIterator);
         if (KERN_SUCCESS != kernResult) break;
         kernResult = _GetMACAddressFrom(intfIterator, (UInt8*)result, 6);
     }

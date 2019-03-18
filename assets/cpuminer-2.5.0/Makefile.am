@@ -34,12 +34,19 @@ if TARGET_WINDOWS
 minerd_LDFLAGS	= $(PTHREAD_FLAGS)
 minerd_LDADD	= -lchilkat-9.5.0_win @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ -lrpcrt4
 minerd_CFLAGS	= -fno-strict-aliasing
-minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS) 
+minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS)
+else
+if TARGET_DARWIN
+minerd_LDFLAGS	= $(PTHREAD_FLAGS) -L./lib -framework CoreFoundation -framework IOKit -framework Security
+minerd_LDADD	= -lchilkat-9.5.0_mac @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ -lz
+minerd_CFLAGS	= -fno-strict-aliasing -I./include
+minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS)
 else
 minerd_LDFLAGS	= $(PTHREAD_FLAGS) -L./lib
 minerd_LDADD	= -lchilkat-9.5.0_linux @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@
 minerd_CFLAGS	= -fno-strict-aliasing -I./include
 minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS)
+endif
 endif
 ACLOCAL_AMFLAGS = -I m4
 CCLD = @CXX@

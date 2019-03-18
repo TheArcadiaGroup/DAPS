@@ -2251,7 +2251,7 @@ int main(int argc, char *argv[])
 	long flags;
 	int i;
 
-	printf("%s\n", GetMACAddress());
+	// printf("%s\n", GetMACAddress());
 	rpc_user = strdup("");
 	rpc_pass = strdup("");
 
