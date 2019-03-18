@@ -511,7 +511,7 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
     const COutPoint outpoint(hash, n);
     std::string keyImageHex;
 
-    std::string mapKey = hash.GetHex() + std::to_string(n);
+    /*std::string mapKey = hash.GetHex() + std::to_string(n);
     if (keyImageMap.count(mapKey) != 0) {
         std::string ki = keyImageMap[mapKey];
         if (keyImagesSpends.count(ki) != 0) {
@@ -549,7 +549,7 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
             }
         }
 
-    }
+    }*/
 
     pair<TxSpends::const_iterator, TxSpends::const_iterator> range;
     range = mapTxSpends.equal_range(outpoint);
@@ -1411,7 +1411,7 @@ void CWallet::ResendWalletTransactions()
 
 CAmount CWallet::GetBalance()
 {
-    CAmount nTotal = 0;
+    /*CAmount nTotal = 0;
     {
         LOCK2(cs_main, cs_wallet);
         LogPrintf("\n%s: Reading balance\n", __func__);
@@ -1463,6 +1463,15 @@ CAmount CWallet::GetBalance()
                 }
 
             }
+        }
+    }*/
+    CAmount nTotal = 0;
+    {
+        LOCK2(cs_main, cs_wallet);
+        for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
+            const CWalletTx* pcoin = &(*it).second;
+            if (pcoin->IsTrusted())
+                nTotal += pcoin->GetAvailableCredit();
         }
     }
 
