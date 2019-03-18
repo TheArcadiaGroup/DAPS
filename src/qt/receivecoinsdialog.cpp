@@ -56,7 +56,7 @@ ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent),
     ui->lineEditAddress->setStyleSheet("border:none; background: transparent; text-align:center;");
     std::string pubAddress;
     pwalletMain->ComputeStealthPublicAddress("masteraccount", pubAddress);
-    ui->lineEditAddress->setText(ui->reqAddress->currentText());
+    ui->lineEditAddress->setText(pubAddress.c_str());
 
     ui->pushButtonCP->setStyleSheet("background:transparent;");
     ui->pushButtonCP->setIcon(QIcon(":/icons/editcopy"));
