@@ -509,6 +509,8 @@ void CWallet::SyncMetaData(pair<TxSpends::iterator, TxSpends::iterator> range)
 bool CWallet::IsSpent(const uint256& hash, unsigned int n)
 {
     const COutPoint outpoint(hash, n);
+    std::string keyImageHex;
+
     std::string mapKey = hash.GetHex() + std::to_string(n);
     if (keyImageMap.count(mapKey) != 0) {
         std::string ki = keyImageMap[mapKey];
@@ -520,7 +522,6 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
         if (mapWallet.count(hash) == 1) {
             CWalletTx wtx = mapWallet[hash];
             CKey key;
-            std::string keyImageHex;
             bool found = findCorrespondingPrivateKey(wtx.vout[n], key);
             if (!found) {
                 IsTransactionForMe(wtx);
@@ -548,6 +549,16 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
             }
         }
 
+    }
+
+    pair<TxSpends::const_iterator, TxSpends::const_iterator> range;
+    range = mapTxSpends.equal_range(outpoint);
+    for (TxSpends::const_iterator it = range.first; it != range.second; ++it) {
+        const uint256& wtxid = it->second;
+        std::map<uint256, CWalletTx>::const_iterator mit = mapWallet.find(wtxid);
+        if (mit != mapWallet.end() && mit->second.GetDepthInMainChain() >= 0)
+            keyImagesSpends[keyImageHex] = true;
+            return true; // Spent
     }
 
     return false;
@@ -3256,15 +3267,15 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     {
         LOCK2(cs_main, cs_wallet);
         std::vector<map<uint256, CWalletTx>::const_iterator> tobeRemoveds;
-        //int i = 0;
+        int i = 0;
         for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
-            /*if (i < wlIdx) {
+            if (i < wlIdx) {
                 i++;
                 continue;
-            }*/
-           // i++;
-           // wlIdx = (wlIdx + 1) % mapWallet.size();
-           // LogPrintf("\nWallet index:%d\n", wlIdx);
+            }
+            i++;
+            wlIdx = (wlIdx + 1) % mapWallet.size();
+            LogPrintf("\nWallet index:%d\n", wlIdx);
             const uint256& wtxid = it->first;
             const CWalletTx* pcoin = &(*it).second;
             for (map<uint256, CWalletTx>::const_iterator cs: notAbleToSpend) {
