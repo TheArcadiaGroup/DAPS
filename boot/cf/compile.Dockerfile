@@ -31,7 +31,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
         mkdir -p depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
         cp depends/chilkat/x86/include/* depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
         mkdir -p depends/i686-w64-mingw32/lib && \
-        cp depends/chilkat/x86/lib/* depends/i686-w64-mingw32/lib && \
+        cp depends/chilkat/x86/lib/* depends/i686-w64-mingw32/lib; \
 #END chilkat
 #
     else echo "Not public-beta, no chilkat to add."; \
