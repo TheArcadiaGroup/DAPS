@@ -14,6 +14,7 @@ ENV DESTDIR=$DESTDIR
 #COPY source
 COPY . /DAPS/
 
+RUN apt-get update && apt-get install libcpprest-dev wget cmake -y --fix-missing
 RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #
     if [ "$BUILD_TARGET" = "windowsx64" ]; \
