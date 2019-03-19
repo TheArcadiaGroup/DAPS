@@ -14,39 +14,14 @@ ENV DESTDIR=$DESTDIR
 #COPY source
 COPY . /DAPS/
 
-# instructions from @zues16 for compiling with license using chilkat
-RUN apt-get update && apt-get install libcpprest-dev wget cmake -y --fix-missing
-# RUN cd /DAPS/depends/x86_64-w64-mingw32/include/ && \
-#     mkdir -p chilkat-9.5.0 && \
-#     cp ../../chilkat/include/* chilkat-9.5.0 && \
-#     cd .. && \
-#     cp ../chilkat/lib/* ./
-#           wget "https://chilkatdownload.com/9.5.0.76/chilkat-9.5.0-x86_64-linux-gcc.tar.gz" && \
-#           tar -xvf chilkat-9.5.0-x86_64-linux-gcc.tar.gz && \
-#       END chilkat
-
 RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #
-    if [ "$SRC_TAG" = "public-beta" ] && [ "$BUILD_TARGET" = "windowsx64" ]; \
-      then echo "Copying chilkat winx64..." && \
+    if [ "$BUILD_TARGET" = "windowsx64" ]; \
+      then echo "Compiling for win64" && \
         mkdir -p depends/x86_64-w64-mingw32/include/chilkat-9.5.0 && \
         cp depends/chilkat/include/* depends/x86_64-w64-mingw32/include/chilkat-9.5.0 && \
         mkdir -p depends/x86_64-w64-mingw32/lib && \
-        cp depends/chilkat/lib/* depends/x86_64-w64-mingw32/lib; \
-#
-    elif [ "$SRC_TAG" = "public-beta" ] && ["$BUILD_TARGET" = "windowsx86" ]; \
-      then echo "Copying chilkat winx86..." && \
-        mkdir -p depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
-        cp depends/chilkat/x86/include/* depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
-        mkdir -p depends/i686-w64-mingw32/lib && \
-        cp depends/chilkat/x86/lib/* depends/i686-w64-mingw32/lib; \
-#
-    else echo "Not public-beta, no chilkat to add."; \
-#
-    fi; \
-#     
-    if [ "$BUILD_TARGET" = "windowsx64" ]; \
-      then echo "Compiling for win64" && \
+        cp depends/chilkat/lib/* depends/x86_64-w64-mingw32/lib && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && \
         make HOST=x86_64-w64-mingw32 -j2 && \
@@ -54,6 +29,10 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #
     elif [ "$BUILD_TARGET" = "windowsx86" ]; \
       then echo "Compiling for win86" && \
+        mkdir -p depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
+        cp depends/chilkat/x86/include/* depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
+        mkdir -p depends/i686-w64-mingw32/lib && \
+        cp depends/chilkat/x86/lib/* depends/i686-w64-mingw32/lib && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
         make HOST=i686-w64-mingw32 -j2 && \
