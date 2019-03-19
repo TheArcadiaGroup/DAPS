@@ -67,6 +67,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             sub.type = TransactionRecord::StakeMint;
             sub.address = CBitcoinAddress(address).ToString();
             sub.credit = nNet;
+            sub.debit = 0;
         }
         parts.append(sub);
     } else if (wtx.IsZerocoinSpend()) {

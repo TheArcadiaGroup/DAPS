@@ -40,9 +40,13 @@ SendCoinsEntry::SendCoinsEntry(QWidget* parent) : QStackedWidget(parent),
     connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(deleteClicked()));
     connect(ui->deleteButton_is, SIGNAL(clicked()), this, SLOT(deleteClicked()));
     connect(ui->deleteButton_s, SIGNAL(clicked()), this, SLOT(deleteClicked()));
-
     // #HIDE multisend
     ui->deleteButton->setVisible(false);
+
+    //Cam: Hide address book button
+    ui->addressBookButton->setVisible(false);
+
+    //place holder text for payAmount
 }
 
 SendCoinsEntry::~SendCoinsEntry()

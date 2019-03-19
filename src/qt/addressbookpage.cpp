@@ -36,7 +36,6 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget* parent) : QDialog
     ui->deleteAddress->setIcon(QIcon());
     ui->exportButton->setIcon(QIcon());
 #endif
-
     switch (mode) {
     case ForSelection:
         switch (tab) {
