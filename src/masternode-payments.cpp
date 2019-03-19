@@ -259,18 +259,15 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
 }
 
 
-void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake)
+bool FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake)
 {
-    LogPrintf("\n%s: fill block payee\n", __func__);
     CBlockIndex* pindexPrev = chainActive.Tip();
-    if (!pindexPrev) return;
+    if (!pindexPrev) return false;
 
     if (IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS) && budget.IsBudgetPaymentBlock(pindexPrev->nHeight + 1)) {
-        LogPrintf("\n%s: fill block payee budget\n", __func__);
-        budget.FillBlockPayee(txNew, nFees, fProofOfStake);
+        return budget.FillBlockPayee(txNew, nFees, fProofOfStake);
     } else {
-        LogPrintf("\n%s: fill block payee payments\n", __func__);
-        masternodePayments.FillBlockPayee(txNew, nFees, fProofOfStake);
+        return masternodePayments.FillBlockPayee(txNew, nFees, fProofOfStake);
     }
 }
 
@@ -283,10 +280,10 @@ std::string GetRequiredPaymentsString(int nBlockHeight)
     }
 }
 
-void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake)
+bool CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake)
 {
     CBlockIndex* pindexPrev = chainActive.Tip();
-    if (!pindexPrev) return;
+    if (!pindexPrev) return false;
 
     bool hasPayment = true;
     CScript payee;
@@ -297,11 +294,16 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFe
         //no masternode detected
         CMasternode* winningNode = mnodeman.GetCurrentMasterNode(1);
         if (winningNode) {
-            LogPrintf("\n%s: selecting winning masternode\n", __func__);
             //generate payee based on masternodeStealthAddress
             std::vector<unsigned char> masternodeStealthAddress = winningNode->vin.masternodeStealthAddress;
             std::string mnsa(masternodeStealthAddress.begin(), masternodeStealthAddress.end());
             LogPrintf("\nCMasternodePayments: masternodeStealthAddress: %s\n", mnsa);
+            std::string myAddress;
+            pwalletMain->ComputeStealthPublicAddress("masteraccount", myAddress);
+            if (myAddress == mnsa) {
+                LogPrintf("\nCMasternodePayments: cannot pay staking reward and masternode reward to the same address\n");
+                return false;
+            }
 
             //Parse stealth address
             CPubKey pubViewKey, pubSpendKey, des;

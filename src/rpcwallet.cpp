@@ -3084,9 +3084,12 @@ Value sendtostealthaddress(const Array& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    pwalletMain->SendToStealthAddress(stealthAddr, nAmount, wtx);
+    if (!pwalletMain->SendToStealthAddress(stealthAddr, nAmount, wtx)) {
+        throw JSONRPCError(RPC_WALLET_ERROR,
+                           "Cannot create transaction.");
+    }
 
-    std::cout << "tx hex:" << EncodeHexTx(wtx) << std::endl;
+    //std::cout << "tx hex:" << EncodeHexTx(wtx) << std::endl;
 
     return wtx.GetHash().GetHex();
 }
