@@ -1,6 +1,6 @@
 ARG SRC_PATH=r.cfcr.io/hysmagus
 ARG SRC_NAME=build_deps
-ARG SRC_TAG=develop
+ARG SRC_TAG=public_beta
 
 FROM ${SRC_PATH}/${SRC_NAME}:${SRC_TAG}
 ENV SRC_IMG=${SRC_PATH}/${SRC_NAME}:${SRC_TAG}
