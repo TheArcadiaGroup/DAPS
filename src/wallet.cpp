@@ -1074,7 +1074,7 @@ bool CWallet::IsDenominated(const CTxIn& txin) const
         map<uint256, CWalletTx>::const_iterator mi = mapWallet.find(txin.prevout.hash);
         if (mi != mapWallet.end()) {
             const CWalletTx& prev = (*mi).second;
-            if (txin.prevout.n < prev.vout.size()) return IsDenominatedAmount(prev.vout[txin.prevout.n].nValue);
+            if (txin.prevout.n < prev.vout.size()) return IsDenominatedAmount(getCTxOutValue(prev, prev.vout[txin.prevout.n]));
         }
     }
     return false;
@@ -1470,8 +1470,9 @@ CAmount CWallet::GetBalance()
         LOCK2(cs_main, cs_wallet);
         for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
             const CWalletTx* pcoin = &(*it).second;
-            if (pcoin->IsTrusted())
+            if (pcoin->IsTrusted()) {
                 nTotal += pcoin->GetAvailableCredit();
+            }
         }
     }
 

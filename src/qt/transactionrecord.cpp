@@ -56,7 +56,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                         sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
                         sub.type = TransactionRecord::MNReward;
                         sub.address = CBitcoinAddress(outAddress).ToString();
-                        sub.credit = wtx.vout[i].nValue;
+                        sub.credit = wallet->getCTxOutValue(wtx, wtx.vout[i]);
                     }
                 }
             }
@@ -133,16 +133,18 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
         //
         // Credit
         //
+        std::cout << "nNet = " << nNet << std::endl;
         BOOST_FOREACH (const CTxOut& txout, wtx.vout) {
             isminetype mine = wallet->IsMine(txout);
             if (mine) {
                 TransactionRecord sub(hash, nTime);
                 CTxDestination address;
                 sub.idx = parts.size(); // sequence number
-                sub.credit = txout.nValue;
                 sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
                 if (ExtractDestination(txout.scriptPubKey, address) && IsMine(*wallet, address)) {
                     // Received by DAPScoin Address
+                    sub.credit = IsMine(*wallet, address) ? wallet->getCTxOutValue(wtx, txout) : 0;
+                    //std:: cout << "sub credit = " << sub.credit << std::endl;
                     sub.type = TransactionRecord::RecvWithAddress;
                     sub.address = CBitcoinAddress(address).ToString();
                 } else {
@@ -178,13 +180,15 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
         int nToMe = 0;
         BOOST_FOREACH (const CTxOut& txout, wtx.vout) {
             if (wallet->IsMine(txout)) {
-                fAllToMeDenom = fAllToMeDenom && wallet->IsDenominatedAmount(txout.nValue);
+                CAmount c = wallet->getCTxOutValue(wtx, txout);
+                fAllToMeDenom = fAllToMeDenom && wallet->IsDenominatedAmount(c);
                 nToMe++;
             }
             isminetype mine = wallet->IsMine(txout);
             if (mine & ISMINE_WATCH_ONLY) involvesWatchAddress = true;
             if (fAllToMe > mine) fAllToMe = mine;
         }
+        std::cout << "nDebit = " << nDebit << ", nCredit = "  << nCredit << std::endl;
 
         if (fAllFromMeDenom && fAllToMeDenom && nFromMe * nToMe) {
             parts.append(TransactionRecord(hash, nTime, TransactionRecord::ObfuscationDenominate, "", -nDebit, nCredit));

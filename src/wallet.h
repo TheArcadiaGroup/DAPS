@@ -663,16 +663,14 @@ public:
     bool IsMyZerocoinSpend(const CBigNum& bnSerial) const;
     CAmount GetCredit(const CTransaction& tx, const CTxOut& txout, const isminefilter& filter) const
     {
-        if (!MoneyRange(getCTxOutValue(tx, txout)))
-            throw std::runtime_error("CWallet::GetCredit() : value out of range");
-        return ((IsMine(txout) & filter) ? txout.nValue : 0);
+        return ((IsMine(txout) & filter) ? getCTxOutValue(tx, txout) : 0);
     }
     bool IsChange(const CTxOut& txout) const;
-    CAmount GetChange(const CTxOut& txout) const
+    CAmount GetChange(const CTransaction& tx, const CTxOut& txout) const
     {
-        if (!MoneyRange(txout.nValue))
-            throw std::runtime_error("CWallet::GetChange() : value out of range");
-        return (IsChange(txout) ? txout.nValue : 0);
+        //if (!MoneyRange(txout.nValue))
+        //    throw std::runtime_error("CWallet::GetChange() : value out of range");
+        return (IsChange(txout) ? getCTxOutValue(tx, txout) : 0);
     }
     bool IsMine(const CTransaction& tx) const
     {
@@ -710,7 +708,7 @@ public:
     {
         CAmount nChange = 0;
         BOOST_FOREACH (const CTxOut& txout, tx.vout) {
-            nChange += GetChange(txout);
+            nChange += GetChange(tx, txout);
             if (!MoneyRange(nChange))
                 throw std::runtime_error("CWallet::GetChange() : value out of range");
         }
@@ -1209,10 +1207,13 @@ public:
         uint256 hashTx = GetHash();
         for (unsigned int i = 0; i < vout.size(); i++) {
             if (!pwallet->IsSpent(hashTx, i)) {
+                std::cout << "txout has not been spent"  << std::endl;
                 const CTxOut& txout = vout[i];
                 nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
                 if (!MoneyRange(nCredit))
                     throw std::runtime_error("CWalletTx::GetAvailableCredit() : value out of range");
+            } else {
+                std::cout << "txout has been spent"  << std::endl;
             }
         }
 
@@ -1376,7 +1377,7 @@ public:
         for (unsigned int i = 0; i < vout.size(); i++) {
             const CTxOut& txout = vout[i];
 
-            if (pwallet->IsSpent(hashTx, i) || !pwallet->IsDenominatedAmount(vout[i].nValue)) continue;
+            if (pwallet->IsSpent(hashTx, i) || !pwallet->IsDenominatedAmount(pwallet->getCTxOutValue(*this, txout))) continue;
 
             nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
             if (!MoneyRange(nCredit))
