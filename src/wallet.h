@@ -804,6 +804,7 @@ public:
     CAmount getCTxOutValue(const CTransaction &tx, const CTxOut &out) const;
     bool findCorrespondingPrivateKey(const CTxOut &txout, CKey &key) const;
     bool AvailableCoins(const uint256 wtxid, const CWalletTx* pcoin, vector<COutput>& vCoins, int cannotSpend, bool fOnlyConfirmed = true, const CCoinControl* coinControl = NULL, bool fIncludeZeroValue = false, AvailableCoinsType nCoinType = ALL_COINS, bool fUseIX = false);
+    void CreatePrivacyAccount();
 private:
     bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth);
     bool mySpendPrivateKey(CKey& spend) const;

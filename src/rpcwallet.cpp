@@ -2918,6 +2918,11 @@ Value createprivacyaccount(const Array& params, bool fHelp)
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
                            "Error: There is no privacy wallet, please use createprivacywallet to create one.");
     }
+
+    if(pwalletMain->IsCrypted())
+        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED,
+                           "Error: Please enter the wallet passphrase with walletpassphrase first.");
+
     CWalletDB walletdb(pwalletMain->strWalletFile);
     Object ret;
     int i = 0;

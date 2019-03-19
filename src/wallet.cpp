@@ -3278,6 +3278,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         std::vector<map<uint256, CWalletTx>::const_iterator> tobeRemoveds;
         int i = 0;
         for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
+            if (wlIdx)
             if (i < wlIdx) {
                 i++;
                 continue;
@@ -4077,6 +4078,42 @@ bool CWallet::NewKeyPool()
     return true;
 }
 
+
+void GetAccountAddress(CWallet* pwalletMain, string strAccount, bool bForceNew = false)
+{
+    CWalletDB walletdb(pwalletMain->strWalletFile);
+
+    CAccount account;
+    walletdb.ReadAccount(strAccount, account);
+
+    bool bKeyUsed = false;
+
+    // Check if the current key has been used
+    if (account.vchPubKey.IsValid()) {
+        CScript scriptPubKey = GetScriptForDestination(account.vchPubKey.GetID());
+        for (map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin();
+             it != pwalletMain->mapWallet.end() && account.vchPubKey.IsValid();
+             ++it) {
+            const CWalletTx& wtx = (*it).second;
+            BOOST_FOREACH (const CTxOut& txout, wtx.vout)
+                            if (txout.scriptPubKey == scriptPubKey)
+                                bKeyUsed = true;
+        }
+    }
+
+    // Generate a new key
+    if (!account.vchPubKey.IsValid() || bForceNew || bKeyUsed) {
+        pwalletMain->GetKeyFromPool(account.vchPubKey);
+            //throw JSONRPCError(RPC_WALLET_KEYPOOL_RAN_OUT, "Error: Keypool ran out, please call keypoolrefill first");
+
+        pwalletMain->SetAddressBook(account.vchPubKey.GetID(), strAccount, "receive");
+        walletdb.WriteAccount(strAccount, account);
+    }
+    LogPrintf("\n%s\n", __func__);
+
+
+}
+
 bool CWallet::TopUpKeyPool(unsigned int kpSize)
 {
     {
@@ -4134,6 +4171,39 @@ void CWallet::ReserveKeyFromKeyPool(int64_t& nIndex, CKeyPool& keypool)
             throw runtime_error("ReserveKeyFromKeyPool() : unknown key in key pool");
         assert(keypool.vchPubKey.IsValid());
         LogPrintf("keypool reserve %d\n", nIndex);
+    }
+}
+
+void CWallet::CreatePrivacyAccount() {
+    {
+        LOCK(cs_wallet);
+        if (IsCrypted())
+            return;//throw runtime_error("Wallet is encrypted, please decrypt it");
+
+        CWalletDB walletdb(strWalletFile);
+        int i = 0;
+        while (i < 10) {
+            std::string viewAccountLabel = "viewaccount";
+            std::string spendAccountLabel = "spendaccount";
+            CAccount viewAccount;
+            walletdb.ReadAccount(viewAccountLabel, viewAccount);
+            if (!viewAccount.vchPubKey.IsValid()) {
+                GetAccountAddress(this, viewAccountLabel);
+            }
+            CAccount spendAccount;
+            walletdb.ReadAccount(spendAccountLabel, spendAccount);
+            if (!spendAccount.vchPubKey.IsValid()) {
+                GetAccountAddress(this, spendAccountLabel);
+            }
+            if (viewAccount.vchPubKey.GetHex() == "" || spendAccount.vchPubKey.GetHex() == "") {
+                i++;
+                continue;
+            }
+            std::string stealthAddr;
+            pwalletMain->EncodeStealthPublicAddress(viewAccount.vchPubKey, spendAccount.vchPubKey, stealthAddr);
+            walletdb.AppendStealthAccountList("masteraccount");
+            break;
+        }
     }
 }
 
