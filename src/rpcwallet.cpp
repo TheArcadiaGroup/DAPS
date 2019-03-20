@@ -3095,6 +3095,13 @@ Value sendtostealthaddress(const Array& params, bool fHelp)
 }
 
 
+std::string GetHex(const unsigned char* vch, int sz) {
+    char psz[sz * 2 + 1];
+    for (unsigned int i = 0; i < sz; i++)
+        sprintf(psz + i * 2, "%02x", vch[sz - i - 1]);
+    return std::string(psz, psz + sz * 2);
+}
+
 Value revealviewprivatekey(const Array& params, bool fHelp) {
     if (fHelp || params.size() != 0)
         throw runtime_error(
@@ -3119,8 +3126,7 @@ Value revealviewprivatekey(const Array& params, bool fHelp) {
 
     CKey view;
     pwalletMain->myViewPrivateKey(view);
-    std::string str(view.begin(), view.end());
-    return str;
+    return CBitcoinSecret(view).ToString();
 }
 
 Value revealspendprivatekey(const Array& params, bool fHelp) {
@@ -3147,6 +3153,5 @@ Value revealspendprivatekey(const Array& params, bool fHelp) {
 
     CKey spend;
     pwalletMain->mySpendPrivateKey(spend);
-    std::string str(spend.begin(), spend.end());
-    return str;
+    return CBitcoinSecret(spend).ToString();
 }
