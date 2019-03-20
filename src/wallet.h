@@ -549,9 +549,8 @@ public:
 
     typedef std::pair<CWalletTx*, CAccountingEntry*> TxPair;
     typedef std::multimap<int64_t, TxPair> TxItems;
-
     std::vector<map<uint256, CWalletTx>::const_iterator> notAbleToSpend;
-
+    std::map<std::string, CAmount> decodedAmount;
     /**
      * Get the wallet's activity log
      * @return multimap of ordered transactions and accounting entries
@@ -649,24 +648,24 @@ public:
     // respect current settings
     int GetInputObfuscationRounds(CTxIn in) const;
 
-    bool IsDenominated(const CTxIn& txin) const;
-    bool IsDenominated(const CTransaction& tx) const;
+    bool IsDenominated(const CTxIn& txin) ;
+    bool IsDenominated(const CTransaction& tx) ;
 
     bool IsDenominatedAmount(CAmount nInputAmount) const;
 
     isminetype IsMine(const CTxIn& txin) const;
-    CAmount GetDebit(const CTxIn& txin, const isminefilter& filter) const;
+    CAmount GetDebit(const CTxIn& txin, const isminefilter& filter) ;
     isminetype IsMine(const CTxOut& txout) const
     {
         return ::IsMine(*this, txout.scriptPubKey);
     }
     bool IsMyZerocoinSpend(const CBigNum& bnSerial) const;
-    CAmount GetCredit(const CTransaction& tx, const CTxOut& txout, const isminefilter& filter) const
+    CAmount GetCredit(const CTransaction& tx, const CTxOut& txout, const isminefilter& filter)
     {
         return ((IsMine(txout) & filter) ? getCTxOutValue(tx, txout) : 0);
     }
     bool IsChange(const CTxOut& txout) const;
-    CAmount GetChange(const CTransaction& tx, const CTxOut& txout) const
+    CAmount GetChange(const CTransaction& tx, const CTxOut& txout)
     {
         //if (!MoneyRange(txout.nValue))
         //    throw std::runtime_error("CWallet::GetChange() : value out of range");
@@ -680,11 +679,11 @@ public:
         return false;
     }
     /** should probably be renamed to IsRelevantToMe */
-    bool IsFromMe(const CTransaction& tx) const
+    bool IsFromMe(const CTransaction& tx)
     {
         return (GetDebit(tx, ISMINE_ALL) > 0);
     }
-    CAmount GetDebit(const CTransaction& tx, const isminefilter& filter) const
+    CAmount GetDebit(const CTransaction& tx, const isminefilter& filter)
     {
         CAmount nDebit = 0;
         BOOST_FOREACH (const CTxIn& txin, tx.vin) {
@@ -694,7 +693,7 @@ public:
         }
         return nDebit;
     }
-    CAmount GetCredit(const CTransaction& tx, const isminefilter& filter) const
+    CAmount GetCredit(const CTransaction& tx, const isminefilter& filter)
     {
         CAmount nCredit = 0;
         BOOST_FOREACH (const CTxOut& txout, tx.vout) {
@@ -704,7 +703,7 @@ public:
         }
         return nCredit;
     }
-    CAmount GetChange(const CTransaction& tx) const
+    CAmount GetChange(const CTransaction& tx)
     {
         CAmount nChange = 0;
         BOOST_FOREACH (const CTxOut& txout, tx.vout) {
@@ -796,10 +795,10 @@ public:
     bool GenerateIntegratedAddress(const std::string& accountName, std::string& pubAddr);
     bool GenerateIntegratedAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr);
     bool AllMyPublicAddresses(std::vector<std::string>& addresses, std::vector<std::string>& accountNames);
-    bool RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmount &amount) const;
+    bool RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmount &amount);
     bool EncodeTxOutAmount(CTxOut& out, const CAmount& amount, const unsigned char * sharedSec);
-    CAmount getCOutPutValue(const COutput& output) const;
-    CAmount getCTxOutValue(const CTransaction &tx, const CTxOut &out) const;
+    CAmount getCOutPutValue(const COutput& output) ;
+    CAmount getCTxOutValue(const CTransaction &tx, const CTxOut &out) ;
     bool findCorrespondingPrivateKey(const CTxOut &txout, CKey &key) const;
     bool AvailableCoins(const uint256 wtxid, const CWalletTx* pcoin, vector<COutput>& vCoins, int cannotSpend, bool fOnlyConfirmed = true, const CCoinControl* coinControl = NULL, bool fIncludeZeroValue = false, AvailableCoinsType nCoinType = ALL_COINS, bool fUseIX = false);
     void CreatePrivacyAccount();

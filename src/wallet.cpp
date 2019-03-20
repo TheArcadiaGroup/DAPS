@@ -892,6 +892,7 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
             boost::thread t(runCommand, strCmd); // thread runs free
         }
     }
+
     return true;
 }
 
@@ -965,7 +966,7 @@ bool CWallet::IsMyZerocoinSpend(const CBigNum& bnSerial) const
     return CWalletDB(strWalletFile).ReadZerocoinSpendSerialEntry(bnSerial);
 }
 
-CAmount CWallet::GetDebit(const CTxIn& txin, const isminefilter& filter) const
+CAmount CWallet::GetDebit(const CTxIn& txin, const isminefilter& filter)
 {
     {
         LOCK(cs_wallet);
@@ -1067,7 +1068,7 @@ int CWallet::GetInputObfuscationRounds(CTxIn in) const
     return realObfuscationRounds > nZeromintPercentage ? nZeromintPercentage : realObfuscationRounds;
 }
 
-bool CWallet::IsDenominated(const CTxIn& txin) const
+bool CWallet::IsDenominated(const CTxIn& txin)
 {
     {
         LOCK(cs_wallet);
@@ -1080,7 +1081,7 @@ bool CWallet::IsDenominated(const CTxIn& txin) const
     return false;
 }
 
-bool CWallet::IsDenominated(const CTransaction& tx) const
+bool CWallet::IsDenominated(const CTransaction& tx)
 {
     /*
         Return false if ANY inputs are non-denom
@@ -6242,7 +6243,7 @@ bool CWallet::myViewPrivateKey(CKey& view) const {
     return true;
 }
 
-bool CWallet::RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmount &amount) const {
+bool CWallet::RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmount &amount) {
     if (tx.IsCoinBase()) {
         //Coinbase transaction output is not hidden, not need to decrypt
         amount = out.nValue;
@@ -6252,6 +6253,16 @@ bool CWallet::RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmou
         if (out.nValue > 0) {
             amount = out.nValue;
             return true;
+        }
+    }
+    std::string k = "";
+    for (int i = 0; i < tx.vout.size(); i++) {
+        if (tx.vout[i].nValue == out.nValue && tx.vout[i].scriptPubKey == out.scriptPubKey) {
+            k = tx.GetHash().GetHex() + std::to_string(i);
+            if (decodedAmount.count(k) == 1) {
+                return decodedAmount[k];
+            }
+            break;
         }
     }
 
@@ -6273,6 +6284,9 @@ bool CWallet::RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmou
                             uint256 mask = out.maskValue.mask;
                             CKey decodedMask;
                             ECDHInfo::Decode(mask.begin(), val.begin(), sharedSec, decodedMask, amount);
+                            if (k != "") {
+                                decodedAmount[k] = amount;
+                            }
                             return true;
                         }
                     }
@@ -6357,14 +6371,14 @@ bool CWallet::EncodeTxOutAmount(CTxOut &out, const CAmount &amount, const unsign
     return true;
 }
 
-CAmount CWallet::getCOutPutValue(const COutput &output) const {
+CAmount CWallet::getCOutPutValue(const COutput &output) {
     const CTxOut &out = output.tx->vout[output.i];
     CAmount amount = 0;
     RevealTxOutAmount((const CTransaction&)(*output.tx), out, amount);
     return amount;
 }
 
-CAmount CWallet::getCTxOutValue(const CTransaction &tx, const CTxOut &out) const {
+CAmount CWallet::getCTxOutValue(const CTransaction &tx, const CTxOut &out) {
     CAmount amount = 0;
     RevealTxOutAmount(tx, out, amount);
     return amount;
