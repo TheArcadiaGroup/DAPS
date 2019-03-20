@@ -3246,13 +3246,13 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
                            (pindex->nHeight == 91880 && pindex->GetBlockHash() ==
                                                         uint256("0x00000000000743f190a18c5577a3c2d2a1f610ae9601ac046a38084ccb7cd721")));
     if (!block.IsPoABlockByVersion() && fEnforceBIP30) {
-        BOOST_FOREACH(
+        /*BOOST_FOREACH(
         const CTransaction &tx, block.vtx) {
             const CCoins *coins = view.AccessCoins(tx.GetHash());
             if (coins && !coins->IsPruned())
                 return state.DoS(100, error("ConnectBlock() : tried to overwrite transaction"),
                                  REJECT_INVALID, "bad-txns-BIP30");
-        }
+        }*/
     }
 
     // BIP16 didn't become active until Apr 1 2012

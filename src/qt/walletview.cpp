@@ -130,6 +130,8 @@ void WalletView::setBitcoinGUI(BitcoinGUI* gui)
 
         // Pass through transaction notifications
         connect(this, SIGNAL(incomingTransaction(QString, int, CAmount, QString, QString)), gui, SLOT(incomingTransaction(QString, int, CAmount, QString, QString)));
+
+        connect(this, SIGNAL(incomingTransaction(QString, int, CAmount, QString, QString)), historyPage, SLOT(txalert(QString, int, CAmount, QString, QString)));
     }
 }
 

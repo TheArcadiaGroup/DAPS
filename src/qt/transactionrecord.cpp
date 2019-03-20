@@ -39,7 +39,6 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
     CAmount nNet = nCredit - nDebit;
     uint256 hash = wtx.GetHash();
     std::map<std::string, std::string> mapValue = wtx.mapValue;
-
     if (wtx.IsCoinStake()) {
         TransactionRecord sub(hash, nTime);
         CTxDestination address;
@@ -134,7 +133,6 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
         //
         // Credit
         //
-        std::cout << "nNet = " << nNet << std::endl;
         BOOST_FOREACH (const CTxOut& txout, wtx.vout) {
             isminetype mine = wallet->IsMine(txout);
             if (mine) {
@@ -235,7 +233,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             //
             // Debit
             //
-            CAmount nTxFee = nDebit - wtx.GetValueOut();
+            CAmount nTxFee = 0;//nDebit - wtx.GetValueOut();
 
             for (unsigned int nOut = 0; nOut < wtx.vout.size(); nOut++) {
                 const CTxOut& txout = wtx.vout[nOut];
@@ -273,7 +271,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                     nValue += nTxFee;
                     nTxFee = 0;
                 }
-                sub.debit = -nValue;
+                sub.debit = nDebit - nCredit;
 
                 parts.append(sub);
             }
