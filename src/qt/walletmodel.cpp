@@ -782,7 +782,7 @@ std::map<QString, QString> getTx(CWallet* wallet, CWalletTx tx)
         if (wallet->RevealTxOutAmount(tx,out,vamount))
             totalamount+=vamount;   //this is the total output
     }
-    std::cout << "totalamount = " << totalamount << ", totalin"
+    std::cout << "totalamount = " << totalamount << ", totalin";
     QList<TransactionRecord> decomposedTx = TransactionRecord::decomposeTransaction(wallet, tx);
     QList<QString> addressBook = getAddressBookData(wallet);
     std::map<QString, QString> txData;
