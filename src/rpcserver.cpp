@@ -374,6 +374,8 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "encryptwallet", &encryptwallet, true, false, true},
         {"wallet", "createprivacywallet", &createprivacywallet, true, false, true},
         {"wallet", "createprivacyaccount", &createprivacyaccount, true, false, true},
+        {"wallet", "revealviewprivatekey", &revealviewprivatekey, true, false, true},
+        {"wallet", "revealspendprivatekey", &revealspendprivatekey, true, false, true},
         {"wallet", "decodestealthaddress", &decodestealthaddress, true, false, true},
         {"wallet", "sendtostealthaddress", &sendtostealthaddress, false, false, true},
         {"wallet", "createprivacysubaddress", &createprivacysubaddress, true, false, true},
