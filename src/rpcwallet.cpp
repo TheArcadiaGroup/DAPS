@@ -3094,3 +3094,59 @@ Value sendtostealthaddress(const Array& params, bool fHelp)
     return wtx.GetHash().GetHex();
 }
 
+
+Value revealviewprivatekey(const Array& params, bool fHelp) {
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+                "revealviewprivatekey \n"
+                "\nReveal view private key.\n"
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"Private view key\"    (string) the private view key\n"
+                "\nExamples:\n" +
+                HelpExampleCli("revealviewprivatekey", "") + HelpExampleCli("revealviewprivatekey", "\"\"") +
+                HelpExampleCli("revealviewprivatekey", "") + HelpExampleRpc("revealviewprivatekey", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+    }
+
+    if (pwalletMain->IsCrypted())
+        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED,
+                           "Error: Please enter the wallet passphrase with walletpassphrase first.");
+
+    CKey view;
+    pwalletMain->myViewPrivateKey(view);
+    std::string str(view.begin(), view.end());
+    return str;
+}
+
+Value revealspendprivatekey(const Array& params, bool fHelp) {
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+                "revealspendprivatekey \n"
+                "\nReveal view private key.\n"
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"Private spend key\"    (string) the private spend key\n"
+                "\nExamples:\n" +
+                HelpExampleCli("revealspendprivatekey", "") + HelpExampleCli("revealspendprivatekey", "\"\"") +
+                HelpExampleCli("revealspendprivatekey", "") + HelpExampleRpc("revealspendprivatekey", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+    }
+
+    if (pwalletMain->IsCrypted())
+        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED,
+                           "Error: Please enter the wallet passphrase with walletpassphrase first.");
+
+    CKey spend;
+    pwalletMain->mySpendPrivateKey(spend);
+    std::string str(spend.begin(), spend.end());
+    return str;
+}
