@@ -30,7 +30,7 @@ bool TransactionRecord::showTransaction(const CWalletTx& wtx)
 /*
  * Decompose CWallet transaction to model transaction records.
  */
-QList<TransactionRecord> TransactionRecord::decomposeTransaction(CWallet* wallet, const CWalletTx& wtx)
+QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* wallet, const CWalletTx& wtx)
 {
     QList<TransactionRecord> parts;
     int64_t nTime = wtx.GetComputedTxTime();
