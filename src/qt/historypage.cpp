@@ -26,11 +26,17 @@
 #include <QSortFilterProxyModel>
 #include <QTextDocument>
 #include <QTime>
+#include <QDate>
 #include <QTextStream>
 #include <QProcess>
 
 bool TxCompare (std::map<QString, QString> i, std::map<QString, QString> j) { 
-    return 1; 
+    QString str_i = i.at("date");
+    QString str_j = j.at("date");
+    QDateTime date_i = QDateTime::fromString(str_i,"MM/dd/yy hh:mm");
+    QDateTime date_j = QDateTime::fromString(str_j,"MM/dd/yy hh:mm");
+
+    return date_i > date_j;
 }
 
 HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent),
