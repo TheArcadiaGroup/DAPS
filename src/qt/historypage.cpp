@@ -15,6 +15,8 @@
 #include "transactionrecord.h"
 #include "walletmodel.h"
 
+#include <algorithm>
+
 #include <QAction>
 #include <QBrush>
 #include <QCalendarWidget>
@@ -27,6 +29,9 @@
 #include <QTextStream>
 #include <QProcess>
 
+bool TxCompare (std::map<QString, QString> i, std::map<QString, QString> j) { 
+    return 1; 
+}
 
 HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent),
                                             ui(new Ui::HistoryPage),
@@ -113,6 +118,8 @@ void HistoryPage::updateTableData(CWallet* wallet)
     std::cout << "updateTableData: updating" << std::endl;
     ui->tableView->setRowCount(0);
     auto txs = WalletUtil::getTXs(wallet);
+    std::sort (txs.begin(), txs.end(), TxCompare);
+
     for (int row = 0; row < (short)txs.size(); row++) {
         ui->tableView->insertRow(row);
         int col = 0;
