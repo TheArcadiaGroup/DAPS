@@ -31,22 +31,6 @@
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="5" column="0">
-         <widget class="QLabel" name="label_3">
-          <property name="toolTip">
-           <string>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the DAPScoin network.</string>
-          </property>
-          <property name="text">
-           <string>Payment ID:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy">
-           <cstring>reqID</cstring>
-          </property>
-         </widget>
-        </item>
         <item row="3" column="0">
          <widget class="QLabel" name="label_2">
           <property name="toolTip">
@@ -60,20 +44,7 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
-         <widget class="BitcoinAmountField" name="reqAmount">
-          <property name="minimumSize">
-           <size>
-            <width>80</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>An optional amount to request. Leave this empty or zero to not request a specific amount.</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0">
+        <item row="7" column="0">
          <widget class="QLabel" name="label_4">
           <property name="text">
            <string/>
@@ -83,7 +54,26 @@
           </property>
          </widget>
         </item>
-        <item row="7" column="1">
+        <item row="3" column="1">
+         <widget class="QComboBox" name="reqAddress"/>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label">
+          <property name="toolTip">
+           <string>An optional amount to request. Leave this empty or zero to not request a specific amount.</string>
+          </property>
+          <property name="text">
+           <string>&amp;Amount:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>reqAmount</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
            <widget class="QPushButton" name="receiveButton">
@@ -97,7 +87,7 @@
              <string>&amp;Submit</string>
             </property>
             <property name="icon">
-             <iconset resource="../git/marchupdates/DAPS/src/qt/dapscoin.qrc">
+             <iconset>
               <normaloff>:/icons/receiving_addresses</normaloff>:/icons/receiving_addresses</iconset>
             </property>
            </widget>
@@ -120,7 +110,7 @@
           </item>
          </layout>
         </item>
-        <item row="7" column="0">
+        <item row="8" column="0">
          <widget class="QLabel" name="label_7">
           <property name="text">
            <string/>
@@ -128,30 +118,40 @@
          </widget>
         </item>
         <item row="4" column="0">
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="label_3">
           <property name="toolTip">
-           <string>An optional amount to request. Leave this empty or zero to not request a specific amount.</string>
+           <string>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the DAPScoin network.</string>
           </property>
           <property name="text">
-           <string>&amp;Amount:</string>
+           <string>Payment ID:</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
           <property name="buddy">
-           <cstring>reqAmount</cstring>
+           <cstring>reqID</cstring>
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="4" column="1">
          <widget class="QLineEdit" name="reqID">
           <property name="toolTip">
            <string>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the DAPScoin network.</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
-         <widget class="QComboBox" name="reqAddress"/>
+        <item row="6" column="1">
+         <widget class="BitcoinAmountField" name="reqAmount">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>An optional amount to request. Leave this empty or zero to not request a specific amount.</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -247,9 +247,8 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>reqAmount</tabstop>
-  <tabstop>reqID</tabstop>
   <tabstop>receiveButton</tabstop>
  </tabstops>
+ <resources/>
  <connections/>
 </ui>
