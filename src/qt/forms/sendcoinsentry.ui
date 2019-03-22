@@ -156,8 +156,11 @@
         </item>
         <item>
          <widget class="QDoubleSpinBox" name="payAmount">
+          <property name="decimals">
+           <number>8</number>
+          </property>
           <property name="maximum">
-           <number>999999999</number>
+           <double>999999999.000000000000000</double>
           </property>
          </widget>
         </item>
@@ -353,5 +356,6 @@
   <tabstop>payAmount_s</tabstop>
   <tabstop>deleteButton_s</tabstop>
  </tabstops>
+ <resources/>
  <connections/>
 </ui>
