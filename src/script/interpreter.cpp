@@ -1090,7 +1090,6 @@ bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigne
     if ((flags & SCRIPT_VERIFY_SIGPUSHONLY) != 0 && !scriptSig.IsPushOnly()) {
         return set_error(serror, SCRIPT_ERR_SIG_PUSHONLY);
     }
-
     vector<vector<unsigned char> > stack, stackCopy;
     if (!EvalScript(stack, scriptSig, flags, checker, serror))
         // serror is set
@@ -1132,6 +1131,5 @@ bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigne
         else
             return set_success(serror);
     }
-
     return set_success(serror);
 }

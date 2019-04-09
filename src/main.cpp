@@ -1755,10 +1755,10 @@ LogPrintf("\n%s:checkingzero coins spend\n", __func__);
             }
         } else {
             LOCK(pool.cs);
-LogPrintf("\n%s:setting pool\n", __func__);
+            //LogPrintf("\n%s:setting pool\n", __func__);
             CCoinsViewMemPool viewMemPool(pcoinsTip, pool);
             view.SetBackend(viewMemPool);
-		LogPrintf("\n%s:check have coins\n", __func__);
+		    //LogPrintf("\n%s:check have coins\n", __func__);
             // do we already have it?
             if (view.HaveCoins(hash)) {
                 LogPrintf("%s: Error: Hash exists in the mempool", __func__);
@@ -1769,7 +1769,7 @@ LogPrintf("\n%s:setting pool\n", __func__);
             // Note that this does not check for the presence of actual outputs (see the next check for that),
             // only helps filling in pfMissingInputs (to determine missing vs spent).
             for (const CTxIn txin : tx.vin) {
-LogPrintf("\n%s:check have coins input\n", __func__);
+                //LogPrintf("\n%s:check have coins input\n", __func__);
                 if (!view.HaveCoins(txin.prevout.hash)) {
                     CDiskTxPos postx;
                     if (pblocktree && pblocktree->ReadTxIndex(txin.prevout.hash, postx)) {
@@ -1783,7 +1783,7 @@ LogPrintf("\n%s:check have coins input\n", __func__);
                         return false;
                     }
                 }
-LogPrintf("\n%s:check valid coin\n", __func__);
+                //LogPrintf("\n%s:check valid coin\n", __func__);
                 //Check for invalid/fraudulent inputs
                 if (!ValidOutPoint(txin.prevout, chainActive.Height())) {
                     return state.Invalid(
@@ -1793,11 +1793,11 @@ LogPrintf("\n%s:check valid coin\n", __func__);
             }
 
             // are the actual inputs available?
-LogPrintf("\n%s:check inputs available\n", __func__);
+            //LogPrintf("\n%s:check inputs available\n", __func__);
             if (!view.HaveInputs(tx))
                 return state.Invalid(error("AcceptToMemoryPool : inputs already spent"),
                                      REJECT_DUPLICATE, "bad-txns-inputs-spent");
-
+            //LogPrintf("\n%s:checked have inputs\n", __func__);
             // Check key images not duplicated with what in db
             for (const CTxIn& txin: tx.vin) {
                 const CKeyImage& keyImage = txin.keyImage;
@@ -1806,20 +1806,23 @@ LogPrintf("\n%s:check inputs available\n", __func__);
                                          REJECT_DUPLICATE, "bad-txns-inputs-spent");
                 }
             }
+            //LogPrintf("\n%s:checked key images\n", __func__);
 
             // Bring the best block into scope
             view.GetBestBlock();
-
+            //LogPrintf("\n%s: get best block\n", __func__);
             nValueIn = GetValueIn(view, tx);
+            //LogPrintf("\n%s:get value in\n", __func__);
 
             // we have all inputs cached now, so switch back to dummy, so we don't need to keep lock on mempool
             view.SetBackend(dummy);
+            //LogPrintf("\n%s:set back-end\n", __func__);
         }
 
         // Check for non-standard pay-to-script-hash in inputs
         if (Params().RequireStandard() && !AreInputsStandard(tx, view))
             return error("AcceptToMemoryPool: : nonstandard transaction input");
-
+        //LogPrintf("\n%s:Check requireStandard\n", __func__);
         // Check that the transaction doesn't have an excessive number of
         // sigops, making it impossible to mine. Since the coinbase transaction
         // itself can contain sigops MAX_TX_SIGOPS is less than
@@ -1898,10 +1901,11 @@ LogPrintf("\n%s:check inputs available\n", __func__);
 
         // Check against previous transactions
         // This is done last to help prevent CPU exhaustion denial-of-service attacks.
+        //LogPrintf("\n%s:check inputs\n", __func__);
         if (!CheckInputs(tx, state, view, true, STANDARD_SCRIPT_VERIFY_FLAGS, true)) {
             return error("AcceptToMemoryPool: : ConnectInputs failed %s", hash.ToString());
         }
-
+        //LogPrintf("\n%s:fisnish check inputs\n", __func__);
         // Check again against just the consensus-critical mandatory script
         // verification flags, in case of bugs in the standard flags that cause
         // transactions to pass as valid when they're actually invalid. For
@@ -1916,12 +1920,13 @@ LogPrintf("\n%s:check inputs available\n", __func__);
                     "AcceptToMemoryPool: : BUG! PLEASE REPORT THIS! ConnectInputs failed against MANDATORY but not STANDARD flags %s",
                     hash.ToString());
         }
-
+        //LogPrintf("\n%s:fisnish re-check inputs\n", __func__);
         // Store transaction in memory
         pool.addUnchecked(hash, entry);
     }
-
+    //LogPrintf("\n%s:start syncing wallet\n", __func__);
     SyncWithWallets(tx, NULL);
+    //LogPrintf("\n%s:synced with wallet\n", __func__);
 
     return true;
 }

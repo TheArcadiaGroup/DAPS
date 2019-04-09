@@ -129,6 +129,15 @@ void ECDHInfo::Decode(unsigned char* encodedMask, unsigned char* encodedAmount, 
     memcpy(tempAmount, encodedAmount, 32);
     memcpy(tempDecoded, decodedMask.begin(), 32);
     ecdhDecode(tempDecoded, tempAmount, sharedSec.begin(), sharedSec.size());
+    memcpy(&decodedAmount, tempAmount, 8);
+    
+    if (!MoneyRange(decodedAmount)) {
+        CPubKey fake;
+        memcpy(tempAmount, encodedAmount, 32);
+        memcpy(tempDecoded, decodedMask.begin(), 32);
+        ecdhDecode(tempDecoded, tempAmount, fake.begin(), fake.size());
+    }
+
     decodedMask.Set(tempDecoded, tempDecoded + 32, 32);
     memcpy(&decodedAmount, tempAmount, 8);
 }
@@ -2212,7 +2221,29 @@ bool CWallet::SelectCoins(const CAmount& nTargetValue, set<pair<const CWalletTx*
     // Note: this function should never be used for "always free" tx types like dstx
 
     vector<COutput> vCoins;
-    AvailableCoins(vCoins, true, coinControl, false, coin_type, useIX);
+    //AvailableCoins(vCoins, true, coinControl, false, coin_type, useIX);
+    vCoins.clear();
+
+    {
+        LOCK2(cs_main, cs_wallet);
+        for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
+            const uint256& wtxid = it->first;
+            const CWalletTx* pcoin = &(*it).second;
+
+            int nDepth = pcoin->GetDepthInMainChain(false);
+            //int cannotSpend = 0;
+            //AvailableCoins(wtxid, pcoin, vCoins, cannotSpend, fOnlyConfirmed, coinControl, fIncludeZeroValue, nCoinType, fUseIX);
+            for(int i = 0; i < pcoin->vout.size(); i++) {
+                if (pcoin->vout[i].IsEmpty()) continue;
+                isminetype mine = IsMine(pcoin->vout[i]);
+                if (mine == ISMINE_NO)
+                    continue;
+                if (mine == ISMINE_WATCH_ONLY)
+                    continue;
+                vCoins.push_back(COutput(pcoin, i, nDepth, true));
+            }
+        }
+    }
 
     // coin control -> return all selected outputs (we want all selected to go into the transaction for sure)
     if (coinControl && coinControl->HasSelected()) {
@@ -2755,7 +2786,6 @@ bool CWallet::CreateTransactionBulletProof(const CPubKey& recipientViewKey, cons
                 }
 
                 CAmount nChange = nValueIn - nValue - nFeeRet;
-                std::cout << "change = " << nChange << std::endl;
 
                 //over pay for denominated transactions
                 if (coin_type == ONLY_DENOMINATED) {
@@ -5982,10 +6012,10 @@ bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount
     if (nValue <= 0)
         throw runtime_error("Invalid amount");
 
-    if (nValue > pwalletMain->GetBalance()) {
+    /*if (nValue > pwalletMain->GetBalance()) {
         LogPrintf("Wallet does not have sufficient funds");
         throw runtime_error("Insufficient funds");
-    }
+    }*/
 
     string strError;
     if (this->IsLocked()) {
@@ -6304,7 +6334,6 @@ bool CWallet::RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmou
         GetKey(keyID, privKey);
         CScript scriptPubKey = GetScriptForDestination(privKey.GetPubKey());
         if (scriptPubKey == out.scriptPubKey) {
-            //std::cout << "Revealing tx amout" << std::endl;
             CPubKey txPub(&(tx.txPub[0]), &(tx.txPub[0]) + 33);
             CKey view;
             if (myViewPrivateKey(view)) {
@@ -6312,7 +6341,11 @@ bool CWallet::RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmou
                 uint256 hashBlock;
                 int h = chainActive.Tip()->nHeight;
                 if (GetTransaction(tx.GetHash(), temp, hashBlock, true)) {
-                    h = mapBlockIndex[hashBlock]->nHeight;
+                    if (mapBlockIndex.count(hashBlock) == 1) {
+                        if (mapBlockIndex[hashBlock] != NULL) {
+                            h = mapBlockIndex[hashBlock]->nHeight;
+                        }
+                    }
                 }
                 computeSharedSec(tx, sharedSec, h);
                 uint256 val = out.maskValue.amount;
