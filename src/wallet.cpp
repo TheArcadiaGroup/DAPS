@@ -101,7 +101,6 @@ void ECDHInfo::ComputeSharedSec(const CKey& priv, const CPubKey& pubKey, CPubKey
     if (!secp256k1_ec_pubkey_tweak_mul(temp, sharedSec.size(), priv.begin())) {
         return;
     }
-
     sharedSec.Set(temp, temp + sharedSec.size());
 }
 
@@ -126,10 +125,10 @@ void ECDHInfo::Decode(unsigned char* encodedMask, unsigned char* encodedAmount, 
     memcpy(&decodedAmount, tempAmount, 8);
     
     if (!MoneyRange(decodedAmount)) {
-        CPubKey fake;
+        CPubKey constantKey;
         memcpy(tempAmount, encodedAmount, 32);
         memcpy(tempDecoded, decodedMask.begin(), 32);
-        ecdhDecode(tempDecoded, tempAmount, fake.begin(), fake.size());
+        ecdhDecode(tempDecoded, tempAmount, constantKey.begin(), constantKey.size());
     }
 
     decodedMask.Set(tempDecoded, tempDecoded + 32, 32);
@@ -217,6 +216,15 @@ bool CWallet::AddKeyPubKey(const CKey& secret, const CPubKey& pubkey)
         return CWalletDB(strWalletFile).WriteKey(pubkey, secret.GetPrivKey(), mapKeyMetadata[pubkey.GetID()]);
     }
     return true;
+}
+
+bool CWallet::WriteStakingStatus(bool status)
+{
+    return CWalletDB(strWalletFile).WriteStakingStatus(status);
+}
+bool CWallet::ReadStakingStatus()
+{
+    return CWalletDB(strWalletFile).ReadStakingStatus();
 }
 
 bool CWallet::AddCryptedKey(const CPubKey& vchPubKey,
@@ -567,9 +575,10 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
     for (TxSpends::const_iterator it = range.first; it != range.second; ++it) {
         const uint256& wtxid = it->second;
         std::map<uint256, CWalletTx>::const_iterator mit = mapWallet.find(wtxid);
-        if (mit != mapWallet.end() && mit->second.GetDepthInMainChain() >= 0)
+        if (mit != mapWallet.end() && int(mit->second.GetDepthInMainChain()) > int(0)) {
             keyImagesSpends[keyImageHex] = true;
             return true; // Spent
+        }
     }
 
     return false;
@@ -592,7 +601,7 @@ void CWallet::AddToSpends(const uint256& wtxid)
         return;
 
     BOOST_FOREACH (const CTxIn& txin, thisTx.vin)
-    AddToSpends(txin.prevout, wtxid);
+        AddToSpends(txin.prevout, wtxid);
 }
 
 bool CWallet::GetMasternodeVinAndKeys(CTxIn& txinRet, CPubKey& pubKeyRet, CKey& keyRet, std::string strTxHash, std::string strOutputIndex)
@@ -1482,7 +1491,8 @@ CAmount CWallet::GetBalance()
         for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
             const CWalletTx* pcoin = &(*it).second;
             if (pcoin->IsTrusted()) {
-                nTotal += pcoin->GetAvailableCredit(false);
+                CAmount ac = pcoin->GetAvailableCredit();
+                nTotal += ac;
             }
         }
     }
@@ -1500,7 +1510,7 @@ CAmount CWallet::GetSpendableBalance() {
             const CWalletTx* pcoin = &(*it).second;
             if (pcoin->IsTrusted()) {
                 if (!((pcoin->IsCoinBase() || pcoin->IsCoinStake()) && pcoin->GetBlocksToMaturity() > 0 && pcoin->IsInMainChain())) {
-                    nTotal += pcoin->GetAvailableCredit(false);
+                    nTotal += pcoin->GetAvailableCredit();
                 }
             }
         }
@@ -6006,7 +6016,7 @@ bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount
     if (nValue <= 0)
         throw runtime_error("Invalid amount");
 
-    /*if (nValue > pwalletMain->GetBalance()) {
+    /*if (nValue > pwalletMain->spendableBalance()) {
         LogPrintf("Wallet does not have sufficient funds");
         throw runtime_error("Insufficient funds");
     }*/
@@ -6159,6 +6169,7 @@ bool CWallet::IsTransactionForMe(const CTransaction& tx) {
             }
 
             if (ret) {
+                LOCK(cs_wallet);
                 //Compute private key to spend
                 //x = Hs(aR) + b, b = spend private key
                 unsigned char HStemp[32];
@@ -6169,6 +6180,10 @@ bool CWallet::IsTransactionForMe(const CTransaction& tx) {
                 CKey privKey;
                 privKey.Set(HStemp, HStemp + 32, true);
                 CPubKey computed = privKey.GetPubKey();
+
+                //put in map from address to txHash used for qt wallet
+                CKeyID tempKeyID = computed.GetID();
+                addrToTxHashMap[CBitcoinAddress(tempKeyID).ToString()] = tx.GetHash().GetHex();
                 //LogPrintf("recomputed Stealth destination: %s", computed.GetHex());
                 AddKey(privKey);
                 CAmount c;
@@ -6251,27 +6266,30 @@ CBitcoinAddress GetAccountAddress(string strAccount, CWallet* pwalletMain)
 void CWallet::createMasterKey() const {
     int i = 0;
     CWalletDB pDB(strWalletFile);
-    while (i < 10) {
-        std::string viewAccountLabel = "viewaccount";
-        std::string spendAccountLabel = "spendaccount";
+    {   
+        LOCK(cs_wallet);
+        while (i < 10) {
+            std::string viewAccountLabel = "viewaccount";
+            std::string spendAccountLabel = "spendaccount";
 
-        CAccount viewAccount;
-        pDB.ReadAccount(viewAccountLabel, viewAccount);
-        if (!viewAccount.vchPubKey.IsValid()) {
-            std::string viewAccountAddress = GetAccountAddress(viewAccountLabel, (CWallet*)this).ToString();
-        }
+            CAccount viewAccount;
+            pDB.ReadAccount(viewAccountLabel, viewAccount);
+            if (!viewAccount.vchPubKey.IsValid()) {
+                std::string viewAccountAddress = GetAccountAddress(viewAccountLabel, (CWallet*)this).ToString();
+            }
 
-        CAccount spendAccount;
-        pDB.ReadAccount(spendAccountLabel, spendAccount);
-        if (!spendAccount.vchPubKey.IsValid()) {
-            std::string spendAccountAddress = GetAccountAddress(spendAccountLabel, (CWallet*)this).ToString();
+            CAccount spendAccount;
+            pDB.ReadAccount(spendAccountLabel, spendAccount);
+            if (!spendAccount.vchPubKey.IsValid()) {
+                std::string spendAccountAddress = GetAccountAddress(spendAccountLabel, (CWallet*)this).ToString();
+            }
+            if (viewAccount.vchPubKey.GetHex() == "" || spendAccount.vchPubKey.GetHex() == "") {
+                i++;
+                continue;
+            }
+            LogPrintf("Created master account");
+            break;
         }
-        if (viewAccount.vchPubKey.GetHex() == "" || spendAccount.vchPubKey.GetHex() == "") {
-            i++;
-            continue;
-        }
-        LogPrintf("Created master account");
-        break;
     }
 }
 
@@ -6329,18 +6347,19 @@ bool CWallet::RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmou
         CScript scriptPubKey = GetScriptForDestination(privKey.GetPubKey());
         if (scriptPubKey == out.scriptPubKey) {
             CPubKey txPub(&(tx.txPub[0]), &(tx.txPub[0]) + 33);
-            CKey view;
+            CKey view;        
+            LOCK(cs_wallet);
             if (myViewPrivateKey(view)) {
                 CTransaction temp;
                 uint256 hashBlock;
                 int h = chainActive.Tip()->nHeight;
-                if (GetTransaction(tx.GetHash(), temp, hashBlock, true)) {
+                /*if (GetTransaction(tx.GetHash(), temp, hashBlock, true)) {
                     if (mapBlockIndex.count(hashBlock) == 1) {
                         if (mapBlockIndex[hashBlock] != NULL) {
                             h = mapBlockIndex[hashBlock]->nHeight;
                         }
                     }
-                }
+                }*/
                 computeSharedSec(tx, sharedSec, h);
                 uint256 val = out.maskValue.amount;
                 uint256 mask = out.maskValue.mask;

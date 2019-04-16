@@ -68,8 +68,8 @@ private:
     void updateTableData(CWallet *wallet);
     void updateAddressBookData(CWallet *wallet);
 
-
 private slots:
+    void on_cellClicked(int row, int column);
 };
 
 #endif // BITCOIN_QT_HISTORYPAGE_H

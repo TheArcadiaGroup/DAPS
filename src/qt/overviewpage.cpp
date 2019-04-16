@@ -132,7 +132,7 @@ OverviewPage::OverviewPage(QWidget* parent) : QDialog(parent),
     pingNetworkInterval = new QTimer();
 
     initSyncCircle(.8);
-    // updateRecentTransactions();
+    //updateRecentTransactions();
 }
 
 void OverviewPage::handleTransactionClicked(const QModelIndex& index)
@@ -444,13 +444,17 @@ void OverviewPage::updateRecentTransactions(){
         delete item->widget();
         delete item;
     }
-    auto txs = WalletUtil::getTXs(pwalletMain);
+    if (pwalletMain) {
+        auto txs = WalletUtil::getTXs(pwalletMain);
 
-    for (int i = 0; i< (txs.size()>5)? 5:txs.size(); i++){
-        TxEntry* entry = new TxEntry(this);
-        ui->verticalLayoutRecent->addWidget(entry);
-        entry->setData(txs[i]["date"], txs[i]["address"] , txs[i]["amount"], txs[i]["ID"], txs[i]["type"]);
+        for (int i = 0; i< (txs.size()>5)? 5:txs.size(); i++){
+            TxEntry* entry = new TxEntry(this);
+            ui->verticalLayoutRecent->addWidget(entry);
+            entry->setData(txs[i]["date"], txs[i]["address"] , txs[i]["amount"], txs[i]["ID"], txs[i]["type"]);
+        }
+
+        ui->label_4->setVisible(txs.size());
+    } else {
+        LogPrintf("\npwalletMain has not been initialized\n");
     }
-
-    ui->label_4->setVisible(txs.size());
 }

@@ -41,9 +41,9 @@ ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent),
     contextMenu->addAction(copyAmountAction);
 
     // context menu signals
-    connect(copyLabelAction, SIGNAL(triggered()), this, SLOT(copyLabel()));
-    connect(copyMessageAction, SIGNAL(triggered()), this, SLOT(copyMessage()));
-    connect(copyAmountAction, SIGNAL(triggered()), this, SLOT(copyAmount()));
+    //connect(copyLabelAction, SIGNAL(triggered()), this, SLOT(copyLabel()));
+    //connect(copyMessageAction, SIGNAL(triggered()), this, SLOT(copyMessage()));
+    //connect(copyAmountAction, SIGNAL(triggered()), this, SLOT(copyAmount()));
 
     // Show privacy account address
     ui->lineEditAddress->setStyleSheet("border:none; background: transparent; text-align:center;");
@@ -51,7 +51,7 @@ ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent),
     ui->pushButtonCP->setIcon(QIcon(":/icons/editcopy"));
     connect(ui->pushButtonCP, SIGNAL(clicked()), this, SLOT(copyAddress()));
     CPubKey temp;
-    if (!pwalletMain->IsCrypted()) {
+    if (pwalletMain && !pwalletMain->IsCrypted()) {
         pwalletMain->GetKeyFromPool(temp);
         pwalletMain->CreatePrivacyAccount();
         std::string pubAddress;

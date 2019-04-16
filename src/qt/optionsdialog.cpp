@@ -253,7 +253,7 @@ void OptionsDialog::on_okButton_clicked()
 {
     mapper->submit();
     obfuScationPool.cachedNumBlocks = std::numeric_limits<int>::max();
-    pwalletMain->MarkDirty();
+    if (pwalletMain) pwalletMain->MarkDirty();
     accept();
 }
 

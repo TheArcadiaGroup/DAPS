@@ -55,8 +55,8 @@ MasternodeList::MasternodeList(QWidget* parent) : QDialog(parent),
     fFilterUpdated = true;
     nTimeFilterUpdated = GetTime();
 
-
-    ui->toggleStaking->setState(nLastCoinStakeSearchInterval);
+    bool stkStatus = pwalletMain->ReadStakingStatus();
+    ui->toggleStaking->setState(nLastCoinStakeSearchInterval | stkStatus);
     connect(ui->toggleStaking, SIGNAL(stateChanged(ToggleButton*)), this, SLOT(on_EnableStaking(ToggleButton*)));
 }
 
@@ -326,16 +326,19 @@ void MasternodeList::on_EnableStaking(ToggleButton* widget)
         QStringList errors = walletModel->getStakingStatusError();
         if (!errors.length()) {
             emit walletModel->stakingStatusChanged(true);
+            pwalletMain->WriteStakingStatus(true);
             walletModel->generateCoins(true, 1);
         } else {
             GUIUtil::prompt(QString("<br><br>")+errors.join(QString("<br><br>"))+QString("<br><br>"));
             widget->setState(false);
             nLastCoinStakeSearchInterval = 0;
             emit walletModel->stakingStatusChanged(false);
+            pwalletMain->WriteStakingStatus(false);
         }
     } else {
         nLastCoinStakeSearchInterval = 0;
         walletModel->generateCoins(false, 0);
         emit walletModel->stakingStatusChanged(false);
+        pwalletMain->WriteStakingStatus(false);
     }
 }

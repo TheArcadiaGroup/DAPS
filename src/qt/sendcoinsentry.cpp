@@ -37,7 +37,7 @@ SendCoinsEntry::SendCoinsEntry(QWidget* parent) : QStackedWidget(parent),
     GUIUtil::setupAddressWidget(ui->payTo, this);
 
     // Connect signals
-    connect(ui->payAmount, SIGNAL(textEdited(const QString&)), this, SLOT(validateAmount(const QString&)));
+    //connect(ui->payAmount, SIGNAL(textEdited(const QString&)), this, SLOT(validateAmount(const QString&)));
     connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(deleteClicked()));
     connect(ui->deleteButton_is, SIGNAL(clicked()), this, SLOT(deleteClicked()));
     connect(ui->deleteButton_s, SIGNAL(clicked()), this, SLOT(deleteClicked()));

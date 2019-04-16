@@ -447,6 +447,7 @@ public:
     std::map<uint256, int> mapRequestCount;
 
     std::map<CTxDestination, CAddressBookData> mapAddressBook;
+    std::map<std::string, std::string> addrToTxHashMap;
 
     CPubKey vchDefaultKey;
 
@@ -807,6 +808,8 @@ public:
     void CreatePrivacyAccount();
     bool mySpendPrivateKey(CKey& spend) const;
     bool myViewPrivateKey(CKey& view) const;
+    bool WriteStakingStatus(bool status);
+    bool ReadStakingStatus();
 private:
     bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth);
     bool allMyPrivateKeys(std::vector<CKey>& spends, std::vector<CKey>& views);
@@ -1201,15 +1204,23 @@ public:
         if (IsCoinBase() && GetBlocksToMaturity() > 0)
             return 0;
 
-        if (fUseCache && fAvailableCreditCached)
-            return nAvailableCreditCached;
+        if (fUseCache && fAvailableCreditCached) {
+            if (nAvailableCreditCached) {
+                return nAvailableCreditCached;
+            }
+        }
 
         CAmount nCredit = 0;
         uint256 hashTx = GetHash();
         for (unsigned int i = 0; i < vout.size(); i++) {
             if (!pwallet->IsSpent(hashTx, i)) {
                 const CTxOut& txout = vout[i];
-                nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
+                CAmount cre = pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
+                if (cre == 0 && fCreditCached) {
+                    fCreditCached = false;
+                    cre = pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
+                }
+                nCredit += cre;
                 if (!MoneyRange(nCredit))
                     throw std::runtime_error("CWalletTx::GetAvailableCredit() : value out of range");
             }
