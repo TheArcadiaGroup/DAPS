@@ -102,13 +102,7 @@ void ECDHInfo::ComputeSharedSec(const CKey& priv, const CPubKey& pubKey, CPubKey
         return;
     }
 
-    if (currentHeight != -1 && currentHeight <= 32000) {
-        sharedSec.Set(temp, temp + 65);
-    } if (currentHeight == -1 && chainActive.Tip()->nHeight <= 32000) {
-        sharedSec.Set(temp, temp + 65);
-    } else {
-        sharedSec.Set(temp, temp + sharedSec.size());
-    }
+    sharedSec.Set(temp, temp + sharedSec.size());
 }
 
 void ECDHInfo::Encode(const CKey& mask, const CAmount& amount, const CPubKey& sharedSec, uint256& encodedMask, uint256& encodedAmount)
