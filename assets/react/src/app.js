@@ -26,7 +26,7 @@ const pagesize = 20;
 class BlockExplorer extends Component {
   constructor(props) {
     super(props);
-    let pageLinks = this.getListPageLinks()    
+    // let pageLinks = this.getListPageLinks()    
     this.state = {
       lib: new Map(),
       path: '', pageindex: 0,
@@ -35,12 +35,11 @@ class BlockExplorer extends Component {
       param: '', search: '', type: '', typemin: '', prim: '',
       blockStatus: {}, netStatus: {},
       isTouch: this.mobileAndTabletcheck(),
-      pageLinks: pageLinks,
     };
-    Promise.resolve(Actions.getTxCount()).then(count => this.setState({ txCount: count }))
-    setInterval(() => Promise.resolve(Actions.getTxCount()).then(count => this.setState({ txCount: count })), 5000)
-    Promise.resolve(Actions.getBlockCount()).then(count => this.setState({ blockCount: count }))
-    setInterval(() => Promise.resolve(Actions.getBlockCount()).then(count => this.setState({ blockCount: count })), 5000)
+    // Promise.resolve(Actions.getTxCount()).then(count => this.setState({ txCount: count }))
+    // setInterval(() => Promise.resolve(Actions.getTxCount()).then(count => this.setState({ txCount: count })), 5000)
+    // Promise.resolve(Actions.getBlockCount()).then(count => this.setState({ blockCount: count }))
+    // setInterval(() => Promise.resolve(Actions.getBlockCount()).then(count => this.setState({ blockCount: count })), 5000)
   }
 
   mobileAndTabletcheck() { //function from detectmobilebrowsers.com via https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
@@ -49,35 +48,45 @@ class BlockExplorer extends Component {
     return check;
   }
 
-  getListPageLinks() {
+  async getListPageLinks() {
     try {
       if (this.state) {
         let index = this.state.pageindex
-        let lastpage = (this.state.type.toLowerCase().indexOf('block') >= 0) ? Math.ceil(this.state.blockCount / this.state.pagesize)
-          : Math.ceil(this.state.txCount / this.state.pagesize)
+        let totalCnt = 0;
+        if (this.state.type.toLowerCase().indexOf('transaction') >= 0)
+          totalCnt = await Actions.getTxCount();
+        else if (this.state.type.toLowerCase().indexOf('poablock') >= 0)
+          totalCnt = await Actions.getPoaBlockCount();
+        else if (this.state.type.toLowerCase().indexOf('posblock') >= 0)
+          totalCnt = await Actions.getPosBlockCount();
+        else
+          totalCnt = await Actions.getBlockCount();
+
+        let lastpage = Math.ceil(totalCnt / this.state.pagesize)
         let routearray = [-2, -1, 0, 1, 2]
           , rshift = ((index + routearray[0]) <= 0) ? Math.abs(index + routearray[0]) + 1 : 0
           , lshift = ((index + routearray[4]) >= lastpage) ? Math.abs(lastpage - (index + routearray[4])) : 0
         routearray = routearray.map(i => (i + rshift - lshift))
         let sort = (this.state.type.toLowerCase().indexOf('block') != -1) ? 'block' : 'tx';
         sort = (sort == 'block') ? 'height' : 'blockindex'
-        return (<div>
-          {(index > 1) ? <Link to={`/explorer/${this.state.type}/?limit=${pagesize}&page=${index - 1}`}>Prev</Link> : ''}
-          {(index > 1) ? <span>   ...   </span> : ''}
-          {(index > 4) ? [1, 2, 3].map(i => <Link to={`/explorer/${this.state.type}/?limit=${pagesize}&page=${i}`}>{i}  </Link>) : ''}
-          {(index > 4) ? <span>   ...   </span> : ''}
-          {routearray.map(i => {
-            if (index + i >= 0 && index + i <= lastpage)
-              return <Link to={`/explorer/${this.state.type}/?limit=${pagesize}&page=${index + i}`}>{index + i}  </Link>
-          })}
-          {(index < lastpage - 4) ? <span>   ...   </span> : ''}
-          {(index < lastpage - 4) ? [2, 1, 0].map(i => <Link to={`/explorer/${this.state.type}/?limit=${pagesize}&page=${lastpage - i}`}>{lastpage - i}  </Link>) : ''}
-          {(index < lastpage) ? <span>   ...   </span> : ''}
-          {(index < lastpage) ? <Link to={`/explorer/${this.state.type}/?limit=${pagesize}&page=${index + 1}`}>Next</Link> : ''}
-        </div>)
+        this.state.pageLinks = (<div>
+            {(index > 1) ? <Link to={`/explorer/${this.state.type}/?limit=${pagesize}&page=${index - 1}`}>Prev</Link> : ''}
+            {(index > 1) ? <span>   ...   </span> : ''}
+            {(index > 4) ? [1, 2, 3].map(i => <Link key={i} to={`/explorer/${this.state.type}/?limit=${pagesize}&page=${i}`}>{i}  </Link>) : ''}
+            {(index > 4) ? <span>   ...   </span> : ''}
+            {routearray.map(i => {
+              if (index + i >= 0 && index + i <= lastpage)
+                return <Link key={i} to={`/explorer/${this.state.type}/?limit=${pagesize}&page=${index + i}`}>{index + i}  </Link>
+            })}
+            {(index < lastpage - 4) ? <span>   ...   </span> : ''}
+            {(index < lastpage - 4) ? [2, 1, 0].map(i => <Link key={lastpage - i} to={`/explorer/${this.state.type}/?limit=${pagesize}&page=${lastpage - i}`}>{lastpage - i}  </Link>) : ''}
+            {(index < lastpage) ? <span>   ...   </span> : ''}
+            {(index < lastpage) ? <Link to={`/explorer/${this.state.type}/?limit=${pagesize}&page=${index + 1}`}>Next</Link> : ''}
+          </div>)
+        return;
       }
-      } catch (err) { console.error(err); }
-      return <br />
+    } catch (err) { console.error(err); }
+    this.state.pageLinks = <br />
   }
 
 
@@ -106,13 +115,12 @@ class BlockExplorer extends Component {
 
     // list page routes for blocks and transactions
     if (
-      (this.state.path != this.state.listpageData.path)
-      && !this.state.collecting
-      && (
-        (this.state.type.toLowerCase().indexOf('blocks') != -1)
-        || (this.state.type.toLowerCase().indexOf('transactions') != -1)
-      )
-    ) {
+        (this.state.path != this.state.listpageData.path) && 
+        !this.state.collecting && 
+        ((this.state.type.toLowerCase().indexOf('blocks') != -1) || 
+          (this.state.type.toLowerCase().indexOf('transactions') != -1))
+       ) 
+    {
       let search = this.state.search
       let type = this.state.type.toLowerCase()
       let blocktag = ''
@@ -126,18 +134,20 @@ class BlockExplorer extends Component {
         type = 'block';
         if (blocktag.length)
           search = search.replace('?', '').length ? search + `&${blocktag}` : `${blocktag}`
-
       }
 
-      this.setState({ collecting: true })
-      if (search.length && (search.indexOf('?') == -1)) search = `?${search}`
-      let newData = {}; try { newData = await Actions.getList(type, search) } catch (err) { }
+      this.state.collecting = true;
+      if (search.length && (search.indexOf('?') == -1)) 
+        search = `?${search}`
+      let newData = {}; 
+      try { newData = await Actions.getList(type, search) } catch (err) { }
       if (Object.keys(newData).length) {
         Object.assign(newData, { path: this.state.path, prim: type })
         // Set state with new listData, then retreive detailed data for table entries 
-        this.setState({ listpageData: newData, collecting: false, typemin: blocktag, prim: type, pageLinks: this.getListPageLinks()},
+        await this.getListPageLinks();
+        this.setState({ listpageData: newData, collecting: false, typemin: blocktag, prim: type},
           () => {
-            if (newData.ids)
+            if (newData.ids) {
               newData.ids.forEach((id) => {
                 let prim = this.state.prim.charAt(0).toUpperCase() + this.state.prim.slice(1);
                 if (this.state.lib.get(id) == undefined) {
@@ -150,6 +160,7 @@ class BlockExplorer extends Component {
                   })
                 }
               })
+            }
           })
       } else setTimeout(() => {
         this.setState({ collecting: false });
@@ -172,6 +183,7 @@ class BlockExplorer extends Component {
     let pageindex = search.match(/page=[\d]*/g) || ''; pageindex = pageindex.length ? pageindex[0].replace('page=', '') : 0
     this.getDataForRoute(forceRefresh)
     if (forceRefresh || (this.state.path != path)) {
+      // await this.getListPageLinks();
       this.setState({
         [`current${type}`]: param,
         param: param,
@@ -181,7 +193,7 @@ class BlockExplorer extends Component {
         path: path,
         pageindex: parseInt(pageindex),
         // pagesize: (path.indexOf('limit')!=-1)? path.replace(/(limit=(\d+))/g,'').replace(/[^\d]/g,'') : pagesize
-      }, () => this.setState({ pageLinks: this.getListPageLinks() }))
+      })
     }
   }
 
@@ -194,7 +206,7 @@ class BlockExplorer extends Component {
 
         <StatusBar id="blockStatusBar" getData={Actions.getBlockDetailData} className={`StatusBar ${Style.StatusBar}`}
           lift={(blockstate) => { Object.keys(blockstate).forEach((key) => Object.assign(this.state.blockStatus, { [key]: blockstate[key] })); 
-          if (this.state.pageLinks.type == "br") this.setState({ pageLinks: this.getListPageLinks() }); }} />
+          }} />
 
         <div className={"CenterView " + Style.CenterView}>
           <SearchBar lib={this.state.lib} isMobile={this.state.isMobile} />
@@ -212,8 +224,8 @@ class BlockExplorer extends Component {
                 />}
               />
 
-              <Route exact path={route + "poablocks/"} component={() => <ListPage data={this.state.listpageData} title="PoA Blocks" links={this.state.pageLinks} />} />
-              <Route exact path={route + "posblocks/"} component={() => <ListPage data={this.state.listpageData} title="PoS Blocks" links={this.state.pageLinks} />} />
+              <Route exact path={route + "Poablocks/"} component={() => <ListPage data={this.state.listpageData} title="PoA Blocks" links={this.state.pageLinks} />} />
+              <Route exact path={route + "Posblocks/"} component={() => <ListPage data={this.state.listpageData} title="PoS Blocks" links={this.state.pageLinks} />} />
               <Route exact path={route + "powblocks/"} component={() => <ListPage data={this.state.listpageData} title="PoW Blocks" links={this.state.pageLinks} />} />
 
               <Route exact path={route + "transactions"} component={() => <ListPage data={this.state.listpageData} title="Transactions" links={this.state.pageLinks} />} />

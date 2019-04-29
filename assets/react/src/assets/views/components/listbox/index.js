@@ -19,25 +19,25 @@ const ListBox = (props) => {
     return (<div id={props.id+'Container' || Style.Table} className={props.className || "ListBoxContainer " + Style.Container} style={props.style||{}}>
         {props.title ? <h2>{props.title}</h2> : ''}
         {data.length ?
-            <table id={props.id || 'ta'} class={"ListBox " + Style.Table}>
-                <tr class={Style.Row}>
-                    {headers.map((columnHeader, i) => <th id={`tableHeader${i}`} className={`TableHeader ${Style.Header}`}>{columnHeader}</th>)}
+            <table id={props.id || 'ta'} className={"ListBox " + Style.Table}><tbody>
+                <tr className={Style.Row}>
+                    {headers.map((columnHeader, i) => <th key={i} id={`tableHeader${i}`} className={`TableHeader ${Style.Header}`}>{columnHeader}</th>)}
                 </tr>
                 {data.map((row, r) => {
-                    return (<tr>
-                        {row.map((item, c) => <td id={`tableItem${r}-${c}`} className={`TableItem ${Style.Item}`}>
+                    return (<tr key={r}>
+                        {row.map((item, c) => <td key={c} id={`tableItem${r}-${c}`} className={`TableItem ${Style.Item}`}>
                             {((typeof item != 'string') || (item.length != 64)) ?
                                 item
                                 : <div>
                                     <Link to={`../${prim}/${item}`}>{item}</Link>
-                                    <div id={`copy${r}-${c}`} class={'CopyButton'}
+                                    <div id={`copy${r}-${c}`} className={'CopyButton'}
                                         onClick={() => { navigator.clipboard.writeText(item) }}
                                     />
                                 </div>}
                         </td>)}
                     </tr>)
                 })}
-            </table> : ''}
+            </tbody></table> : ''}
     </div>
     )
 };

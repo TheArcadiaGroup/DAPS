@@ -274,6 +274,18 @@ const Actions = {
             let response = await (await fetch(hostUrl + `dapsapi/block/?count=true`)).json()
             return response.data
         } catch (err) { console.error("blockcount", err); return null; }
+    },
+    "getPoaBlockCount": async () => {
+        try {
+            let response = await (await fetch(hostUrl + `dapsapi/block/?count=true&minetype='PoA'`)).json()
+            return response.data
+        } catch (err) { console.error("blockcount", err); return null; }
+    },
+    "getPosBlockCount": async () => {
+        try {
+            let response = await (await fetch(hostUrl + `dapsapi/block/?count=true&minetype='PoS'`)).json()
+            return response.data
+        } catch (err) { console.error("blockcount", err); return null; }
     }
 
 }

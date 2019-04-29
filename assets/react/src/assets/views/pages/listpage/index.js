@@ -8,7 +8,7 @@ const ListPage = (props) => {
     let data = props.data ? merge(props.data, {}) : {}
     delete data.ids
     
-    return (<div class={`ListPage ${Style.Page}`}>
+    return (<div className={`ListPage ${Style.Page}`}>
         {props.title ? <h1>{props.title}</h1> : ''}
         {props.links}
         <ListBox data={data} />

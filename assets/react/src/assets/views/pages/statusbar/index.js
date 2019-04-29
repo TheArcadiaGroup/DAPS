@@ -36,10 +36,10 @@ class StatusBar extends Component {
 
     render() {
         return (<div id={this.state.id} className={"StatusBar " + Style.Column}>
-            <image id={this.state.id + 'image'} />
+            
             {Object.entries(this.state.header)
                 .map((item, i) =>
-                    <DataCircle data={{ header: item[0], item: item[1] }} class={"StatusBarHeader " + Style.Header} header={true} />)}
+                    <DataCircle key={i} data={{ header: item[0], item: item[1] }} class={"StatusBarHeader " + Style.Header} header={true} />)}
             {Object.entries(this.state.data).sort((a, b) => {
                 return b[0] > a[0]
             }).map((detailItem, i) =>
