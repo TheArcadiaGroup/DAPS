@@ -15,6 +15,7 @@
 
 #include <QApplication>
 #include <QClipboard>
+#include <QDoubleValidator>
 
 SendCoinsEntry::SendCoinsEntry(QWidget* parent) : QStackedWidget(parent),
                                                   ui(new Ui::SendCoinsEntry),
@@ -36,7 +37,7 @@ SendCoinsEntry::SendCoinsEntry(QWidget* parent) : QStackedWidget(parent),
     GUIUtil::setupAddressWidget(ui->payTo, this);
 
     // Connect signals
-    connect(ui->payAmount, SIGNAL(valueChanged()), this, SIGNAL(payAmountChanged()));
+    //connect(ui->payAmount, SIGNAL(textEdited(const QString&)), this, SLOT(validateAmount(const QString&)));
     connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(deleteClicked()));
     connect(ui->deleteButton_is, SIGNAL(clicked()), this, SLOT(deleteClicked()));
     connect(ui->deleteButton_s, SIGNAL(clicked()), this, SLOT(deleteClicked()));
@@ -45,6 +46,12 @@ SendCoinsEntry::SendCoinsEntry(QWidget* parent) : QStackedWidget(parent),
 
     //Cam: Hide address book button
     ui->addressBookButton->setVisible(false);
+
+    QDoubleValidator *dblVal = new QDoubleValidator(0, Params().MAX_MONEY, 6, ui->payAmount);
+    dblVal->setNotation(QDoubleValidator::StandardNotation);
+    dblVal->setLocale(QLocale::C);
+    ui->payAmount->setValidator(dblVal);
+
 
     //place holder text for payAmount
 }
@@ -150,6 +157,19 @@ void SendCoinsEntry::deleteClicked()
 //     return retval;
 // }
 
+static inline int64_t roundint64(double d)
+{
+    return (int64_t)(d > 0 ? d + 0.5 : d - 0.5);
+}
+
+CAmount SendCoinsEntry::getValidatedAmount() {
+    double dAmount = ui->payAmount->text().toDouble();
+    if (dAmount < 0.0 || dAmount > Params().MAX_MONEY)
+        throw runtime_error("Invalid amount, amount should be < 2.1B DAPS");
+    CAmount nAmount = roundint64(dAmount * COIN);
+    return nAmount;
+}
+
 SendCoinsRecipient SendCoinsEntry::getValue()
 {
     // Payment request
@@ -159,7 +179,7 @@ SendCoinsRecipient SendCoinsEntry::getValue()
     // Normal payment
     recipient.address = ui->payTo->text();
     recipient.label = ui->addAsLabel->text();
-    recipient.amount = ui->payAmount->value();
+    recipient.amount = getValidatedAmount();
     // #remove recipient.message = ui->messageTextLabel->text();
 
     return recipient;
@@ -208,7 +228,7 @@ void SendCoinsEntry::setValue(const SendCoinsRecipient& value)
         ui->payTo->setText(recipient.address); // this may set a label from addressbook
         if (!recipient.label.isEmpty())        // if a label had been set from the addressbook, dont overwrite with an empty label
             ui->addAsLabel->setText(recipient.label);
-        ui->payAmount->setValue(recipient.amount);
+        ui->payAmount->setText(QString::number((double)(recipient.amount) / (double)COIN, 'f', 3));
     }
 }
 

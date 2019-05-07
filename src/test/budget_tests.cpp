@@ -8,6 +8,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(budget_tests)
 
 void CheckBudgetValue(int nHeight, std::string strNetwork, CAmount nExpectedValue)
@@ -30,3 +31,4 @@ BOOST_AUTO_TEST_CASE(budget_value)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

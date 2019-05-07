@@ -273,6 +273,7 @@ ZerocoinTutorial()
 	return false;
 }
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(tutorial_libzerocoin)
 BOOST_AUTO_TEST_CASE(tutorial_libzerocoin_tests)
 {
@@ -281,3 +282,4 @@ BOOST_AUTO_TEST_CASE(tutorial_libzerocoin_tests)
 	ZerocoinTutorial();
 }
 BOOST_AUTO_TEST_SUITE_END()
+#endif

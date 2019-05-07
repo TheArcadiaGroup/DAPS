@@ -6,7 +6,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(torcontrol_tests)
 
 void CheckSplitTorReplyLine(std::string input, std::string command, std::string args)
@@ -196,3 +196,4 @@ BOOST_AUTO_TEST_CASE(util_ParseTorReplyMapping)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

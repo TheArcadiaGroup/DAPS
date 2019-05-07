@@ -28,6 +28,7 @@
 
 #include <boost/filesystem/path.hpp>
 #include <boost/thread/exceptions.hpp>
+#include "pubkey.h"
 
 //DAPScoin only features
 
@@ -227,5 +228,7 @@ void TraceThread(const char* name, Callable func)
         throw;
     }
 }
+
+bool PointHashingSuccessively(const CPubKey& pk, const unsigned char* tweak, unsigned char* out);
 
 #endif // BITCOIN_UTIL_H

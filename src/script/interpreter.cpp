@@ -13,6 +13,7 @@
 #include "pubkey.h"
 #include "script/script.h"
 #include "uint256.h"
+#include "util.h"
 
 using namespace std;
 
@@ -47,6 +48,9 @@ bool CastToBool(const valtype& vch)
                 return false;
             return true;
         }
+    }
+    if (vch.size() == 0) {
+    	return true;
     }
     return false;
 }
@@ -1085,27 +1089,35 @@ bool TransactionSignatureChecker::CheckSig(const vector<unsigned char>& vchSigIn
 
 bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigned int flags, const BaseSignatureChecker& checker, ScriptError* serror)
 {
+	LogPrintf("\n%s:scriptSig = %s, scriptPubKey=%s\n", __func__, scriptSig.ToString(), scriptPubKey.ToString());
     set_error(serror, SCRIPT_ERR_UNKNOWN_ERROR);
 
     if ((flags & SCRIPT_VERIFY_SIGPUSHONLY) != 0 && !scriptSig.IsPushOnly()) {
+    	LogPrintf("\n%s:SCRIPT_VERIFY_SIGPUSHONLY\n", __func__);
         return set_error(serror, SCRIPT_ERR_SIG_PUSHONLY);
     }
-
     vector<vector<unsigned char> > stack, stackCopy;
-    if (!EvalScript(stack, scriptSig, flags, checker, serror))
+    if (!EvalScript(stack, scriptSig, flags, checker, serror)) {
         // serror is set
+    	LogPrintf("\n%s:EvalScript\n", __func__);
         return false;
+    }
     if (flags & SCRIPT_VERIFY_P2SH)
         stackCopy = stack;
-    if (!EvalScript(stack, scriptPubKey, flags, checker, serror))
+    if (!EvalScript(stack, scriptPubKey, flags, checker, serror)) {
         // serror is set
+    	LogPrintf("\n%s:EvalScript2\n", __func__);
         return false;
-    if (stack.empty())
+    }
+    if (stack.empty()) {
+    	LogPrintf("\n%s:Stack empty\n", __func__);
         return set_error(serror, SCRIPT_ERR_EVAL_FALSE);
-
-    if (CastToBool(stack.back()) == false)
+    }
+    LogPrintf("\n%s:Remainning back:%d\n", __func__, stack.back().size());
+    if (CastToBool(stack.back()) == false) {
+    	LogPrintf("\n%s:CastToBool\n", __func__);
         return set_error(serror, SCRIPT_ERR_EVAL_FALSE);
-
+    }
     // Additional validation for spend-to-script-hash transactions:
     if ((flags & SCRIPT_VERIFY_P2SH) && scriptPubKey.IsPayToScriptHash())
     {
@@ -1132,6 +1144,6 @@ bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigne
         else
             return set_success(serror);
     }
-
+	LogPrintf("\n%s:Setting success\n", __func__);
     return set_success(serror);
 }

@@ -42,6 +42,7 @@ QString dateTimeStr(qint64 nTime);
 // Render DAPScoin addresses in monospace font
 QFont bitcoinAddressFont();
 
+void HideDisabledWidgets(QVector<QWidget*> widgets  );
 
 
 // Set up widgets for address and amounts

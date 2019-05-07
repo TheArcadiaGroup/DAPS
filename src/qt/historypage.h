@@ -19,8 +19,10 @@
 #include <QSettings>
 #include <QTimeEdit>
 #include <QVariant>
+#include <QSizeGrip>
 
 class WalletModel;
+class BitcoinGUI;
 
 namespace Ui
 {
@@ -39,6 +41,7 @@ class HistoryPage : public QDialog
 
 public:
     explicit HistoryPage(QWidget* parent = 0);
+    void bitcoinGUIInstallEvent(BitcoinGUI *gui);
     ~HistoryPage();
 
 public slots:
@@ -57,6 +60,7 @@ private:
     QAbstractTableModel* tableModel;
 
     QTimeEdit* timeEditTo;
+    QSizeGrip m_SizeGrip;
     QTimeEdit* timeEditFrom;
 
     QString allAddressString="All";
@@ -68,8 +72,8 @@ private:
     void updateTableData(CWallet *wallet);
     void updateAddressBookData(CWallet *wallet);
 
-
 private slots:
+    void on_cellClicked(int row, int column);
 };
 
 #endif // BITCOIN_QT_HISTORYPAGE_H

@@ -59,7 +59,7 @@ extern bool fSendFreeTransactions;
 extern bool fPayAtLeastCustomFee;
 
 //! -paytxfee default
-static const CAmount DEFAULT_TRANSACTION_FEE = 0;
+static const CAmount DEFAULT_TRANSACTION_FEE = 0.1 * COIN;//
 //! -paytxfee will warn if called with a higher fee than this amount (in satoshis) per KB
 static const CAmount nHighTransactionFeeWarning = 0.1 * COIN;
 //! -maxtxfee default
@@ -441,22 +441,26 @@ public:
         fMultiSendStake = false;
     }
 
-    std::map<uint256, CWalletTx> mapWallet;
+    mutable std::map<uint256, CWalletTx> mapWallet;
 
     int64_t nOrderPosNext;
     std::map<uint256, int> mapRequestCount;
 
     std::map<CTxDestination, CAddressBookData> mapAddressBook;
+    std::map<std::string, std::string> addrToTxHashMap;
 
     CPubKey vchDefaultKey;
 
     std::set<COutPoint> setLockedCoins;
+    bool walletStakingInProgress;
 
     int64_t nTimeFirstKey;
 
     std::map<std::string, bool> keyImagesSpends;
     std::map<std::string, std::string> keyImageMap;//mapping from: txhashHex-n to key image str, n = index
     std::list<std::string> pendingKeyImages;
+    mutable std::map<CScript, CAmount> amountMap;
+    mutable std::map<CScript, CKey> blindMap;
 
     const CWalletTx* GetWalletTx(const uint256& hash) const;
 
@@ -568,6 +572,7 @@ public:
     void ReacceptWalletTransactions();
     void ResendWalletTransactions();
     CAmount GetBalance();
+    CAmount GetSpendableBalance();
     CAmount GetZerocoinBalance(bool fMatureOnly) const;
     CAmount GetUnconfirmedZerocoinBalance() const;
     CAmount GetImmatureZerocoinBalance() const;
@@ -594,7 +599,9 @@ public:
                            AvailableCoinsType coin_type = ALL_COINS,
                            bool useIX = false,
                            CAmount nFeePay = 0);
-    bool CreateTransactionBulletProof(const CPubKey& recipientViewKey, const std::vector<std::pair<CScript, CAmount> >& vecSend,
+    bool CreateTransactionBulletProof(const CKey& txPrivDes,
+                           const CPubKey& recipientViewKey,
+                           const std::vector<std::pair<CScript, CAmount> >& vecSend,
                            CWalletTx& wtxNew,
                            CReserveKey& reservekey,
                            CAmount& nFeeRet,
@@ -602,13 +609,13 @@ public:
                            const CCoinControl* coinControl = NULL,
                            AvailableCoinsType coin_type = ALL_COINS,
                            bool useIX = false,
-                           CAmount nFeePay = 0);
+                           CAmount nFeePay = 0, int ringSize = 6);
 
-    bool CreateTransactionBulletProof(const CPubKey &recipientViewKey, CScript scriptPubKey, const CAmount &nValue,
+    bool CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey &recipientViewKey, CScript scriptPubKey, const CAmount &nValue,
                                       CWalletTx &wtxNew, CReserveKey &reservekey, CAmount &nFeeRet,
                                       std::string &strFailReason, const CCoinControl *coinControl = NULL,
                                       AvailableCoinsType coin_type = ALL_COINS, bool useIX = false,
-                                      CAmount nFeePay = 0);
+                                      CAmount nFeePay = 0, int ringSize = 6);
 
     bool CreateTransaction(CScript scriptPubKey, const CAmount &nValue, CWalletTx &wtxNew, CReserveKey &reservekey,
                            CAmount &nFeeRet, std::string &strFailReason, const CCoinControl *coinControl = NULL,
@@ -786,7 +793,7 @@ public:
     bool EncodeStealthPublicAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr);
     static bool DecodeStealthAddress(const std::string& stealth, CPubKey& pubViewKey, CPubKey& pubSpendKey, bool& hasPaymentID, uint64_t& paymentID);
     static bool ComputeStealthDestination(const CKey& secret, const CPubKey& pubViewKey, const CPubKey& pubSpendKey, CPubKey& des);
-    bool SendToStealthAddress(const std::string& stealthAddr, CAmount nValue, CWalletTx& wtxNew, bool fUseIX = false);
+    bool SendToStealthAddress(const std::string& stealthAddr, CAmount nValue, CWalletTx& wtxNew, bool fUseIX = false, int ringSize = 5);
     bool GenerateAddress(CPubKey& pub, CPubKey& txPub, CKey& txPriv) const;
     bool IsTransactionForMe(const CTransaction& tx);
     bool ReadAccountList(std::string& accountList);
@@ -796,8 +803,8 @@ public:
     bool GenerateIntegratedAddress(const std::string& accountName, std::string& pubAddr);
     bool GenerateIntegratedAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr);
     bool AllMyPublicAddresses(std::vector<std::string>& addresses, std::vector<std::string>& accountNames);
-    bool RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmount &amount) const;
-    bool EncodeTxOutAmount(CTxOut& out, const CAmount& amount, const unsigned char * sharedSec);
+    bool RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmount &amount, CKey&) const;
+    bool EncodeTxOutAmount(CTxOut& out, const CAmount& amount, const unsigned char * sharedSec, bool isCoinstake = false);
     CAmount getCOutPutValue(const COutput& output) const;
     CAmount getCTxOutValue(const CTransaction &tx, const CTxOut &out) const;
     bool findCorrespondingPrivateKey(const CTxOut &txout, CKey &key) const;
@@ -805,6 +812,10 @@ public:
     void CreatePrivacyAccount();
     bool mySpendPrivateKey(CKey& spend) const;
     bool myViewPrivateKey(CKey& view) const;
+    static bool CreateCommitment(const CAmount val, CKey& blind, std::vector<unsigned char>& commitment);
+    static bool CreateCommitment(const unsigned char* blind, CAmount val, std::vector<unsigned char>& commitment);
+    bool WriteStakingStatus(bool status);
+    bool ReadStakingStatus();
 private:
     bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth);
     bool allMyPrivateKeys(std::vector<CKey>& spends, std::vector<CKey>& views);
@@ -819,9 +830,9 @@ private:
         CKey& txPrivKey);
     bool generateBulletProof(CTransaction& tx);
     bool verifyBulletProof(const CTransaction& tx);
-    bool generateRingSignature(CTransaction& tx);
-    bool verifyRingSignature(const CTransaction& tx);
-    bool computeSharedSec(const CTransaction& tx, CPubKey& sharedSec) const;
+    bool generateRingSignature(CTransaction& tx, int& myIndex, int ringSize);
+    bool verifyRingSignatureWithTxFee(const CTransaction& tx);
+    bool computeSharedSec(const CTransaction& tx, const CTxOut& out, CPubKey& sharedSec) const;
     int walletIdxCache = 0;
 };
 
@@ -1187,7 +1198,6 @@ public:
             fImmatureCreditCached = true;
             return nImmatureCreditCached;
         }
-
         return 0;
     }
 
@@ -1200,20 +1210,25 @@ public:
         if (IsCoinBase() && GetBlocksToMaturity() > 0)
             return 0;
 
-        if (fUseCache && fAvailableCreditCached)
-            return nAvailableCreditCached;
+        if (fUseCache && fAvailableCreditCached) {
+            if (nAvailableCreditCached) {
+                return nAvailableCreditCached;
+            }
+        }
 
         CAmount nCredit = 0;
         uint256 hashTx = GetHash();
         for (unsigned int i = 0; i < vout.size(); i++) {
             if (!pwallet->IsSpent(hashTx, i)) {
-                std::cout << "txout has not been spent"  << std::endl;
                 const CTxOut& txout = vout[i];
-                nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
+                CAmount cre = pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
+                if (cre == 0 && fCreditCached) {
+                    fCreditCached = false;
+                    cre = pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
+                }
+                nCredit += cre;
                 if (!MoneyRange(nCredit))
                     throw std::runtime_error("CWalletTx::GetAvailableCredit() : value out of range");
-            } else {
-                std::cout << "txout has been spent"  << std::endl;
             }
         }
 
@@ -1482,6 +1497,14 @@ public:
                 return false;
         }
         return true;
+    }
+
+    int GetBlockHeight() const {
+        if (hashBlock.IsNull()) {
+            return -1; //not in the chain
+        } else {
+            return mapBlockIndex[hashBlock]->nHeight;
+        }
     }
 
     bool WriteToDisk();

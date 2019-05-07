@@ -155,12 +155,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="payAmount">
-          <property name="decimals">
-           <number>8</number>
-          </property>
-          <property name="maximum">
-           <double>999999999.000000000000000</double>
+         <widget class="QLineEdit" name="payAmount">
+          <property name="placeholderText">
+           <string>DAPS Amount</string>
           </property>
          </widget>
         </item>

@@ -37,7 +37,7 @@
 /* #undef ENABLE_MODULE_WHITELIST */
 
 /* Define this symbol if OpenSSL EC functions are available */
-/* #undef ENABLE_OPENSSL_TESTS */
+#define ENABLE_OPENSSL_TESTS 1
 
 /* Define this symbol if __builtin_clzll is available */
 #define HAVE_BUILTIN_CLZLL 1

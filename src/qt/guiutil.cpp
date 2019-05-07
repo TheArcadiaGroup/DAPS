@@ -89,7 +89,7 @@ namespace GUIUtil
 {
 QString dateTimeStr(const QDateTime& date)
 {
-    return date.date().toString(Qt::SystemLocaleShortDate) + QString(" ") + date.toString("hh:mm");
+    return date.date().toString(Qt::SystemLocaleShortDate) + QString(" ") + date.toString("hh:mm:ss");
 }
 
 QString dateTimeStr(qint64 nTime)
@@ -807,6 +807,12 @@ void saveWindowGeometry(const QString& strSetting, QWidget* parent)
     settings.setValue(strSetting + "Pos", parent->pos());
     settings.setValue(strSetting + "Size", parent->size());
 }
+
+void HideDisabledWidgets( QVector<QWidget*> widgets ){
+    auto hide = []( QWidget* widget) { widget->setVisible(false); };
+    for_each (widgets.begin(), widgets.end(), hide);
+}
+
 
 void restoreWindowGeometry(const QString& strSetting, const QSize& defaultSize, QWidget* parent)
 {

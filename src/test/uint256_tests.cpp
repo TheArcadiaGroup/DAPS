@@ -12,6 +12,7 @@
 #include <string>
 #include "version.h"
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(uint256_tests)
  
 const unsigned char R1Array[] = 
@@ -834,4 +835,4 @@ BOOST_AUTO_TEST_CASE( getmaxcoverage ) // some more tests just to get 100% cover
 }
 
 BOOST_AUTO_TEST_SUITE_END()
-
+#endif

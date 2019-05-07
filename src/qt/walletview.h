@@ -53,7 +53,6 @@ public:
     */
     void setWalletModel(WalletModel* walletModel);
 
-    bool handlePaymentRequest(const SendCoinsRecipient& recipient);
 
     void showSyncStatus(bool fShow);
 
@@ -66,7 +65,6 @@ private:
     ReceiveCoinsDialog* receiveCoinsPage;
     OptionsPage* optionsPage;
     HistoryPage* historyPage;
-//  #remove  PrivacyDialog* privacyPage;
     SendCoinsDialog* sendCoinsPage;
     BlockExplorer* explorerWindow;
     MasternodeList* masternodeListPage;
@@ -136,6 +134,7 @@ public slots:
 
     /** Update selected DAPS amount from transactionview */
     void trxAmount(QString amount);
+    void stakingStatus(bool);
 
 signals:
     /** Signal that we want to show the main window */
@@ -146,6 +145,7 @@ signals:
     void encryptionStatusChanged(int status);
     /** Notify that a new transaction appeared */
     void incomingTransaction(const QString& date, int unit, const CAmount& amount, const QString& type, const QString& address);
+    void stakingStatusChanged(bool);
 };
 
 #endif // BITCOIN_QT_WALLETVIEW_H

@@ -23,10 +23,16 @@
 #include <QScrollBar>
 #include <QTextDocument>
 #include <QDataWidgetMapper>
+#include <QDoubleValidator>
+#include <QFile>
+#include <QTextStream>
+
+using namespace std;
 
 OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
                                                           ui(new Ui::OptionsPage),
                                                           model(0),
+                                                          m_SizeGrip(this),
                                                           mapper(0)
 {
     ui->setupUi(this);
@@ -40,6 +46,19 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
     connect(ui->lineEditNewPass, SIGNAL(textChanged(const QString &)), this, SLOT(validateNewPass()));
     connect(ui->lineEditNewPassRepeat, SIGNAL(textChanged(const QString &)), this, SLOT(validateNewPassRepeat()));
     connect(ui->lineEditOldPass, SIGNAL(textChanged(const QString &)), this, SLOT(onOldPassChanged()));
+    //connect(ui->pushButtonSave, SIGNAL(clicked()), this, SLOT(on_pushButtonSave_clicked()));
+
+    QDoubleValidator *dblVal = new QDoubleValidator(0, Params().MAX_MONEY, 6, ui->lineEditWithhold);
+    dblVal->setNotation(QDoubleValidator::StandardNotation);
+    dblVal->setLocale(QLocale::C);
+    ui->lineEditWithhold->setValidator(dblVal);
+    ui->lineEditWithhold->setPlaceholderText("DAPS Amount");
+    if (nReserveBalance > 0)
+        ui->lineEditWithhold->setText(BitcoinUnits::format(0, nReserveBalance).toUtf8());
+
+    bool stkStatus = pwalletMain->ReadStakingStatus();
+    ui->toggleStaking->setState(nLastCoinStakeSearchInterval | stkStatus);
+    connect(ui->toggleStaking, SIGNAL(stateChanged(ToggleButton*)), this, SLOT(on_EnableStaking(ToggleButton*)));
 
     //connect(ui->pushButtonPassword, SIGNAL(clicked()), this, SLOT(on_pushButtonPassword_clicked()));
 }
@@ -58,6 +77,19 @@ void OptionsPage::setModel(WalletModel* model)
     mapper->toFirst();
 }
 
+static inline int64_t roundint64(double d)
+{
+    return (int64_t)(d > 0 ? d + 0.5 : d - 0.5);
+}
+
+CAmount OptionsPage::getValidatedAmount() {
+    double dAmount = ui->lineEditWithhold->text().toDouble();
+    if (dAmount < 0.0 || dAmount > Params().MAX_MONEY)
+        throw runtime_error("Invalid amount, amount should be < 2.1B DAPS");
+    CAmount nAmount = roundint64(dAmount * COIN);
+    return nAmount;
+}
+
 OptionsPage::~OptionsPage()
 {
     delete ui;
@@ -66,6 +98,27 @@ OptionsPage::~OptionsPage()
 void OptionsPage::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
+
+    m_SizeGrip.move  (width() - 17, height() - 17);
+    m_SizeGrip.resize(          17,            17);
+}
+
+void OptionsPage::bitcoinGUIInstallEvent(BitcoinGUI *gui) {
+    m_SizeGrip.installEventFilter((QObject*)gui);
+}
+
+void OptionsPage::on_pushButtonSave_clicked() {
+    if (ui->lineEditWithhold->text().trimmed().isEmpty()) {
+        QMessageBox(QMessageBox::Information, tr("Information"), tr("DAPS reserve amount should be filled"), QMessageBox::Ok).exec();
+        return;
+    }
+    nReserveBalance = getValidatedAmount();
+
+    CWalletDB walletdb(pwalletMain->strWalletFile);
+    walletdb.WriteReserveAmount(nReserveBalance / COIN);
+
+    emit model->stakingStatusChanged(nLastCoinStakeSearchInterval);
+    QMessageBox(QMessageBox::Information, tr("Information"), tr("Reserve balance " + BitcoinUnits::format(0, nReserveBalance).toUtf8() + " is successfully set!"), QMessageBox::Ok).exec();
 }
 
 
@@ -95,6 +148,7 @@ void OptionsPage::on_pushButtonPassword_clicked()
 
     if ( (ui->lineEditNewPass->text() == ui->lineEditNewPassRepeat->text()) && (ui->lineEditNewPass->text().length()) && (ui->lineEditNewPass->text().contains(" ")) )
     {
+        if (!matchNewPasswords()) auto errorBox = QMessageBox::warning(this, tr("Password Error"),tr("New passwords do not match."));
         if (!model->getEncryptionStatus()){
             model->setWalletEncrypted(true, newPass);
             success = true;
@@ -102,14 +156,17 @@ void OptionsPage::on_pushButtonPassword_clicked()
             if (model->changePassphrase(oldPass,newPass)) {
                 ui->lineEditOldPass->setStyleSheet(GUIUtil::loadStyleSheet());
                 success = true;
+                auto errorBox = QMessageBox::information(this, "", tr("Password changed"));
             } else {
                 ui->lineEditOldPass->setStyleSheet("border-color:red");
+                auto errorBox = QMessageBox::warning(this, tr("Password Error"),tr("Password rejected by wallet."));
             }
         }
         ui->lineEditOldPass->repaint();
     } else {
-        success = false;
+         success = false;
         validateNewPass();
+        auto errorBox = QMessageBox::warning(this, tr("Password Error"),tr("Password rejected by wallet."));
     }
 
     if (success)
@@ -163,6 +220,41 @@ bool OptionsPage::matchNewPasswords()
         ui->lineEditNewPassRepeat->setStyleSheet("border-color: red");
         ui->lineEditNewPassRepeat->repaint();
         return false;
+    }
+}
+
+void OptionsPage::on_EnableStaking(ToggleButton* widget)
+{
+    if (chainActive.Height() < Params().LAST_POW_BLOCK()) {
+    	if (widget->getState()) {
+			QString msg("PoW blocks are still being mined!");
+			QStringList l;
+			l.push_back(msg);
+			GUIUtil::prompt(QString("<br><br>")+l.join(QString("<br><br>"))+QString("<br><br>"));
+    	}
+    	widget->setState(false);
+    	pwalletMain->WriteStakingStatus(false);
+        return;
+    }
+	if (widget->getState()){
+        QStringList errors = model->getStakingStatusError();
+        if (!errors.length()) {
+            pwalletMain->WriteStakingStatus(true);
+            emit model->stakingStatusChanged(true);
+            model->generateCoins(true, 1);
+        } else {
+            GUIUtil::prompt(QString("<br><br>")+errors.join(QString("<br><br>"))+QString("<br><br>"));
+            widget->setState(false);
+            nLastCoinStakeSearchInterval = 0;
+            emit model->stakingStatusChanged(false);
+            pwalletMain->WriteStakingStatus(false);
+        }
+    } else {
+        nLastCoinStakeSearchInterval = 0;
+        model->generateCoins(false, 0);
+        emit model->stakingStatusChanged(false);
+        pwalletMain->walletStakingInProgress = false;
+        pwalletMain->WriteStakingStatus(false);
     }
 }
 

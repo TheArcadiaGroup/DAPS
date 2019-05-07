@@ -2,18 +2,33 @@
 <ui version="4.0">
  <class>HistoryPage</class>
  <widget class="QDialog" name="HistoryPage">
-       <property name="styleSheet">
-       <string notr="true">QDialog{border-image: url(':/images/background') 0 0 0 0 stretch stretch;}</string>
-      </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>910</width>
-    <height>416</height>
+    <width>1055</width>
+    <height>521</height>
    </rect>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>960</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog{border-image: url(':/images/background') 0 0 0 0 stretch stretch;}</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="1">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
@@ -82,6 +97,21 @@
              <string>Received</string>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>Mined</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Minted</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Masternode</string>
+            </property>
+           </item>
           </widget>
          </item>
          <item>
@@ -93,20 +123,20 @@
             </sizepolicy>
            </property>
            <property name="editable">
-                <bool>true</bool>
-            </property>
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QLineEdit" name="lineEditAmount">
-            <property name="placeholderText">
-            <string>Min Amount</string>
-            </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="placeholderText">
+            <string>Min Amount</string>
            </property>
           </widget>
          </item>

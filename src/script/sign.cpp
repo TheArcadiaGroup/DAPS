@@ -134,8 +134,12 @@ bool SignSignature(const CKeyStore &keystore, const CScript &fromPubKey, CMutabl
     }
 
     // Test solution
-    return VerifyScript(txin.scriptSig, fromPubKey, STANDARD_SCRIPT_VERIFY_FLAGS,
-                        MutableTransactionSignatureChecker(&txTo, nIn));
+    if (VerifyScript(txin.scriptSig, fromPubKey, STANDARD_SCRIPT_VERIFY_FLAGS,
+                        MutableTransactionSignatureChecker(&txTo, nIn))) {
+    	LogPrintf("\n%s: successfully verified scriptSig=%s, fromPubKey=%s, txTo=%s\n", __func__, txin.scriptSig.ToString(), fromPubKey.ToString(), txTo.GetHash().GetHex());
+    	return true;
+    }
+    return false;
 }
 
 bool SignSignature(const CKeyStore &keystore, const CTransaction &txFrom, CMutableTransaction &txTo, unsigned int nIn,
@@ -145,7 +149,8 @@ bool SignSignature(const CKeyStore &keystore, const CTransaction &txFrom, CMutab
     assert(txin.prevout.n < txFrom.vout.size());
     const CTxOut &txout = txFrom.vout[txin.prevout.n];
 
-    return SignSignature(keystore, txout.scriptPubKey, txTo, nIn, nHashType);
+    bool ret = SignSignature(keystore, txout.scriptPubKey, txTo, nIn, nHashType);
+    return ret;
 }
 
 static CScript PushAll(const vector <valtype> &values) {

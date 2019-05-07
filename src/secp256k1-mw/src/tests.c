@@ -30,7 +30,6 @@ void ECDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps) 
 
 #include "contrib/lax_der_parsing.c"
 #include "contrib/lax_der_privatekey_parsing.c"
-//#include "./modules/bulletproofs/tests_impl.h"
 
 #if !defined(VG_CHECK)
 # if defined(VALGRIND)

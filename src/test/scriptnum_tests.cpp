@@ -7,6 +7,8 @@
 #include <boost/test/unit_test.hpp>
 #include <limits.h>
 #include <stdint.h>
+
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(scriptnum_tests)
 
 static const long values[] = \
@@ -194,3 +196,4 @@ BOOST_AUTO_TEST_CASE(operators)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

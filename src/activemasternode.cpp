@@ -164,7 +164,8 @@ bool CActiveMasternode::SendMasternodePing(std::string& errorMessage)
     }
 
     LogPrintf("CActiveMasternode::SendMasternodePing() - Relay Masternode Ping vin = %s\n", vin.ToString());
-
+    std::string stl(vin.masternodeStealthAddress.begin(), vin.masternodeStealthAddress.end());
+    LogPrintf("CActiveMasternode::SendMasternodePing() - masternodestealthaddress = %s\n", stl);
     CMasternodePing mnp(vin);
     if (!mnp.Sign(keyMasternode, pubKeyMasternode)) {
         errorMessage = "Couldn't sign Masternode Ping";
@@ -405,7 +406,7 @@ bool CActiveMasternode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubke
     pubScript = out.tx->vout[out.i].scriptPubKey; // the inputs PubKey
 
     pwalletMain->findCorrespondingPrivateKey(out.tx->vout[out.i], secretKey);
-    /*CTxDestination address1;
+    CTxDestination address1;
     ExtractDestination(pubScript, address1);
     CBitcoinAddress address2(address1);
 
@@ -418,11 +419,11 @@ bool CActiveMasternode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubke
     if (!pwalletMain->GetKey(keyID, secretKey)) {
         LogPrintf("CActiveMasternode::GetMasterNodeVin - Private key for address is not known\n");
         return false;
-    }*/
+    }
 
     pubkey = secretKey.GetPubKey();
     std::string msa;
-    pwalletMain->GenerateIntegratedAddress("masteraccount", msa);
+    pwalletMain->ComputeStealthPublicAddress("masteraccount", msa);
     std::copy(msa.begin(), msa.end(), std::back_inserter(vin.masternodeStealthAddress));
     std::string mnsa(vin.masternodeStealthAddress.begin(), vin.masternodeStealthAddress.end());
     LogPrintf("\nCMasternodePayments: masternodeStealthAddress: %s\n", mnsa);

@@ -41,6 +41,18 @@ bool CMasternodeSync::IsBlockchainSynced()
     }
     lastProcess = GetTime();
 
+    if (!fBlockchainSynced && vNodes.size() >= 1){
+    	int highestCount = 0;
+    	for (CNode* node : vNodes)
+    		if (node->nStartingHeight>highestCount)
+    			highestCount = node->nStartingHeight;
+    	if (highestCount > 550){
+    		if (highestCount <= chainActive.Height()) {
+    			fBlockchainSynced = true;
+    		}
+    	}
+    }
+
     if (fBlockchainSynced) return true;
 
     if (fImporting || fReindex) return false;

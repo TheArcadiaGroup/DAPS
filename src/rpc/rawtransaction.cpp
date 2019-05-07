@@ -290,7 +290,7 @@ UniValue listunspent(const UniValue& params, bool fHelp)
                 continue;
         }
 
-        CAmount nValue = out.tx->vout[out.i].nValue;
+        CAmount nValue = pwalletMain->getCTxOutValue(*out.tx, out.tx->vout[out.i]);
         const CScript& pk = out.tx->vout[out.i].scriptPubKey;
         UniValue entry(UniValue::VOBJ);
         entry.push_back(Pair("txid", out.tx->GetHash().GetHex()));

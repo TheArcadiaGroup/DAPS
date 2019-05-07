@@ -123,6 +123,7 @@ public:
     int POA_BLOCK_TIME() const { return nPoABlockTime; }
     int MIN_NUM_POS_BLOCKS_AUDITED() const {return nMinNumPoSBlocks;}
     int nLastPOWBlock;
+    double MAX_MONEY;
 
 protected:
     CChainParams() {}

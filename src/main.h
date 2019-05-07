@@ -43,6 +43,10 @@
 
 #include <boost/unordered_map.hpp>
 
+#include "secp256k1_bulletproofs.h"
+#include "secp256k1_commitment.h"
+#include "secp256k1_generator.h"
+
 class CBlockIndex;
 class CBlockTreeDB;
 class CZerocoinDB;
@@ -145,6 +149,7 @@ extern unsigned int nCoinCacheSize;
 extern CFeeRate minRelayTxFee;
 extern bool fAlerts;
 extern bool fVerifyingBlocks;
+extern bool fGenerateBitcoins;
 
 extern bool fLargeWorkForkFound;
 extern bool fLargeWorkInvalidChainFound;
@@ -179,6 +184,8 @@ void SyncWithWallets(const CTransaction& tx, const CBlock* pblock = NULL);
 void RegisterNodeSignals(CNodeSignals& nodeSignals);
 /** Unregister a network node */
 void UnregisterNodeSignals(CNodeSignals& nodeSignals);
+
+secp256k1_context2* GetContext();
 
 /** 
  * Process an incoming block. This only returns after the best known valid

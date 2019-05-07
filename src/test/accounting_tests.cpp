@@ -10,6 +10,7 @@
 #include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
 
+#ifdef DISABLE_PASSED_TEST
 extern CWallet* pwalletMain;
 
 BOOST_AUTO_TEST_SUITE(accounting_tests)
@@ -137,3 +138,4 @@ BOOST_AUTO_TEST_CASE(acc_orderupgrade)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

@@ -11,11 +11,13 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include <QDialog>
+#include <QSizeGrip>
 
 class ClientModel;
 class TransactionFilterProxy;
 class TxViewDelegate;
 class WalletModel;
+class BitcoinGUI;
 
 namespace Ui
 {
@@ -39,6 +41,7 @@ public:
     void setWalletModel(WalletModel* walletModel);
     void showBlockSync(bool fShow);
     void showBalanceSync(bool fShow);
+    void bitcoinGUIInstallEvent(BitcoinGUI *gui);
     
 
     QTimer* animTicker;
@@ -52,6 +55,8 @@ public slots:
     void updateTotalBlocksLabel();
     int tryNetworkBlockCount();
     void updateRecentTransactions();
+    void setSpendableBalance(bool isStaking);
+    void showBlockCurrentHeight();
 
 signals:
     void transactionClicked(const QModelIndex& index);
@@ -79,12 +84,14 @@ private:
     TransactionFilterProxy* filter;
 
     QWidget* blockSyncCircle;
+    QSizeGrip m_SizeGrip;
     QWidget* blockAnimSyncCircle;
     bool isSyncingBlocks=true;
     QWidget* balanceSyncCircle;
     QWidget* balanceAnimSyncCircle;
     bool isSyncingBalance=true;
 
+    virtual void resizeEvent(QResizeEvent* event);
     void initSyncCircle(float percentOfParent);
     void moveSyncCircle(QWidget* anchor, QWidget* animated, int deltaRadius, float degreesPerSecond, float angleOffset=0);
     QRect getCircleGeometry(QWidget* parent, float ratioToParent);

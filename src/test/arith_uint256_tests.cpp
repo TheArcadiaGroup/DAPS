@@ -13,6 +13,7 @@
 #include <string>
 #include "version.h"
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(arith_uint256_tests)
 ///BOOST_FIXTURE_TEST_SUITE(arith_uint256_tests, BasicTestingSetup)
 
@@ -565,3 +566,4 @@ BOOST_AUTO_TEST_CASE( getmaxcoverage ) // some more tests just to get 100% cover
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

@@ -16,43 +16,33 @@ COPY . /DAPS/
 
 RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #
-    if [ "$SRC_TAG" = "public-beta" ] && [ "$BUILD_TARGET" = "windowsx64" ]; \
-      then echo "Copying chilkat winx64..." && \
-        mkdir -p depends/x86_64-w64-mingw32/include/chilkat-9.5.0 && \
-        cp depends/chilkat/include/* depends/x86_64-w64-mingw32/include/chilkat-9.5.0 && \
-        mkdir -p depends/x86_64-w64-mingw32/lib && \
-        cp depends/chilkat/lib/* depends/x86_64-w64-mingw32/lib; \
-#
-    elif [ "$SRC_TAG" = "public-beta" ] && ["$BUILD_TARGET" = "windowsx86" ]; \
-      then echo "Copying chilkat winx86..." && \
-        mkdir -p depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
-        cp depends/chilkat/x86/include/* depends/i686-w64-mingw32/include/chilkat-9.5.0 && \
-        mkdir -p depends/i686-w64-mingw32/lib && \
-        cp depends/chilkat/x86/lib/* depends/i686-w64-mingw32/lib; \
-#
-    else echo "Not public-beta, no chilkat to add."; \
-#
-    fi; \
-#     
     if [ "$BUILD_TARGET" = "windowsx64" ]; \
       then echo "Compiling for win64" && \
+        cd depends && \
+        make HOST=x86_64-w64-mingw32 && \
+        cd .. && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && \
-        make HOST=x86_64-w64-mingw32 -j2 && \
-        make install HOST=x86_64-w64-mingw32 DESTDIR=/BUILD/; \
+        make -j2 && \
+        make install DESTDIR=/BUILD/; \
 #
     elif [ "$BUILD_TARGET" = "windowsx86" ]; \
       then echo "Compiling for win86" && \
+        cd depends && \
+        make HOST=i686-w64-mingw32 && \
+        cd .. && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
-        make HOST=i686-w64-mingw32 -j2 && \
-        make install HOST=i686-w64-mingw32 DESTDIR=/BUILD/; \
+        make -j2 && \
+        make install DESTDIR=/BUILD/; \
 #
     elif [ "$BUILD_TARGET" = "linux" ]; \
        then echo "Compiling for linux" && \
+        su && \
+        apt-get remove libzmq3-dev -y && \
         ./autogen.sh && \
-        CONFIG_SITE=$PWD/depends/x86_64-pc-linux-gnu/share/config.site ./configure --prefix=/ && \
-        make HOST=x86_64-pc-linux-gnu -j2 && \
+        ./configure && \
+        make -j2 && \
         make install DESTDIR=/BUILD/; \
 #
     elif [ "$BUILD_TARGET" = "mac" ]; \
@@ -77,5 +67,10 @@ RUN cd /BUILD/ && \
     tar cvf - --transform 's/.*\///g' --files-from=/dev/stdin | \
     #compress
     xz -9 - > $DESTDIR$BUILD_TARGET.tar.xz
+
+RUN mkdir -p /codefresh/volume/out/bin/ && \
+    cp -r /daps/bin/* /codefresh/volume/out/bin/ && \
+    ls -l /codefresh/volume/ && \
+    ls -l /codefresh/volume/out/bin
 
 CMD /bin/bash -c "trap: TERM INT; sleep infinity & wait"

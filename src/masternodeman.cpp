@@ -226,6 +226,8 @@ void CMasternodeMan::AskForMN(CNode* pnode, CTxIn& vin)
     // ask for the mnb info once from the node that sent mnp
 
     LogPrint("masternode", "CMasternodeMan::AskForMN - Asking node for missing entry, vin: %s\n", vin.prevout.hash.ToString());
+    std::string stl(vin.masternodeStealthAddress.begin(), vin.masternodeStealthAddress.end());
+    LogPrint("masternode", "CMasternodeMan::AskForMN - stealth masternode address = %s\n", stl);
     pnode->PushMessage("dseg", vin);
     int64_t askAgain = GetTime() + MASTERNODE_MIN_MNP_SECONDS;
     mWeAskedForMasternodeListEntry[vin.prevout] = askAgain;
@@ -724,13 +726,10 @@ void CMasternodeMan::ProcessMasternodeConnections()
 
 void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
-    LogPrintf("\n%s:Checking litemode\n", __func__);
     if (fLiteMode) return; //disable all Obfuscation/Masternode related functionality
-    LogPrintf("\n%s:Checking blockchain synchronized\n", __func__);
     if (!masternodeSync.IsBlockchainSynced()) return;
 
     LOCK(cs_process_message);
-    LogPrintf("\n%s: Parsing message strCommand=%s\n", __func__, strCommand);
     if (strCommand == "mnb") { //Masternode Broadcast
         CMasternodeBroadcast mnb;
         vRecv >> mnb;
@@ -858,7 +857,6 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
     // Light version for OLD MASSTERNODES - fake pings, no self-activation
     else if (strCommand == "dsee") { //ObfuScation Election Entry
-        LogPrintf("Check masternode spork 10\n");
         if (IsSporkActive(SPORK_10_MASTERNODE_PAY_UPDATED_NODES)) return;
         LogPrintf("Parsing masternode broadcast\n");
         CTxIn vin;
@@ -877,14 +875,12 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
         vRecv >> vin >> addr >> vchSig >> sigTime >> pubkey >> pubkey2 >> count >> current >> lastUpdated >> protocolVersion >> donationAddress >> donationPercentage;
         //std::string addrMN(vin.masternodeStealthAddress.data());
-        LogPrintf("\n%s:vin.masternodestealthaddress\n", __func__);
         // make sure signature isn't in the future (past is OK)
         if (sigTime > GetAdjustedTime() + 60 * 60) {
             LogPrint("masternode","dsee - Signature rejected, too far into the future %s\n", vin.prevout.hash.ToString());
             Misbehaving(pfrom->GetId(), 1);
             return;
         }
-        LogPrintf("Parsing public key\n");
         std::string vchPubKey(pubkey.begin(), pubkey.end());
         std::string vchPubKey2(pubkey2.begin(), pubkey2.end());
 
@@ -896,7 +892,6 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             return;
         }
 
-        LogPrintf("Parsing pubkey script key\n");
         CScript pubkeyScript;
         pubkeyScript = GetScriptForDestination(pubkey);
 
@@ -906,13 +901,8 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             return;
         }
 
-        LogPrintf("Checking pubkey 2\n");
         CScript pubkeyScript2;
         pubkeyScript2 = GetScriptForDestination(pubkey2);
-        std::cout << "pubkey1 :" << pubkey.GetHex() << std::endl;
-        std::cout << "pubkey1 script:" << pubkeyScript.ToString() << std::endl;
-        std::cout << "pubkey2 :" << pubkey2.GetHex() << std::endl;
-        std::cout << "pubkey2 script:" << pubkeyScript2.ToString() << std::endl;
         if ((pubkey2.IsCompressed() && pubkeyScript2.size() != 35) || (!pubkey2.IsCompressed() && pubkeyScript2.size() != 67)) {
             LogPrint("masternode","dsee - pubkey2 the wrong size\n");
             Misbehaving(pfrom->GetId(), 100);
@@ -937,11 +927,9 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         } else if (addr.GetPort() == 53572)
             return;
 
-        LogPrintf("Looking for vin\n");
         //search existing Masternode list, this is where we update existing Masternodes with new dsee broadcasts
         CMasternode* pmn = this->Find(vin);
         if (pmn != NULL) {
-            std::cout << "Updating masternode" << std::endl;
             // count == -1 when it's a new entry
             //   e.g. We don't want the entry relayed/time updated when we're syncing the list
             // mn.pubkey = pubkey, IsVinAssociatedWithPubkey is validated once below,
@@ -978,13 +966,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
             return;
         }
-        LogPrint("\n%s:vin not found\n", __func__);
         static std::map<COutPoint, CPubKey> mapSeenDsee;
         if (mapSeenDsee.count(vin.prevout) && mapSeenDsee[vin.prevout] == pubkey) {
             LogPrint("masternode", "dsee - already seen this vin %s\n", vin.prevout.ToString());
             return;
         }
-        LogPrint("\n%s: Inserting vin into mapSeenDsee\n", __func__);
         mapSeenDsee.insert(make_pair(vin.prevout, pubkey));
         // make sure the vout that was signed is related to the transaction that spawned the Masternode
         //  - this is expensive, so it's only done once per Masternode
@@ -1002,7 +988,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
         CValidationState state;
         CMutableTransaction tx = CMutableTransaction();
-        LogPrint("\n%s: obfuscation pool collateral pubkey:%s\n", __func__, obfuScationPool.collateralPubKey.ToString());
+        //LogPrint("\n%s: obfuscation pool collateral pubkey:%s\n", __func__, obfuScationPool.collateralPubKey.ToString());
         CTxOut vout = CTxOut(9999.99 * COIN, obfuScationPool.collateralPubKey);
         tx.vin.push_back(vin);
         tx.vout.push_back(vout);
@@ -1015,7 +1001,6 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         }*/
 
         if (fAcceptable) {
-            LogPrintf("\n%s:Checking inputage\n", __func__);
             if (GetInputAge(vin) < MASTERNODE_MIN_CONFIRMATIONS) {
                 LogPrint("masternode","dsee - Input must have least %d confirmations\n", MASTERNODE_MIN_CONFIRMATIONS);
                 Misbehaving(pfrom->GetId(), 20);
@@ -1040,7 +1025,6 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
             // use this as a peer
             addrman.Add(CAddress(addr), pfrom->addr, 2 * 60 * 60);
-            LogPrintf("\n%s: Creating CMasternode\n", __func__);
             // add Masternode
             CMasternode mn = CMasternode();
             mn.addr = addr;
@@ -1054,12 +1038,10 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             mn.lastPing = CMasternodePing(vin);
             mn.Check(true);
             // add v11 masternodes, v12 should be added by mnb only
-            LogPrintf("\n%s:Checking header version\n", __func__);
             //if (protocolVersion < GETHEADERS_VERSION) {
                 LogPrint("masternode", "dsee - Accepted OLD Masternode entry %i %i\n", count, current);
                 Add(mn);
             //}
-            LogPrintf("\n%s:Checking whether the masternode is enabled\n", __func__);
             if (mn.IsEnabled()) {
                 TRY_LOCK(cs_vNodes, lockNodes);
                 if (!lockNodes) return;

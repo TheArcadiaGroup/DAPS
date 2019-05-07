@@ -207,6 +207,20 @@ bool IsStandard(const CScript &scriptPubKey, txnouttype &whichType) {
     return whichType != TX_NONSTANDARD;
 }
 
+bool ExtractPubKey(const CScript &scriptPubKey, CPubKey& out) {
+    vector <valtype> vSolutions;
+    txnouttype whichType;
+    if (!Solver(scriptPubKey, whichType, vSolutions))
+        return false;
+
+    if (whichType == TX_PUBKEY) {
+        CPubKey pubKey(vSolutions[0]);
+        out.Set(pubKey.begin(), pubKey.end());
+        return true;
+    }
+    return false;
+}
+
 bool ExtractDestination(const CScript &scriptPubKey, CTxDestination &addressRet) {
     vector <valtype> vSolutions;
     txnouttype whichType;

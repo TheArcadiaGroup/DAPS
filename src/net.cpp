@@ -493,7 +493,7 @@ void CNode::ClearBanned() {
 }
 
 bool CNode::IsBanned(CNetAddr ip) {
-    /*bool fResult = false;
+    bool fResult = false;
     {
         LOCK(cs_setBanned);
         for (banmap_t::iterator it = setBanned.begin(); it != setBanned.end(); it++) {
@@ -503,7 +503,7 @@ bool CNode::IsBanned(CNetAddr ip) {
                 fResult = true;
         }
     }
-    return fResult;*/
+    return fResult;
     return false;
 }
 
@@ -1501,17 +1501,17 @@ void ThreadMessageHandler() {
         bool fSleep = true;
 
         BOOST_FOREACH(CNode * pnode, vNodesCopy)
-        {
+        {   
+            if (!pnode) continue;
             if (pnode->fDisconnect)
                 continue;
-
             // Receive messages
             {
                 TRY_LOCK(pnode->cs_vRecvMsg, lockRecv);
                 if (lockRecv) {
-                    if (!g_signals.ProcessMessages(pnode))
+                    if (!g_signals.ProcessMessages(pnode)) {
                         pnode->CloseSocketDisconnect();
-
+                    }
                     if (pnode->nSendSize < SendBufferSize()) {
                         if (!pnode->vRecvGetData.empty() ||
                             (!pnode->vRecvMsg.empty() && pnode->vRecvMsg[0].complete())) {
@@ -1521,7 +1521,6 @@ void ThreadMessageHandler() {
                 }
             }
             boost::this_thread::interruption_point();
-
             // Send messages
             {
                 TRY_LOCK(pnode->cs_vSend, lockSend);
@@ -1530,7 +1529,6 @@ void ThreadMessageHandler() {
             }
             boost::this_thread::interruption_point();
         }
-
 
         {
             LOCK(cs_vNodes);
@@ -1756,7 +1754,10 @@ void StartNode(boost::thread_group &threadGroup, CScheduler &scheduler) {
     scheduler.scheduleEvery(&DumpData, DUMP_ADDRESSES_INTERVAL);
 
     // ppcoin:mint proof-of-stake blocks in the background
-    if (GetBoolArg("-staking", true)) {
+    bool storedStakingStatus = false;
+    if (pwalletMain) 
+        storedStakingStatus = pwalletMain->ReadStakingStatus();
+    if (GetBoolArg("-staking", true) || storedStakingStatus) {
         std::cout << "Starting staking" << std::endl;
         threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "stakemint", &ThreadStakeMinter));
     }
@@ -2102,7 +2103,8 @@ void CNode::AskFor(const CInv &inv) {
         nRequestTime = 0;
     LogPrint("net", "askfor %s  %d (%s) peer=%d\n", inv.ToString(), nRequestTime,
              DateTimeStrFormat("%H:%M:%S", nRequestTime / 1000000), id);
-
+    LogPrintf("askfor %s  %d (%s) peer=%d\n", inv.ToString(), nRequestTime,
+             DateTimeStrFormat("%H:%M:%S", nRequestTime / 1000000), id);
     // Make sure not to reuse time indexes to keep things in the same order
     int64_t nNow = GetTimeMicros() - 1000000;
     static int64_t nLastTime;

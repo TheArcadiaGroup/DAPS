@@ -78,6 +78,7 @@ secp256k1_context2* secp256k1_context_create2(unsigned int flags) {
     ret->error_callback = default_error_callback;
 
     if (EXPECT((flags & SECP256K1_FLAGS_TYPE_MASK) != SECP256K1_FLAGS_TYPE_CONTEXT, 0)) {
+            printf("\n illegal_callback flasg\n");
             secp256k1_callback_call(&ret->illegal_callback,
                                     "Invalid flags");
             free(ret);
@@ -478,6 +479,18 @@ int secp256k1_ec_pubkey_negate2(const secp256k1_context2* ctx, secp256k1_pubkey2
         secp256k1_pubkey2_save(pubkey, &p);
     }
     return ret;
+}
+
+int secp256k1_ec_pubkey_raw_negate2(unsigned char *pub, size_t size) {
+    int ret = 0;
+    secp256k1_ge p;
+    if (!secp256k1_eckey_pubkey_parse(&p, pub, size)) {
+    	return 0;
+    }
+    memset(pub, 0, size);
+    secp256k1_ge_neg(&p, &p);
+    size_t ss = 0;
+    return secp256k1_eckey_pubkey_serialize(&p, pub, &ss, 1);
 }
 
 int secp256k1_ec_privkey_tweak_add2(const secp256k1_context2* ctx, unsigned char *seckey, const unsigned char *tweak) {

@@ -6,6 +6,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(base64_tests)
 
 BOOST_AUTO_TEST_CASE(base64_testvectors)
@@ -22,3 +23,4 @@ BOOST_AUTO_TEST_CASE(base64_testvectors)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

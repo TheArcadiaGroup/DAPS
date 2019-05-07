@@ -297,6 +297,12 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_ec_pubkey_parse2(
     size_t inputlen
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
 
+
+SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_ec_pubkey_raw_negate2(
+		unsigned char *pub,
+		size_t size
+) SECP256K1_ARG_NONNULL(1);
+
 /** Serialize a pubkey object into a serialized byte sequence.
  *
  *  Returns: 1 always.

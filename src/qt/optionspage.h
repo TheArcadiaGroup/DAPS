@@ -16,9 +16,12 @@
 #include <QPoint>
 #include <QVariant>
 #include <QSettings>
+#include <QSizeGrip>
+#include <togglebutton.h>
 
 class OptionsModel;
 class WalletModel;
+class BitcoinGUI;
 
 namespace Ui
 {
@@ -42,8 +45,10 @@ public:
     void setModel(WalletModel* model);
     void setMapper();
     bool matchNewPasswords();
+    void bitcoinGUIInstallEvent(BitcoinGUI *gui);
 
 public slots:
+	void on_EnableStaking(ToggleButton*);
 
 protected:
     virtual void keyPressEvent(QKeyEvent* event);
@@ -55,8 +60,10 @@ private:
     OptionsModel* options;
     QDataWidgetMapper* mapper;
     QSettings settings;
+    QSizeGrip m_SizeGrip;
     QMenu* contextMenu;
     virtual void resizeEvent(QResizeEvent* event);
+    CAmount getValidatedAmount();
 
 private slots:
     void validateNewPass();
@@ -67,6 +74,7 @@ private slots:
     void on_pushButtonPassword_clicked();
     void on_pushButtonBackup_clicked();
     void changeTheme(ToggleButton* widget);
+    void on_pushButtonSave_clicked();
 };
 
 #endif // BITCOIN_QT_OPTIONSPAGE_H

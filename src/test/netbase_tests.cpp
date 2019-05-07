@@ -12,6 +12,7 @@
 
 using namespace std;
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(netbase_tests)
 
 BOOST_AUTO_TEST_CASE(netbase_networks)
@@ -232,3 +233,4 @@ BOOST_AUTO_TEST_CASE(subnet_test)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

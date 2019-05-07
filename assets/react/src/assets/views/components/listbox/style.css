@@ -1,0 +1,11 @@
+:local(.Container) {
+    margin: auto;
+}
+
+:local(.Header) {}
+
+:local(.Item) {}
+
+:local(.Table) {}
+
+:local(.Row) {}

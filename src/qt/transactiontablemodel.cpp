@@ -421,6 +421,7 @@ QString TransactionTableModel::formatTxToAddress(const TransactionRecord* wtx, b
     case TransactionRecord::ZerocoinSpend_Change_zDaps:
         return tr("zDaps Accumulator");
     case TransactionRecord::SendToSelf:
+        return QString::fromStdString(wtx->address) + watchAddress;
     default:
         return tr("(n/a)") + watchAddress;
     }

@@ -23,6 +23,7 @@ Serialize(const CScript& s)
     return sSerialized;
 }
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(sigopcount_tests)
 
 BOOST_AUTO_TEST_CASE(GetSigOpCount)
@@ -64,3 +65,4 @@ BOOST_AUTO_TEST_CASE(GetSigOpCount)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

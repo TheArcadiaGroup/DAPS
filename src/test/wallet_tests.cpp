@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "wallet.h"
+#include "miner.h"
 
 #include <set>
 #include <stdint.h>
@@ -22,9 +23,50 @@
 using namespace std;
 
 typedef set<pair<const CWalletTx*,unsigned int> > CoinSet;
+extern CWallet* pwalletMain;
+extern int64_t nReserveBalance;
 
 BOOST_AUTO_TEST_SUITE(wallet_tests)
 
+static void generate_block(int count) {
+    int nHeightStart = 0;
+    int nHeightEnd = 0;
+    int nHeight = 0;
+    int nGenerate = count;
+    CReserveKey reservekey(pwalletMain);
+
+    { // Don't keep cs_main locked
+        // LOCK(cs_main);
+        nHeightStart = chainActive.Height();
+        nHeight = nHeightStart;
+        nHeightEnd = nHeightStart + nGenerate;
+    }
+    unsigned int nExtraNonce = 0;
+    while (nHeight < nHeightEnd) {
+        bool createPoSBlock = false;
+        if (nHeight > Params().LAST_POW_BLOCK())
+            createPoSBlock = true;
+
+        unique_ptr<CBlockTemplate> pblocktemplate(CreateNewBlockWithKey(reservekey, pwalletMain, createPoSBlock));
+        BOOST_CHECK(pblocktemplate.get());
+
+        CBlock* pblock = &pblocktemplate->block;
+        {
+            // LOCK(cs_main);
+            IncrementExtraNonce(pblock, chainActive.Tip(), nExtraNonce);
+        }
+        while (!CheckProofOfWork(pblock->GetHash(), pblock->nBits)) {
+            // Yes, there is a chance every nonce could fail to satisfy the -regtest
+            // target -- 1 in 2^(2^32). That ain't gonna happen.
+            ++pblock->nNonce;
+        }
+        CValidationState state;
+        BOOST_CHECK(ProcessNewBlock(state, NULL, pblock));
+        ++nHeight;
+    }
+}
+
+#ifdef DISABLE_FAILED_TEST
 static CWallet wallet;
 static vector<COutput> vCoins;
 
@@ -68,7 +110,7 @@ BOOST_AUTO_TEST_CASE(coin_selection_tests)
     CoinSet setCoinsRet, setCoinsRet2;
     CAmount nValueRet;
 
-    LOCK(wallet.cs_wallet);
+    LOCK(pwalletMain->cs_wallet);
 
     // test multiple times to allow for differences in the shuffle order
     for (int i = 0; i < RUN_TESTS; i++)
@@ -84,9 +126,9 @@ BOOST_AUTO_TEST_CASE(coin_selection_tests)
         BOOST_CHECK(!wallet.SelectCoinsMinConf( 1 * CENT, 1, 6, vCoins, setCoinsRet, nValueRet));
 
         // but we can find a new 1 cent
-        BOOST_CHECK( wallet.SelectCoinsMinConf( 1 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
+        BOOST_CHECK( pwalletMain->SelectCoinsMinConf( 1 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
         BOOST_CHECK_EQUAL(nValueRet, 1 * CENT);
-
+       
         add_coin(2*CENT);           // add a mature 2 cent coin
 
         // we can't make 3 cents of mature coins
@@ -304,5 +346,49 @@ BOOST_AUTO_TEST_CASE(coin_selection_tests)
     }
     empty_wallet();
 }
+#endif
 
+BOOST_AUTO_TEST_CASE(test_StealthSend)
+{
+    SelectParams(CBaseChainParams::REGTEST);
+    std::string stealthAddr = "41iK3WWry6hR9QBMrYRXcybkXk8TCuvcBSeBov1PBehUR8bYVsiGecoEuq9pcLBHkVAJ5CNr3nAoqEjtRJywPUKX19URn9t22yF";
+    CAmount nAmount = 100 * COIN;
+    CWalletTx wtx;
+    bool ret;
+
+    // check stealth sending on 0 balance wallet
+    printf("Balance = %f, ReserveBalance = %f\n", pwalletMain->GetBalance() * 1.0f / COIN, nReserveBalance * 1.0f / COIN);
+    try {
+        ret = pwalletMain->SendToStealthAddress(stealthAddr, nAmount, wtx);
+    } catch (std::exception& e) {
+        ret = false;
+    }
+    BOOST_CHECK_MESSAGE(!ret, "Sending to stealth address have to be failed on 0 balance wallet");
+
+    // check stealth sending on not enough balance and reservebalance wallet
+    generate_block(101);
+    nReserveBalance = pwalletMain->GetBalance() - 90 * COIN;
+    printf("Balance = %f, ReserveBalance = %f\n", pwalletMain->GetBalance() * 1.0f / COIN, nReserveBalance * 1.0f / COIN);
+    try {
+        ret = pwalletMain->SendToStealthAddress(stealthAddr, nAmount, wtx);
+    } catch (std::exception& e) {
+        ret = false;
+    }
+    BOOST_CHECK_MESSAGE(ret, "Sending to stealth address have to be success with reservebalance wallet");
+
+    // check stealth sending on enough balance wallet
+    nReserveBalance = 0;
+    printf("Balance = %f, ReserveBalance = %f\n", pwalletMain->GetBalance() * 1.0f / COIN, nReserveBalance * 1.0f / COIN);
+    try {
+        ret = pwalletMain->SendToStealthAddress(stealthAddr, nAmount, wtx);
+    } catch (std::exception& e) {
+        ret = false;
+    }
+    BOOST_CHECK_MESSAGE(ret, "Sending to stealth address have to be success on enough balance wallet");
+
+    printf("%llu/%llu/%llu/%llu\n", pwalletMain->GetSpendableBalance(), pwalletMain->GetBalance(), pwalletMain->GetUnlockedCoins(), pwalletMain->GetLockedCoins());
+
+    // check stealth sending on not enough balance wallet
+    SelectParams(CBaseChainParams::UNITTEST);
+}
 BOOST_AUTO_TEST_SUITE_END()

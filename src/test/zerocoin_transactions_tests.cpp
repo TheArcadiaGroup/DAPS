@@ -16,6 +16,7 @@
 using namespace libzerocoin;
 
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(zerocoin_transactions_tests)
 
 static CWallet cWallet("unlocked.dat");
@@ -54,3 +55,4 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

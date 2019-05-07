@@ -239,14 +239,7 @@ bool CCoinsViewCache::HaveInputs(const CTransaction& tx) const
         for (unsigned int i = 0; i < tx.vin.size(); i++) {
             const COutPoint& prevout = tx.vin[i].prevout;
             const CCoins* coins = AccessCoins(prevout.hash);
-            if (!coins) {
-                //std::cout << "Coin is null" << std::endl;
-            }
 
-            if (coins && !coins->IsAvailable(prevout.n)) {
-                //std::cout << "Coin is not available" << std::endl;
-            }
-            //std::cout << "prevout:" << prevout.hash.GetHex() << ", n = " << prevout.n << std::endl;
             if (!coins || !coins->IsAvailable(prevout.n)) {
                 return false;
             }

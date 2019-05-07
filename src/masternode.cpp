@@ -188,23 +188,18 @@ uint256 CMasternode::CalculateScore(int mod, int64_t nBlockHeight)
 
 void CMasternode::Check(bool forceCheck)
 {
-    LogPrintf("\n%s: Checking ShutdownRequested\n", __func__);
     if (ShutdownRequested()) return;
-    LogPrintf("\n%s:Checking masternode lasttime\n", __func__);
     if (!forceCheck && (GetTime() - lastTimeChecked < MASTERNODE_CHECK_SECONDS)) return;
     lastTimeChecked = GetTime();
 
-    LogPrintf("\n%s:Checking masternode vin spent\n", __func__);
     //once spent, stop doing the checks
     if (activeState == MASTERNODE_VIN_SPENT) return;
 
-    LogPrintf("\n%s:Checking PingedWithin\n", __func__);
     if (!IsPingedWithin(MASTERNODE_REMOVAL_SECONDS)) {
         activeState = MASTERNODE_REMOVE;
         return;
     }
 
-    LogPrintf("\n%s:Checking PingedWithin again\n", __func__);
     if (!IsPingedWithin(MASTERNODE_EXPIRATION_SECONDS)) {
         activeState = MASTERNODE_EXPIRED;
         return;
@@ -227,7 +222,6 @@ void CMasternode::Check(bool forceCheck)
             }
         }
     }
-    LogPrintf("\n%s:Masternode enabled\n", __func__);
     activeState = MASTERNODE_ENABLED; // OK
 }
 
@@ -254,8 +248,8 @@ int64_t CMasternode::GetLastPaid()
     CBlockIndex* pindexPrev = chainActive.Tip();
     if (pindexPrev == NULL) return false;
 
-    CScript mnpayee;
-    mnpayee = GetScriptForDestination(pubKeyCollateralAddress);
+    std::vector<unsigned char> mnpayee;
+    mnpayee = vin.masternodeStealthAddress;
 
     CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
     ss << vin;
@@ -491,11 +485,13 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
         LogPrint("masternode","mnb - ignoring outdated Masternode %s protocol version %d\n", vin.prevout.hash.ToString(), protocolVersion);
         return false;
     }
+    std::string mstl(vin.masternodeStealthAddress.begin(), vin.masternodeStealthAddress.end());
+    LogPrintf("\nCMasternodeBroadcast::CheckAndUpdate: pubKeyCollateralAddress=%s\n", mstl);
 
     CScript pubkeyScript;
     pubkeyScript = GetScriptForDestination(pubKeyCollateralAddress);
-
-    if (pubkeyScript.size() != 25) {
+    LogPrintf("\nCMasternodeBroadcast::CheckAndUpdate: pubKeyCollateralAddress=%s\n", pubkeyScript.ToString());
+    if ((pubkeyScript.size() != 35) && (pubkeyScript.size() != 67)) {
         LogPrint("masternode","mnb - pubkey the wrong size\n");
         nDos = 100;
         return false;
@@ -503,8 +499,8 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
 
     CScript pubkeyScript2;
     pubkeyScript2 = GetScriptForDestination(pubKeyMasternode);
-
-    if (pubkeyScript2.size() != 25) {
+    LogPrintf("\nCMasternodeBroadcast::CheckAndUpdate: pubKeyMasternode=%s\n", pubkeyScript2.ToString());
+    if ((pubkeyScript2.size() != 35) && (pubkeyScript2.size() != 67)) {
         LogPrint("masternode","mnb - pubkey2 the wrong size\n");
         nDos = 100;
         return false;

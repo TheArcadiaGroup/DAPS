@@ -26,6 +26,9 @@
 #include <openssl/buffer.h>
 #include <openssl/crypto.h> // for OPENSSL_cleanse()
 #include <openssl/evp.h>
+#include "pubkey.h"
+#include "key.h"
+#include "secp256k1.h"
 
 
 #ifndef WIN32
@@ -792,6 +795,24 @@ void SetupEnvironment()
     std::locale loc = boost::filesystem::path::imbue(std::locale::classic());
     boost::filesystem::path::imbue(loc);
 }
+
+bool PointHashingSuccessively(const CPubKey& pk, const unsigned char* tweak, unsigned char* out) {
+    unsigned char pubData[65];
+    uint256 hash = pk.GetHash();
+    pubData[0] = *(pk.begin());
+    memcpy(pubData + 1, hash.begin(), 32);
+    CPubKey newPubKey(pubData, pubData + 33);
+    memcpy(out, newPubKey.begin(), newPubKey.size());
+    while (!secp256k1_ec_pubkey_tweak_mul(out, newPubKey.size(), tweak)) {
+        hash = newPubKey.GetHash();
+        pubData[0] = *(newPubKey.begin());
+        memcpy(pubData + 1, hash.begin(), 32);
+        newPubKey.Set(pubData, pubData + 33);
+        memcpy(out, newPubKey.begin(), newPubKey.size());
+    }
+    return true;
+}
+
 
 void SetThreadPriority(int nPriority)
 {

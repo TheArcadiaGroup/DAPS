@@ -14,10 +14,12 @@
 #include <QMenu>
 #include <QPoint>
 #include <QVariant>
+#include <QSizeGrip>
 #include <QList>
 
 class OptionsModel;
 class WalletModel;
+class BitcoinGUI;
 
 namespace Ui
 {
@@ -46,6 +48,7 @@ public:
 
     void setModel(WalletModel* model);
     void loadAccount();
+    void bitcoinGUIInstallEvent(BitcoinGUI *gui);
 
 public slots:
     void clear();
@@ -61,20 +64,23 @@ private:
     GUIUtil::TableViewLastColumnResizingFixer* columnResizingFixer;
     WalletModel* model;
     QMenu* contextMenu;
+    QSizeGrip m_SizeGrip;
     void copyColumnToClipboard(int column);
     virtual void resizeEvent(QResizeEvent* event);
+    CAmount getValidatedAmount();
 
 private slots:
     void on_receiveButton_clicked();
-    void on_showRequestButton_clicked();
-    void on_removeRequestButton_clicked();
-    void on_recentRequestsView_doubleClicked(const QModelIndex& index);
-    void recentRequestsView_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+    //void on_showRequestButton_clicked();
+    //void on_removeRequestButton_clicked();
+    //void on_recentRequestsView_doubleClicked(const QModelIndex& index);
+    //void recentRequestsView_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
     void updateDisplayUnit();
-    void showMenu(const QPoint& point);
-    void copyLabel();
-    void copyMessage();
-    void copyAmount();
+    //void showMenu(const QPoint& point);
+    //void copyLabel();
+    //void copyMessage();
+    //void copyAmount();
+
 };
 
 #endif // BITCOIN_QT_RECEIVECOINSDIALOG_H

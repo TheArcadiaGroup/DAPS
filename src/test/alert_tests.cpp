@@ -111,6 +111,7 @@ struct ReadAlerts
     std::vector<CAlert> alerts;
 };
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_FIXTURE_TEST_SUITE(Alert_tests, ReadAlerts)
 
 
@@ -189,3 +190,4 @@ BOOST_AUTO_TEST_CASE(AlertNotify)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

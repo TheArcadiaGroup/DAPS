@@ -60,6 +60,7 @@ public:
 };
 }
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(coins_tests)
 
 static const unsigned int NUM_SIMULATION_ITERATIONS = 40000;
@@ -176,3 +177,4 @@ BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

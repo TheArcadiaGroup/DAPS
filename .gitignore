@@ -3,8 +3,6 @@
 todo.txt
 reset-files.bash
 
-
-
 *.tar.gz
 
 *.exe
@@ -132,3 +130,5 @@ qa/pull-tester/test.*/*
 .idea
 CMakeLists.txt
 cmake-build-debug
+.vscode/*
+BackupWallet*

@@ -482,6 +482,7 @@ Test_RunAllTests()
 	delete g_Params;
 }
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(libzerocoin)
 BOOST_AUTO_TEST_CASE(libzerocoin_tests)
 {
@@ -490,3 +491,4 @@ BOOST_AUTO_TEST_CASE(libzerocoin_tests)
 	Test_RunAllTests();
 }
 BOOST_AUTO_TEST_SUITE_END()
+#endif

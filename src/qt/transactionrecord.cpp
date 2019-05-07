@@ -129,7 +129,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             sub.idx = parts.size();
             parts.append(sub);
         }
-    } else if (nNet > 0 || wtx.IsCoinBase()) {
+    } else if (nNet > 0 || wtx.IsCoinBase() || wtx.IsCoinAudit()) {
         //
         // Credit
         //
@@ -151,7 +151,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                     sub.type = TransactionRecord::RecvFromOther;
                     sub.address = mapValue["from"];
                 }
-                if (wtx.IsCoinBase()) {
+                if (wtx.IsCoinBase() || wtx.IsCoinAudit()) {
                     // Generated
                     sub.type = TransactionRecord::Generated;
                 }
@@ -220,12 +220,18 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                     if (wallet->IsDenominatedAmount(txout.nValue)) sub.type = TransactionRecord::ObfuscationCreateDenominations;
                     if (nDebit - wtx.GetValueOut() == OBFUSCATION_COLLATERAL) sub.type = TransactionRecord::ObfuscationCollateralPayment;
                 }
+                CTxDestination address;
+                if (ExtractDestination(wtx.vout[0].scriptPubKey, address)) {
+                	// Sent to DAPScoin Address
+                	sub.address = CBitcoinAddress(address).ToString();
+                }
             }
 
-            CAmount nChange = wtx.GetChange();
+            //a sendtoself transaction has second output as change
+            CAmount nChange = pwalletMain->getCTxOutValue(wtx, wtx.vout[1]);
 
-            sub.debit = -(nDebit - nChange);
-            sub.credit = nCredit - nChange;
+            sub.debit = nCredit - nChange;
+            sub.credit = 0;
             parts.append(sub);
             parts.last().involvesWatchAddress = involvesWatchAddress; // maybe pass to TransactionRecord as constructor argument
         } else if (fAllFromMe) {
@@ -270,7 +276,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                     nValue += nTxFee;
                     nTxFee = 0;
                 }
-                sub.debit = nDebit - nCredit;
+                sub.debit = nDebit - nCredit - wtx.nTxFee;
 
                 parts.append(sub);
             }

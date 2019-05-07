@@ -9,6 +9,7 @@
 
 #include <QDialog>
 #include <QString>
+#include <QSizeGrip>
 
 static const int MAX_SEND_POPUP_ENTRIES = 10;
 
@@ -16,6 +17,7 @@ class ClientModel;
 class OptionsModel;
 class SendCoinsEntry;
 class SendCoinsRecipient;
+class BitcoinGUI;
 
 namespace Ui
 {
@@ -34,75 +36,31 @@ class SendCoinsDialog : public QDialog
 public:
     explicit SendCoinsDialog(QWidget* parent = 0);
     ~SendCoinsDialog();
-
     void setClientModel(ClientModel* clientModel);
     void setModel(WalletModel* model);
-
-    /** Set up the tab chain manually, as Qt messes up the tab chain by default in some cases (issue https://bugreports.qt-project.org/browse/QTBUG-10907).
-     */
-    QWidget* setupTabChain(QWidget* prev);
-
-    void setAddress(const QString& address);
-    void pasteEntry(const SendCoinsRecipient& rv);
-    bool handlePaymentRequest(const SendCoinsRecipient& recipient);
+    void bitcoinGUIInstallEvent(BitcoinGUI *gui);
     bool fSplitBlock;
 
 public slots:
-    void clear();
-    void reject();
-    void accept();
     SendCoinsEntry* addEntry();
-    void updateTabsAndLabels();
-    void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
-                    const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
-                    const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance);
 
 private:
     Ui::SendCoinsDialog* ui;
     ClientModel* clientModel;
     WalletModel* model;
     bool fNewRecipientAllowed;
-    void send(QList<SendCoinsRecipient> recipients, QString strFee, QStringList formatted);
-    bool fFeeMinimized;
-
-    // Process WalletModel::SendCoinsReturn and generate a pair consisting
-    // of a message and message flags for use in emit message().
-    // Additional parameter msgArg can be used via .arg(msgArg).
-    void processSendCoinsReturn(const WalletModel::SendCoinsReturn& sendCoinsReturn, const QString& msgArg = QString(), bool fPrepare = false);
-    void minimizeFeeSection(bool fMinimize);
-    void updateFeeMinimizedLabel();
+    QSizeGrip m_SizeGrip;
+    virtual void resizeEvent(QResizeEvent* event);
 
 private slots:
     void on_sendButton_clicked();
-    void on_sendButton_clicked2();
-    void removeEntry(SendCoinsEntry* entry);
-    void updateDisplayUnit();
-    void updateSwiftTX();
-    void coinControlFeatureChanged(bool);
-    void coinControlButtonClicked();
-    void coinControlChangeChecked(int);
-    void coinControlChangeEdited(const QString&);
-    void coinControlUpdateLabels();
-    void coinControlClipboardQuantity();
-    void coinControlClipboardAmount();
-    void coinControlClipboardFee();
-    void coinControlClipboardAfterFee();
-    void coinControlClipboardBytes();
-    void coinControlClipboardPriority();
-    void coinControlClipboardLowOutput();
-    void coinControlClipboardChange();
-    void splitBlockChecked(int);
-    void splitBlockLineEditChanged(const QString& text);
-    void setMinimumFee();
-    void updateFeeSectionControls();
-    void updateMinFeeLabel();
-    void updateSmartFeeLabel();
     void updateRingSize();
-    void updateGlobalFeeVariables();
+    void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
+                              const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
+                              const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance);
 
 signals:
-    // Fired when a message should be reported to the user
-    void message(const QString& title, const QString& message, unsigned int style);
+
 };
 
 #endif // BITCOIN_QT_SENDCOINSDIALOG_H

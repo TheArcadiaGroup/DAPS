@@ -54,6 +54,7 @@ public slots:
 signals:
     void removeEntry(SendCoinsEntry* entry);
     void payAmountChanged();
+    void validateAmount(const QString& textAmount);
 
 private slots:
     void deleteClicked();
@@ -68,6 +69,8 @@ private:
     WalletModel* model;
 
     bool updateLabel(const QString& address);
+
+    CAmount getValidatedAmount();
 };
 
 #endif // BITCOIN_QT_SENDCOINSENTRY_H

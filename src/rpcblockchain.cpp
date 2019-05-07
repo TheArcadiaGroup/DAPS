@@ -115,6 +115,7 @@ Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool txDe
         }
 
         result.push_back(Pair("posblocks", posBlockInfos));
+        result.push_back(Pair("poscount", (int)block.posBlocksAudited.size()));
     }
 
 //    Object zdapsObj;

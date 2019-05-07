@@ -34,6 +34,7 @@ public:
     }
 };
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(mruset_tests)
 
 // Test that an mruset behaves like a set, as long as no more than MAX_SIZE elements are in it
@@ -96,3 +97,4 @@ BOOST_AUTO_TEST_CASE(mruset_window)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

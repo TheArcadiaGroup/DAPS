@@ -1,0 +1,30 @@
+:local(.ItemContainer){
+    padding:0;
+    /* text-align:center;
+    align-self: center;
+    justify-self: center;
+    align-content: center;
+    justify-content: flex-start;
+    display: flex;
+    flex-direction: column; */
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+}
+
+:local(.DetailUpperHalf),:local(.DetailLowerHalf){
+    max-width: 70%;
+    align-self: center;
+    justify-self: center;
+}
+:local(.DetailUpperHalf) h3, :local(.DetailLowerHalf) h4{
+    padding:0 0 0 0 !important;
+    margin:0 0 0 0 !important;
+}
+
+
+:local(.Circle){
+    margin-top:-50%;
+}

@@ -11,6 +11,7 @@
 #include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(getarg_tests)
 
 static void ResetArgs(const std::string& strArg)
@@ -159,3 +160,4 @@ BOOST_AUTO_TEST_CASE(boolargno)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif

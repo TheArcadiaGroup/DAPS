@@ -275,7 +275,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Block chain</string>
+          <string>Blockchain</string>
          </property>
         </widget>
        </item>
@@ -423,7 +423,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../pivx.qrc">
+            <iconset resource="../dapscoin.qrc">
              <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
            </property>
            <property name="shortcut">
@@ -1253,7 +1253,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Delete local Blockchain Folders</string>
+          <string>Delete local blockchain Folders</string>
          </property>
         </widget>
        </item>
@@ -1375,7 +1375,7 @@
        <item row="5" column="3">
         <widget class="QLabel" name="label_repair_rescan">
          <property name="text">
-          <string>Rescan the block chain for missing wallet transactions.</string>
+          <string>Rescan the blockchain for missing wallet transactions.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -1495,7 +1495,7 @@
        <item row="9" column="3">
         <widget class="QLabel" name="label_repair_reindex">
          <property name="text">
-          <string>Rebuild block chain index from current blk000??.dat files.</string>
+          <string>Rebuild blockchain index from current blk000??.dat files.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -1550,7 +1550,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../pivx.qrc"/>
+  <include location="../dapscoin.qrc"/>
  </resources>
  <connections/>
 </ui>

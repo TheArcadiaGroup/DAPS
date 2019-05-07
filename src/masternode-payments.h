@@ -61,19 +61,18 @@ public:
 class CMasternodePayee
 {
 public:
-    CScript scriptPubKey;
     int nVotes;
+    std::vector<unsigned char> masternodeStealthAddress;
 
     CMasternodePayee()
     {
-        scriptPubKey = CScript();
         nVotes = 0;
     }
 
-    CMasternodePayee(CScript payee, int nVotesIn)
+    CMasternodePayee(int nVotesIn, std::vector<unsigned char> masternodeStealthAddress)
     {
-        scriptPubKey = payee;
         nVotes = nVotesIn;
+        this->masternodeStealthAddress = masternodeStealthAddress;
     }
 
     ADD_SERIALIZE_METHODS;
@@ -81,8 +80,8 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
     {
-        READWRITE(scriptPubKey);
         READWRITE(nVotes);
+        READWRITE(masternodeStealthAddress);
     }
 };
 
@@ -104,29 +103,29 @@ public:
         vecPayments.clear();
     }
 
-    void AddPayee(CScript payeeIn, int nIncrement)
+    void AddPayee(int nIncrement, std::vector<unsigned char> masternodeStealthAddress)
     {
         LOCK(cs_vecPayments);
 
         BOOST_FOREACH (CMasternodePayee& payee, vecPayments) {
-            if (payee.scriptPubKey == payeeIn) {
+            if (payee.masternodeStealthAddress == masternodeStealthAddress) {
                 payee.nVotes += nIncrement;
                 return;
             }
         }
 
-        CMasternodePayee c(payeeIn, nIncrement);
+        CMasternodePayee c(nIncrement, masternodeStealthAddress);
         vecPayments.push_back(c);
     }
 
-    bool GetPayee(CScript& payee)
+    bool GetPayee(std::vector<unsigned char>& payee)
     {
         LOCK(cs_vecPayments);
 
         int nVotes = -1;
         BOOST_FOREACH (CMasternodePayee& p, vecPayments) {
             if (p.nVotes > nVotes) {
-                payee = p.scriptPubKey;
+                payee = p.masternodeStealthAddress;
                 nVotes = p.nVotes;
             }
         }
@@ -134,12 +133,12 @@ public:
         return (nVotes > -1);
     }
 
-    bool HasPayeeWithVotes(CScript payee, int nVotesReq)
+    bool HasPayeeWithVotes(std::vector<unsigned char> payee, int nVotesReq)
     {
         LOCK(cs_vecPayments);
 
         BOOST_FOREACH (CMasternodePayee& p, vecPayments) {
-            if (p.nVotes >= nVotesReq && p.scriptPubKey == payee) return true;
+            if (p.nVotes >= nVotesReq && p.masternodeStealthAddress == payee) return true;
         }
 
         return false;
@@ -165,21 +164,20 @@ public:
     CTxIn vinMasternode;
 
     int nBlockHeight;
-    CScript payee;
+    std::vector<unsigned char> payee;//masternode stealth public address
     std::vector<unsigned char> vchSig;
 
     CMasternodePaymentWinner()
     {
         nBlockHeight = 0;
         vinMasternode = CTxIn();
-        payee = CScript();
     }
 
     CMasternodePaymentWinner(CTxIn vinIn)
     {
         nBlockHeight = 0;
         vinMasternode = vinIn;
-        payee = CScript();
+        payee = vinIn.masternodeStealthAddress;
     }
 
     uint256 GetHash()
@@ -197,7 +195,7 @@ public:
     bool SignatureValid();
     void Relay();
 
-    void AddPayee(CScript payeeIn)
+    void AddPayee(std::vector<unsigned char> payeeIn)
     {
         payee = payeeIn;
     }
@@ -216,10 +214,11 @@ public:
 
     std::string ToString()
     {
+    	std::string s(payee.begin(), payee.end());
         std::string ret = "";
         ret += vinMasternode.ToString();
         ret += ", " + boost::lexical_cast<std::string>(nBlockHeight);
-        ret += ", " + payee.ToString();
+        ret += ", " + s;
         ret += ", " + boost::lexical_cast<std::string>((int)vchSig.size());
         return ret;
     }
@@ -261,7 +260,7 @@ public:
     void CleanPaymentList();
     int LastPayment(CMasternode& mn);
 
-    bool GetBlockPayee(int nBlockHeight, CScript& payee);
+    bool GetBlockPayee(int nBlockHeight, std::vector<unsigned char>& payee);
     bool IsTransactionValid(const CTransaction& txNew, int nBlockHeight);
     bool IsScheduled(CMasternode& mn, int nNotBlockHeight);
 

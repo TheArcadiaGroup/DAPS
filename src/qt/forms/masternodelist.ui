@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MasternodeList</class>
- <widget class="QWidget" name="MasternodeList">
-     <property name="styleSheet">
-       <string notr="true">QDialog{border-image: url(':/images/background') 0 0 0 0 stretch stretch;} QButton !ToggleButton {margin:25px;}</string>
-      </property>
+ <widget class="QDialog" name="MasternodeList">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -15,6 +12,12 @@
   </property>
   <property name="windowTitle">
    <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog{border-image: url(':/images/background') 0 0 0 0 stretch stretch;} QButton !ToggleButton {margin:25px;}</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
   </property>
   <layout class="QVBoxLayout" name="topLayout">
    <property name="leftMargin">
@@ -32,23 +35,23 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-        <widget class="ToggleButton" name="toggleStaking">
-            <property name="OptionA">
-            <string>Staking Enabled</string>
-            </property>
-            <property name="OptionB">
-            <string>Staking Disabled</string>
-            </property>
-            <property name="layoutDirection">
-            <enum>Qt::RightToLeft</enum>
-            </property>
-            <property name="fixedSize">
-                <size>
-                <width>240</width>
-                <height>55</height>
-                </size>
-            </property>
-        </widget>
+      <widget class="ToggleButton" name="toggleStaking" native="true">
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="OptionA" stdset="0">
+        <string>Staking Enabled</string>
+       </property>
+       <property name="OptionB" stdset="0">
+        <string>Staking Disabled</string>
+       </property>
+       <property name="fixedSize" stdset="0">
+        <size>
+         <width>240</width>
+         <height>55</height>
+        </size>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QTableWidget" name="tableWidgetMyMasternodes">
@@ -130,17 +133,17 @@
        </attribute>
        <column>
         <property name="text">
+         <string>Alias</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
          <string>Address</string>
         </property>
        </column>
        <column>
         <property name="text">
          <string>Status</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Alias</string>
         </property>
        </column>
        <column>
@@ -199,6 +202,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ToggleButton</class>
+   <extends>QWidget</extends>
+   <header>togglebutton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

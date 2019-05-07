@@ -124,6 +124,34 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_pedersen_verify_tally(
   size_t n_neg
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(4);
 
+SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_pedersen_commitment_sum(
+  const secp256k1_context2* ctx,
+  const secp256k1_pedersen_commitment * const* pos,
+  size_t n_pos,
+  const secp256k1_pedersen_commitment * const* neg,
+  size_t n_neg,
+  secp256k1_pedersen_commitment* out
+) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(6);
+
+SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_pedersen_commitment_sum_pos(
+  const secp256k1_context2* ctx,
+  const secp256k1_pedersen_commitment * const* pos,
+  size_t n_pos,
+  secp256k1_pedersen_commitment* out
+) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(4);
+
+SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_pedersen_commitment_to_serialized_pubkey(
+		secp256k1_pedersen_commitment* commit,
+		unsigned char* pubkey,
+		size_t* length
+) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
+
+SECP256K1_API SECP256K1_WARN_UNUSED_RESULT void secp256k1_pedersen_serialized_pubkey_to_commitment(
+		const unsigned char* pubkey,
+		size_t length,
+		secp256k1_pedersen_commitment* commit
+) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(3);
+
 /** Sets the final Pedersen blinding factor correctly when the generators themselves
  *  have blinding factors.
  *

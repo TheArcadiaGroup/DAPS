@@ -402,6 +402,8 @@ Testb_RunAllTests()
 	cout << ggSuccessfulTests << " out of " << ggNumTests << " tests passed." << endl << endl;
 	delete gg_Params;
 }
+
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(benchmark_zerocoin)
 
 BOOST_AUTO_TEST_CASE(benchmark_test)
@@ -411,4 +413,4 @@ BOOST_AUTO_TEST_CASE(benchmark_test)
 	Testb_RunAllTests();
 }
 BOOST_AUTO_TEST_SUITE_END()
-
+#endif

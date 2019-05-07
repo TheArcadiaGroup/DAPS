@@ -19,6 +19,7 @@
 #include "walletdb.h"
 
 #include <stdint.h>
+#include <fstream>
 #include <boost/algorithm/string.hpp>
 
 #include "libzerocoin/Coin.h"
@@ -686,6 +687,28 @@ Value getbalance(const Array& params, bool fHelp)
     CAmount nBalance = GetAccountBalance(strAccount, nMinDepth, filter);
 
     return ValueFromAmount(nBalance);
+}
+
+Value getbalances(const Array& params, bool fHelp)
+{
+    if (fHelp)
+        throw runtime_error(
+            "getbalances"
+            "\nArguments:\n"
+            "\nResult:\n"
+            "total              (numeric) The total amount in DAPS received for this wallet.\n"
+        	"spendable 			(numeric) The total amount in DAPS spendable for this wallet.\n"
+        	"pending			(numeric) The total amount in DAPS pending for this wallet."
+            "\nExamples:\n"
+            "\nThe total amount in the server across all accounts\n" +
+            HelpExampleCli("getbalances", ""));
+
+    Object obj;
+    obj.push_back(Pair("total", ValueFromAmount(pwalletMain->GetBalance())));
+    obj.push_back(Pair("spendable", ValueFromAmount(pwalletMain->GetSpendableBalance())));
+    obj.push_back(Pair("pending", ValueFromAmount(pwalletMain->GetUnconfirmedBalance())));
+
+    return obj;
 }
 
 Value getunconfirmedbalance(const Array& params, bool fHelp)
@@ -1973,6 +1996,10 @@ Value reservebalance(const Array& params, bool fHelp)
             if (nAmount < 0)
                 throw runtime_error("amount cannot be negative.\n");
             nReserveBalance = nAmount;
+
+            CWalletDB walletdb(pwalletMain->strWalletFile);
+            walletdb.WriteReserveAmount(nReserveBalance / COIN);
+
         } else {
             if (params.size() > 1)
                 throw runtime_error("cannot specify amount to turn off reserve.\n");

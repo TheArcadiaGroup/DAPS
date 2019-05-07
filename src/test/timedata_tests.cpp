@@ -8,6 +8,7 @@
 
 using namespace std;
 
+#ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(timedata_tests)
 
 BOOST_AUTO_TEST_CASE(util_MedianFilter)
@@ -36,3 +37,4 @@ BOOST_AUTO_TEST_CASE(util_MedianFilter)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif
