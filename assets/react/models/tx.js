@@ -20,7 +20,7 @@ var TxSchema = new Schema({
   txpubkey: { type: String},
   hex: { type: String },
   time: { type: Number, default: 0 },
-  fee: { type: String, default: '5 DAPS' },
+  txfee: { type: String, default: '5 DAPS' },
   ringsize: { type: Number, default: 0 },
   vin_raw: { type: Array, default: [] },
   vout_raw: { type: Array, default: [] },

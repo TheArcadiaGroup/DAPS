@@ -77,7 +77,7 @@ updateBlock = async (blockheight, log = true) => {
                             else {
                                 Object.assign(tx, {
                                     blockindex: block.height,
-                                    bocktype: block.type,
+                                    blocktype: block.type,
                                     blocksize: block.size,
                                     ringsize: tx.vin[0].ringsize || 0,
                                 })

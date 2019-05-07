@@ -134,7 +134,7 @@ const Actions = {
                         return [
                             receivedTx.txid || 'error',
                             (receivedTx.blocksize) ? `${receivedTx.blocksize / 1000} kb` : 'error',
-                            receivedTx.fee || 'error'
+                            receivedTx.txfee || 'error'
                         ]
                     }))
                 },
@@ -173,7 +173,7 @@ const Actions = {
                         `${parseFloat(receivedTx.blocksize) / 1000} kb`,
                         `${receivedTx.ringsize}`,
                         `${receivedTx.txid}`,
-                        `${receivedTx.fee}`
+                        `${receivedTx.txfee}`
                     ]
                 },
                 "txPubkey" : receivedTx.txpubkey,
