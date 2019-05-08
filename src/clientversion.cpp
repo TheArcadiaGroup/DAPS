@@ -13,7 +13,7 @@
  * for both dapscoind and dapscoin-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("DAPScoin Core");
+const std::string CLIENT_NAME("DAPScoin");
 
 /**
  * Client version number
