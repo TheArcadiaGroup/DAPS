@@ -116,7 +116,8 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
     /* Open CSS when configured */
     this->setStyleSheet(GUIUtil::loadStyleSheet());
 
-    // GUIUtil::restoreWindowGeometry("nWindow", QSize(850, 550), this);
+    this->setMinimumSize(1180, 700);
+    GUIUtil::restoreWindowGeometry("nWindow", QSize(1180, 700), this);
 
     QString windowTitle = tr("DAPScoin") + " - ";
 #ifdef ENABLE_WALLET

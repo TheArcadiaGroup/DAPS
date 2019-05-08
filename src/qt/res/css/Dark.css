@@ -60,7 +60,7 @@ QDialog .QTabWidget QTabBar::tab:selected, QDialog .QTabWidget QTabBar::tab:hove
     stop: 0 #5e0057,
     stop: 1 #1f192a
   );
-  padding: 10px;
+  padding: 3px;
 }
 QToolBar > QToolButton {
   font-size: 15px;
@@ -79,7 +79,7 @@ QToolBar > QToolButton:checked {
 #bottomToolbar > QToolButton {
   font-size: 12px;
   padding: 0;
-  padding-left: 40px;
+  padding-left: 10px;
 }
 
 /*************************************************/
@@ -149,7 +149,7 @@ QCalendarWidget QMenu,
 QCalendarWidget QAbstractItemView:enabled,
 QTextEdit {
   /* padding-left: 10px; */
-  padding: 12px;
+  padding: 5px;
   border-radius: 10px;
   border-width: 1px;
   border-color: #83faff;
@@ -183,12 +183,12 @@ QComboBox::indicator {
 
 /*** Buttons ***/
 QPushButton {
-  height: 30px;
+  height: 25px;
   border-radius: 10px;
   background-color: #470143;
   font-size: 20px;
   font-weight: 400;
-  padding: 10px 20px;
+  padding: 5px 5px;
   max-width: 200px;
   border: 1px solid white;
 }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1050</width>
-    <height>610</height>
+    <height>472</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,7 +25,7 @@
   <property name="sizeGripEnabled">
    <bool>false</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
    <item alignment="Qt::AlignRight">
     <widget class="QLabel" name="labelTheme">
      <property name="sizePolicy">
@@ -59,7 +59,7 @@
      <property name="fixedSize" stdset="0">
       <size>
        <width>150</width>
-       <height>55</height>
+       <height>30</height>
       </size>
      </property>
     </widget>
@@ -78,29 +78,29 @@
     </widget>
    </item>
    <item>
-     <widget class="ToggleButton" name="toggleStaking" native="false">
-	   <property name="sizePolicy">
-	    <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-	      <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-	    </sizepolicy>
-	   </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="OptionA" stdset="0">
-        <string>Staking Enabled</string>
-       </property>
-       <property name="OptionB" stdset="0">
-        <string>Staking Disabled</string>
-       </property>
-       <property name="fixedSize" stdset="0">
-        <size>
-         <width>240</width>
-         <height>55</height>
-        </size>
-       </property>
-     </widget>
+    <widget class="ToggleButton" name="toggleStaking" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="OptionA" stdset="0">
+      <string>Staking Enabled</string>
+     </property>
+     <property name="OptionB" stdset="0">
+      <string>Staking Disabled</string>
+     </property>
+     <property name="fixedSize" stdset="0">
+      <size>
+       <width>150</width>
+       <height>35</height>
+      </size>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="labelPassword">
@@ -291,7 +291,7 @@
      <property name="fixedSize" stdset="0">
       <size>
        <width>100</width>
-       <height>55</height>
+       <height>30</height>
       </size>
      </property>
     </widget>
