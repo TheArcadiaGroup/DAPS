@@ -53,16 +53,16 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
-     <property name="OptionA" stdset="0">
+     <property name="OptionA">
       <string>Dark Mode</string>
      </property>
-     <property name="OptionB" stdset="0">
+     <property name="OptionB">
       <string>Light Mode</string>
      </property>
-     <property name="fixedSize" stdset="0">
+     <property name="fixedSize">
       <size>
        <width>150</width>
-       <height>30</height>
+       <height>55</height>
       </size>
      </property>
     </widget>
@@ -94,13 +94,13 @@
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
        </property>
-       <property name="OptionA" stdset="0">
+       <property name="OptionA">
         <string>Staking Enabled</string>
        </property>
-       <property name="OptionB" stdset="0">
+       <property name="OptionB">
         <string>Staking Disabled</string>
        </property>
-       <property name="fixedSize" stdset="0">
+       <property name="fixedSize">
         <size>
          <width>240</width>
          <height>55</height>
@@ -288,16 +288,16 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="OptionA" stdset="0">
+     <property name="OptionA">
       <string>On</string>
      </property>
-     <property name="OptionB" stdset="0">
+     <property name="OptionB">
       <string>Off</string>
      </property>
-     <property name="fixedSize" stdset="0">
+     <property name="fixedSize">
       <size>
        <width>100</width>
-       <height>30</height>
+       <height>55</height>
       </size>
      </property>
     </widget>
