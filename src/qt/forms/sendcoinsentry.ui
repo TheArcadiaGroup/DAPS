@@ -169,8 +169,15 @@
         </item>
        </layout>
       </item>
-     </layout>
-    </item>
+        <item alignment="Qt::AlignRight">
+         <widget class="QPushButton" name="clearAllButton">
+          <property name="text">
+           <string>Clear All</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
    </layout>
   </widget>
   <widget class="QFrame" name="SendCoins_InsecurePaymentRequest">
