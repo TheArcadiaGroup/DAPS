@@ -46,6 +46,7 @@ public:
     void setMapper();
     bool matchNewPasswords();
     void bitcoinGUIInstallEvent(BitcoinGUI *gui);
+    QString getStakingStatusError();
 
 public slots:
 	void on_EnableStaking(ToggleButton*);

@@ -47,7 +47,6 @@ public:
     void StartAlias(std::string strAlias);
     void StartAll(std::string strCommand = "start-all");
     void bitcoinGUIInstallEvent(BitcoinGUI *gui);
-    QString getStakingStatusError();
 
 private:
     QMenu* contextMenu;
@@ -78,6 +77,5 @@ private Q_SLOTS:
     void on_startMissingButton_clicked();
     void on_tableWidgetMyMasternodes_itemSelectionChanged();
     void on_UpdateButton_clicked();
-    void on_EnableStaking(ToggleButton* widget);
 };
 #endif // MASTERNODELIST_H

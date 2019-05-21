@@ -35,25 +35,6 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="ToggleButton" name="toggleStaking" native="true">
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="OptionA">
-        <string>Staking Enabled</string>
-       </property>
-       <property name="OptionB">
-        <string>Staking Disabled</string>
-       </property>
-       <property name="fixedSize">
-        <size>
-         <width>240</width>
-         <height>55</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QTableWidget" name="tableWidgetMyMasternodes">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
