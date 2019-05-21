@@ -119,7 +119,7 @@ OverviewPage::OverviewPage(QWidget* parent) : QDialog(parent),
                                               currentWatchUnconfBalance(-1),
                                               currentWatchImmatureBalance(-1),
                                               txdelegate(new TxViewDelegate()),
-                                              m_SizeGrip(this),
+                                              // m_SizeGrip(this),
                                               filter(0)
 {
     nDisplayUnit = 0; // just make sure it's not unitialized
@@ -265,17 +265,17 @@ void OverviewPage::setClientModel(ClientModel* model)
     }
 }
 
-void OverviewPage::resizeEvent(QResizeEvent* event)
-{
-    QWidget::resizeEvent(event);
+// void OverviewPage::resizeEvent(QResizeEvent* event)
+// {
+//     QWidget::resizeEvent(event);
 
-    m_SizeGrip.move  (width() - 17, height() - 17);
-    m_SizeGrip.resize(          17,            17);
-}
+//     m_SizeGrip.move  (width() - 17, height() - 17);
+//     m_SizeGrip.resize(          17,            17);
+// }
 
-void OverviewPage::bitcoinGUIInstallEvent(BitcoinGUI *gui) {
-    m_SizeGrip.installEventFilter((QObject*)gui);
-}
+// void OverviewPage::bitcoinGUIInstallEvent(BitcoinGUI *gui) {
+//     m_SizeGrip.installEventFilter((QObject*)gui);
+// }
 
 void OverviewPage::setSpendableBalance(bool isStaking) {
     //std::cout << "changing status:" << isStaking << std::endl;

@@ -19,7 +19,7 @@
 #define MASTERNODELIST_UPDATE_SECONDS 15
 #define MASTERNODELIST_FILTER_COOLDOWN_SECONDS 3
 
-class BitcoinGUI;
+// class BitcoinGUI;
 
 namespace Ui
 {
@@ -67,7 +67,7 @@ private:
     WalletModel* walletModel;
     CCriticalSection cs_mnlistupdate;
     QString strCurrentFilter;
-    QSizeGrip m_SizeGrip;
+    // QSizeGrip m_SizeGrip;
     virtual void resizeEvent(QResizeEvent* event);
 
 private Q_SLOTS:

@@ -21,7 +21,7 @@
 
 class OptionsModel;
 class WalletModel;
-class BitcoinGUI;
+// class BitcoinGUI;
 
 namespace Ui
 {
@@ -61,7 +61,7 @@ private:
     OptionsModel* options;
     QDataWidgetMapper* mapper;
     QSettings settings;
-    QSizeGrip m_SizeGrip;
+    // QSizeGrip m_SizeGrip;
     QMenu* contextMenu;
     virtual void resizeEvent(QResizeEvent* event);
     CAmount getValidatedAmount();

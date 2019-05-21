@@ -34,7 +34,7 @@
 SendCoinsDialog::SendCoinsDialog(QWidget* parent) : QDialog(parent),
                                                     ui(new Ui::SendCoinsDialog),
                                                     clientModel(0),
-                                                    m_SizeGrip(this),
+                                                    // m_SizeGrip(this),
                                                     model(0),
                                                     fNewRecipientAllowed(true)
 {
@@ -79,17 +79,17 @@ void SendCoinsDialog::setModel(WalletModel* model)
     }
 }
 
-void SendCoinsDialog::resizeEvent(QResizeEvent* event)
-{
-    QWidget::resizeEvent(event);
+// void SendCoinsDialog::resizeEvent(QResizeEvent* event)
+// {
+//     QWidget::resizeEvent(event);
 
-    m_SizeGrip.move  (width() - 17, height() - 17);
-    m_SizeGrip.resize(          17,            17);
-}
+//     m_SizeGrip.move  (width() - 17, height() - 17);
+//     m_SizeGrip.resize(          17,            17);
+// }
 
-void SendCoinsDialog::bitcoinGUIInstallEvent(BitcoinGUI *gui) {
-    m_SizeGrip.installEventFilter((QObject*)gui);
-}
+// void SendCoinsDialog::bitcoinGUIInstallEvent(BitcoinGUI *gui) {
+//     m_SizeGrip.installEventFilter((QObject*)gui);
+// }
 
 void SendCoinsDialog::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
                               const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,

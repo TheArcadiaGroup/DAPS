@@ -3,7 +3,7 @@ var mongoose = require('mongoose')
   ,mongooseAggregatePaginate = require('mongoose-aggregate-paginate-allowdiskuse');
 
 var TxSchema = new Schema({
-  txid: { type: String, lowercase: true, unique: true, index: true },
+  txid: { type: String, lowercase: true, unique: true },
   vin: { type: Array, default: [] },
   vout: { type: Array, default: [] },
   total: { type: Number, default: 0 },
@@ -24,7 +24,9 @@ var TxSchema = new Schema({
   ringsize: { type: Number, default: 0 },
   vin_raw: { type: Array, default: [] },
   vout_raw: { type: Array, default: [] },
+  sortid: {type: String}
 }, { id: false });
 
 TxSchema.plugin(mongooseAggregatePaginate);
+TxSchema.index({ txid: 1, sortid: -1 });
 module.exports = mongoose.model('Tx', TxSchema);

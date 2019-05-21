@@ -126,12 +126,12 @@ void WalletView::setBitcoinGUI(BitcoinGUI* gui)
 
         connect(this, SIGNAL(incomingTransaction(QString, int, CAmount, QString, QString)), historyPage, SLOT(txalert(QString, int, CAmount, QString, QString)));
         connect(this, SIGNAL(stakingStatusChange(bool)), gui, SLOT(setStakingInProgress(bool)));
-        overviewPage->bitcoinGUIInstallEvent(gui);
-        historyPage->bitcoinGUIInstallEvent(gui);
-        receiveCoinsPage->bitcoinGUIInstallEvent(gui);
-        sendCoinsPage->bitcoinGUIInstallEvent(gui);
-        optionsPage->bitcoinGUIInstallEvent(gui);
-        masternodeListPage->bitcoinGUIInstallEvent(gui);
+        // overviewPage->bitcoinGUIInstallEvent(gui);
+        // historyPage->bitcoinGUIInstallEvent(gui);
+        // receiveCoinsPage->bitcoinGUIInstallEvent(gui);
+        // sendCoinsPage->bitcoinGUIInstallEvent(gui);
+        // optionsPage->bitcoinGUIInstallEvent(gui);
+        // masternodeListPage->bitcoinGUIInstallEvent(gui);
 
     }
 }

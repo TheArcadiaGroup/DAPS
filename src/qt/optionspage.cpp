@@ -32,7 +32,7 @@ using namespace std;
 OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
                                                           ui(new Ui::OptionsPage),
                                                           model(0),
-                                                          m_SizeGrip(this),
+                                                          // m_SizeGrip(this),
                                                           mapper(0)
 {
     ui->setupUi(this);
@@ -99,13 +99,13 @@ void OptionsPage::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
 
-    m_SizeGrip.move  (width() - 17, height() - 17);
-    m_SizeGrip.resize(          17,            17);
+    // m_SizeGrip.move  (width() - 17, height() - 17);
+    // m_SizeGrip.resize(          17,            17);
 }
 
-void OptionsPage::bitcoinGUIInstallEvent(BitcoinGUI *gui) {
-    m_SizeGrip.installEventFilter((QObject*)gui);
-}
+// void OptionsPage::bitcoinGUIInstallEvent(BitcoinGUI *gui) {
+//     m_SizeGrip.installEventFilter((QObject*)gui);
+// }
 
 void OptionsPage::on_pushButtonSave_clicked() {
     if (ui->lineEditWithhold->text().trimmed().isEmpty()) {

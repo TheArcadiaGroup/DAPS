@@ -41,7 +41,7 @@ bool TxCompare (std::map<QString, QString> i, std::map<QString, QString> j) {
 
 HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent),
                                             ui(new Ui::HistoryPage),
-                                            m_SizeGrip(this),
+                                            // m_SizeGrip(this),
                                             model(0)
 
 {
@@ -127,13 +127,13 @@ void HistoryPage::resizeEvent(QResizeEvent* event)
     ui->tableView->resizeColumnToContents(QHeaderView::ResizeToContents);
     ui->tableView->resizeColumnsToContents();
 
-    m_SizeGrip.move  (width() - 17, height() - 17);
-    m_SizeGrip.resize(          17,            17);
+    // m_SizeGrip.move  (width() - 17, height() - 17);
+    // m_SizeGrip.resize(          17,            17);
 }
 
-void HistoryPage::bitcoinGUIInstallEvent(BitcoinGUI *gui) {
-    m_SizeGrip.installEventFilter((QObject*)gui);
-}
+// void HistoryPage::bitcoinGUIInstallEvent(BitcoinGUI *gui) {
+//     m_SizeGrip.installEventFilter((QObject*)gui);
+// }
 
 void HistoryPage::keyPressEvent(QKeyEvent* event)
 {

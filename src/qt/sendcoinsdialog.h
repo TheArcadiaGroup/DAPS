@@ -17,7 +17,7 @@ class ClientModel;
 class OptionsModel;
 class SendCoinsEntry;
 class SendCoinsRecipient;
-class BitcoinGUI;
+// class BitcoinGUI;
 
 namespace Ui
 {
@@ -38,7 +38,7 @@ public:
     ~SendCoinsDialog();
     void setClientModel(ClientModel* clientModel);
     void setModel(WalletModel* model);
-    void bitcoinGUIInstallEvent(BitcoinGUI *gui);
+    // void bitcoinGUIInstallEvent(BitcoinGUI *gui);
     bool fSplitBlock;
 
 public slots:
@@ -49,8 +49,8 @@ private:
     ClientModel* clientModel;
     WalletModel* model;
     bool fNewRecipientAllowed;
-    QSizeGrip m_SizeGrip;
-    virtual void resizeEvent(QResizeEvent* event);
+    // QSizeGrip m_SizeGrip;
+    // virtual void resizeEvent(QResizeEvent* event);
 
 private slots:
     void on_sendButton_clicked();

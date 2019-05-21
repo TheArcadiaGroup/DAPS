@@ -49,12 +49,16 @@ dapsapi.get('*', async (req, res, next) => {
     report = (queryObj.report!=undefined)? parseInt(queryObj.report) : log; delete queryObj.report;
     if (!skip) skip = queryObj.skip ? queryObj.skip : 0; delete queryObj.skip;
     if (skip < 0) skip = 0
-    sort = queryObj['sort'] ? queryObj.sort : ''; delete queryObj['sort'];
-    if (!sort.length)
-      switch (reqcollection) {
-        case "tx": sort = '-blockindex'; break;
-        case "block": sort = '-height'; break;
-      }
+    // sort = queryObj['sort'] ? queryObj.sort : ''; delete queryObj['sort'];
+    delete queryObj['sort'];
+    // if (!sort.length)
+      // switch (reqcollection) {
+      //   case "tx": sort = '-blockindex'; break;
+      //   case "block": sort = '-height'; break;
+      // }
+    if (reqcollection == 'tx' || reqcollection == 'block')
+      sort = '-sortid';
+
     for (key in queryObj) {
       if (queryObj[key].indexOf('$') != -1) {
         let subquery = queryObj[key].split('$').map((str) => {
@@ -88,18 +92,59 @@ dapsapi.get('*', async (req, res, next) => {
 
     } else {
       var aggregate = collections[reqcollection].aggregate();
-      aggregate.match(queryObj).sort(sort);
-      var options = { page : skip / 20 + 1, limit : 20, allowDiskUse: true };
-      let result = await collections[reqcollection].aggregatePaginate(aggregate, options, (err, results, pageCount, cnt) => {
-        queryObj = Object.assign(queryObj, { limit: parseInt(limit), skip: parseInt(skip), sort: sort, count: count })
+      var options;
+      if (queryObj.hash || queryObj.txid) {
+        aggregate.match(queryObj);
+        options = { page : skip / 20 + 1, limit : 20, allowDiskUse: true };
+      }
+      else if (reqcollection == 'tx' || reqcollection == 'block') {
+        aggregate.match(queryObj).project('sortid').sort(sort);
+        options = { page : skip, limit : 1, allowDiskUse: true };
+      }
+      let skipQuery = queryObj;
+      let result = await collections[reqcollection].aggregatePaginate(aggregate, options, async (err, results, pageCount, cnt) => {
         if (err) {
+          queryObj = Object.assign(queryObj, { limit: parseInt(limit), skip: parseInt(skip), sort: sort, count: count })
           console.error(err); res.json({ status: 400, error: err, query: queryObj, collection: reqcollection })
         } else if (!results.length) {
+          queryObj = Object.assign(queryObj, { limit: parseInt(limit), skip: parseInt(skip), sort: sort, count: count })
           if (report) console.log("    None found");
           res.json({ status: 404, error: "None found", query: queryObj, collection: reqcollection })
         } else {
-          if (report) console.log(`    ${results.length} found`);
-          res.json({ status: 200, data: !count ? results : results.length, query: queryObj, collection: reqcollection })
+          if (queryObj.hash || queryObj.txid) {
+            if (report) console.log(`    ${results.length} found`);
+            res.json({ status: 200, data: !count ? results : results.length, query: queryObj, collection: reqcollection })
+          } else if (results[0].sortid) {
+            aggregate = collections[reqcollection].aggregate();
+            if (reqcollection == 'block') {
+              if (skip == 0)
+                skipQuery.sortid = {'$lte' : parseInt(results[0].sortid)};
+              else
+                skipQuery.sortid = {'$lt' : parseInt(results[0].sortid)};
+            }
+            else {
+              if (skip == 0)
+                skipQuery.sortid = {'$lte' : String(results[0].sortid)};
+              else
+                skipQuery.sortid = {'$lt' : String(results[0].sortid)};
+            }
+            console.log('sortid = ', results[0].sortid);
+            aggregate.match(skipQuery).sort(sort);
+            options = { limit : 20, allowDiskUse: true };
+            result = await collections[reqcollection].aggregatePaginate(aggregate, options, (err, results, pageCount, cnt) => {
+              if (err) {
+                queryObj = Object.assign(queryObj, { limit: parseInt(limit), skip: parseInt(skip), sort: sort, count: count })
+                console.error(err); res.json({ status: 400, error: err, query: queryObj, collection: reqcollection })
+              } else if (!results.length) {
+                queryObj = Object.assign(queryObj, { limit: parseInt(limit), skip: parseInt(skip), sort: sort, count: count })
+                if (report) console.log("    None found");
+                res.json({ status: 404, error: "None found", query: queryObj, collection: reqcollection })
+              } else {
+                if (report) console.log(`    ${results.length} found`);
+                res.json({ status: 200, data: !count ? results : results.length, query: queryObj, collection: reqcollection })
+              }
+            });
+          }
         }
       });
     }

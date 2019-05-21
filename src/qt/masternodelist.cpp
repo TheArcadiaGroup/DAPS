@@ -21,7 +21,7 @@ CCriticalSection cs_masternodes;
 MasternodeList::MasternodeList(QWidget* parent) : QDialog(parent),
                                                   ui(new Ui::MasternodeList),
                                                   clientModel(0),
-                                                  m_SizeGrip(this),
+                                                  // m_SizeGrip(this),
                                                   walletModel(0)
 {
     ui->setupUi(this);
@@ -82,13 +82,13 @@ void MasternodeList::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
 
-    m_SizeGrip.move  (width() - 17, height() - 17);
-    m_SizeGrip.resize(          17,            17);
+    // m_SizeGrip.move  (width() - 17, height() - 17);
+    // m_SizeGrip.resize(          17,            17);
 }
 
-void MasternodeList::bitcoinGUIInstallEvent(BitcoinGUI* gui) {
-    m_SizeGrip.installEventFilter((QObject*)gui);
-}
+// void MasternodeList::bitcoinGUIInstallEvent(BitcoinGUI* gui) {
+//     m_SizeGrip.installEventFilter((QObject*)gui);
+// }
 
 void MasternodeList::StartAlias(std::string strAlias)
 {

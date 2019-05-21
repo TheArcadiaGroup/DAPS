@@ -21,9 +21,10 @@ var BlockSchema = new Schema({
     blocktype: { type: String },
     numaudited: { type: Number, default: 0 },
     minetype: { type: String },
+    sortid: {type: Number}
 }, { id: false });
 
 BlockSchema.plugin(mongooseAggregatePaginate);
-BlockSchema.index({ hash: 1, height: -1 });
+BlockSchema.index({ hash: 1, sortid: -1 });
 
 module.exports = mongoose.model('Block', BlockSchema);

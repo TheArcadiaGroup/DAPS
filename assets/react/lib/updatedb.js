@@ -70,16 +70,21 @@ updateBlock = async (blockheight, log = true) => {
             else request({ uri: `${hostUrl}api/getblock?hash=${hash}`, json: true }, async (err, res, block) => {
                 if (err) { if (log) console.error(err.message); success = false; }
                 else {
+                    Object.assign(block, {
+                        sortid: block.height
+                    })
                     let update = await update_block(block)
-                    if (update.tx) update.tx.forEach(txid => {
+                    if (update.tx) update.tx.forEach((txid, index) => {
                         request({ uri: `${hostUrl}api/getrawtransaction?txid=${txid}&decrypt=1`, json: true }, async (err, res, tx) => {
                             if (err) { if (log) console.error(err.message); success = false; }
                             else {
+                                let len = String(block.height).length;
                                 Object.assign(tx, {
                                     blockindex: block.height,
                                     blocktype: block.type,
                                     blocksize: block.size,
                                     ringsize: tx.vin[0].ringsize || 0,
+                                    sortid: String(len) + String(block.height) + "_" + String(index)
                                 })
                                 let updatetx = await update_tx(tx)
                             }
