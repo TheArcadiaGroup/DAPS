@@ -171,6 +171,9 @@
       </item>
         <item alignment="Qt::AlignRight">
          <widget class="QPushButton" name="clearAllButton">
+        <property name="toolTip">
+         <string>Clear all of the fields above</string>
+        </property>
           <property name="text">
            <string>Clear All</string>
           </property>

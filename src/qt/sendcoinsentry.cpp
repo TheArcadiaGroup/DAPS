@@ -86,7 +86,6 @@ void SendCoinsEntry::on_clearAllButton_clicked()
     ui->payAmount->clear();
 }
 
-
 void SendCoinsEntry::on_payTo_textChanged(const QString& address)
 {
     updateLabel(address);

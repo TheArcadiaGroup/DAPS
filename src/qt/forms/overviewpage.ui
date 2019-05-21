@@ -493,6 +493,9 @@
                 <bold>true</bold>
                </font>
               </property>
+              <property name="toolTip">
+               <string>Recent transactions</string>
+              </property>
               <property name="text">
                <string>Recent transactions</string>
               </property>
