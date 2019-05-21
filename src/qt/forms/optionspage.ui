@@ -35,7 +35,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Dark/Light Theme:</string>
+      <string>Theme Selection:</string>
      </property>
     </widget>
    </item>
@@ -54,14 +54,14 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="OptionA">
-      <string>Dark Mode</string>
+      <string>Dark</string>
      </property>
      <property name="OptionB">
-      <string>Light Mode</string>
+      <string>Light</string>
      </property>
      <property name="fixedSize">
       <size>
-       <width>150</width>
+       <width>100</width>
        <height>55</height>
       </size>
      </property>
@@ -76,7 +76,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Staking Enabled/Disabled:</string>
+      <string>Staking Status:</string>
      </property>
     </widget>
    </item>
@@ -89,20 +89,20 @@
 	    </sizepolicy>
 	   </property>
      <property name="toolTip">
-      <string>Enable or disable staking</string>
+      <string>Turn staking on or off</string>
      </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="OptionA">
-        <string>Staking Enabled</string>
+        <string>On</string>
        </property>
        <property name="OptionB">
-        <string>Staking Disabled</string>
+        <string>Off</string>
        </property>
        <property name="fixedSize">
         <size>
-         <width>240</width>
+         <width>100</width>
          <height>55</height>
         </size>
        </property>
