@@ -79,6 +79,14 @@ void SendCoinsEntry::on_addressBookButton_clicked()
     }
 }
 
+void SendCoinsEntry::on_clearAllButton_clicked()
+{
+    ui->payTo->clear();
+    ui->addAsLabel->clear();
+    ui->payAmount->clear();
+}
+
+
 void SendCoinsEntry::on_payTo_textChanged(const QString& address)
 {
     updateLabel(address);
