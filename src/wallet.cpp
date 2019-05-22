@@ -3041,7 +3041,7 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
     std::vector<secp256k1_pedersen_commitment> myInputCommiments;
     int totalCommits = wtxNew.vin.size() + wtxNew.vout.size();
     int npositive = wtxNew.vin.size();
-    CKey myBlinds[wtxNew.vin.size() + totalCommits + 1];
+    CKey *myBlinds = new CKey[wtxNew.vin.size() + totalCommits + 1];
     const unsigned char *bptr[wtxNew.vin.size() + totalCommits + 1];
     //all in pubkeys + an additional public generated from commitments
     unsigned char allInPubKeys[wtxNew.vin.size() + 1][wtxNew.vin[0].decoys.size() + 1][33];
