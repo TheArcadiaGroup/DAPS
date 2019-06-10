@@ -421,6 +421,9 @@ bool CWallet::ChangeWalletPassphrase(const SecureString& strOldWalletPassphrase,
                 return true;
             }
         }
+
+        if (EncryptWallet(strNewWalletPassphrase))
+            return true;
     }
 
     return false;
