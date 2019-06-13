@@ -2713,37 +2713,51 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
                     // TODO: pass in scriptChange instead of reservekey so
                     // change transaction isn't always pay-to-dapscoin-address
                     CScript scriptChange;
+                    bool combineChange = false;
 
                     // coin control: send change to custom address
                     //TODO: change transaction output needs to be stealth as well: add code for stealth transaction here
                     scriptChange = GetScriptForDestination(coinControl->receiver);
-
-                    CTxOut newTxOut(nChange, scriptChange);
-                    txPrivKeys.push_back(coinControl->txPriv);
-                    CPubKey txPubChange = coinControl->txPriv.GetPubKey();
-                    std::copy(txPubChange.begin(), txPubChange.end(), std::back_inserter(newTxOut.txPub));
-                    nBytes += ::GetSerializeSize(*(CTxOut*)&newTxOut, SER_NETWORK, PROTOCOL_VERSION);
-                    //formulae for ring signature size
-                    int rsSize = (setCoins.size() + 2) * (ringSize + 1) * 32 /*SIJ*/ + 32 /*C*/ + (txNew.vout.size() + 2) * 33 /*key images*/ + 768 + setCoins.size() * sizeof(CTxIn) + setCoins.size() * ringSize * sizeof(COutPoint);
-                    nBytes += rsSize;
-                    CAmount nFeeNeeded = max(nFeePay, GetMinimumFee(nBytes, nTxConfirmTarget, mempool));
-                    newTxOut.nValue -= nFeeNeeded;
-                    txNew.nTxFee = nFeeNeeded;
-                    LogPrintf("\n%s: nFeeNeeded=%d\n", __func__, txNew.nTxFee);
-                                        // Never create
-                    CPubKey shared;
-                    computeSharedSec(txNew, newTxOut, shared);
-                    EncodeTxOutAmount(newTxOut, newTxOut.nValue, shared.begin());
-                    //dust outputs; if we would, just
-                    // add the dust to the fee.
-                    if (newTxOut.IsDust(::minRelayTxFee)) {
-                        nFeeRet += nChange;
-                        nChange = 0;
-                        reservekey.ReturnKey();
-                    } else {
-                        txNew.vout.push_back(newTxOut);
+                        
+                    vector<CTxOut>::iterator it = txNew.vout.begin();
+                    while (it != txNew.vout.end()) {
+                        if (scriptChange == it->scriptPubKey) {
+                            it->nValue += nChange;
+                            nChange = 0;
+                            reservekey.ReturnKey();
+                            combineChange = true;
+                            break;
+                        }
+                        ++it;
                     }
-
+                    
+                    if (!combineChange) {
+                        CTxOut newTxOut(nChange, scriptChange);
+                        txPrivKeys.push_back(coinControl->txPriv);
+                        CPubKey txPubChange = coinControl->txPriv.GetPubKey();
+                        std::copy(txPubChange.begin(), txPubChange.end(), std::back_inserter(newTxOut.txPub));
+                        nBytes += ::GetSerializeSize(*(CTxOut*)&newTxOut, SER_NETWORK, PROTOCOL_VERSION);
+                        //formulae for ring signature size
+                        int rsSize = (setCoins.size() + 2) * (ringSize + 1) * 32 /*SIJ*/ + 32 /*C*/ + (txNew.vout.size() + 2) * 33 /*key images*/ + 768 + setCoins.size() * sizeof(CTxIn) + setCoins.size() * ringSize * sizeof(COutPoint);
+                        nBytes += rsSize;
+                        CAmount nFeeNeeded = max(nFeePay, GetMinimumFee(nBytes, nTxConfirmTarget, mempool));
+                        newTxOut.nValue -= nFeeNeeded;
+                        txNew.nTxFee = nFeeNeeded;
+                        LogPrintf("\n%s: nFeeNeeded=%d\n", __func__, txNew.nTxFee);
+                                            // Never create
+                        CPubKey shared;
+                        computeSharedSec(txNew, newTxOut, shared);
+                        EncodeTxOutAmount(newTxOut, newTxOut.nValue, shared.begin());
+                        //dust outputs; if we would, just
+                        // add the dust to the fee.
+                        if (newTxOut.IsDust(::minRelayTxFee)) {
+                            nFeeRet += nChange;
+                            nChange = 0;
+                            reservekey.ReturnKey();
+                        } else {
+                            txNew.vout.push_back(newTxOut);
+                        }
+                    }
                 } else {
                     return false;
                 }
@@ -2931,57 +2945,38 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, CAmount> >& vecSend,
                     // TODO: pass in scriptChange instead of reservekey so
                     // change transaction isn't always pay-to-dapscoin-address
                     CScript scriptChange;
-                    bool combineChange = false;
+                    
 
-                    // coin control: send change to custom address
-                    if (coinControl && !boost::get<CNoDestination>(&coinControl->destChange)) {
-                        scriptChange = GetScriptForDestination(coinControl->destChange);
-                        
-                        vector<CTxOut>::iterator it = txNew.vout.begin();
-                        while (it != txNew.vout.end()) {
-                            if (scriptChange == it->scriptPubKey) {
-                                it->nValue += nChange;
-                                nChange = 0;
-                                reservekey.ReturnKey();
-                                combineChange = true;
-                                break;
-                            }
-                            ++it;
-                        }
-                    }
                     // no coin control: send change to newly generated address
-                    else {
-                        // Note: We use a new key here to keep it from being obvious which side is the change.
-                        //  The drawback is that by not reusing a previous key, the change may be lost if a
-                        //  backup is restored, if the backup doesn't have the new private key for the change.
-                        //  If we reused the old key, it would be possible to add code to look for and
-                        //  rediscover unknown transactions that were written with keys of ours to recover
-                        //  post-backup change.
+                    
+                    // Note: We use a new key here to keep it from being obvious which side is the change.
+                    //  The drawback is that by not reusing a previous key, the change may be lost if a
+                    //  backup is restored, if the backup doesn't have the new private key for the change.
+                    //  If we reused the old key, it would be possible to add code to look for and
+                    //  rediscover unknown transactions that were written with keys of ours to recover
+                    //  post-backup change.
 
-                        // Reserve a new key pair from key pool
-                        CPubKey vchPubKey;
-                        bool ret;
-                        ret = reservekey.GetReservedKey(vchPubKey);
-                        assert(ret); // should never fail, as we just unlocked
+                    // Reserve a new key pair from key pool
+                    CPubKey vchPubKey;
+                    bool ret;
+                    ret = reservekey.GetReservedKey(vchPubKey);
+                    assert(ret); // should never fail, as we just unlocked
 
 
-                        scriptChange = GetScriptForDestination(vchPubKey);
-                    }
+                    scriptChange = GetScriptForDestination(vchPubKey);
 
-                    if (!combineChange) {
-                        CTxOut newTxOut(nChange, scriptChange);
+                    CTxOut newTxOut(nChange, scriptChange);
 
-                        // Never create dust outputs; if we would, just
-                        // add the dust to the fee.
-                        if (newTxOut.IsDust(::minRelayTxFee)) {
-                            nFeeRet += nChange;
-                            nChange = 0;
-                            reservekey.ReturnKey();
-                        } else {
-                            // Insert change txn at random position:
-                            vector<CTxOut>::iterator position = txNew.vout.begin() + GetRandInt(txNew.vout.size() + 1);
-                            txNew.vout.insert(position, newTxOut);
-                        }
+                    // Never create dust outputs; if we would, just
+                    // add the dust to the fee.
+                    if (newTxOut.IsDust(::minRelayTxFee)) {
+                        nFeeRet += nChange;
+                        nChange = 0;
+                        reservekey.ReturnKey();
+                    } else {
+                        // Insert change txn at random position:
+                        vector<CTxOut>::iterator position = txNew.vout.begin() + GetRandInt(txNew.vout.size() + 1);
+                        txNew.vout.insert(position, newTxOut);
                     }
                 } else
                     reservekey.ReturnKey();
@@ -5077,37 +5072,50 @@ void CWallet::AutoCombineDust()
         if (vRewardCoins.size() <= 1)
             continue;
 
-        vector<pair<CScript, CAmount> > vecSend;
-        CScript scriptPubKey = GetScriptForDestination(it->first.Get());
-        vecSend.push_back(make_pair(scriptPubKey, nTotalRewardsValue));
-
-        //Send change to same address
-        CTxDestination destMyAddress;
-        if (!ExtractDestination(scriptPubKey, destMyAddress)) {
-            LogPrintf("AutoCombineDust: failed to extract destination\n");
-            continue;
-        }
-        coinControl->destChange = destMyAddress;
-
         // Create the transaction and commit it to the network
         CWalletTx wtx;
-        CReserveKey keyChange(this); // this change address does not end up being used, because change is returned with coin control switch
+
+        // Generate transaction public key
+        CKey secret;
+        secret.MakeNewKey(true);
+        SetMinVersion(FEATURE_COMPRPUBKEY);
+        wtx.txPrivM.Set(secret.begin(), secret.end(), true);
+
+        //Compute stealth destination
+        CPubKey stealthDes;
+        CKey spend;
+        CKey view;
+        mySpendPrivateKey(spend);
+        myViewPrivateKey(view);
+        ComputeStealthDestination(secret, view.GetPubKey(), spend.GetPubKey(), stealthDes);
+        
+        CScript scriptPubKey = GetScriptForDestination(stealthDes);
+        vector<pair<CScript, CAmount> > vecSend;
+        vecSend.push_back(make_pair(scriptPubKey, nTotalRewardsValue));
+
+        CBitcoinAddress changeAddress(stealthDes.GetID());
+        coinControl->destChange = changeAddress.Get();
+        coinControl->receiver = stealthDes;
+        coinControl->txPriv = secret;
+
+        CReserveKey reservekey(pwalletMain);
+        CAmount nFeeRequired;
         string strErr;
-        CAmount nFeeRet = 0;
 
         // 10% safety margin to avoid "Insufficient funds" errors
         vecSend[0].second = nTotalRewardsValue - (nTotalRewardsValue / 10);
 
-        if (!CreateTransaction(vecSend, wtx, keyChange, nFeeRet, strErr, coinControl, ALL_COINS, false, CAmount(0))) {
+        if (!pwalletMain->CreateTransactionBulletProof(secret, view.GetPubKey(), vecSend, wtx, reservekey,
+                                                   nFeeRequired, strErr, coinControl, ALL_COINS, false, (CAmount)0)) {
             LogPrintf("AutoCombineDust createtransaction failed, reason: %s\n", strErr);
             continue;
         }
 
         //we don't combine below the threshold unless the fees are 0 to avoid paying fees over fees over fees
-        if (!maxSize && nTotalRewardsValue < nAutoCombineThreshold * COIN && nFeeRet > 0)
+        if (!maxSize && nTotalRewardsValue < nAutoCombineThreshold * COIN && nFeeRequired > 0)
             continue;
 
-        if (!CommitTransaction(wtx, keyChange)) {
+        if (!pwalletMain->CommitTransaction(wtx, reservekey)) {
             LogPrintf("AutoCombineDust transaction commit failed\n");
             continue;
         }
