@@ -126,6 +126,16 @@ void OptionsPage::on_pushButtonSave_clicked() {
     QMessageBox(QMessageBox::Information, tr("Information"), tr("Reserve balance " + BitcoinUnits::format(0, nReserveBalance).toUtf8() + " is successfully set!"), QMessageBox::Ok).exec();
 }
 
+void OptionsPage::on_pushButtonDisable_clicked() {
+    ui->lineEditWithhold->setText("0");
+    nReserveBalance = getValidatedAmount();
+
+    CWalletDB walletdb(pwalletMain->strWalletFile);
+    walletdb.WriteReserveAmount(nReserveBalance / COIN);
+
+    emit model->stakingStatusChanged(nLastCoinStakeSearchInterval);
+    QMessageBox(QMessageBox::Information, tr("Information"), tr("Reserve balance disabled!"), QMessageBox::Ok).exec();
+}
 
 void OptionsPage::keyPressEvent(QKeyEvent* event)
 {
@@ -169,6 +179,16 @@ void OptionsPage::on_pushButtonPassword_clicked()
         ui->pushButtonPassword->setStyleSheet("border: 2px solid green");
     else ui->pushButtonPassword->setStyleSheet("border: 2px solid red");
     ui->pushButtonPassword->repaint();
+}
+
+void OptionsPage::on_pushButtonPasswordClear_clicked()
+{
+    ui->lineEditOldPass->clear();
+    ui->lineEditNewPass->clear();
+    ui->lineEditNewPassRepeat->clear();
+    ui->lineEditOldPass->setStyleSheet(GUIUtil::loadStyleSheet());
+    ui->lineEditNewPass->setStyleSheet(GUIUtil::loadStyleSheet());
+    ui->lineEditNewPassRepeat->setStyleSheet(GUIUtil::loadStyleSheet());
 }
 
 void OptionsPage::on_pushButtonBackup_clicked(){
@@ -308,7 +328,7 @@ void OptionsPage::changeTheme(ToggleButton* widget)
     if (widget->getState())
         settings.setValue("theme", "dark");
     else settings.setValue("theme", "light");
-    // GUIUtil::refreshStyleSheet();
+    GUIUtil::refreshStyleSheet();
 }
 
 void OptionsPage::disable2FA() {

@@ -34,6 +34,7 @@ QT_FORMS_UI = \
   qt/forms/2fadialog.ui \
   qt/forms/2faconfirmdialog.ui \
   qt/forms/2faqrdialog.ui \
+  qt/forms/encryptdialog.ui \
   qt/forms/addressbookpage.ui \
   qt/forms/askpassphrasedialog.ui \
   qt/forms/bip38tooldialog.ui \
@@ -66,6 +67,7 @@ QT_MOC_CPP = \
   qt/moc_2fadialog.cpp \
   qt/moc_2faconfirmdialog.cpp \
   qt/moc_2faqrdialog.cpp \
+  qt/moc_encryptdialog.cpp \
   qt/moc_addressbookpage.cpp \
   qt/moc_addresstablemodel.cpp \
   qt/moc_askpassphrasedialog.cpp \
@@ -146,6 +148,9 @@ BITCOIN_QT_H = \
   qt/2fadialog.h \
   qt/2faconfirmdialog.h \
   qt/2faqrdialog.h \
+  qt/encryptdialog.h \
+  qt/qgoogleauth.h \
+  qt/qgoogleauth_global.h \
   qt/addressbookpage.h \
   qt/addresstablemodel.h \
   qt/askpassphrasedialog.h \
@@ -307,6 +312,8 @@ BITCOIN_QT_CPP += \
   qt/2fadialog.cpp \
   qt/2faconfirmdialog.cpp \
   qt/2faqrdialog.cpp \
+  qt/encryptdialog.cpp \
+  qt/qgoogleauth.cpp \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
@@ -413,7 +420,7 @@ endif
 if TARGET_WINDOWS
   qt_dapscoin_qt_SOURCES += $(BITCOIN_RC)
 endif
-qt_dapscoin_qt_LDADD = qt/libbitcoinqt.a qt/lib/libqgoogleauth.a $(LIBBITCOIN_SERVER) $(LIBSECP256K1) $(LIBSECP256K1_2)
+qt_dapscoin_qt_LDADD = qt/libbitcoinqt.a $(LIBBITCOIN_SERVER) $(LIBSECP256K1) $(LIBSECP256K1_2)
 if ENABLE_WALLET
 qt_dapscoin_qt_LDADD += $(LIBBITCOIN_UTIL) $(LIBBITCOIN_WALLET)
 endif

@@ -210,7 +210,7 @@ void CMasternode::Check(bool forceCheck)
             TRY_LOCK(cs_main, lockMain);
             if (!lockMain) return;
 
-            if (IsKeyImageSpend1(vin.keyImage.GetHex(), uint256(0))) {
+            if (IsKeyImageSpend1(vin.keyImage.GetHex(), uint256())) {
                 activeState = MASTERNODE_VIN_SPENT;
                 return;
             }
@@ -493,25 +493,27 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
 
     CScript pubkeyScript2;
     pubkeyScript2 = GetScriptForDestination(pubKeyMasternode);
-    LogPrintf("\nCMasternodeBroadcast::CheckAndUpdate: pubKeyMasternode=%s\n", pubkeyScript2.ToString());
+    LogPrintf("\nCMasternodeBroadcast::CheckAndUpdate: pubKeyMasternode=%s, size = %d\n", pubkeyScript2.ToString(), pubkeyScript2.size());
     if ((pubkeyScript2.size() != 35) && (pubkeyScript2.size() != 67)) {
         LogPrint("masternode","mnb - pubkey2 the wrong size\n");
         nDos = 100;
         return false;
     }
 
+    LogPrintf("\nCMasternodeBroadcast::Checking scriptSig empty\n");
     if (!vin.scriptSig.empty()) {
         LogPrint("masternode","mnb - Ignore Not Empty ScriptSig %s\n", vin.prevout.hash.ToString());
         return false;
     }
 
+    LogPrintf("\nCMasternodeBroadcast::Verifying message signature\n");
     std::string errorMessage = "";
     if (!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, strMessage, errorMessage)) {
         LogPrint("masternode","mnb - Got bad Masternode address signature\n");
         nDos = 100;
         return false;
     }
-
+    LogPrintf("\nCMasternodeBroadcast::checking network ID\n");
     if (Params().NetworkID() == CBaseChainParams::MAIN) {
         if (addr.GetPort() != 53572) return false;
     } else if (addr.GetPort() == 53572)

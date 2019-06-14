@@ -1,7 +1,7 @@
 #include "2fadialog.h"
 #include "ui_2fadialog.h"
 #include "receiverequestdialog.h"
-#include "include/qgoogleauth/qgoogleauth.h"
+#include "qgoogleauth.h"
 #include <QDateTime>
 
 TwoFADialog::TwoFADialog(QWidget *parent) :

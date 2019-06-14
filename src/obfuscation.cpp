@@ -1900,6 +1900,7 @@ bool CObfuScationSigner::VerifyMessage(CPubKey pubkey, vector<unsigned char>& vc
     CPubKey pubkey2;
     if (!pubkey2.RecoverCompact(ss.GetHash(), vchSig)) {
         errorMessage = _("Error recovering public key.");
+        LogPrintf("CObfuScationSigner::VerifyMessage -- Failed to receiver key\n");
         return false;
     }
 

@@ -38,6 +38,8 @@
 #include "wallet.h"
 #endif
 
+#include "encryptdialog.h"
+
 #include <stdint.h>
 
 #include <boost/filesystem/operations.hpp>
@@ -469,6 +471,14 @@ void BitcoinApplication::initializeResult(int retval)
 
             window->addWallet(BitcoinGUI::DEFAULT_WALLET, walletModel);
             window->setCurrentWallet(BitcoinGUI::DEFAULT_WALLET);
+
+            if (walletModel->getEncryptionStatus() == WalletModel::Unencrypted) {
+                EncryptDialog dlg;
+                dlg.setModel(walletModel);
+                dlg.setWindowTitle("Encrypt Wallet");
+                dlg.setStyleSheet(GUIUtil::loadStyleSheet());
+                dlg.exec();
+            }
 
             connect(walletModel, SIGNAL(coinsSent(CWallet*, SendCoinsRecipient, QByteArray)),
                 paymentServer, SLOT(fetchPaymentACK(CWallet*, const SendCoinsRecipient&, QByteArray)));

@@ -535,12 +535,6 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
     const COutPoint outpoint(hash, n);
     std::string keyImageHex;
 
-    /*std::string outString = outpoint.hash.GetHex() + std::to_string(outpoint.n);
-    CKeyImage ki = outpointToKeyImages[outString];
-    if (IsKeyImageSpend1(ki.GetHex(), mapWallet[hash].hashBlock)) {
-    	return true;
-    }*/
-
     pair<TxSpends::const_iterator, TxSpends::const_iterator> range;
     range = mapTxSpends.equal_range(outpoint);
     for (TxSpends::const_iterator it = range.first; it != range.second; ++it) {
@@ -550,6 +544,12 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
             keyImagesSpends[keyImageHex] = true;
             return true; // Spent
         }
+    }
+
+    std::string outString = outpoint.hash.GetHex() + std::to_string(outpoint.n);
+    CKeyImage ki = outpointToKeyImages[outString];
+    if (IsKeyImageSpend1(ki.GetHex(), uint256())) {
+    	return true;
     }
 
     return false;
@@ -899,6 +899,7 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
 
         // Break debit/credit balance caches:
         wtx.MarkDirty();
+        LogPrintf("MarkDirty %s  %s%s\n", wtxIn.GetHash().ToString(), (fInsertedNew ? "new" : ""), (fUpdated ? "update" : ""));
 
         // Notify UI of new or updated transaction
         NotifyTransactionChanged(this, hash, fInsertedNew ? CT_NEW : CT_UPDATED);
@@ -2686,6 +2687,8 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
                     return false;
                 }
 
+                //select dusts to include in setCoins
+                //add to setCoins while checking duplicates, dont add too many, max input = 30
 
                 BOOST_FOREACH (PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins) {
                     CAmount nCredit = getCTxOutValue(*pcoin.first, pcoin.first->vout[pcoin.second]);
@@ -3855,12 +3858,10 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             // Calculate reward
             CAmount nReward;
             const CBlockIndex* pIndex0 = chainActive.Tip();
-            nReward = GetBlockValue(pIndex0->nHeight);
+            nReward = PoSBlockReward();
             txNew.vout[1].nValue = nCredit;
 
-            CAmount nMinFee = 0;
-
-            txNew.vout[2].nValue = nReward - nMinFee - 50 * COIN;
+            txNew.vout[2].nValue = nReward;
 
             // Limit size
             unsigned int nBytes = ::GetSerializeSize(txNew, SER_NETWORK, PROTOCOL_VERSION);
@@ -3868,28 +3869,34 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 return error("CreateCoinStake : exceeded coinstake size limit");
 
             //Masternode payment
-            if (!FillBlockPayee(txNew, nMinFee, true)) {
+            if (!FillBlockPayee(txNew, 0, true)) {
                 LogPrintf("\n%s: Cannot fill block payee", __func__);
                 return false;
             }
-            const std::string foundational = FOUNDATION_WALLET;
-            CPubKey foundationalGenPub, pubView, pubSpend;
-            bool hasPaymentID;
-            uint64_t paymentID;
-            if (!CWallet::DecodeStealthAddress(foundational, pubView, pubSpend, hasPaymentID, paymentID)) {
-                LogPrintf("\n%s: Cannot decode foundational address", __func__);
-                continue;
+
+            //Check whether team rewards should be included in this block
+            CBlockIndex* pindexPrev = chainActive.Tip();
+            CAmount blockValue = GetBlockValue(pindexPrev->nHeight);
+            if (blockValue > PoSBlockReward()) {
+            	CAmount teamReward = blockValue - PoSBlockReward();
+				const std::string foundational = FOUNDATION_WALLET;
+				CPubKey foundationalGenPub, pubView, pubSpend;
+				bool hasPaymentID;
+				uint64_t paymentID;
+				if (!CWallet::DecodeStealthAddress(foundational, pubView, pubSpend, hasPaymentID, paymentID)) {
+					LogPrintf("\n%s: Cannot decode foundational address", __func__);
+					continue;
+				}
+				CKey foundationTxPriv;
+				foundationTxPriv.MakeNewKey(true);
+				CPubKey foundationTxPub = foundationTxPriv.GetPubKey();
+				ComputeStealthDestination(foundationTxPriv, pubView, pubSpend, foundationalGenPub);
+				CScript foundationalScript = GetScriptForDestination(foundationalGenPub);
+				CTxOut foundationalOut(teamReward, foundationalScript);
+				std::copy(foundationTxPriv.begin(), foundationTxPriv.end(), std::back_inserter(foundationalOut.txPriv));
+				std::copy(foundationTxPub.begin(), foundationTxPub.end(), std::back_inserter(foundationalOut.txPub));
+				txNew.vout.push_back(foundationalOut);
             }
-            CKey foundationTxPriv;
-            foundationTxPriv.MakeNewKey(true);
-            CPubKey foundationTxPub = foundationTxPriv.GetPubKey();
-            ComputeStealthDestination(foundationTxPriv, pubView, pubSpend, foundationalGenPub);
-            CScript foundationalScript = GetScriptForDestination(foundationalGenPub);
-            CTxOut foundationalOut(50 * COIN, foundationalScript);
-            std::copy(foundationTxPriv.begin(), foundationTxPriv.end(), std::back_inserter(foundationalOut.txPriv));
-            std::copy(foundationTxPub.begin(), foundationTxPub.end(), std::back_inserter(foundationalOut.txPub));
-            txNew.vout.push_back(foundationalOut);
-            
             //Encoding amount
             CPubKey sharedSec1;
             //In this case, use the transaction pubkey to encode the transactiona amount

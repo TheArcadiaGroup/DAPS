@@ -80,6 +80,8 @@ void SendCoinsEntry::on_clearAllButton_clicked()
     ui->payTo->clear();
     ui->addAsLabel->clear();
     ui->payAmount->clear();
+    ui->payTo->setStyleSheet(GUIUtil::loadStyleSheet());
+    ui->payAmount->setStyleSheet(GUIUtil::loadStyleSheet());
 }
 
 void SendCoinsEntry::on_payTo_textChanged(const QString& address)

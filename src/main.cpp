@@ -275,7 +275,7 @@ CAmount GetValueIn(CCoinsViewCache view, const CTransaction& tx)
 }
 
 bool IsKeyImageSpend1(const std::string& kiHex, const uint256& againsHash) {
-	if (fReindex || fImporting) return false;
+	//if (fReindex || fImporting) return false;
     uint256 bh;
     if (!pblocktree->ReadKeyImage(kiHex, bh)) {
         //not spent yet because not found in database
@@ -286,14 +286,23 @@ bool IsKeyImageSpend1(const std::string& kiHex, const uint256& againsHash) {
     }
 
     if (!bh.IsNull() && againsHash.IsNull()) return true;//receive from mempool
-
-    CBlockIndex* bhIdx = mapBlockIndex[bh];
+    if (bh == againsHash) return false;
+    /*CBlockIndex* bhIdx = mapBlockIndex[bh];
     CBlockIndex* against = mapBlockIndex[againsHash];
 
     LogPrintf("\n%s: Checking key image spent = %s, bh = %s, agains = %s\n", __func__, kiHex, bh.GetHex(), againsHash.GetHex());
 
+    if (bhIdx != NULL && !againsHash.IsNull() && bh) return true;
+	if (against == NULL) return true;
+
+    if (IsKeyImageSpend2(kiHex, bh) && IsKeyImageSpend2(kiHex, againsHash)) {
+    	if (bhIdx->nHeight < against->nHeight)
+    		return true;
+    }
+
+    /*if (bhIdx == against) return true;
     if (bhIdx != NULL && against != NULL) {
-        if (bhIdx->nHeight != against->nHeight && chainActive.Height() >= against->nHeight) {
+        if (bhIdx->nHeight < against->nHeight) {
         	if ((chainActive[against->nHeight]->GetBlockHash() == againsHash) && IsKeyImageSpend2(kiHex, bh)) {
         		if (pwalletMain) {
         			if (pwalletMain->keyImagesSpends.count(kiHex) == 1) {
@@ -303,11 +312,13 @@ bool IsKeyImageSpend1(const std::string& kiHex, const uint256& againsHash) {
                 return true;
         	}
         }
-    }
+    }*/
+    /*LogPrintf("\n%s: Checking key image spent = %s, bh = %s, agains = %s, not spent yet\n", __func__, kiHex, bh.GetHex(), againsHash.GetHex());
     if (pwalletMain) {
         pwalletMain->keyImagesSpends[kiHex] = false;
-    }
-    return false;
+    }*/
+
+    return true;
 }
 
 secp256k1_context2* GetContext() {
@@ -2041,13 +2052,44 @@ double ConvertBitsToDouble(unsigned int nBits) {
     return dDiff;
 }
 
+CAmount PoSBlockReward() {
+	return 900 * COIN;
+}
+
+CAmount TeamRewards(int nHeight)
+{
+	if (!chainActive[nHeight]->IsProofOfAudit()) return 0;
+	CBlockIndex* lastPoABlock = chainActive[nHeight];
+	if (lastPoABlock->hashPrevPoABlock.IsNull()) {
+		//pay daps team after the first PoA block
+		return (nHeight - Params().LAST_POW_BLOCK() - 1 + 1 /*+1 for the being created PoS block*/) * 50 * COIN;
+	}
+
+	//loop back to find the PoA block right after which the daps team is paid
+	uint256 lastPoAHash = lastPoABlock->hashPrevPoABlock;
+	CAmount ret = 0;
+	int numPoABlocks = 1;
+	while (!lastPoAHash.IsNull()) {
+		if (numPoABlocks != 0 && numPoABlocks % Params().TEAM_REWARD_FREQUENCY == 0) break;
+		CBlockIndex* p = mapBlockIndex[lastPoAHash];
+		lastPoAHash = p->hashPrevPoABlock;
+		numPoABlocks++;
+	}
+
+	if (!lastPoAHash.IsNull() && numPoABlocks != 0 && numPoABlocks % 24 == 0) {
+		ret = (nHeight - (mapBlockIndex[lastPoAHash]->nHeight + 1) - numPoABlocks + 1 /*+1 for the being created PoS block*/) * 50 * COIN;
+	}
+	return ret;
+}
+
 int64_t GetBlockValue(int nHeight) {
     int64_t nSubsidy = 0;
 
 	if (nHeight < Params().nLastPOWBlock) {
 		nSubsidy = 300000000 * COIN;
 	} else {
-        nSubsidy = 950 * COIN;
+        nSubsidy = PoSBlockReward();
+        nSubsidy += TeamRewards(nHeight);
     }
 
     return nSubsidy;
@@ -2130,7 +2172,7 @@ CAmount GetSeeSaw(const CAmount& blockValue, int nMasternodeCount, int nHeight)
 int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount) {
     int64_t ret = 0;
 
-    int64_t blockValueForSeeSaw = blockValue - 50 * COIN;
+    int64_t blockValueForSeeSaw = blockValue;
 
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
         if (nHeight < 200)
@@ -2325,7 +2367,7 @@ void static InvalidBlockFound(CBlockIndex *pindex, const CValidationState &state
 void
 UpdateCoins(const CTransaction &tx, CValidationState &state, CCoinsViewCache &inputs, CTxUndo &txundo, int nHeight) {
     // mark inputs spent
-    if (!tx.IsCoinAudit() && !tx.IsCoinBase() && tx.IsCoinStake()) {
+	if (!tx.IsCoinAudit() && !tx.IsCoinBase() && tx.IsCoinStake()) {
         txundo.vprevout.reserve(tx.vin.size());
         BOOST_FOREACH(
         const CTxIn &txin, tx.vin) {
@@ -2409,20 +2451,20 @@ bool CheckInputs(const CTransaction &tx, CValidationState &state, const CCoinsVi
         if (tx.IsCoinStake()) {
 			for (unsigned int i = 0; i < tx.vin.size(); i++) {
 				const COutPoint &prevout = tx.vin[i].prevout;
-				const CCoins *coins = inputs.AccessCoins(prevout.hash);
-				if (coins == NULL) {
+				CTransaction prev;
+				uint256 bh;
+				if (!GetTransaction(prevout.hash, prev, bh, true)) {
 					return state.Invalid(
-							error("CheckInputs() : tried to spend coinbase at depth %d, coinstake=%d",
-									nSpendHeight - coins->nHeight, coins->IsCoinStake()),
-									REJECT_INVALID, "bad-txns-premature-spend-of-coinbase");
+							error("CheckInputs() : Inputs not available"),
+									REJECT_INVALID, "bad-txns");
 				}
 
 				// If prev is coinbase, check that it's matured
-				if (coins->IsCoinBase() || coins->IsCoinStake()) {
-					if (nSpendHeight - coins->nHeight < Params().COINBASE_MATURITY())
+				if (prev.IsCoinBase() || prev.IsCoinStake()) {
+					if (nSpendHeight - mapBlockIndex[bh]->nHeight < Params().COINBASE_MATURITY())
 						return state.Invalid(
 								error("CheckInputs() : tried to spend coinbase at depth %d, coinstake=%d",
-									  nSpendHeight - coins->nHeight, coins->IsCoinStake()),
+									  nSpendHeight - mapBlockIndex[bh]->nHeight, prev.IsCoinStake()),
 								REJECT_INVALID, "bad-txns-premature-spend-of-coinbase");
 				}
 			}
@@ -2439,11 +2481,17 @@ bool CheckInputs(const CTransaction &tx, CValidationState &state, const CCoinsVi
         if (fScriptChecks && tx.IsCoinStake()) {
             for (unsigned int i = 0; i < tx.vin.size(); i++) {
                 const COutPoint &prevout = tx.vin[i].prevout;
-                const CCoins *coins = inputs.AccessCoins(prevout.hash);
-                assert(coins);
+                CTransaction prev;
+                uint256 bh;
+                if (!GetTransaction(prevout.hash, prev, bh, true)) {
+                	return state.Invalid(
+                			error("CheckInputs() : Inputs not available"),
+							REJECT_INVALID, "bad-txns");
+                }
+                CCoins coins(prev, mapBlockIndex[bh]->nHeight);
 
                 // Verify signature
-                CScriptCheck check(*coins, tx, i, flags, cacheStore);
+                CScriptCheck check(coins, tx, i, flags, cacheStore);
                 if (pvChecks) {
                     pvChecks->push_back(CScriptCheck());
                     check.swap(pvChecks->back());
@@ -2455,7 +2503,7 @@ bool CheckInputs(const CTransaction &tx, CValidationState &state, const CCoinsVi
                         // arguments; if so, don't trigger DoS protection to
                         // avoid splitting the network between upgraded and
                         // non-upgraded nodes.
-                        CScriptCheck check(*coins, tx, i,
+                        CScriptCheck check(coins, tx, i,
                                            flags & ~STANDARD_NOT_MANDATORY_VERIFY_FLAGS, cacheStore);
                         if (check())
                             return state.Invalid(false, REJECT_NONSTANDARD,
@@ -2629,6 +2677,10 @@ bool RecalculateDAPSSupply(int nHeightStart) {
         			GetTransaction(tx.vin[i].prevout.hash, txPrev, hashBlock, true);
         			const CTxOut& out = txPrev.vout[tx.vin[i].prevout.n];
         			if (out.nValue >0) {
+        				//UTXO created by coinbase/coin audit/coinstake transaction
+        				if (!VerifyZeroBlindCommitment(out)) {
+        					throw runtime_error("Commitment for coinstake not correct: failed to verify blind commitment");
+        				}
         				nValueIn += out.nValue;
         			} else {
         				uint256 val = out.maskValue.amount;
@@ -2798,16 +2850,6 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
                                                 in.prevout.ToString(),
                                                 tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-inputs");
                 }
-            }
-
-            if (fStrictPayToScriptHash) {
-                // Add in sigops done by pay-to-script-hash inputs;
-                // this is to prevent a "rogue miner" from creating
-                // an incredibly-expensive-to-validate block.
-                nSigOps += GetP2SHSigOpCount(tx, view);
-                if (nSigOps > nMaxBlockSigOps)
-                    return state.DoS(100, error("ConnectBlock() : too many sigops"),
-                                     REJECT_INVALID, "bad-blk-sigops");
             }
 
             if (!tx.IsCoinStake())
@@ -3519,7 +3561,6 @@ CBlockIndex *AddToBlockIndex(const CBlock &block) {
     // to avoid miners withholding blocks but broadcasting headers, to get a
     // competitive advantage.
     pindexNew->nSequenceId = 0;
-    LogPrintf("\n%s: hash=%s\n", __func__, block.GetHash().GetHex());
     BlockMap::iterator mi = mapBlockIndex.insert(make_pair(hash, pindexNew)).first;
 
     //mark as PoS seen
@@ -3831,17 +3872,30 @@ bool CheckBlock(const CBlock &block, CValidationState &state, bool fCheckPOW, bo
         		return state.DoS(100, error("CheckBlock() : PoS rewards commitment not correct"));
         }
 
-        const CTxOut& foundationOut = coinstake.vout[numUTXO - 1];
-        if (foundationOut.nValue != 50 * COIN)
-        	return state.DoS(100, error("CheckBlock() : Incorrect amount PoS rewards for foundation"));
+        CAmount posBlockReward = PoSBlockReward();
+        int thisBlockHeight = mapBlockIndex[block.hashPrevBlock]->nHeight + 1; //avoid potential block disorder during download
+        CAmount blockValue = GetBlockValue(thisBlockHeight - 1);
+        if (blockValue > posBlockReward) {
+        	//numUTXO - 1 is team rewards, numUTXO - 2 is masternode reward
+        	const CTxOut& mnOut = coinstake.vout[numUTXO - 2];
+        	std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
+        	if (!VerifyDerivedAddress(mnOut, mnsa))
+        		return state.DoS(100, error("CheckBlock() : Incorrect derived address for masternode rewards"));
 
-        if (!VerifyDerivedAddress(foundationOut, FOUNDATION_WALLET))
-        	return state.DoS(100, error("CheckBlock() : Incorrect derived address PoS rewards for foundation"));
+        	CAmount teamReward = blockValue - posBlockReward;
+        	const CTxOut& foundationOut = coinstake.vout[numUTXO - 1];
+        	if (foundationOut.nValue != teamReward)
+        		return state.DoS(100, error("CheckBlock() : Incorrect amount PoS rewards for foundation, reward = %d while the correct reward = %d", foundationOut.nValue, teamReward));
 
-        const CTxOut& mnOut = coinstake.vout[numUTXO - 2];
-        std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
-        if (!VerifyDerivedAddress(mnOut, mnsa))
-                	return state.DoS(100, error("CheckBlock() : Incorrect derived address for masternode rewards"));
+        	if (!VerifyDerivedAddress(foundationOut, FOUNDATION_WALLET))
+        		return state.DoS(100, error("CheckBlock() : Incorrect derived address PoS rewards for foundation"));
+        } else {
+        	//there is no team rewards in this block
+        	const CTxOut& mnOut = coinstake.vout[numUTXO - 1];
+        	std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
+        	if (!VerifyDerivedAddress(mnOut, mnsa))
+        		return state.DoS(100, error("CheckBlock() : Incorrect derived address for masternode rewards"));
+        }
     }
 
     if (block.IsProofOfAudit() || block.IsProofOfWork()) {

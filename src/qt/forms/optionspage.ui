@@ -36,8 +36,8 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="ToggleButton" name="toggleTheme" native="true">
+   <item alignment="Qt::AlignRight">
+    <widget class="ToggleButton" name="toggleTheme">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
        <horstretch>0</horstretch>
@@ -48,7 +48,7 @@
       <string>Switch between Dark and Light theme</string>
      </property>
      <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
+      <enum>Qt::LeftToRight</enum>
      </property>
      <property name="OptionA">
       <string>Dark</string>
@@ -77,8 +77,8 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="ToggleButton" name="toggleStaking" native="false">
+   <item alignment="Qt::AlignRight">
+    <widget class="ToggleButton" name="toggleStaking">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
        <horstretch>0</horstretch>
@@ -89,7 +89,7 @@
       <string>Turn staking on or off</string>
      </property>
      <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
+      <enum>Qt::LeftToRight</enum>
      </property>
      <property name="OptionA">
       <string>On</string>
@@ -149,17 +149,40 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButtonPassword">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <property name="spacing">
+      <number>100</number>
      </property>
-     <property name="text">
-      <string>Submit</string>
+     <property name="leftMargin">
+      <number>0</number>
      </property>
-    </widget>
+     <item>
+      <widget class="QPushButton" name="pushButtonPassword">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Submit</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonPasswordClear">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Clear All</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QLabel" name="label_2">
@@ -178,20 +201,31 @@
     <widget class="QLineEdit" name="lineEditWithhold"/>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButtonSave">
-     <property name="enabled">
-      <bool>true</bool>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <property name="spacing">
+      <number>100</number>
      </property>
-     <property name="maximumSize">
-      <size>
-       <width>917</width>
-       <height>16777215</height>
-      </size>
+     <property name="leftMargin">
+      <number>0</number>
      </property>
-     <property name="text">
-      <string>Save</string>
-     </property>
-    </widget>
+     <item>
+      <widget class="QPushButton" name="pushButtonSave">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonDisable">
+       <property name="text">
+        <string>Disable</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="Line" name="line">

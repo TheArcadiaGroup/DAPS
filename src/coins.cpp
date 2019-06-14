@@ -34,10 +34,12 @@ void CCoins::CalcMaskSize(unsigned int& nBytes, unsigned int& nNonzeroBytes) con
 
 bool CCoins::Spend(const COutPoint& out, CTxInUndo& undo)
 {
-    if (out.n >= vout.size())
+    if (out.n >= vout.size()) {
         return false;
-    if (vout[out.n].IsNull())
+    }
+    if (vout[out.n].IsNull()) {
         return false;
+    }
     undo = CTxInUndo(vout[out.n]);
     vout[out.n].SetNull();
     Cleanup();
@@ -120,6 +122,7 @@ CCoinsModifier CCoinsViewCache::ModifyCoins(const uint256& txid)
             ret.first->second.coins.Clear();
             ret.first->second.flags = CCoinsCacheEntry::FRESH;
         } else if (ret.first->second.coins.IsPruned()) {
+        	std::cout << "Coin is pruned" << std::endl;
             // The parent view only has a pruned entry for this; mark it as fresh.
             ret.first->second.flags = CCoinsCacheEntry::FRESH;
         }
@@ -184,6 +187,7 @@ bool CCoinsViewCache::BatchWrite(CCoinsMap& mapCoins, const uint256& hashBlockIn
                     // modified and being pruned. This means we can just delete
                     // it from the parent.
                     cacheCoins.erase(itUs);
+                    std::cout << "Removed hash = " << it->first.GetHex()<< std::endl;
                 } else {
                     // A normal modification.
                     itUs->second.coins.swap(it->second.coins);

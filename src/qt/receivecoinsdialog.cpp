@@ -156,7 +156,7 @@ void ReceiveCoinsDialog::on_receiveButton_clicked()
     if ((int)addrList.size() > selectedIdx){
         QString address(addrList[selectedIdx].c_str());
         QString label(accountList[selectedIdx].c_str());
-        QString reqMes = "Request message";
+        QString reqMes = ui->reqID->text();
         QString strPaymentID = ui->reqID->text();
         if (!strPaymentID.trimmed().isEmpty()) {
             quint64 paymentID = strPaymentID.toULongLong();
