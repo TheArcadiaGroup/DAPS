@@ -2159,6 +2159,8 @@ bool CWallet::SelectCoins(const CAmount& nTargetValue, set<pair<const CWalletTx*
 
             nValueRet += getCOutPutValue(out);
             setCoinsRet.insert(make_pair(out.tx, out.i));
+            if (nValueRet >= nTargetValue)
+                break;
         }
         return (nValueRet >= nTargetValue);
     }
@@ -2716,50 +2718,34 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
                     // TODO: pass in scriptChange instead of reservekey so
                     // change transaction isn't always pay-to-dapscoin-address
                     CScript scriptChange;
-                    bool combineChange = false;
 
                     // coin control: send change to custom address
                     //TODO: change transaction output needs to be stealth as well: add code for stealth transaction here
                     scriptChange = GetScriptForDestination(coinControl->receiver);
-                        
-                    vector<CTxOut>::iterator it = txNew.vout.begin();
-                    while (it != txNew.vout.end()) {
-                        if (scriptChange == it->scriptPubKey) {
-                            it->nValue += nChange;
-                            nChange = 0;
-                            reservekey.ReturnKey();
-                            combineChange = true;
-                            break;
-                        }
-                        ++it;
-                    }
                     
-                    if (!combineChange) {
-                        CTxOut newTxOut(nChange, scriptChange);
-                        txPrivKeys.push_back(coinControl->txPriv);
-                        CPubKey txPubChange = coinControl->txPriv.GetPubKey();
-                        std::copy(txPubChange.begin(), txPubChange.end(), std::back_inserter(newTxOut.txPub));
-                        nBytes += ::GetSerializeSize(*(CTxOut*)&newTxOut, SER_NETWORK, PROTOCOL_VERSION);
-                        //formulae for ring signature size
-                        int rsSize = (setCoins.size() + 2) * (ringSize + 1) * 32 /*SIJ*/ + 32 /*C*/ + (txNew.vout.size() + 2) * 33 /*key images*/ + 768 + setCoins.size() * sizeof(CTxIn) + setCoins.size() * ringSize * sizeof(COutPoint);
-                        nBytes += rsSize;
-                        CAmount nFeeNeeded = max(nFeePay, GetMinimumFee(nBytes, nTxConfirmTarget, mempool));
-                        newTxOut.nValue -= nFeeNeeded;
-                        txNew.nTxFee = nFeeNeeded;
-                        LogPrintf("\n%s: nFeeNeeded=%d\n", __func__, txNew.nTxFee);
-                                            // Never create
-                        CPubKey shared;
-                        computeSharedSec(txNew, newTxOut, shared);
-                        EncodeTxOutAmount(newTxOut, newTxOut.nValue, shared.begin());
-                        //dust outputs; if we would, just
-                        // add the dust to the fee.
-                        if (newTxOut.IsDust(::minRelayTxFee)) {
-                            nFeeRet += nChange;
-                            nChange = 0;
-                            reservekey.ReturnKey();
-                        } else {
-                            txNew.vout.push_back(newTxOut);
-                        }
+                    CTxOut newTxOut(nChange, scriptChange);
+                    txPrivKeys.push_back(coinControl->txPriv);
+                    CPubKey txPubChange = coinControl->txPriv.GetPubKey();
+                    std::copy(txPubChange.begin(), txPubChange.end(), std::back_inserter(newTxOut.txPub));
+                    nBytes += ::GetSerializeSize(*(CTxOut*)&newTxOut, SER_NETWORK, PROTOCOL_VERSION);
+                    //formulae for ring signature size
+                    int rsSize = (setCoins.size() + 2) * (ringSize + 1) * 32 /*SIJ*/ + 32 /*C*/ + (txNew.vout.size() + 2) * 33 /*key images*/ + 768 + setCoins.size() * sizeof(CTxIn) + setCoins.size() * ringSize * sizeof(COutPoint);
+                    nBytes += rsSize;
+                    CAmount nFeeNeeded = max(nFeePay, GetMinimumFee(nBytes, nTxConfirmTarget, mempool));
+                    newTxOut.nValue -= nFeeNeeded;
+                    txNew.nTxFee = nFeeNeeded;
+                                        // Never create
+                    CPubKey shared;
+                    computeSharedSec(txNew, newTxOut, shared);
+                    EncodeTxOutAmount(newTxOut, newTxOut.nValue, shared.begin());
+                    //dust outputs; if we would, just
+                    // add the dust to the fee.
+                    if (newTxOut.IsDust(::minRelayTxFee)) {
+                        nFeeRet += nChange;
+                        nChange = 0;
+                        reservekey.ReturnKey();
+                    } else {
+                        txNew.vout.push_back(newTxOut);
                     }
                 } else {
                     return false;
@@ -5032,24 +5018,30 @@ void CWallet::AutoCombineDust()
     }
 
     map<CBitcoinAddress, vector<COutput> > mapCoinsByAddress = AvailableCoinsByAddress(true, nAutoCombineThreshold * COIN);
+    vector<COutput> vRewardCoins;
+    CCoinControl* coinControl = NULL;
+    CAmount nTotalRewardsValue = 0;
+
+    // We don't want the tx to be refused for being too large
+    // we use 50 bytes as a base tx size (2 output: 2*34 + overhead: 10 -> 90 to be certain)
+    unsigned int txSizeEstimate = 90;
 
     //coins are sectioned by address. This combination code only wants to combine inputs that belong to the same address
     for (map<CBitcoinAddress, vector<COutput> >::iterator it = mapCoinsByAddress.begin(); it != mapCoinsByAddress.end(); it++) {
-        vector<COutput> vCoins, vRewardCoins;
+        vector<COutput> vCoins;
         bool maxSize = false;
         vCoins = it->second;
 
-        // We don't want the tx to be refused for being too large
-        // we use 50 bytes as a base tx size (2 output: 2*34 + overhead: 10 -> 90 to be certain)
-        unsigned int txSizeEstimate = 90;
+        if (coinControl == NULL) {
+            coinControl = new CCoinControl();
+            txSizeEstimate = 90;
+            nTotalRewardsValue = 0;
+        }
 
-        //find masternode rewards that need to be combined
-        CCoinControl* coinControl = new CCoinControl();
-        CAmount nTotalRewardsValue = 0;
+        //find masternode rewards that need to be combined        
         BOOST_FOREACH (const COutput& out, vCoins) {
             if (!out.fSpendable)
                 continue;
-
             //no coins should get this far if they dont have proper maturity, this is double checking
             if (out.tx->IsCoinStake() && out.tx->GetDepthInMainChain() < COINBASE_MATURITY + 1)
                 continue;          
@@ -5057,12 +5049,12 @@ void CWallet::AutoCombineDust()
             COutPoint outpt(out.tx->GetHash(), out.i);
             coinControl->Select(outpt);
             vRewardCoins.push_back(out);
-            nTotalRewardsValue += out.Value();
+            nTotalRewardsValue += getCOutPutValue(out);
 
             // Combine to the threshold and not way above
             if (nTotalRewardsValue > nAutoCombineThreshold * COIN)
-                continue;
-
+                break;
+            
             // Around 180 bytes per input. We use 190 to be certain
             txSizeEstimate += 190;
             if (txSizeEstimate >= MAX_STANDARD_TX_SIZE - 200) {
@@ -5111,25 +5103,25 @@ void CWallet::AutoCombineDust()
 
         // 10% safety margin to avoid "Insufficient funds" errors
         vecSend[0].second = nTotalRewardsValue - (nTotalRewardsValue / 10);
-
         if (!pwalletMain->CreateTransactionBulletProof(secret, view.GetPubKey(), vecSend, wtx, reservekey,
                                                    nFeeRequired, strErr, coinControl, ALL_COINS, false, (CAmount)0)) {
             LogPrintf("AutoCombineDust createtransaction failed, reason: %s\n", strErr);
             continue;
         }
-
         //we don't combine below the threshold unless the fees are 0 to avoid paying fees over fees over fees
-        if (!maxSize && nTotalRewardsValue < nAutoCombineThreshold * COIN && nFeeRequired > 0)
-            continue;
-
-        if (!pwalletMain->CommitTransaction(wtx, reservekey)) {
-            LogPrintf("AutoCombineDust transaction commit failed\n");
+        if (!maxSize && nTotalRewardsValue < nAutoCombineThreshold * COIN && nFeeRequired > 0) {
             continue;
         }
-
+        if (!pwalletMain->CommitTransaction(wtx, reservekey)) {
+            LogPrintf("AutoCombineDust transaction commit failed\n");
+            break;
+            // continue;
+        }
         LogPrintf("AutoCombineDust sent transaction\n");
 
         delete coinControl;
+        coinControl = NULL;
+        vRewardCoins.clear();
     }
 }
 
