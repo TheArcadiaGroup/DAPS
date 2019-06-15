@@ -177,12 +177,12 @@ std::list<COutPoint> CTransaction::GetOutPoints() const
     return listOutPoints;
 }
 
-double CTransaction::ComputePriority(double dPriorityInputs, unsigned int nTxSize) const
+double CTransaction::ComputePriority(unsigned int nTxSize) const
 {
     nTxSize = CalculateModifiedSize(nTxSize);
     if (nTxSize == 0) return 0.0;
 
-    return dPriorityInputs / nTxSize;
+    return (double) (nTxFee) / (double)nTxSize;
 }
 
 unsigned int CTransaction::CalculateModifiedSize(unsigned int nTxSize) const

@@ -306,7 +306,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
 
             // Priority is sum(valuein * age) / modified_txsize
             unsigned int nTxSize = ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION);
-            dPriority = tx.ComputePriority(dPriority, nTxSize);
+            dPriority = tx.ComputePriority(nTxSize);
 
             uint256 hash = tx.GetHash();
             mempool.ApplyDeltas(hash, dPriority, nTotalIn);
@@ -701,7 +701,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
                 continue;
             }
 
-            while (chainActive.Tip()->nTime < 1471482000 || vNodes.empty() || pwallet->IsLocked() || !fMintableCoins || nReserveBalance >= pwallet->GetBalance() || !masternodeSync.IsSynced()) {
+            while (chainActive.Tip()->nTime < 1471482000 /*|| vNodes.empty()*/ || pwallet->IsLocked() || !fMintableCoins || nReserveBalance >= pwallet->GetBalance() /*|| !masternodeSync.IsSynced()*/) {
                 nLastCoinStakeSearchInterval = 0;
                 MilliSleep(5000);
                 fMintableCoins = pwallet->MintableCoins();

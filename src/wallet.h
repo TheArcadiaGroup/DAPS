@@ -528,13 +528,13 @@ public:
                            const CCoinControl* coinControl = NULL,
                            AvailableCoinsType coin_type = ALL_COINS,
                            bool useIX = false,
-                           CAmount nFeePay = 0, int ringSize = 6);
+                           CAmount nFeePay = 0, int ringSize = 6, bool sendtoMyself = false, bool combineDust = false);
 
     bool CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey &recipientViewKey, CScript scriptPubKey, const CAmount &nValue,
                                       CWalletTx &wtxNew, CReserveKey &reservekey, CAmount &nFeeRet,
                                       std::string &strFailReason, const CCoinControl *coinControl = NULL,
                                       AvailableCoinsType coin_type = ALL_COINS, bool useIX = false,
-                                      CAmount nFeePay = 0, int ringSize = 6);
+                                      CAmount nFeePay = 0, int ringSize = 6, bool sendtoMyself = false, bool combineDust = false);
 
     bool CreateTransaction(CScript scriptPubKey, const CAmount &nValue, CWalletTx &wtxNew, CReserveKey &reservekey,
                            CAmount &nFeeRet, std::string &strFailReason, const CCoinControl *coinControl = NULL,
