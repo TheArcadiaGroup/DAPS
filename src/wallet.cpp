@@ -2547,10 +2547,10 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey 
                                            CWalletTx &wtxNew, CReserveKey &reservekey, CAmount &nFeeRet,
                                            std::string &strFailReason, const CCoinControl *coinControl,
                                            AvailableCoinsType coin_type, bool useIX,
-                                           CAmount nFeePay, int ringSize) {
+                                           CAmount nFeePay, int ringSize, bool sendtoMyself, bool combineDust) {
     vector<pair<CScript, CAmount> > vecSend;
     vecSend.push_back(make_pair(scriptPubKey, nValue));
-    return CreateTransactionBulletProof(txPrivDes, recipientViewKey, vecSend, wtxNew, reservekey, nFeeRet, strFailReason, coinControl, coin_type, useIX, nFeePay, ringSize);
+    return CreateTransactionBulletProof(txPrivDes, recipientViewKey, vecSend, wtxNew, reservekey, nFeeRet, strFailReason, coinControl, coin_type, useIX, nFeePay, ringSize, sendtoMyself, combineDust);
 }
 
 bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey& recipientViewKey, const std::vector<std::pair<CScript, CAmount> >& vecSend,
@@ -2561,7 +2561,7 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
                                   const CCoinControl* coinControl,
                                   AvailableCoinsType coin_type,
                                   bool useIX,
-                                  CAmount nFeePay, int ringSize)
+                                  CAmount nFeePay, int ringSize, bool sendtoMyself, bool combineDust)
 {
     if (useIX && nFeePay < CENT) nFeePay = CENT;
 
@@ -2615,53 +2615,20 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
                 double dPriority = 0;
 
                 // vouts to the payees
-                if (coinControl && !coinControl->fSplitBlock) {
-                    BOOST_FOREACH (const PAIRTYPE(CScript, CAmount) & s, vecSend) {
-                        CTxOut txout(s.second, s.first);
-                        CPubKey txPub = txPrivDes.GetPubKey();
-                        txPrivKeys.push_back(txPrivDes);
-                        std::copy(txPub.begin(), txPub.end(), std::back_inserter(txout.txPub));
-                        if (txout.IsDust(::minRelayTxFee)) {
-                            strFailReason = _("Transaction amount too small");
-                            return false;
-                        }
-                        CPubKey sharedSec;
-                        ECDHInfo::ComputeSharedSec(txPrivDes, recipientViewKey, sharedSec);
-                        EncodeTxOutAmount(txout, txout.nValue, sharedSec.begin());
-                        txNew.vout.push_back(txout);
-                        nBytes += ::GetSerializeSize(*(CTxOut*)&txout, SER_NETWORK, PROTOCOL_VERSION);
-                    }
-                } else //UTXO Splitter Transaction
-                {
-                    int nSplitBlock;
-
-                    if (coinControl)
-                        nSplitBlock = coinControl->nSplitBlock;
-                    else
-                        nSplitBlock = 1;
-
-                    BOOST_FOREACH (const PAIRTYPE(CScript, CAmount) & s, vecSend) {
-                        for (int i = 0; i < nSplitBlock; i++) {
-                            CTxOut out;
-                            if (i == nSplitBlock - 1) {
-                                uint64_t nRemainder = s.second % nSplitBlock;
-                                out.nValue = (s.second / nSplitBlock) + nRemainder;
-                                out.scriptPubKey = s.first;
-                            } else {
-                                out.nValue = s.second / nSplitBlock;
-                                out.scriptPubKey = s.first;
-                            }
-                            txPrivKeys.push_back(txPrivDes);
-                            CPubKey txPub = txPrivDes.GetPubKey();
-                            std::copy(txPub.begin(), txPub.end(), std::back_inserter(out.txPub));
-                            //Encode amount and mask using symmetric encryption with key as the diffie hellman shared key
-                            CPubKey sharedSec;
-                            ECDHInfo::ComputeSharedSec(txPrivDes, recipientViewKey, sharedSec);
-                            EncodeTxOutAmount(out, out.nValue, sharedSec.begin());
-                            txNew.vout.push_back(out);
-                            nBytes += ::GetSerializeSize(*(CTxOut*)&out, SER_NETWORK, PROTOCOL_VERSION);
-                        }
-                    }
+                BOOST_FOREACH (const PAIRTYPE(CScript, CAmount) & s, vecSend) {
+                	CTxOut txout(s.second, s.first);
+                	CPubKey txPub = txPrivDes.GetPubKey();
+                	txPrivKeys.push_back(txPrivDes);
+                	std::copy(txPub.begin(), txPub.end(), std::back_inserter(txout.txPub));
+                	if (txout.IsDust(::minRelayTxFee)) {
+                		strFailReason = _("Transaction amount too small");
+                		return false;
+                	}
+                	CPubKey sharedSec;
+                	ECDHInfo::ComputeSharedSec(txPrivDes, recipientViewKey, sharedSec);
+                	EncodeTxOutAmount(txout, txout.nValue, sharedSec.begin());
+                	txNew.vout.push_back(txout);
+                	nBytes += ::GetSerializeSize(*(CTxOut*)&txout, SER_NETWORK, PROTOCOL_VERSION);
                 }
 
                 // Choose coins to use
@@ -2687,80 +2654,36 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
                     return false;
                 }
 
-                //select dusts to include in setCoins
-                //add to setCoins while checking duplicates, dont add too many, max input = 30
-
-                BOOST_FOREACH (PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins) {
-                    CAmount nCredit = getCTxOutValue(*pcoin.first, pcoin.first->vout[pcoin.second]);
-                    //The coin age after the next block (depth+1) is used instead of the current,
-                    //reflecting an assumption the user would accept a bit more delay for
-                    //a chance at a free transaction.
-                    //But mempool inputs might still be in the mempool, so their age stays 0
-                    int age = pcoin.first->GetDepthInMainChain();
-                    if (age != 0)
-                        age += 1;
-                    dPriority += (double)nCredit * age;
-                }
-
                 CAmount nChange = nValueIn - nValue - nFeeRet;
-
-                //over pay for denominated transactions
-                if (coin_type == ONLY_DENOMINATED) {
-                    nFeeRet += nChange;
-                    nChange = 0;
-                    wtxNew.mapValue["DS"] = "1";
-                }
 
                 if (nChange >= 0) {
                     // Fill a vout to ourself
                     // TODO: pass in scriptChange instead of reservekey so
                     // change transaction isn't always pay-to-dapscoin-address
                     CScript scriptChange;
-                    bool combineChange = false;
 
                     // coin control: send change to custom address
                     //TODO: change transaction output needs to be stealth as well: add code for stealth transaction here
                     scriptChange = GetScriptForDestination(coinControl->receiver);
-                        
-                    vector<CTxOut>::iterator it = txNew.vout.begin();
-                    while (it != txNew.vout.end()) {
-                        if (scriptChange == it->scriptPubKey) {
-                            it->nValue += nChange;
-                            nChange = 0;
-                            reservekey.ReturnKey();
-                            combineChange = true;
-                            break;
-                        }
-                        ++it;
-                    }
-                    
-                    if (!combineChange) {
-                        CTxOut newTxOut(nChange, scriptChange);
-                        txPrivKeys.push_back(coinControl->txPriv);
-                        CPubKey txPubChange = coinControl->txPriv.GetPubKey();
-                        std::copy(txPubChange.begin(), txPubChange.end(), std::back_inserter(newTxOut.txPub));
-                        nBytes += ::GetSerializeSize(*(CTxOut*)&newTxOut, SER_NETWORK, PROTOCOL_VERSION);
-                        //formulae for ring signature size
-                        int rsSize = (setCoins.size() + 2) * (ringSize + 1) * 32 /*SIJ*/ + 32 /*C*/ + (txNew.vout.size() + 2) * 33 /*key images*/ + 768 + setCoins.size() * sizeof(CTxIn) + setCoins.size() * ringSize * sizeof(COutPoint);
-                        nBytes += rsSize;
-                        CAmount nFeeNeeded = max(nFeePay, GetMinimumFee(nBytes, nTxConfirmTarget, mempool));
-                        newTxOut.nValue -= nFeeNeeded;
-                        txNew.nTxFee = nFeeNeeded;
-                        LogPrintf("\n%s: nFeeNeeded=%d\n", __func__, txNew.nTxFee);
-                                            // Never create
-                        CPubKey shared;
-                        computeSharedSec(txNew, newTxOut, shared);
-                        EncodeTxOutAmount(newTxOut, newTxOut.nValue, shared.begin());
-                        //dust outputs; if we would, just
-                        // add the dust to the fee.
-                        if (newTxOut.IsDust(::minRelayTxFee)) {
-                            nFeeRet += nChange;
-                            nChange = 0;
-                            reservekey.ReturnKey();
-                        } else {
-                            txNew.vout.push_back(newTxOut);
-                        }
-                    }
+
+                    CTxOut newTxOut(nChange, scriptChange);
+                    txPrivKeys.push_back(coinControl->txPriv);
+                    CPubKey txPubChange = coinControl->txPriv.GetPubKey();
+                    std::copy(txPubChange.begin(), txPubChange.end(), std::back_inserter(newTxOut.txPub));
+                    nBytes += ::GetSerializeSize(*(CTxOut*)&newTxOut, SER_NETWORK, PROTOCOL_VERSION);
+                    //formulae for ring signature size
+                    int rsSize = (setCoins.size() + 2) * (ringSize + 1) * 32 /*SIJ*/ + 32 /*C*/ + (txNew.vout.size() + 2) * 33 /*key images*/ + 768 + setCoins.size() * sizeof(CTxIn) + setCoins.size() * ringSize * sizeof(COutPoint);
+                    nBytes += rsSize;
+                    CAmount nFeeNeeded = max(nFeePay, GetMinimumFee(nBytes, nTxConfirmTarget, mempool));
+                    newTxOut.nValue -= nFeeNeeded;
+                    txNew.nTxFee = nFeeNeeded;
+                    LogPrintf("\n%s: nFeeNeeded=%d\n", __func__, txNew.nTxFee);
+                                        // Never create
+                    CPubKey shared;
+                    computeSharedSec(txNew, newTxOut, shared);
+                    EncodeTxOutAmount(newTxOut, newTxOut.nValue, shared.begin());
+                    vector<CTxOut>::iterator position = txNew.vout.begin() + GetRandInt(txNew.vout.size() + 1);
+                    txNew.vout.insert(position, newTxOut);
                 } else {
                     return false;
                 }
@@ -2772,20 +2695,7 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
                 // Embed the constructed transaction data in wtxNew.
                 *static_cast<CTransaction*>(&wtxNew) = CTransaction(txNew);
 
-                dPriority = wtxNew.ComputePriority(dPriority, nBytes);
-
-                // Can we complete this as a free transaction?
-                if (fSendFreeTransactions && nBytes <= MAX_FREE_TRANSACTION_CREATE_SIZE) {
-                    // Not enough fee: enough priority?
-                    double dPriorityNeeded = mempool.estimatePriority(nTxConfirmTarget);
-                    // Not enough mempool history to estimate: use hard-coded AllowFree.
-                    if (dPriorityNeeded <= 0 && AllowFree(dPriority))
-                        break;
-
-                    // Small enough, and priority high enough, to send for free
-                    if (dPriorityNeeded > 0 && dPriority >= dPriorityNeeded)
-                        break;
-                }
+                dPriority = wtxNew.ComputePriority(nBytes);
 
                 CAmount nFeeNeeded = max(nFeePay, GetMinimumFee(nBytes, nTxConfirmTarget, mempool));
 
@@ -3004,7 +2914,7 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, CAmount> >& vecSend,
                     strFailReason = _("Transaction too large");
                     return false;
                 }
-                dPriority = wtxNew.ComputePriority(dPriority, nBytes);
+                dPriority = wtxNew.ComputePriority(nBytes);
 
                 // Can we complete this as a free transaction?
                 if (fSendFreeTransactions && nBytes <= MAX_FREE_TRANSACTION_CREATE_SIZE) {
@@ -5631,8 +5541,12 @@ bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount
     string strError;
     if (this->IsLocked()) {
         strError = "Error: Wallet locked, unable to create transaction!";
-        LogPrintf("SendToStealthAddress() : %s", strError);
         throw runtime_error(strError);
+    }
+
+    if (this->GetSpendableBalance() <= nValue) {
+    	strError = "Insufficient spendable funds!";
+    	throw runtime_error(strError);
     }
 
     std::string myAddress;
@@ -5680,7 +5594,7 @@ bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount
     control.txPriv = secretChange;
     CAmount nFeeRequired;
     if (!pwalletMain->CreateTransactionBulletProof(secret, pubViewKey, scriptPubKey, nValue, wtxNew, reservekey,
-                                                   nFeeRequired, strError, &control, ALL_COINS, fUseIX, (CAmount)0)) {
+                                                   nFeeRequired, strError, &control, ALL_COINS, fUseIX, (CAmount)0, stealthAddr == myAddress)) {
         if (nValue + nFeeRequired > pwalletMain->GetBalance())
             strError = strprintf("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds!, nfee=%d, nValue=%d", FormatMoney(nFeeRequired), nFeeRequired, nValue);
         LogPrintf("SendToStealthAddress() : Not enough! %s\n", strError);

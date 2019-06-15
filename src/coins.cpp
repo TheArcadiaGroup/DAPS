@@ -261,7 +261,7 @@ double CCoinsViewCache::GetPriority(const CTransaction& tx, int nHeight) const
             dResult += coins->vout[txin.prevout.n].nValue * (nHeight - coins->nHeight);
         }
     }*/
-    return tx.ComputePriority(dResult);
+    return tx.ComputePriority();
 }
 
 CCoinsModifier::CCoinsModifier(CCoinsViewCache& cache_, CCoinsMap::iterator it_) : cache(cache_), it(it_)
