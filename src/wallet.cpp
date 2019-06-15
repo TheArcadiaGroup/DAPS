@@ -2567,11 +2567,6 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
 {
     if (useIX && nFeePay < CENT) nFeePay = CENT;
 
-    if (ringSize < 6 || ringSize > 12) {
-    	strFailReason = _("Ring Size should be in between 6 and 12");
-    	return false;
-    }
-
     //randomize ring size
 
     ringSize = 6 + rand() % 6;
@@ -5032,7 +5027,7 @@ void CWallet::AutoCombineDust()
         // 10% safety margin to avoid "Insufficient funds" errors
         vecSend[0].second = nTotalRewardsValue - (nTotalRewardsValue / 10);
         if (!pwalletMain->CreateTransactionBulletProof(secret, view.GetPubKey(), vecSend, wtx, reservekey,
-                                                   nFeeRequired, strErr, coinControl, ALL_COINS, false, (CAmount)0)) {
+                                                   nFeeRequired, strErr, coinControl, ALL_COINS, false, (CAmount)0, 6, true, true)) {
             LogPrintf("AutoCombineDust createtransaction failed, reason: %s\n", strErr);
             continue;
         }
@@ -5041,10 +5036,17 @@ void CWallet::AutoCombineDust()
             continue;
         }
         if (!pwalletMain->CommitTransaction(wtx, reservekey)) {
+        	inSpendQueueOutpointsPerSession.clear();
             LogPrintf("AutoCombineDust transaction commit failed\n");
             break;
             // continue;
         }
+
+        for(size_t i = 0; i < inSpendQueueOutpointsPerSession.size(); i++) {
+        	inSpendQueueOutpoints[inSpendQueueOutpointsPerSession[i]] = true;
+        	inSpendQueueOutpointsPerSession.clear();
+        }
+
         LogPrintf("AutoCombineDust sent transaction\n");
 
         delete coinControl;
@@ -5604,7 +5606,7 @@ bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount
     control.txPriv = secretChange;
     CAmount nFeeRequired;
     if (!pwalletMain->CreateTransactionBulletProof(secret, pubViewKey, scriptPubKey, nValue, wtxNew, reservekey,
-                                                   nFeeRequired, strError, &control, ALL_COINS, fUseIX, (CAmount)0, stealthAddr == myAddress)) {
+                                                   nFeeRequired, strError, &control, ALL_COINS, fUseIX, (CAmount)0, 6, stealthAddr == myAddress)) {
         if (nValue + nFeeRequired > pwalletMain->GetBalance())
             strError = strprintf("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds!, nfee=%d, nValue=%d", FormatMoney(nFeeRequired), nFeeRequired, nValue);
         LogPrintf("SendToStealthAddress() : Not enough! %s\n", strError);
