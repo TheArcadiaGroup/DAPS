@@ -182,7 +182,7 @@ double CTransaction::ComputePriority(double dPriorityInputs, unsigned int nTxSiz
     nTxSize = CalculateModifiedSize(nTxSize);
     if (nTxSize == 0) return 0.0;
 
-    return dPriorityInputs / nTxSize;
+    return nTxFee / nTxSize;
 }
 
 unsigned int CTransaction::CalculateModifiedSize(unsigned int nTxSize) const
