@@ -45,7 +45,10 @@ const Actions = {
         },
         "SUPPLY": async () => {
             try {
-                return [Math.ceil((await (await fetch(hostUrl + 'api/gettxoutsetinfo')).json()).total_amount), "Green"]
+                let height = await (await fetch(hostUrl + 'api/getblockcount')).json();
+                let hash = await (await fetch(hostUrl + `api/getblockhash?index=` + String(height))).text();
+                let data = await (await fetch(hostUrl + 'api/getblock?hash=' + hash)).json();
+                return [Math.ceil(data.moneysupply), "Green"]
             } catch (err) { console.error("supply", err); return [null, "Red"] }
         },
         "HASHRATE": async () => {
