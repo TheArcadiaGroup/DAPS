@@ -46,10 +46,6 @@ SendCoinsDialog::SendCoinsDialog(QWidget* parent) : QDialog(parent),
 
     connect(ui->addButton, SIGNAL(clicked()), this, SLOT(addEntry()));
 
-    QSettings settings;
-      if (!settings.contains("nRingSize"))
-        settings.setValue("nRingSize", 6);
-
     // #HIDE multisend
     ui->addButton->setVisible(false);
 }
