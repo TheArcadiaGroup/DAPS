@@ -37,8 +37,6 @@ extern bool fLiteMode;
 extern bool fEnableSwiftTX;
 extern int nSwiftTXDepth;
 extern const int64_t AUTOMINT_DELAY;
-extern int nAnonymizeDapscoinAmount;
-extern int nLiquidityProvider;
 extern int64_t enforceMasternodePaymentsTime;
 extern std::string strMasterNodeAddr;
 extern int keysLoaded;

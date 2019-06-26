@@ -72,11 +72,6 @@ void OptionsModel::Init()
         settings.setValue("fCoinControlFeatures", false);
     fCoinControlFeatures = settings.value("fCoinControlFeatures", false).toBool();
 
-    if (!settings.contains("nAnonymizeDapscoinAmount"))
-        settings.setValue("nAnonymizeDapscoinAmount", 1000);
-
-    nAnonymizeDapscoinAmount = settings.value("nAnonymizeDapscoinAmount").toLongLong();
-
     if (!settings.contains("fShowMasternodesTab"))
         settings.setValue("fShowMasternodesTab", masternodeConfig.getCount());
 
@@ -147,9 +142,6 @@ void OptionsModel::Init()
         settings.setValue("language", "");
     if (!SoftSetArg("-lang", settings.value("language").toString().toStdString()))
         addOverriddenOption("-lang");
-
-    if (settings.contains("nAnonymizeDapscoinAmount"))
-        SoftSetArg("-anonymizedapscoinamount", settings.value("nAnonymizeDapscoinAmount").toString().toStdString());
 
     language = settings.value("language").toString();
 }
@@ -235,8 +227,6 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
             return settings.value("nDatabaseCache");
         case ThreadsScriptVerif:
             return settings.value("nThreadsScriptVerif");
-        case AnonymizeDapscoinAmount:
-            return QVariant(nAnonymizeDapscoinAmount);
         case Listen:
             return settings.value("fListen");
         default:
@@ -363,11 +353,6 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
                 settings.setValue("language", value);
                 setRestartRequired(true);
             }
-            break;
-        case AnonymizeDapscoinAmount:
-            nAnonymizeDapscoinAmount = value.toInt();
-            settings.setValue("nAnonymizeDapscoinAmount", nAnonymizeDapscoinAmount);
-            emit anonymizeDapscoinAmountChanged(nAnonymizeDapscoinAmount);
             break;
         case CoinControlFeatures:
             fCoinControlFeatures = value.toBool();
