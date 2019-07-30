@@ -2964,6 +2964,24 @@ bool CWallet::generateBulletProofAggregate(CTransaction& tx)
 	return ret;
 }
 
+std::string CWallet::EncodeKeyCombo() {
+	if (IsLocked()) {
+		throw runtime_error("Please unlock wallet");
+	}
+	CKey view, spend;
+	myViewPrivateKey(view);
+	mySpendPrivateKey(spend);
+	CPubKey pubSpend = spend.GetPubKey();
+	unsigned char data[69];
+	memcpy(data, view.begin(), 32);
+	memcpy(data + 32, pubSpend.begin(), 32);
+	uint256 checksum = Hash(data, data + 65);
+	memcpy(data + 65, checksum.begin(), 4);
+	std::vector<unsigned char> v;
+	std::copy(data, data + 69, std::back_inserter(v));
+	return EncodeBase58(v);
+}
+
 bool CWallet::makeRingCT(CTransaction& wtxNew, int ringSize, std::string& strFailReason)
 {
 	int myIndex;
