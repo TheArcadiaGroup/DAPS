@@ -12,6 +12,7 @@
 #include "script/interpreter.h"
 #include "timedata.h"
 #include "util.h"
+#include "wallet.h"
 
 using namespace std;
 
@@ -299,8 +300,19 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlockHeader blockFrom, cons
     CPubKey sharedSec;
     sharedSec.Set(encryptionKey, encryptionKey + 33);
     ECDHInfo::Decode(mask.begin(), val.begin(), sharedSec, decodedMask, nValueIn);
-    if (txPrev.IsCoinBase() || txPrev.IsCoinStake()) {
-        nValueIn = txPrev.vout[prevout.n].nValue;
+    std::vector<unsigned char> commitment;
+    if (decodedMask.IsValid()) {
+    	if (!CWallet::CreateCommitment(decodedMask.begin(), nValueIn, commitment)) {
+            return error("CheckStakeKernelHash() : failed to check commitment");
+    	}
+    } else {
+    	unsigned char zeros[32];
+    	if (!CWallet::CreateCommitmentWithZeroBlind(nValueIn, zeros, commitment)) {
+            return error("CheckStakeKernelHash() : failed to check zero blind commitment");
+    	}
+    }
+    if (commitment != txPrev.vout[prevout.n].commitment) {
+        return error("CheckStakeKernelHash() : commitment not match");
     }
     unsigned int nTimeBlockFrom = blockFrom.GetBlockTime();
 
