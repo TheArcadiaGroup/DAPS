@@ -3625,6 +3625,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             wlIdx = 0;
         }
         for (map<uint256, CWalletTx>::const_iterator it = std::next(mapWallet.begin(), wlIdx); it != mapWallet.end(); ++it) {
+        	setStakeCoins.clear();
             wlIdx = (wlIdx + 1) % mapWallet.size();
             const uint256& wtxid = it->first;
             const CWalletTx* pcoin = &(*it).second;
@@ -3668,6 +3669,8 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 nAmountSelected += value;
 
             }
+
+            LogPrintf("\n%s: Selected coin size:%d", __func__, setStakeCoins.size());
 
             BOOST_FOREACH (PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setStakeCoins) {
             	//make sure that enough time has elapsed between
@@ -4988,6 +4991,27 @@ bool CWallet::CreateSweepingTransaction(CAmount target) {
 			vector<COutput> lowCoins;
 			AvailableCoins(wtxid, pcoin, lowCoins, 0, true, NULL, false, ALL_COINS, false);
 			for (size_t i = 0; i < lowCoins.size(); i++) {
+				LOCK(mempool.cs); // protect pool.mapNextTx
+				{
+					COutPoint outpoint(wtxid, lowCoins[i].i);
+					if (mapTxSpends.count(outpoint)) continue;
+					if (inSpendQueueOutpoints.count(outpoint)) {
+						continue;
+					}
+					if (mempool.mapNextTx.count(outpoint)) {
+						// Disable replacement feature for now
+						continue;
+					}
+					CCoinsView dummy;
+					CCoinsViewCache view(&dummy);
+					CCoinsViewMemPool viewMemPool(pcoinsTip, mempool);
+					view.SetBackend(viewMemPool);
+					const CCoins* coins = view.AccessCoins(wtxid);
+
+					if (!coins || !coins->IsAvailable(i)) {
+						continue;
+					}
+				}
 				CAmount val = getCOutPutValue(lowCoins[i]);
 				if (val < target) {
 					vCoins.push_back(lowCoins[i]);
