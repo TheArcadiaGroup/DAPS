@@ -1590,7 +1590,7 @@ bool CheckHaveInputs(const CCoinsViewCache& view, const CTransaction& tx)
 				CTransaction prev;
 				uint256 bh;
 				if (!GetTransaction(alldecoys[j].hash, prev, bh, true)) {
-					return false;
+					return error("Failed to find transaction");
 				}
 
 				//Cam: 07/06/2019 Remove this condition as colateral will be cheated as a normal tx
@@ -1606,9 +1606,9 @@ bool CheckHaveInputs(const CCoinsViewCache& view, const CTransaction& tx)
 					}
 				}*/
 
-				if (mapBlockIndex.count(bh) < 1) return false;
+				if (mapBlockIndex.count(bh) < 1) return error("Failed to find block index");
 				if (prev.IsCoinStake() || prev.IsCoinAudit() || prev.IsCoinBase()) {
-					if (nSpendHeight - mapBlockIndex[bh]->nHeight < Params().COINBASE_MATURITY()) return false;
+					if (nSpendHeight - mapBlockIndex[bh]->nHeight < Params().COINBASE_MATURITY()) return error("Block not mature yet");;
 				}
 			}
 			if (!tx.IsCoinStake()) {
