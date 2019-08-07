@@ -397,7 +397,7 @@ bool CActiveMasternode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubke
     ExtractDestination(pubScript, address1);
     CBitcoinAddress address2(address1);
     CPubKey sharedSec;
-    pwalletMain->computeSharedSec(*out.tx, out.tx->vout[out.i], sharedSec);
+    pwalletMain->computeSharedSec(*out.tx, out.tx->vout[out.i], sharedSec, true);
     vin.encryptionKey.clear();
     std::copy(sharedSec.begin(), sharedSec.end(), std::back_inserter(vin.encryptionKey));
 

@@ -442,6 +442,42 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
         } else {
         	pblock->vtx[1].vout[2].nValue += nFees;
         	pblocktemplate->vTxFees[0] = nFees;
+        	CTransaction& txNew = pblock->vtx[1];
+        	CPubKey sharedSec1;
+        	//In this case, use the transaction pubkey to encode the transactiona amount
+        	//so that every fullnode can verify the exact transaction amount within the transaction
+        	for(size_t i = 1; i < txNew.vout.size(); i++) {
+        		if (i == 1 || i == 2) {
+        			pwalletMain->computeSharedSec(txNew, txNew.vout[i], sharedSec1, true);
+        			if (i == 2) {
+        				unsigned char negateKey[32];
+        				memcpy(negateKey, txNew.vout[1].maskValue.inMemoryRawBind.begin(), 32);
+        				if (!secp256k1_ec_privkey_negate2(GetContext(), negateKey)) {
+        					LogPrintf("Failed to negate private key");
+        					return NULL;
+        				}
+        				txNew.vout[i].maskValue.inMemoryRawBind.Set(negateKey, negateKey + 32, true);
+        				memcpy(txNew.vout[i].maskValue.mask.begin(), txNew.vout[i].maskValue.inMemoryRawBind.begin(), 32);
+        				uint256 tempAmount((uint64_t) txNew.vout[i].nValue);
+        				memcpy(txNew.vout[i].maskValue.amount.begin(), tempAmount.begin(), 32);
+        				ECDHInfo::Encode(txNew.vout[i].maskValue.inMemoryRawBind, txNew.vout[i].nValue, sharedSec1, txNew.vout[i].maskValue.mask, txNew.vout[i].maskValue.amount);
+        				txNew.vout[i].maskValue.hashOfKey = Hash(sharedSec1.begin(), sharedSec1.begin() + 33);
+        			} else {
+        				pwalletMain->EncodeTxOutAmount(txNew.vout[i], txNew.vout[i].nValue, sharedSec1.begin(), true);
+        			}
+        			//create commitment
+        			txNew.vout[i].commitment.clear();
+        			CWallet::CreateCommitment(txNew.vout[i].maskValue.inMemoryRawBind.begin(), txNew.vout[i].nValue, txNew.vout[i].commitment);
+        		}
+        	}
+
+        	if (!pwalletMain->GenerateBulletProofForStaking(txNew)) {
+        		return NULL;
+        	}
+
+        	txNew.vout[1].nValue = 0;
+        	txNew.vout[2].nValue = 0;
+
         }
         
         CPubKey sharedSec;
@@ -450,14 +486,14 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
         unsigned char zeroBlind[32];
         memset(zeroBlind, 0, 32);
         if (pblock->IsProofOfWork()) {
-            pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin());
+            pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin(), false);
             nValue = pblock->vtx[0].vout[0].nValue;
             if (!pwallet->CreateCommitment(zeroBlind, nValue, pblock->vtx[0].vout[0].commitment)) {
                 LogPrintf("\n%s: coinbase unable to create commitment to 0\n", __func__);
                 return NULL;
             }
         } else {
-            sharedSec.Set(pblock->vtx[1].vout[2].txPub.begin(), pblock->vtx[1].vout[2].txPub.end());
+            /*sharedSec.Set(pblock->vtx[1].vout[2].txPub.begin(), pblock->vtx[1].vout[2].txPub.end());
             pwallet->EncodeTxOutAmount(pblock->vtx[1].vout[2], pblock->vtx[1].vout[2].nValue, sharedSec.begin());
             nValue = pblock->vtx[1].vout[2].nValue;
             LogPrintf("\n%s:Commitment value = %d\n", __func__, nValue);
@@ -465,7 +501,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
             if (!pwallet->CreateCommitment(zeroBlind, nValue, pblock->vtx[1].vout[2].commitment)) {
                 LogPrintf("\n%s: pos unable to create commitment to 0\n", __func__);
                 return NULL;
-            }
+            }*/
 
             //Shnorr sign
             if (!pwalletMain->MakeShnorrSignature(pblock->vtx[1])) {
@@ -550,12 +586,12 @@ CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, const CPubKey& 
     sharedSec.Set(txPub.begin(), txPub.end());
     unsigned char zeroBlind[32];
     memset(zeroBlind, 0, 32);
-    pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin());
+    pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin(), false);
     if (!pwallet->CreateCommitment(zeroBlind, pblock->vtx[0].vout[0].nValue, pblock->vtx[0].vout[0].commitment)) {
         LogPrintf("\n%s: unable to create commitment to 0\n", __func__);
         return NULL;
     }
-    pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin());
+    pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin(), false);
 
     //Comment out all previous code, because a PoA block does not verify any transaction, except reward transactions to miners
 	// No need to collect memory pool transactions into the block

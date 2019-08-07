@@ -359,7 +359,7 @@ secp256k1_scratch_space2* GetScratch() {
 
 secp256k1_bulletproof_generators* GetGenerator() {
     static secp256k1_bulletproof_generators *generator;
-    if (!generator) generator = secp256k1_bulletproof_generators_create(GetContext(), &secp256k1_generator_const_g, 64 * 1024);
+    if (!generator) generator = secp256k1_bulletproof_generators_create(GetContext(), &secp256k1_generator_const_g, 256);
     return generator;
 }
 
@@ -1396,6 +1396,81 @@ bool VerifyShnorrKeyImageTx(const CTransaction& tx)
 	return VerifyShnorrKeyImageTxIn(tx.vin[0], cts);
 }
 
+bool VerifyStakingAmount(const CBlock& block) {
+	if (!block.IsProofOfStake()) return true;
+
+	const CTransaction& tx = block.vtx[1];
+	if (!tx.IsCoinStake()) return true;
+	if (tx.vout[1].nValue + tx.vout[2].nValue > 0) return true;
+	secp256k1_pedersen_commitment commitment1, commitment2;
+	if (!secp256k1_pedersen_commitment_parse(GetContext(), &commitment1, &tx.vout[1].commitment[0])) {
+		LogPrintf("Failed to parse commitment");
+		return false;
+	}
+
+	if (!secp256k1_pedersen_commitment_parse(GetContext(), &commitment2, &tx.vout[2].commitment[0])) {
+		LogPrintf("Failed to parse commitment");
+		return false;
+	}
+	CAmount totalTxFee = 0;
+	for (size_t i = 0; i < block.vtx.size(); i++) {
+		totalTxFee += block.vtx[i].nTxFee;
+	}
+
+	CAmount posReward = PoSBlockReward();
+	CAmount stakingReward = posReward - tx.vout[3].nValue;
+
+	//find value in
+	uint256 hashBlock;
+	CTransaction txPrev;
+	if (!GetTransaction(tx.vin[0].prevout.hash, txPrev, hashBlock, true)) return false;
+	CAmount nValueIn;// = txPrev.vout[prevout.n].nValue;
+	uint256 val = txPrev.vout[tx.vin[0].prevout.n].maskValue.amount;
+	uint256 mask = txPrev.vout[tx.vin[0].prevout.n].maskValue.mask;
+	CKey decodedMask;
+	CPubKey sharedSec;
+	sharedSec.Set(tx.vin[0].encryptionKey.begin(), tx.vin[0].encryptionKey.begin() + 33);
+	ECDHInfo::Decode(mask.begin(), val.begin(), sharedSec, decodedMask, nValueIn);
+
+	CAmount totalStaking = nValueIn + totalTxFee + stakingReward;
+	std::vector<unsigned char> stakingCommitment;
+	unsigned char zeroBlind[32];
+	CWallet::CreateCommitmentWithZeroBlind(totalStaking, zeroBlind, stakingCommitment);
+
+	const secp256k1_pedersen_commitment *twoElements[2];
+	twoElements[0] = &commitment1;
+	twoElements[1] = &commitment2;
+
+	secp256k1_pedersen_commitment sum;
+	if (!secp256k1_pedersen_commitment_sum_pos(GetContext(), twoElements, 2, &sum))
+		throw runtime_error("failed to compute secp256k1_pedersen_commitment_sum_pos");
+
+	//verify sum is equal to commitment to zero of vout[1] and vout[2]
+	//serialize sum
+	unsigned char out[33];
+	secp256k1_pedersen_commitment_serialize(GetContext(), out, &sum);
+	std::vector<unsigned char> outVec;
+	std::copy(out, out + 33, std::back_inserter(outVec));
+
+	if (outVec != stakingCommitment) return false;
+
+	return VerifyStakingBulletproof(tx);
+}
+
+bool VerifyStakingBulletproof(const CTransaction& tx) {
+	size_t len = tx.bulletproofs.size();
+
+	if (len == 0) return false;
+	const size_t MAX_VOUT = 5;
+	secp256k1_pedersen_commitment commitments[MAX_VOUT];
+	size_t i = 0;
+	for (i = 0; i < 2; i++) {
+		if (!secp256k1_pedersen_commitment_parse(GetContext(), &commitments[i], &(tx.vout[i + 1].commitment[0])))
+			throw runtime_error("Failed to parse pedersen commitment");
+	}
+	return secp256k1_bulletproof_rangeproof_verify(GetContext(), GetScratch(), GetGenerator(), &(tx.bulletproofs[0]), len, NULL, commitments, 2, 64, &secp256k1_generator_const_h, NULL, 0);
+}
+
 bool CheckTransaction(const CTransaction &tx, bool fzcActive, bool fRejectBadUTXO, CValidationState &state) {
     // Basic checks that don't depend on any context
     if (tx.vin.empty())
@@ -1515,7 +1590,7 @@ bool CheckHaveInputs(const CCoinsViewCache& view, const CTransaction& tx)
 				CTransaction prev;
 				uint256 bh;
 				if (!GetTransaction(alldecoys[j].hash, prev, bh, true)) {
-					return false;
+					return error("Failed to find transaction");
 				}
 
 				//Cam: 07/06/2019 Remove this condition as colateral will be cheated as a normal tx
@@ -1531,9 +1606,9 @@ bool CheckHaveInputs(const CCoinsViewCache& view, const CTransaction& tx)
 					}
 				}*/
 
-				if (mapBlockIndex.count(bh) < 1) return false;
+				if (mapBlockIndex.count(bh) < 1) return error("Failed to find block index");
 				if (prev.IsCoinStake() || prev.IsCoinAudit() || prev.IsCoinBase()) {
-					if (nSpendHeight - mapBlockIndex[bh]->nHeight < Params().COINBASE_MATURITY()) return false;
+					if (nSpendHeight - mapBlockIndex[bh]->nHeight < Params().COINBASE_MATURITY()) return error("Block not mature yet");;
 				}
 			}
 			if (!tx.IsCoinStake()) {
@@ -2234,6 +2309,7 @@ bool fLargeWorkInvalidChainFound = false;
 CBlockIndex *pindexBestForkTip = NULL, *pindexBestForkBase = NULL;
 
 bool VerifyZeroBlindCommitment(const CTxOut& out) {
+	//if nValue = 0 ==> staking value is obfuscated
 	if (out.nValue == 0) return true;
 	unsigned char zeroBlind[32];
 	std::vector<unsigned char> commitment;
@@ -2840,11 +2916,11 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
         if (!block.IsPoABlockByVersion() && !tx.IsCoinBase()) {
         	if (!tx.IsCoinStake()) {
         		if (!tx.IsCoinAudit()) {
-        			if (!VerifyRingSignatureWithTxFee(tx))
+        			if (!IsInitialBlockDownload() && !VerifyRingSignatureWithTxFee(tx))
         				return state.DoS(100, error("ConnectBlock() : Ring Signature check for transaction %s failed",
         						tx.GetHash().ToString()),
         						REJECT_INVALID, "bad-ring-signature");
-        			if (!VerifyBulletProofAggregate(tx))
+        			if (!IsInitialBlockDownload() && !VerifyBulletProofAggregate(tx))
         				return state.DoS(100, error("ConnectBlock() : Bulletproof check for transaction %s failed",
         						tx.GetHash().ToString()),
         						REJECT_INVALID, "bad-bulletproof");
@@ -2897,6 +2973,41 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
         pos.nTxOffset += ::GetSerializeSize(tx, SER_DISK, CLIENT_VERSION);
     }
     // track money supply and mint amount info
+    //check whether it is a PoS block and the values of UTXO1 + UTXO2 = input + 900 - masternode rewards + fees
+    if (pindex->IsProofOfStake()) {
+    	if (block.vtx[1].vout[1].nValue + block.vtx[1].vout[2].nValue == 0) {
+    		CAmount masternodeReward = block.vtx[1].vout[3].nValue;
+    		CAmount sum = nValueIn + PoSBlockReward() - masternodeReward + nFees;
+    		nValueOut += sum;
+    	}
+
+    	const CTransaction& coinstake = block.vtx[1];
+        int numUTXO = coinstake.vout.size();
+    	CAmount posBlockReward = PoSBlockReward();
+    	int thisBlockHeight = mapBlockIndex[pindex->pprev->GetBlockHash()]->nHeight + 1; //avoid potential block disorder during download
+    	CAmount blockValue = GetBlockValue(thisBlockHeight - 1);
+    	if (blockValue > posBlockReward) {
+    		//numUTXO - 1 is team rewards, numUTXO - 2 is masternode reward
+    		const CTxOut& mnOut = coinstake.vout[numUTXO - 2];
+    		std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
+    		if (!VerifyDerivedAddress(mnOut, mnsa))
+    			return state.DoS(100, error("CheckBlock() : Incorrect derived address for masternode rewards"));
+
+    		CAmount teamReward = blockValue - posBlockReward;
+    		const CTxOut& foundationOut = coinstake.vout[numUTXO - 1];
+    		if (foundationOut.nValue != teamReward)
+    			return state.DoS(100, error("CheckBlock() : Incorrect amount PoS rewards for foundation, reward = %d while the correct reward = %d", foundationOut.nValue, teamReward));
+
+    		if (!VerifyDerivedAddress(foundationOut, FOUNDATION_WALLET))
+    			return state.DoS(100, error("CheckBlock() : Incorrect derived address PoS rewards for foundation"));
+    	} else {
+    		//there is no team rewards in this block
+    		const CTxOut& mnOut = coinstake.vout[numUTXO - 1];
+    		std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
+    		if (!VerifyDerivedAddress(mnOut, mnsa))
+    			return state.DoS(100, error("CheckBlock() : Incorrect derived address for masternode rewards"));
+    	}
+    }
     CAmount nMoneySupplyPrev = pindex->pprev ? pindex->pprev->nMoneySupply : 0;
     pindex->nMoneySupply = nMoneySupplyPrev + nValueOut - nValueIn -nFees;
     LogPrintf("%s: nValueOut=%d, nValueIn=%d, nMoneySupplyPrev=%d, pindex->nMoneySupply=%d, nFees=%d", __func__, nValueOut, nValueIn, nMoneySupplyPrev, pindex->nMoneySupply, nFees);
@@ -3895,29 +4006,11 @@ bool CheckBlock(const CBlock &block, CValidationState &state, bool fCheckPOW, bo
         		return state.DoS(100, error("CheckBlock() : PoS rewards commitment not correct"));
         }
 
-        CAmount posBlockReward = PoSBlockReward();
-        int thisBlockHeight = mapBlockIndex[block.hashPrevBlock]->nHeight + 1; //avoid potential block disorder during download
-        CAmount blockValue = GetBlockValue(thisBlockHeight - 1);
-        if (blockValue > posBlockReward) {
-        	//numUTXO - 1 is team rewards, numUTXO - 2 is masternode reward
-        	const CTxOut& mnOut = coinstake.vout[numUTXO - 2];
-        	std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
-        	if (!VerifyDerivedAddress(mnOut, mnsa))
-        		return state.DoS(100, error("CheckBlock() : Incorrect derived address for masternode rewards"));
-
-        	CAmount teamReward = blockValue - posBlockReward;
-        	const CTxOut& foundationOut = coinstake.vout[numUTXO - 1];
-        	if (foundationOut.nValue != teamReward)
-        		return state.DoS(100, error("CheckBlock() : Incorrect amount PoS rewards for foundation, reward = %d while the correct reward = %d", foundationOut.nValue, teamReward));
-
-        	if (!VerifyDerivedAddress(foundationOut, FOUNDATION_WALLET))
-        		return state.DoS(100, error("CheckBlock() : Incorrect derived address PoS rewards for foundation"));
-        } else {
-        	//there is no team rewards in this block
-        	const CTxOut& mnOut = coinstake.vout[numUTXO - 1];
-        	std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
-        	if (!VerifyDerivedAddress(mnOut, mnsa))
-        		return state.DoS(100, error("CheckBlock() : Incorrect derived address for masternode rewards"));
+        if (coinstake.vout[1].nValue > 0 && coinstake.vout[2].nValue > 0) {
+        	//check confidential transactions and bulletproofs
+        	if (!VerifyStakingAmount(block)) {
+        		return state.DoS(100, error("CheckBlock() : PoS rewards bulletproofs are failed to verify"));
+        	}
         }
     }
 

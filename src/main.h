@@ -288,6 +288,9 @@ uint256 GetTxInSignatureHash(const CTxIn& txin);
 bool VerifyShnorrKeyImageTx(const CTransaction& tx);
 bool VerifyShnorrKeyImageTxIn(const CTxIn& txin, uint256 sigHash);
 
+bool VerifyStakingAmount(const CBlock& block);
+bool VerifyStakingBulletproof(const CTransaction& tx);
+
 int GetInputAge(CTxIn& vin);
 int GetInputAgeIX(uint256 nTXHash, CTxIn& vin);
 bool GetCoinAge(const CTransaction& tx, unsigned int nTxTime, uint64_t& nCoinAge);
