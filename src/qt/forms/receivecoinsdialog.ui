@@ -138,10 +138,6 @@
             <property name="text">
              <string>&amp;Submit</string>
             </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>:/icons/receiving_addresses</normaloff>:/icons/receiving_addresses</iconset>
-            </property>
            </widget>
           </item>
           <item>
