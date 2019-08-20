@@ -153,7 +153,7 @@ qt/qt_dapscoin_qt-dapscoin.o: qt/dapscoin.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/7/vector /usr/include/c++/7/bits/stl_uninitialized.h \
  /usr/include/c++/7/bits/stl_vector.h \
  /usr/include/c++/7/bits/stl_bvector.h /usr/include/c++/7/bits/vector.tcc \
- /usr/include/c++/7/stdlib.h \
+ libzerocoin/Denominations.h /usr/include/c++/7/stdlib.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QLabel \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlabel.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtwidgetsglobal.h \
@@ -276,10 +276,7 @@ qt/qt_dapscoin_qt-dapscoin.o: qt/dapscoin.cpp /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractbutton.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QSystemTrayIcon \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qsystemtrayicon.h \
- /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QProgressDialog \
- /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qprogressdialog.h \
- /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qdialog.h qt/clientmodel.h \
- /usr/include/x86_64-linux-gnu/qt5/QtCore/QObject \
+ qt/clientmodel.h /usr/include/x86_64-linux-gnu/qt5/QtCore/QObject \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qobject.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QDateTime \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qdatetime.h qt/guiconstants.h \
@@ -308,6 +305,7 @@ qt/qt_dapscoin_qt-dapscoin.o: qt/dapscoin.cpp /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qrubberband.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMessageBox \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qmessagebox.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qdialog.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QProgressBar \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qprogressbar.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QString \
@@ -1273,8 +1271,10 @@ qt/qt_dapscoin_qt-dapscoin.o: qt/dapscoin.cpp /usr/include/stdc-predef.h \
  /usr/include/boost/mpl/equal.hpp /usr/include/boost/variant/get.hpp \
  /usr/include/boost/variant/detail/element_index.hpp \
  /usr/include/boost/variant/visitor_ptr.hpp \
- /usr/include/boost/variant/bad_visit.hpp script/script.h \
- script/standard.h script/interpreter.h script/script_error.h \
+ /usr/include/boost/variant/bad_visit.hpp libzerocoin/Params.h \
+ libzerocoin/bignum.h /usr/include/openssl/bn.h version.h \
+ libzerocoin/ZerocoinDefines.h script/script.h script/standard.h \
+ script/interpreter.h script/script_error.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QByteArray \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qbytearray.h \
  /usr/include/x86_64-linux-gnu/qt5/QtGui/QList \
@@ -1464,20 +1464,18 @@ qt/qt_dapscoin_qt-dapscoin.o: qt/dapscoin.cpp /usr/include/stdc-predef.h \
  /usr/include/boost/type_traits/remove_volatile.hpp \
  /usr/include/boost/unordered/detail/fwd.hpp \
  /usr/include/boost/unordered/unordered_map_fwd.hpp net.h \
- script/sigcache.h txmempool.h bignum.h /usr/include/openssl/bn.h \
- secp256k1-mw/include/secp256k1_bulletproofs.h \
- secp256k1-mw/include/secp256k1_2.h \
- secp256k1-mw/include/secp256k1_generator.h \
- secp256k1-mw/include/secp256k1_rangeproof.h \
- secp256k1-mw/include/secp256k1_commitment.h \
- secp256k1-mw/include/secp256k1_commitment.h \
- secp256k1-mw/include/secp256k1_generator.h secp256k1/include/secp256k1.h \
- spork.h obfuscation.h masternode-payments.h masternode.h timedata.h \
- masternode-sync.h masternodeman.h obfuscation-relay.h activemasternode.h \
- init.h wallet.h crypter.h keystore.h kernel.h ui_interface.h \
- /usr/include/boost/signals2/last_value.hpp validationinterface.h \
- wallet_ismine.h walletdb.h db.h clientversion.h /usr/include/db_cxx.h \
- /usr/include/db.h /usr/include/inttypes.h \
+ primitives/zerocoin.h libzerocoin/bignum.h libzerocoin/Denominations.h \
+ script/sigcache.h txmempool.h libzerocoin/CoinSpend.h \
+ libzerocoin/Accumulator.h libzerocoin/Coin.h libzerocoin/Denominations.h \
+ libzerocoin/Params.h util.h libzerocoin/AccumulatorProofOfKnowledge.h \
+ libzerocoin/Commitment.h libzerocoin/SerialNumberSignatureOfKnowledge.h \
+ hash.h spork.h obfuscation.h masternode-payments.h masternode.h \
+ timedata.h masternode-sync.h masternodeman.h obfuscation-relay.h \
+ activemasternode.h init.h wallet.h crypter.h keystore.h kernel.h \
+ ui_interface.h /usr/include/boost/signals2/last_value.hpp \
+ validationinterface.h wallet_ismine.h walletdb.h db.h clientversion.h \
+ /usr/include/db_cxx.h /usr/include/db.h /usr/include/inttypes.h \
+ libzerocoin/Accumulator.h \
  /usr/include/boost/program_options/options_description.hpp \
  /usr/include/boost/program_options/config.hpp \
  /usr/include/boost/program_options/errors.hpp \
@@ -1527,7 +1525,8 @@ qt/qt_dapscoin_qt-dapscoin.o: qt/dapscoin.cpp /usr/include/stdc-predef.h \
  /usr/include/boost/serialization/vector.hpp \
  /usr/include/boost/serialization/array_wrapper.hpp \
  /usr/include/boost/serialization/array_optimization.hpp \
- /usr/include/boost/serialization/deque.hpp wallet.h \
+ /usr/include/boost/serialization/deque.hpp crypto/crypto-ops.h \
+ crypto/common.h wallet.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QAbstractTableModel \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QTimer \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qtimer.h \
@@ -2100,8 +2099,7 @@ qt/qt_dapscoin_qt-dapscoin.o: qt/dapscoin.cpp /usr/include/stdc-predef.h \
  /usr/include/boost/thread/executors/executor_adaptor.hpp \
  /usr/include/boost/thread/executors/generic_executor_ref.hpp \
  /usr/include/boost/detail/atomic_undef_macros.hpp \
- /usr/include/boost/detail/atomic_redef_macros.hpp ui_interface.h util.h \
- qt/encryptdialog.h \
+ /usr/include/boost/detail/atomic_redef_macros.hpp ui_interface.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QApplication \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qapplication.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qcoreapplication.h \
@@ -2526,6 +2524,8 @@ serialize.h:
 
 /usr/include/c++/7/bits/vector.tcc:
 
+libzerocoin/Denominations.h:
+
 /usr/include/c++/7/stdlib.h:
 
 /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QLabel:
@@ -2792,12 +2792,6 @@ serialize.h:
 
 /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qsystemtrayicon.h:
 
-/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QProgressDialog:
-
-/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qprogressdialog.h:
-
-/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qdialog.h:
-
 qt/clientmodel.h:
 
 /usr/include/x86_64-linux-gnu/qt5/QtCore/QObject:
@@ -2861,6 +2855,8 @@ qt/guiutil.h:
 /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMessageBox:
 
 /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qmessagebox.h:
+
+/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qdialog.h:
 
 /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QProgressBar:
 
@@ -5042,6 +5038,16 @@ pubkey.h:
 
 /usr/include/boost/variant/bad_visit.hpp:
 
+libzerocoin/Params.h:
+
+libzerocoin/bignum.h:
+
+/usr/include/openssl/bn.h:
+
+version.h:
+
+libzerocoin/ZerocoinDefines.h:
+
 script/script.h:
 
 script/standard.h:
@@ -5476,29 +5482,35 @@ undo.h:
 
 net.h:
 
+primitives/zerocoin.h:
+
+libzerocoin/bignum.h:
+
+libzerocoin/Denominations.h:
+
 script/sigcache.h:
 
 txmempool.h:
 
-bignum.h:
+libzerocoin/CoinSpend.h:
 
-/usr/include/openssl/bn.h:
+libzerocoin/Accumulator.h:
 
-secp256k1-mw/include/secp256k1_bulletproofs.h:
+libzerocoin/Coin.h:
 
-secp256k1-mw/include/secp256k1_2.h:
+libzerocoin/Denominations.h:
 
-secp256k1-mw/include/secp256k1_generator.h:
+libzerocoin/Params.h:
 
-secp256k1-mw/include/secp256k1_rangeproof.h:
+util.h:
 
-secp256k1-mw/include/secp256k1_commitment.h:
+libzerocoin/AccumulatorProofOfKnowledge.h:
 
-secp256k1-mw/include/secp256k1_commitment.h:
+libzerocoin/Commitment.h:
 
-secp256k1-mw/include/secp256k1_generator.h:
+libzerocoin/SerialNumberSignatureOfKnowledge.h:
 
-secp256k1/include/secp256k1.h:
+hash.h:
 
 spork.h:
 
@@ -5547,6 +5559,8 @@ clientversion.h:
 /usr/include/db.h:
 
 /usr/include/inttypes.h:
+
+libzerocoin/Accumulator.h:
 
 /usr/include/boost/program_options/options_description.hpp:
 
@@ -5649,6 +5663,10 @@ clientversion.h:
 /usr/include/boost/serialization/array_optimization.hpp:
 
 /usr/include/boost/serialization/deque.hpp:
+
+crypto/crypto-ops.h:
+
+crypto/common.h:
 
 wallet.h:
 
@@ -6871,10 +6889,6 @@ scheduler.h:
 /usr/include/boost/detail/atomic_redef_macros.hpp:
 
 ui_interface.h:
-
-util.h:
-
-qt/encryptdialog.h:
 
 /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QApplication:
 
