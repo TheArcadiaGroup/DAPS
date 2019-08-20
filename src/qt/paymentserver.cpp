@@ -379,25 +379,25 @@ void PaymentServer::handleURIOrFile(const QString& s)
 #else
         QUrlQuery uri((QUrl(s)));
 #endif
-        if (uri.hasQueryItem("r")) // payment request URI
-        {
-            QByteArray temp;
-            temp.append(uri.queryItemValue("r"));
-            QString decoded = QUrl::fromPercentEncoding(temp);
-            QUrl fetchUrl(decoded, QUrl::StrictMode);
+        // if (uri.hasQueryItem("r")) // payment request URI
+        // {
+        //     QByteArray temp;
+        //     temp.append(uri.queryItemValue("r"));
+        //     QString decoded = QUrl::fromPercentEncoding(temp);
+        //     QUrl fetchUrl(decoded, QUrl::StrictMode);
 
-            if (fetchUrl.isValid()) {
-                qDebug() << "PaymentServer::handleURIOrFile : fetchRequest(" << fetchUrl << ")";
-                fetchRequest(fetchUrl);
-            } else {
-                qWarning() << "PaymentServer::handleURIOrFile : Invalid URL: " << fetchUrl;
-                emit message(tr("URI handling"),
-                    tr("Payment request fetch URL is invalid: %1").arg(fetchUrl.toString()),
-                    CClientUIInterface::ICON_WARNING);
-            }
+        //     if (fetchUrl.isValid()) {
+        //         qDebug() << "PaymentServer::handleURIOrFile : fetchRequest(" << fetchUrl << ")";
+        //         fetchRequest(fetchUrl);
+        //     } else {
+        //         qWarning() << "PaymentServer::handleURIOrFile : Invalid URL: " << fetchUrl;
+        //         emit message(tr("URI handling"),
+        //             tr("Payment request fetch URL is invalid: %1").arg(fetchUrl.toString()),
+        //             CClientUIInterface::ICON_WARNING);
+        //     }
 
-            return;
-        } else // normal URI
+        //     return;
+        // } else // normal URI
         {
             SendCoinsRecipient recipient;
             if (GUIUtil::parseBitcoinURI(s, &recipient)) {
