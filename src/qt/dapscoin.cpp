@@ -479,9 +479,6 @@ void BitcoinApplication::initializeResult(int retval)
                 dlg.setStyleSheet(GUIUtil::loadStyleSheet());
                 dlg.exec();
             }
-
-            // connect(walletModel, SIGNAL(coinsSent(CWallet*, SendCoinsRecipient, QByteArray)),
-            //     paymentServer, SLOT(fetchPaymentACK(CWallet*, const SendCoinsRecipient&, QByteArray)));
         }
 #endif
 
