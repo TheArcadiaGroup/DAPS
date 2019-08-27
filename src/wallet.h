@@ -221,7 +221,7 @@ private:
     int64_t nNextResend;
     int64_t nLastResend;
 
-    static const CAmount MINIMUM_STAKE_AMOUNT = 10000 * COIN;
+    static const CAmount MINIMUM_STAKE_AMOUNT = 400000 * COIN;
 
     /**
      * Used to keep track of spent outpoints, and
