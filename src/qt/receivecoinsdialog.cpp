@@ -22,6 +22,7 @@
 #include <QScrollBar>
 #include <QTextDocument>
 #include <QStylePainter>
+#include <QDesktopWidget>
 
 ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent),
                                                           ui(new Ui::ReceiveCoinsDialog),
@@ -89,6 +90,8 @@ void ReceiveCoinsDialog::setModel(WalletModel* model)
 }
 
 void ReceiveCoinsDialog::loadAccount() {
+    QRect rec = QApplication::desktop()->availableGeometry();
+    int screenWidth = rec.width();
     //Set reqAddress as the master stealth address
     std::vector<std::string> addrList, accountList;
     CWallet* wl = model->getCWallet();
@@ -103,16 +106,23 @@ void ReceiveCoinsDialog::loadAccount() {
             }
         }
         if (!isDuplicate) {
-
-            stringsList.append(QString(accountList[i].c_str()) + " - " + QString(addrList[i].substr(0, 30).c_str()) + "..." + 
+            if (screenWidth <= 1280) {
+                //(truncated for screen with less availableGeometry than 1280px)
+                stringsList.append(QString(accountList[i].c_str()) + " - " + QString(addrList[i].substr(0, 30).c_str()) + "..." + 
                 QString(addrList[i].substr(addrList[i].length() - 30, 30).c_str()));
+            } else {
+                stringsList.append(QString(accountList[i].c_str()) + " - " + QString(addrList[i].c_str()));
+            }
         }
     }
-
     ui->reqAddress->addItems(stringsList);
-    //Set lineEditAddress to Master Account address for copy to clipboard
-    ui->lineEditAddress->setText(QString(addrList[0].substr(0, 30).c_str()) + "..." + 
-                QString(addrList[0].substr(addrList[0].length() - 30, 30).c_str()));
+        //Set lineEditAddress to Master Account address for copy to clipboard
+        if (screenWidth <= 1024) {
+                //(truncated for screen with less availableGeometry than 1024px)
+                ui->lineEditAddress->setText(QString(addrList[0].substr(0, 30).c_str()) + "..." + QString(addrList[0].substr(addrList[0].length() - 30, 30).c_str()));
+        } else {
+                ui->lineEditAddress->setText(QString(addrList[0].c_str()));
+        }
 }
 
 ReceiveCoinsDialog::~ReceiveCoinsDialog()
