@@ -97,6 +97,9 @@ BITCOIN_CORE_H = \
   amount.h \
   base58.h \
   bip38.h \
+  bip39.h \
+  bip39_english.h \
+  hdchain.h \
   bloom.h \
   chain.h \
   chainparams.h \
@@ -323,6 +326,8 @@ libbitcoin_common_a_SOURCES = \
   amount.cpp \
   base58.cpp \
   bip38.cpp \
+  bip39.cpp \
+  hdchain.cpp \
   chainparams.cpp \
   coins.cpp \
   compressor.cpp \

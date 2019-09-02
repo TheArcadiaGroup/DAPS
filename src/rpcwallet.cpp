@@ -148,6 +148,46 @@ CBitcoinAddress GetAccountAddress(string strAccount, bool bForceNew = false)
     return CBitcoinAddress(account.vchPubKey.GetID());
 }
 
+CBitcoinAddress GetHDAccountAddress(string strAccount, uint32_t nAccountIndex, bool bForceNew = false)
+{
+    CWalletDB walletdb(pwalletMain->strWalletFile);
+
+    CAccount account;
+    walletdb.ReadAccount(strAccount, account);
+
+    bool bKeyUsed = false;
+
+    // Check if the current key has been used
+    if (account.vchPubKey.IsValid()) {
+        CScript scriptPubKey = GetScriptForDestination(account.vchPubKey.GetID());
+        for (map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin();
+             it != pwalletMain->mapWallet.end() && account.vchPubKey.IsValid();
+             ++it) {
+            const CWalletTx& wtx = (*it).second;
+            BOOST_FOREACH (const CTxOut& txout, wtx.vout)
+                if (txout.scriptPubKey == scriptPubKey)
+                    bKeyUsed = true;
+        }
+    }
+
+    // Generate a new key
+    if (!account.vchPubKey.IsValid() || bForceNew || bKeyUsed) {
+        EnsureWalletIsUnlocked();
+        // if (!pwalletMain->GetKeyFromPool(account.vchPubKey))
+        //     throw JSONRPCError(RPC_WALLET_KEYPOOL_RAN_OUT, "Error: Keypool ran out, please call keypoolrefill first");
+
+        CKey newKey;
+        pwalletMain->DeriveNewChildKey(nAccountIndex, newKey);
+        account.vchPubKey = newKey.GetPubKey();
+        account.nAccountIndex = nAccountIndex;
+
+        pwalletMain->SetAddressBook(account.vchPubKey.GetID(), strAccount, "receive");
+        walletdb.WriteAccount(strAccount, account);
+    }
+
+    return CBitcoinAddress(account.vchPubKey.GetID());
+}
+
 UniValue getaccountaddress(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
@@ -2438,13 +2478,13 @@ UniValue createprivacyaccount(const UniValue& params, bool fHelp)
         CAccount viewAccount;
         walletdb.ReadAccount(viewAccountLabel, viewAccount);
         if (!viewAccount.vchPubKey.IsValid()) {
-            std::string viewAccountAddress = GetAccountAddress(viewAccountLabel).ToString();
+            std::string viewAccountAddress = GetHDAccountAddress(viewAccountLabel, 0).ToString();
         }
 
         CAccount spendAccount;
         walletdb.ReadAccount(spendAccountLabel, spendAccount);
         if (!spendAccount.vchPubKey.IsValid()) {
-            std::string spendAccountAddress = GetAccountAddress(spendAccountLabel).ToString();
+            std::string spendAccountAddress = GetHDAccountAddress(spendAccountLabel, 1).ToString();
         }
         if (viewAccount.vchPubKey.GetHex() == "" || spendAccount.vchPubKey.GetHex() == "") {
             i++;

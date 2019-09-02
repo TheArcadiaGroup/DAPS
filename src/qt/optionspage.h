@@ -81,6 +81,7 @@ private slots:
     void on_day();
     void on_week();
     void on_month();
+    void onShowMnemonic();
 };
 
 #endif // BITCOIN_QT_OPTIONSPAGE_H

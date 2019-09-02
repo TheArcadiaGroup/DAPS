@@ -7,6 +7,7 @@
 #define BITCOIN_KEYSTORE_H
 
 #include "key.h"
+#include "hdchain.h"
 #include "pubkey.h"
 #include "sync.h"
 
@@ -66,6 +67,7 @@ protected:
     ScriptMap mapScripts;
     WatchOnlySet setWatchOnly;
     MultiSigScriptSet setMultiSig;
+    CHDChain hdChain;
 
 public:
     bool AddKeyPubKey(const CKey& key, const CPubKey& pubkey);
