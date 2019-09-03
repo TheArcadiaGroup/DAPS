@@ -909,7 +909,7 @@ public:
         this->nSize += nSize;
         return *this;
     }
-
+    
     template <typename T>
     CSizeComputer& operator<<(const T& obj)
     {

@@ -13,7 +13,7 @@
 #include "script/script.h"
 #include "script/sign.h"
 #include "ui_interface.h" // for _(...)
-#include "univalue/univalue.h"
+#include <univalue.h>
 #include "util.h"
 #include "utilmoneystr.h"
 #include "utilstrencodings.h"
@@ -22,6 +22,8 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/assign/list_of.hpp>
+
+#define MAX_FILE_LENGTH (1024 * 1024)       // 1MB
 
 using namespace boost::assign;
 using namespace std;
@@ -137,17 +139,24 @@ static void RegisterLoad(const string& strInput)
 
     // load file chunks into one big buffer
     string valStr;
-    while ((!feof(f)) && (!ferror(f))) {
+    int totalLength = 0;
+    while ((!feof(f)) && (!ferror(f)) && totalLength < MAX_FILE_LENGTH) {
         char buf[4096];
         int bread = fread(buf, 1, sizeof(buf), f);
         if (bread <= 0)
             break;
 
+        totalLength += bread;
         valStr.insert(valStr.size(), buf, bread);
     }
 
     if (ferror(f)) {
         string strErr = "Error reading file " + filename;
+        throw runtime_error(strErr);
+    }
+
+    if (totalLength > MAX_FILE_LENGTH) {
+        string strErr = "Error reading big file " + filename;
         throw runtime_error(strErr);
     }
 
@@ -351,7 +360,7 @@ static void MutateTxSign(CMutableTransaction& tx, const string& flagStr)
     UniValue keysObj = registers["privatekeys"];
     fGivenKeys = true;
 
-    for (unsigned int kidx = 0; kidx < keysObj.count(); kidx++) {
+    for (unsigned int kidx = 0; kidx < keysObj.size(); kidx++) {
         if (!keysObj[kidx].isStr())
             throw runtime_error("privatekey not a string");
         CBitcoinSecret vchSecret;
@@ -368,7 +377,7 @@ static void MutateTxSign(CMutableTransaction& tx, const string& flagStr)
         throw runtime_error("prevtxs register variable must be set.");
     UniValue prevtxsObj = registers["prevtxs"];
     {
-        for (unsigned int previdx = 0; previdx < prevtxsObj.count(); previdx++) {
+        for (unsigned int previdx = 0; previdx < prevtxsObj.size(); previdx++) {
             UniValue prevOut = prevtxsObj[previdx];
             if (!prevOut.isObject())
                 throw runtime_error("expected prevtxs internal object");
@@ -517,15 +526,20 @@ static string readStdin()
     char buf[4096];
     string ret;
 
-    while (!feof(stdin)) {
+    int totalLength = 0;
+    while (!feof(stdin) && totalLength < MAX_FILE_LENGTH) {
         size_t bread = fread(buf, 1, sizeof(buf), stdin);
         ret.append(buf, bread);
         if (bread < sizeof(buf))
             break;
+
+        totalLength += bread;
     }
 
     if (ferror(stdin))
         throw runtime_error("error reading stdin");
+    if (totalLength > MAX_FILE_LENGTH)
+        throw runtime_error("error reading stdin max length");
 
     boost::algorithm::trim_right(ret);
 

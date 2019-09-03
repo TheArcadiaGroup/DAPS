@@ -151,6 +151,7 @@ class CAccount
 {
 public:
     CPubKey vchPubKey;
+    uint32_t nAccountIndex;
 
     CAccount()
     {
@@ -170,6 +171,7 @@ public:
         if (!(nType & SER_GETHASH))
             READWRITE(nVersion);
         READWRITE(vchPubKey);
+        READWRITE(nAccountIndex);
     }
 };
 
@@ -198,6 +200,15 @@ public:
         READWRITE(spendAccount);
         READWRITE(viewAccount);
     }
+};
+
+enum StakingStatusError
+{
+	NONE,
+	DEFAULT,
+	UTXO_UNDER_THRESHOLD,
+	RESERVE_TOO_HIGH,
+	RESERVE_TOO_HIGH_AND_UTXO_UNDER_THRESHOLD
 };
 
 /**
@@ -374,6 +385,7 @@ public:
 
     std::set<COutPoint> setLockedCoins;
     bool walletStakingInProgress;
+    std::map<CKeyID, CHDPubKey> mapHdPubKeys; //<! memory map of HD extended pubkeys
 
     int64_t nTimeFirstKey;
 
@@ -421,7 +433,22 @@ public:
     //  keystore implementation
     // Generate a new key
     CPubKey GenerateNewKey();
-
+    void DeriveNewChildKey(uint32_t nAccountIndex, CKey& secretRet);
+    void GenerateNewHDChain();
+     /* Set the HD chain model (chain child index counters) */
+    bool SetHDChain(const CHDChain& chain, bool memonly);
+    bool SetCryptedHDChain(const CHDChain& chain, bool memonly);
+    bool GetDecryptedHDChain(CHDChain& hdChainRet);
+    bool IsHDEnabled();
+    bool HaveKey(const CKeyID &address) const;
+    //! GetPubKey implementation that also checks the mapHdPubKeys
+    bool GetPubKey(const CKeyID &address, CPubKey& vchPubKeyOut) const;
+    //! GetKey implementation that can derive a HD private key on the fly
+    bool GetKey(const CKeyID &address, CKey& keyOut) const;
+    //! Adds a HDPubKey into the wallet(database)
+    bool AddHDPubKey(const CExtPubKey &extPubKey, bool fInternal);
+    //! loads a HDPubKey into the wallets memory
+    bool LoadHDPubKey(const CHDPubKey &hdPubKey);
     //! Adds a key to the store, and saves it to disk.
     bool AddKeyPubKey(const CKey& key, const CPubKey& pubkey);
     //! Adds a key to the store, without saving it to disk (used by LoadWallet)
@@ -738,6 +765,7 @@ public:
     bool MakeShnorrSignature(CTransaction&);
     bool MakeShnorrSignatureTxIn(CTxIn& txin, uint256);
     bool computeSharedSec(const CTransaction& tx, const CTxOut& out, CPubKey& sharedSec) const;
+    void AddComputedPrivateKey(const CTxOut& out);
 private:
     bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth);
     bool allMyPrivateKeys(std::vector<CKey>& spends, std::vector<CKey>& views);

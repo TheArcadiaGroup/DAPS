@@ -264,4 +264,6 @@ typedef std::basic_string<char, std::char_traits<char>, secure_allocator<char> >
 // Byte-vector that clears its contents before deletion.
 typedef std::vector<char, zero_after_free_allocator<char> > CSerializeData;
 
+typedef std::vector<unsigned char, secure_allocator<unsigned char> > SecureVector;
+
 #endif // BITCOIN_ALLOCATORS_H

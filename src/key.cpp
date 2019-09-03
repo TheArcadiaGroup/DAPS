@@ -190,7 +190,7 @@ bool CExtKey::Derive(CExtKey& out, unsigned int nChild) const
 
 void CExtKey::SetMaster(const unsigned char* seed, unsigned int nSeedLen)
 {
-    static const unsigned char hashkey[] = {'B', 'i', 't', 'c', 'o', 'i', 'n', ' ', 's', 'e', 'e', 'd'};
+    static const unsigned char hashkey[] = {'d', 'a', 'p', 's', 'c', 'o', 'i', 'n', ' ', 's', 'e', 'e', 'd'};
     unsigned char out[64];
     LockObject(out);
     CHMAC_SHA512(hashkey, sizeof(hashkey)).Write(seed, nSeedLen).Finalize(out);

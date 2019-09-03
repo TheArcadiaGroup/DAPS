@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>611</width>
-    <height>243</height>
+    <height>231</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -50,7 +50,9 @@
         </font>
        </property>
        <property name="text">
-        <string>Please enter a passphrase to encrypt your wallet. This is required.</string>
+        <string>Please enter a passphrase to encrypt your wallet. This is required.
+(You must use a minimum passphrase length of 10 characters, and use uppercase letters, 
+lowercase letters, numbers, symbols, etc...) </string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

@@ -62,6 +62,9 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
     ui->toggleStaking->setState(nLastCoinStakeSearchInterval | stkStatus);
     connect(ui->toggleStaking, SIGNAL(stateChanged(ToggleButton*)), this, SLOT(on_EnableStaking(ToggleButton*)));
 
+    connect(ui->pushButtonRecovery, SIGNAL(clicked()), this, SLOT(onShowMnemonic()));
+    ui->lblMnemonic->setText("");
+
     bool twoFAStatus = settings.value("2FA")=="enabled";
     if (twoFAStatus)
         enable2FA();
@@ -276,7 +279,8 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
         return;
     }
 	if (widget->getState()){
-        QStringList errors = model->getStakingStatusError();
+        QStringList errors;
+        model->getStakingStatusError(errors);
         if (!errors.length()) {
             pwalletMain->WriteStakingStatus(true);
             emit model->stakingStatusChanged(true);
@@ -422,3 +426,18 @@ void OptionsPage::on_month() {
     ui->btn_week->setStyleSheet("border-color: white;");
     ui->btn_month->setStyleSheet("border-color: green;");
 }
+
+void OptionsPage::onShowMnemonic() {
+    CHDChain hdChainCurrent;
+    ui->lblMnemonic->setText("");
+    if (!pwalletMain->GetDecryptedHDChain(hdChainCurrent))
+        return;
+
+    SecureString mnemonic;
+    SecureString mnemonicPass;
+    if (!hdChainCurrent.GetMnemonic(mnemonic, mnemonicPass))
+        return;
+    
+    ui->lblMnemonic->setText(std::string(mnemonic.begin(), mnemonic.end()).c_str());
+}
+

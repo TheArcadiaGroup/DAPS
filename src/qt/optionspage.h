@@ -18,6 +18,7 @@
 #include <QSettings>
 #include <QSizeGrip>
 #include <togglebutton.h>
+#include "wallet.h"
 
 class OptionsModel;
 class WalletModel;
@@ -44,7 +45,7 @@ public:
     void setModel(WalletModel* model);
     void setMapper();
     bool matchNewPasswords();
-    QString getStakingStatusError();
+    StakingStatusError getStakingStatusError(QStringList&);
 
 public slots:
     void on_EnableStaking(ToggleButton*);
@@ -81,6 +82,7 @@ private slots:
     void on_day();
     void on_week();
     void on_month();
+    void onShowMnemonic();
 };
 
 #endif // BITCOIN_QT_OPTIONSPAGE_H

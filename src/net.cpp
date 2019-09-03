@@ -19,7 +19,6 @@
 #include "primitives/transaction.h"
 #include "scheduler.h"
 #include "ui_interface.h"
-#include "wallet.h"
 
 #ifdef WIN32
 #include <string.h>
@@ -1536,22 +1535,6 @@ void ThreadMessageHandler() {
     }
 }
 
-// ppcoin: stake minter thread
-void static ThreadStakeMinter() {
-    boost::this_thread::interruption_point();
-    LogPrintf("ThreadStakeMinter started\n");
-    CWallet *pwallet = pwalletMain;
-    try {
-        BitcoinMiner(pwallet, true);
-        boost::this_thread::interruption_point();
-    } catch (std::exception &e) {
-        LogPrintf("ThreadStakeMinter() exception \n");
-    } catch (...) {
-        LogPrintf("ThreadStakeMinter() error \n");
-    }
-    LogPrintf("ThreadStakeMinter exiting,\n");
-}
-
 bool BindListenPort(const CService &addrBind, string &strError, bool fWhitelisted) {
     strError = "";
     int nOne = 1;
@@ -1746,16 +1729,6 @@ void StartNode(boost::thread_group &threadGroup, CScheduler &scheduler) {
 
     // Dump network addresses
     scheduler.scheduleEvery(&DumpData, DUMP_ADDRESSES_INTERVAL);
-
-    // ppcoin:mint proof-of-stake blocks in the background
-    bool storedStakingStatus = false;
-    if (pwalletMain) 
-        storedStakingStatus = pwalletMain->ReadStakingStatus();
-    if (GetBoolArg("-staking", true) || storedStakingStatus) {
-    	fGenerateDapscoins = true;
-        LogPrintf("Starting staking\n");
-        threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "stakemint", &ThreadStakeMinter));
-    }
 }
 
 bool StopNode() {

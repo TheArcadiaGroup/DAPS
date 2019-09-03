@@ -33,16 +33,16 @@ extern unsigned int N_BITS;
 //unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock);
 
 //Check PoA block header consensus rules
-bool CheckPrevPoABlockHash(const CBlockHeader& block, int blockheight = -1);
+bool CheckPrevPoABlockHash(const CBlockHeader& block);
 
 bool CheckPoAMerkleRoot(const CBlock& block, bool* fMutate = NULL);
 
 /** Check whether a block hash satisfies the proof-of-work requirement specified by nBits */
 bool CheckPoABlockMinedHash(const CBlockHeader& block);
 
-bool CheckPoAContainRecentHash(const CBlock& block, int blockHeight = -1);
+bool CheckPoAContainRecentHash(const CBlock& block);
 bool CheckNumberOfAuditedPoSBlocks(const CBlock& block);
-bool CheckPoABlockNotContainingPoABlockInfo(const CBlock& block, int blockheight = -1);
+bool CheckPoABlockNotContainingPoABlockInfo(const CBlock& block);
 
 bool CheckPoAblockTime(const CBlock& block);
 bool CheckPoABlockNotAuditingOverlap(const CBlock& block);
