@@ -18,6 +18,7 @@ public:
 
 private slots:
     void on_acceptCode();
+    void on_app_linkActivated(const QString &link);
 
 private:
     Ui::TwoFADialog *ui;

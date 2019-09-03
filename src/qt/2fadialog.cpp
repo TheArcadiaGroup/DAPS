@@ -4,6 +4,7 @@
 #include "qgoogleauth.h"
 #include "init.h"
 #include <QDateTime>
+#include <QDesktopServices>
 
 TwoFADialog::TwoFADialog(QWidget *parent) :
     QDialog(parent),
@@ -44,6 +45,11 @@ TwoFADialog::TwoFADialog(QWidget *parent) :
     connect(ui->btnOK, SIGNAL(clicked()), this, SLOT(on_acceptCode()));
     connect(ui->btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
 
+    ui->lblOpenAppURL->setText("<a href=\"chrome://apps\">OPEN AUTHENTICATION APP</a>");
+    ui->lblOpenAppURL->setTextFormat(Qt::RichText);
+    // ui->lblOpenAppURL->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    // ui->lblOpenAppURL->setOpenExternalLinks(true);
+    connect(ui->lblOpenAppURL, SIGNAL(linkActivated(const QString&)), SLOT(on_app_linkActivated(const QString&)));
 }
 
 TwoFADialog::~TwoFADialog()
@@ -131,4 +137,8 @@ void TwoFADialog::on_acceptCode()
     }
 
     accept();
+}
+
+void TwoFADialog::on_app_linkActivated(const QString &link) {
+    QDesktopServices::openUrl(QUrl(link));
 }
