@@ -670,10 +670,23 @@ StakingStatusError WalletModel::getStakingStatusError(QStringList& errors)
     	bool fMintable = pwalletMain->MintableCoins();
     	CAmount balance = pwalletMain->GetBalance();
     	if (!fMintable || nReserveBalance > balance) {
+    		if (balance < CWallet::MINIMUM_STAKE_AMOUNT + 10*COIN) {
+    			errors.push_back(QString(tr("Balance is under staking thresh hold, please send more DAPS to this wallet")));
+    			return StakingStatusError::DEFAULT;
+    		}
+    		if (nReserveBalance > balance || (balance > nReserveBalance && balance - nReserveBalance < CWallet::MINIMUM_STAKE_AMOUNT)) {
+    			errors.push_back(QString(tr("Reserve balance is too high, please lower it down in order to turn staking on")));
+    			return StakingStatusError::RESERVE_TOO_HIGH;
+    		}
 			if (!fMintable) {
-				if (balance > MIN_)
+				if (balance > CWallet::MINIMUM_STAKE_AMOUNT) {
+					//10 is to cover transaction fees
+					if (balance >= CWallet::MINIMUM_STAKE_AMOUNT + 10*COIN) {
+						errors.push_back(QString(tr("Not enough mintable coins. Do you want to merge make a sent-to-yourself transaction to turn the wallet into stakable?.")));
+						return StakingStatusError::UTXO_UNDER_THRESHOLD;
+					}
+				}
 			}
-			errors.push_back(QString(tr("Not enough mintable coins. Send coins to this wallet or if you have coins already, wait a maximum of 1h to be able to stake.")));
 		}
     }
     return StakingStatusError::NONE;

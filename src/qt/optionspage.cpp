@@ -280,17 +280,47 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
     }
 	if (widget->getState()){
         QStringList errors;
-        model->getStakingStatusError(errors);
+        StakingStatusError stt = model->getStakingStatusError(errors);
         if (!errors.length()) {
             pwalletMain->WriteStakingStatus(true);
             emit model->stakingStatusChanged(true);
             model->generateCoins(true, 1);
         } else {
-            GUIUtil::prompt(QString("<br><br>")+errors.join(QString("<br><br>"))+QString("<br><br>"));
-            widget->setState(false);
-            nLastCoinStakeSearchInterval = 0;
-            emit model->stakingStatusChanged(false);
-            pwalletMain->WriteStakingStatus(false);
+        	if (stt != StakingStatusError::UTXO_UNDER_THRESHOLD) {
+				GUIUtil::prompt(QString("<br><br>")+errors.join(QString("<br><br>"))+QString("<br><br>"));
+				widget->setState(false);
+				nLastCoinStakeSearchInterval = 0;
+				emit model->stakingStatusChanged(false);
+				pwalletMain->WriteStakingStatus(false);
+        	} else {
+        		//ask yes or no
+        		//send to this self wallet MIN staking amount
+        		std::string masterAddr;
+        		model->getCWallet()->ComputeStealthPublicAddress("masteraccount", masterAddr);
+        		CWalletTx resultTx;
+        		bool success = false;
+        		try {
+        			success = model->getCWallet()->SendToStealthAddress(
+        					masterAddr,
+							CWallet::MINIMUM_STAKE_AMOUNT,
+							resultTx,
+							false
+        			);
+        		} catch (const std::exception& err) {
+        			QMessageBox::warning(this, "Could not send", QString(err.what()));
+        			return;
+        		}
+
+        		if (success){
+        			QMessageBox txcomplete;
+        			txcomplete.setText("Transaction initialized.");
+        			txcomplete.setInformativeText(resultTx.GetHash().GetHex().c_str());
+        			txcomplete.setStyleSheet(GUIUtil::loadStyleSheet());
+        			txcomplete.setStyleSheet("QMessageBox {messagebox-text-interaction-flags: 5;}");
+        			txcomplete.exec();
+        			WalletUtil::getTx(pwalletMain, resultTx.GetHash());
+        		}
+        	}
         }
     } else {
         nLastCoinStakeSearchInterval = 0;
