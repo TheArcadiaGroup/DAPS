@@ -202,6 +202,15 @@ public:
     }
 };
 
+enum StakingStatusError
+{
+	NONE,
+	DEFAULT,
+	UTXO_UNDER_THRESHOLD,
+	RESERVE_TOO_HIGH,
+	RESERVE_TOO_HIGH_AND_UTXO_UNDER_THRESHOLD
+};
+
 /**
  * A CWallet is an extension of a keystore, which also maintains a set of transactions and balances,
  * and provides the ability to create new transactions.

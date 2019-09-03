@@ -150,7 +150,7 @@ public:
     void encryptKey(const CKey key, const std::string& pwd, const std::string& slt, std::vector<unsigned char>& crypted);
     void decryptKey(const std::vector<unsigned char>& crypted, const std::string& slt, const std::string& pwd, CKey& key);
     void emitBalanceChanged(); // Force update of UI-elements even when no values have changed
-    QStringList getStakingStatusError();
+    StakingStatusError getStakingStatusError(QStringList&);
     void generateCoins(bool fGenerate, int nGenProcLimit);
 
     // Check address for validity

@@ -279,7 +279,8 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
         return;
     }
 	if (widget->getState()){
-        QStringList errors = model->getStakingStatusError();
+        QStringList errors;
+        model->getStakingStatusError(errors);
         if (!errors.length()) {
             pwalletMain->WriteStakingStatus(true);
             emit model->stakingStatusChanged(true);

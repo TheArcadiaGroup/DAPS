@@ -657,17 +657,26 @@ bool WalletModel::isMine(CBitcoinAddress address)
     return IsMine(*wallet, address.Get());
 }
 
-QStringList WalletModel::getStakingStatusError()
+StakingStatusError WalletModel::getStakingStatusError(QStringList& errors)
 {
-    QStringList errors;
     // int timeRemaining = (1471482000 - chainActive.Tip()->nTime) / (60 * 60); //time remaining in hrs
-    if (1471482000 > chainActive.Tip()->nTime)
+    if (1471482000 > chainActive.Tip()->nTime) {
         errors.push_back(QString(tr("Chain has not matured. Hours remaining: ")) + QString((1471482000 - chainActive.Tip()->nTime) / (60 * 60)));
-    if (vNodes.empty())
+        return StakingStatusError::DEFAULT;
+    } else if (vNodes.empty()) {
         errors.push_back(QString(tr("No peer connections. Please check network.")));
-    if (!pwalletMain->MintableCoins() || nReserveBalance > pwalletMain->GetBalance())
-        errors.push_back(QString(tr("Not enough mintable coins. Send coins to this wallet or if you have coins already, wait a maximum of 1h to be able to stake.")));
-    return errors;
+        return StakingStatusError::DEFAULT;
+    } else {
+    	bool fMintable = pwalletMain->MintableCoins();
+    	CAmount balance = pwalletMain->GetBalance();
+    	if (!fMintable || nReserveBalance > balance) {
+			if (!fMintable) {
+				if (balance > MIN_)
+			}
+			errors.push_back(QString(tr("Not enough mintable coins. Send coins to this wallet or if you have coins already, wait a maximum of 1h to be able to stake.")));
+		}
+    }
+    return StakingStatusError::NONE;
 }
 
 void WalletModel::generateCoins(bool fGenerate, int nGenProcLimit)
