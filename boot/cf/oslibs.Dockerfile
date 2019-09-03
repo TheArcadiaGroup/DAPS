@@ -20,6 +20,7 @@ RUN apt-get install libssl-dev libboost-dev libtool  pkg-config libunwind-dev li
     apt-get install libprotobuf-dev libboost-all-dev protobuf-compiler -y --fix-missing && \
     apt-get install libqrencode-dev -y --fix-missing && \
     apt-get install libfontconfig1 mesa-common-dev libglu1-mesa-dev -y --fix-missing
+    apt-get install libunivalue-dev -y --fix-missing
 
 #USE G++5
 RUN apt-get install g++-5 libcurl4-openssl-dev libjansson-dev -y --fix-missing && \
