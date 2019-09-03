@@ -293,32 +293,41 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
 				emit model->stakingStatusChanged(false);
 				pwalletMain->WriteStakingStatus(false);
         	} else {
-        		//ask yes or no
-        		//send to this self wallet MIN staking amount
-        		std::string masterAddr;
-        		model->getCWallet()->ComputeStealthPublicAddress("masteraccount", masterAddr);
-        		CWalletTx resultTx;
-        		bool success = false;
-        		try {
-        			success = model->getCWallet()->SendToStealthAddress(
-        					masterAddr,
-							CWallet::MINIMUM_STAKE_AMOUNT,
-							resultTx,
-							false
-        			);
-        		} catch (const std::exception& err) {
-        			QMessageBox::warning(this, "Could not send", QString(err.what()));
-        			return;
-        		}
+        		QMessageBox::StandardButton reply;
+        		reply = QMessageBox::warning(this, "Create Stakable Transaction", QString("<br><br>")+errors.join(QString("<br><br>"))+QString("<br><br>"), QMessageBox::Yes|QMessageBox::No);
+        		if (reply == QMessageBox::Yes) {
+        			//ask yes or no
+        			//send to this self wallet MIN staking amount
+        			std::string masterAddr;
+        			model->getCWallet()->ComputeStealthPublicAddress("masteraccount", masterAddr);
+        			CWalletTx resultTx;
+        			bool success = false;
+        			try {
+        				success = model->getCWallet()->SendToStealthAddress(
+        						masterAddr,
+								CWallet::MINIMUM_STAKE_AMOUNT,
+								resultTx,
+								false
+        				);
+        			} catch (const std::exception& err) {
+        				QMessageBox::warning(this, "Could not send", QString(err.what()));
+        				return;
+        			}
 
-        		if (success){
-        			QMessageBox txcomplete;
-        			txcomplete.setText("Transaction initialized.");
-        			txcomplete.setInformativeText(resultTx.GetHash().GetHex().c_str());
-        			txcomplete.setStyleSheet(GUIUtil::loadStyleSheet());
-        			txcomplete.setStyleSheet("QMessageBox {messagebox-text-interaction-flags: 5;}");
-        			txcomplete.exec();
-        			WalletUtil::getTx(pwalletMain, resultTx.GetHash());
+        			if (success){
+        				QMessageBox txcomplete;
+        				txcomplete.setText("Transaction initialized.");
+        				txcomplete.setInformativeText(resultTx.GetHash().GetHex().c_str());
+        				txcomplete.setStyleSheet(GUIUtil::loadStyleSheet());
+        				txcomplete.setStyleSheet("QMessageBox {messagebox-text-interaction-flags: 5;}");
+        				txcomplete.exec();
+        				WalletUtil::getTx(pwalletMain, resultTx.GetHash());
+        			}
+        		} else {
+        			widget->setState(false);
+        			nLastCoinStakeSearchInterval = 0;
+        			emit model->stakingStatusChanged(false);
+        			pwalletMain->WriteStakingStatus(false);
         		}
         	}
         }

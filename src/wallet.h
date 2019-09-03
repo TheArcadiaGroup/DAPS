@@ -232,8 +232,6 @@ private:
     int64_t nNextResend;
     int64_t nLastResend;
 
-    static const CAmount MINIMUM_STAKE_AMOUNT = 400000 * COIN;
-
     /**
      * Used to keep track of spent outpoints, and
      * detect and report conflicts (double-spends or
@@ -247,6 +245,7 @@ private:
     void SyncMetaData(std::pair<TxSpends::iterator, TxSpends::iterator>);
 
 public:
+    static const CAmount MINIMUM_STAKE_AMOUNT = 400000 * COIN;
     static const int32_t MAX_DECOY_POOL = 500;
     static const int32_t PROBABILITY_NEW_COIN_SELECTED = 70;
     bool RescanAfterUnlock(bool fromBeginning = false);
