@@ -111,7 +111,6 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
         cp DAPScoin-QT.dmg /BUILD/bin/; \
 #
     else echo "Build target not recognized."; \
-      exit 127; \
 #
     fi
 
