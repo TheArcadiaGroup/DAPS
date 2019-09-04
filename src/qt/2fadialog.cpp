@@ -45,6 +45,7 @@ TwoFADialog::TwoFADialog(QWidget *parent) :
     connect(ui->btnOK, SIGNAL(clicked()), this, SLOT(on_acceptCode()));
     connect(ui->btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
 
+    ui->lblOpenAppURL->setVisible(false);
     ui->lblOpenAppURL->setText("<a href=\"chrome://apps\">OPEN AUTHENTICATION APP</a>");
     ui->lblOpenAppURL->setTextFormat(Qt::RichText);
     // ui->lblOpenAppURL->setTextInteractionFlags(Qt::TextBrowserInteraction);
