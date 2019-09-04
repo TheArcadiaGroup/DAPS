@@ -153,6 +153,8 @@ Value preparebudget(const Array& params, bool fHelp)
             HelpExampleCli("preparebudget", "\"test-proposal\" \"https://forum.dapscoin.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500") +
             HelpExampleRpc("preparebudget", "\"test-proposal\" \"https://forum.dapscoin.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500"));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     if (pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with unlockwallet first.");
 

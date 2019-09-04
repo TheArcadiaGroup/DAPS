@@ -10,8 +10,11 @@
 #include "base58.h"
 #include "init.h"
 #include "main.h"
+#include "random.h"
+#include "sync.h"
 #include "ui_interface.h"
 #include "util.h"
+#include "utilstrencodings.h"
 #ifdef ENABLE_WALLET
 #include "wallet.h"
 #endif
@@ -26,11 +29,14 @@
 #include <boost/iostreams/concepts.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/signals2/signal.hpp>
 #include <boost/thread.hpp>
+#include <boost/algorithm/string/case_conv.hpp> // for to_upper()
 
 using namespace boost;
 using namespace boost::asio;
 using namespace json_spirit;
+using namespace RPCServer;
 using namespace std;
 
 static std::string strRPCUserColonPass;
@@ -66,6 +72,34 @@ void RPCTypeCheck(const Array& params,
         }
         i++;
     }
+}
+
+static struct CRPCSignals
+{
+    boost::signals2::signal<void ()> Started;
+    boost::signals2::signal<void ()> Stopped;
+    boost::signals2::signal<void (const CRPCCommand&)> PreCommand;
+    boost::signals2::signal<void (const CRPCCommand&)> PostCommand;
+} g_rpcSignals;
+
+void RPCServer::OnStarted(boost::function<void ()> slot)
+{
+    g_rpcSignals.Started.connect(slot);
+}
+
+void RPCServer::OnStopped(boost::function<void ()> slot)
+{
+    g_rpcSignals.Stopped.connect(slot);
+}
+
+void RPCServer::OnPreCommand(boost::function<void (const CRPCCommand&)> slot)
+{
+    g_rpcSignals.PreCommand.connect(boost::bind(slot, _1));
+}
+
+void RPCServer::OnPostCommand(boost::function<void (const CRPCCommand&)> slot)
+{
+    g_rpcSignals.PostCommand.connect(boost::bind(slot, _1));
 }
 
 void RPCTypeCheck(const Object& o,

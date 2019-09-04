@@ -74,6 +74,12 @@ Value getinfo(const Array& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getinfo", "") + HelpExampleRpc("getinfo", ""));
 
+#ifdef ENABLE_WALLET
+    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
+#else
+    LOCK(cs_main);
+#endif
+
     proxyType proxy;
     GetProxy(NET_IPV4, proxy);
 
@@ -254,6 +260,12 @@ Value validateaddress(const Array& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("validateaddress", "\"1PSSGeFHDnKNxiEyFrD1wcEaHr9hrQDDWc\"") + HelpExampleRpc("validateaddress", "\"1PSSGeFHDnKNxiEyFrD1wcEaHr9hrQDDWc\""));
 
+#ifdef ENABLE_WALLET
+    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
+#else
+    LOCK(cs_main);
+#endif
+
     CBitcoinAddress address(params[0].get_str());
     bool isValid = address.IsValid();
 
@@ -397,6 +409,8 @@ Value verifymessage(const Array& params, bool fHelp)
             "\nVerify the signature\n" + HelpExampleCli("verifymessage", "\"1D1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\" \"signature\" \"my message\"") +
             "\nAs json rpc\n" + HelpExampleRpc("verifymessage", "\"1D1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\", \"signature\", \"my message\""));
 
+    LOCK(cs_main);
+
     string strAddress = params[0].get_str();
     string strSign = params[1].get_str();
     string strMessage = params[2].get_str();
@@ -439,6 +453,8 @@ Value setmocktime(const Array& params, bool fHelp)
     if (!Params().MineBlocksOnDemand())
         throw runtime_error("setmocktime for regression testing (-regtest mode) only");
 
+    LOCK(cs_main);
+
     RPCTypeCheck(params, boost::assign::list_of(int_type));
     SetMockTime(params[0].get_int64());
 
@@ -464,6 +480,12 @@ Value getstakingstatus(const Array& params, bool fHelp)
             "}\n"
             "\nExamples:\n" +
             HelpExampleCli("getstakingstatus", "") + HelpExampleRpc("getstakingstatus", ""));
+
+#ifdef ENABLE_WALLET
+    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
+#else
+    LOCK(cs_main);
+#endif
 
     Object obj;
     obj.push_back(Pair("validtime", chainActive.Tip()->nTime > 1471482000));
