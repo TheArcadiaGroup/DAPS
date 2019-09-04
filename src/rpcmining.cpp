@@ -25,8 +25,10 @@
 
 #include <boost/assign/list_of.hpp>
 
-#include <univalue.h>
+#include "json/json_spirit_utils.h"
+#include "json/json_spirit_value.h"
 
+using namespace json_spirit;
 using namespace std;
 
 static uint256 PoAMerkleRoot;
@@ -36,9 +38,9 @@ static uint256 PoAMerkleRoot;
  * or from the last difficulty change if 'lookup' is nonpositive.
  * If 'height' is nonnegative, compute the estimate at the time when a given block was found.
  */
-UniValue GetNetworkHashPS(int lookup, int height)
+Value GetNetworkHashPS(int lookup, int height)
 {
-    CBlockIndex *pb = chainActive.Tip();
+    CBlockIndex* pb = chainActive.Tip();
 
     if (height >= 0 && height < chainActive.Height())
         pb = chainActive[height];
@@ -74,7 +76,7 @@ UniValue GetNetworkHashPS(int lookup, int height)
     return (int64_t)(workDiff.getdouble() / timeDiff);
 }
 
-UniValue getnetworkhashps(const UniValue& params, bool fHelp)
+Value getnetworkhashps(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 2)
         throw runtime_error(
@@ -90,12 +92,11 @@ UniValue getnetworkhashps(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getnetworkhashps", "") + HelpExampleRpc("getnetworkhashps", ""));
 
-    LOCK(cs_main);
     return GetNetworkHashPS(params.size() > 0 ? params[0].get_int() : 120, params.size() > 1 ? params[1].get_int() : -1);
 }
 
 #ifdef ENABLE_WALLET
-UniValue getgenerate(const UniValue& params, bool fHelp)
+Value getgenerate(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
         throw runtime_error(
@@ -108,12 +109,11 @@ UniValue getgenerate(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getgenerate", "") + HelpExampleRpc("getgenerate", ""));
 
-    LOCK(cs_main);
     return GetBoolArg("-gen", false);
 }
 
 
-UniValue setgenerate(const UniValue& params, bool fHelp)
+Value setgenerate(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
@@ -163,7 +163,7 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
             nHeightEnd = nHeightStart + nGenerate;
         }
         unsigned int nExtraNonce = 0;
-        UniValue blockHashes(UniValue::VARR);
+        Array blockHashes;
         while (nHeight < nHeightEnd) {
             bool createPoSBlock = false;
             if (nHeight > Params().LAST_POW_BLOCK())
@@ -195,11 +195,11 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
         GenerateDapscoins(fGenerate, pwalletMain, nGenProcLimit);
     }
 
-    return NullUniValue;
+    return Value::null;
 }
 
 
-UniValue generatepoa(const UniValue& params, bool fHelp)
+Value generatepoa(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
         throw runtime_error(
@@ -215,7 +215,6 @@ UniValue generatepoa(const UniValue& params, bool fHelp)
             "\nCheck the setting\n" + HelpExampleCli("getgenerate", "") +
             "\nTurn off generation\n" + HelpExampleCli("generatepoa", "0") +
             "\nUsing json rpc\n" + HelpExampleRpc("generatepoa", "30"));
-
 
     if (pwalletMain == NULL)
         throw JSONRPCError(RPC_METHOD_NOT_FOUND, "Method not found (disabled)");
@@ -239,10 +238,7 @@ UniValue generatepoa(const UniValue& params, bool fHelp)
 		nHeight = nHeightStart;
 		nHeightEnd = nHeightStart + nGenerate;
 	}
-
-	unsigned int nExtraNonce = 0;
-
-	UniValue blockHashes(UniValue::VARR);
+	Array blockHashes;
 
 	bool createPoABlock = false;
 	if (nHeight >= Params().LAST_POW_BLOCK()) {
@@ -250,7 +246,7 @@ UniValue generatepoa(const UniValue& params, bool fHelp)
 	}
 
 	if (!createPoABlock) {
-		return NullUniValue;
+		return Value::null;
 	}
 
 	unique_ptr<CBlockTemplate> pblocktemplate(CreateNewPoABlockWithKey(reservekey, pwalletMain));
@@ -266,7 +262,7 @@ UniValue generatepoa(const UniValue& params, bool fHelp)
 	return blockHashes;
 }
 
-UniValue gethashespersec(const UniValue& params, bool fHelp)
+Value gethashespersec(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
         throw runtime_error(
@@ -285,7 +281,7 @@ UniValue gethashespersec(const UniValue& params, bool fHelp)
 #endif
 
 
-UniValue getmininginfo(const UniValue& params, bool fHelp)
+Value getmininginfo(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
         throw runtime_error(
@@ -308,9 +304,7 @@ UniValue getmininginfo(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getmininginfo", "") + HelpExampleRpc("getmininginfo", ""));
 
-    LOCK(cs_main);
-
-    UniValue obj(UniValue::VOBJ);
+    Object obj;
     obj.push_back(Pair("blocks", (int)chainActive.Height()));
     obj.push_back(Pair("currentblocksize", (uint64_t)nLastBlockSize));
     obj.push_back(Pair("currentblocktx", (uint64_t)nLastBlockTx));
@@ -330,7 +324,7 @@ UniValue getmininginfo(const UniValue& params, bool fHelp)
 
 
 // NOTE: Unlike wallet RPC (which use BTC values), mining RPCs follow GBT (BIP 22) in using satoshi amounts
-UniValue prioritisetransaction(const UniValue& params, bool fHelp)
+Value prioritisetransaction(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 3)
         throw runtime_error(
@@ -349,8 +343,6 @@ UniValue prioritisetransaction(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("prioritisetransaction", "\"txid\" 0.0 10000") + HelpExampleRpc("prioritisetransaction", "\"txid\", 0.0, 10000"));
 
-    LOCK(cs_main);
-
     uint256 hash = ParseHashStr(params[0].get_str(), "txid");
 
     CAmount nAmount = params[2].get_int64();
@@ -361,10 +353,10 @@ UniValue prioritisetransaction(const UniValue& params, bool fHelp)
 
 
 // NOTE: Assumes a conclusive result; if result is inconclusive, it must be handled by caller
-static UniValue BIP22ValidationResult(const CValidationState& state)
+static Value BIP22ValidationResult(const CValidationState& state)
 {
     if (state.IsValid())
-        return NullUniValue;
+        return Value::null;
 
     std::string strRejectReason = state.GetRejectReason();
     if (state.IsError())
@@ -378,7 +370,7 @@ static UniValue BIP22ValidationResult(const CValidationState& state)
     return "valid?";
 }
 
-UniValue getblocktemplate(const UniValue& params, bool fHelp)
+Value getblocktemplate(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
         throw runtime_error(
@@ -446,24 +438,22 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getblocktemplate", "") + HelpExampleRpc("getblocktemplate", ""));
 
-    LOCK(cs_main);
-
     std::string strMode = "template";
-    UniValue lpval = NullUniValue;
+    Value lpval = Value::null;
     if (params.size() > 0) {
-        const UniValue& oparam = params[0].get_obj();
-        const UniValue& modeval = find_value(oparam, "mode");
-        if (modeval.isStr())
+        const Object& oparam = params[0].get_obj();
+        const Value& modeval = find_value(oparam, "mode");
+        if (modeval.type() == str_type)
             strMode = modeval.get_str();
-        else if (modeval.isNull()) {
+        else if (modeval.type() == null_type) {
             /* Do nothing */
         } else
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
         lpval = find_value(oparam, "longpollid");
 
         if (strMode == "proposal") {
-            const UniValue& dataval = find_value(oparam, "data");
-            if (!dataval.isStr())
+            const Value& dataval = find_value(oparam, "data");
+            if (dataval.type() != str_type)
                 throw JSONRPCError(RPC_TYPE_ERROR, "Missing data String key for proposal");
 
             CBlock block;
@@ -502,14 +492,13 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
 
     static unsigned int nTransactionsUpdatedLast;
 
-
-    if (!lpval.isNull()) {
+    if (lpval.type() != null_type) {
         // Wait to respond until either the best block changes, OR a minute has passed and there are more transactions
         uint256 hashWatchedChain;
         boost::system_time checktxtime;
         unsigned int nTransactionsUpdatedLastLP;
 
-        if (lpval.isStr()) {
+        if (lpval.type() == str_type) {
             // Format: <hashBestChain><nTransactionsUpdatedLast>
             std::string lpstr = lpval.get_str();
 
@@ -521,7 +510,11 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
             nTransactionsUpdatedLastLP = nTransactionsUpdatedLast;
         }
 
-        // Release the wallet and main lock while waiting
+// Release the wallet and main lock while waiting
+#ifdef ENABLE_WALLET
+        if (pwalletMain)
+            LEAVE_CRITICAL_SECTION(pwalletMain->cs_wallet);
+#endif
         LEAVE_CRITICAL_SECTION(cs_main);
         {
             checktxtime = boost::get_system_time() + boost::posix_time::minutes(1);
@@ -537,6 +530,10 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
             }
         }
         ENTER_CRITICAL_SECTION(cs_main);
+#ifdef ENABLE_WALLET
+        if (pwalletMain)
+            ENTER_CRITICAL_SECTION(pwalletMain->cs_wallet);
+#endif
 
         if (!IsRPCRunning())
             throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Shutting down");
@@ -581,9 +578,9 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
     UpdateTime(pblock, pindexPrev);
     pblock->nNonce = 0;
 
-    UniValue aCaps(UniValue::VARR); aCaps.push_back("proposal");
+    static const Array aCaps = boost::assign::list_of("proposal");
 
-    UniValue transactions(UniValue::VARR);
+    Array transactions;
     map<uint256, int64_t> setTxIndex;
     int i = 0;
     BOOST_FOREACH (CTransaction& tx, pblock->vtx) {
@@ -593,13 +590,13 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         if (tx.IsCoinBase())
             continue;
 
-        UniValue entry(UniValue::VOBJ);
+        Object entry;
 
         entry.push_back(Pair("data", EncodeHexTx(tx)));
 
         entry.push_back(Pair("hash", txHash.GetHex()));
 
-        UniValue deps(UniValue::VARR);
+        Array deps;
         BOOST_FOREACH (const CTxIn& in, tx.vin) {
             if (setTxIndex.count(in.prevout.hash))
                 deps.push_back(setTxIndex[in.prevout.hash]);
@@ -613,21 +610,21 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         transactions.push_back(entry);
     }
 
-    UniValue aux(UniValue::VOBJ);
+    Object aux;
     aux.push_back(Pair("flags", HexStr(COINBASE_FLAGS.begin(), COINBASE_FLAGS.end())));
 
     uint256 hashTarget = uint256().SetCompact(pblock->nBits);
 
-    static UniValue aMutable(UniValue::VARR);
+    static Array aMutable;
     if (aMutable.empty()) {
         aMutable.push_back("time");
         aMutable.push_back("transactions");
         aMutable.push_back("prevblock");
     }
 
-    UniValue aVotes(UniValue::VARR);
+    Array aVotes;
 
-    UniValue result(UniValue::VOBJ);
+    Object result;
     result.push_back(Pair("capabilities", aCaps));
     result.push_back(Pair("version", pblock->nVersion));
     result.push_back(Pair("previousblockhash", pblock->hashPrevBlock.GetHex()));
@@ -662,47 +659,47 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
     return result;
 }
 
-UniValue getpoablocktemplate(const UniValue& params, bool fHelp)
+Value getpoablocktemplate(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 0)
         throw runtime_error(
-                "getpoablocktemplate\n"
-                "It returns data needed to construct a block to work on.\n"
+            "getpoablocktemplate\n"
+            "It returns data needed to construct a block to work on.\n"
 
-                "\nArguments:\n"
+            "\nArguments:\n"
 
-                "\nResult:\n"
-                "{\n"
-                "  \"version\" : n,                    (numeric) The block version\n"
-                "  \"previouspoablockhash\" : \"xxxx\",    (string) The hash of current highest block\n"
-                "  \"poamerkleroot\" : \"xxxx\",    (string) The PoA merkle root\n"
-                "  \"poahashintegrated\" : \"xxxx\",    (string) hash of previouspoablockhash and poamerkleroot\n"
-                "  \"coinbasevalue\" : n,               (numeric) maximum allowable input to coinbase transaction, including the generation award and transaction fees (in duffs)\n"
-                "  \"coinbasetxn\" : { ... },           (json object) information for coinbase transaction\n"
-                "  \"noncerange\" : \"00000000ffffffff\",   (string) A range of valid nonces\n"
-                "  \"sigoplimit\" : n,                 (numeric) limit of sigops in blocks\n"
-                "  \"sizelimit\" : n,                  (numeric) limit of block size\n"
-                "  \"curtime\" : ttt,                  (numeric) current timestamp in seconds since epoch (Jan 1 1970 GMT)\n"
-                "  \"bits\" : \"xxx\",                 (string) compressed target of next block\n"
-                "  \"payee\" : \"xxx\",                (string) required payee for the next block\n"
-                "  \"payee_amount\" : n,               (numeric) required amount to pay\n"
-                "  \"posblocksaudited\" : [                (array) summaries of PoS blocks that should be included in the next PoA block\n"
-                "      {\n"
-                "         \"hash\" : \"xxxx\",          (string) block hash\n"
-                "         \"height\" : xxxx,          (numeric) block height\n"
-                "         \"time\": xxxx,               (numeric) timestamp \n"
-                "      }\n"
-                "      ,...\n"
-                "  ],\n"
-                "  \"masternode_payments\" : true|false,         (boolean) true, if masternode payments are enabled\n"
-                "  \"enforce_masternode_payments\" : true|false  (boolean) true, if masternode payments are enforced\n"
-                "}\n"
+            "\nResult:\n"
+            "{\n"
+            "  \"version\" : n,                    (numeric) The block version\n"
+            "  \"previouspoablockhash\" : \"xxxx\",    (string) The hash of current highest block\n"
+            "  \"poamerkleroot\" : \"xxxx\",    (string) The PoA merkle root\n"
+            "  \"poahashintegrated\" : \"xxxx\",    (string) hash of previouspoablockhash and poamerkleroot\n"
+            "  \"coinbasevalue\" : n,               (numeric) maximum allowable input to coinbase transaction, including the generation award and transaction fees (in duffs)\n"
+            "  \"coinbasetxn\" : { ... },           (json object) information for coinbase transaction\n"
+            "  \"noncerange\" : \"00000000ffffffff\",   (string) A range of valid nonces\n"
+            "  \"sigoplimit\" : n,                 (numeric) limit of sigops in blocks\n"
+            "  \"sizelimit\" : n,                  (numeric) limit of block size\n"
+            "  \"curtime\" : ttt,                  (numeric) current timestamp in seconds since epoch (Jan 1 1970 GMT)\n"
+            "  \"bits\" : \"xxx\",                 (string) compressed target of next block\n"
+            "  \"payee\" : \"xxx\",                (string) required payee for the next block\n"
+            "  \"payee_amount\" : n,               (numeric) required amount to pay\n"
+            "  \"posblocksaudited\" : [                (array) summaries of PoS blocks that should be included in the next PoA block\n"
+            "      {\n"
+            "         \"hash\" : \"xxxx\",          (string) block hash\n"
+            "         \"height\" : xxxx,          (numeric) block height\n"
+            "         \"time\": xxxx,               (numeric) timestamp \n"
+            "      }\n"
+            "      ,...\n"
+            "  ],\n"
+            "  \"masternode_payments\" : true|false,         (boolean) true, if masternode payments are enabled\n"
+            "  \"enforce_masternode_payments\" : true|false  (boolean) true, if masternode payments are enforced\n"
+            "}\n"
 
-                "\nExamples:\n" +
-                HelpExampleCli("getpoablocktemplate", "") + HelpExampleRpc("getpoablocktemplate", ""));
+            "\nExamples:\n" +
+            HelpExampleCli("getpoablocktemplate", "") + HelpExampleRpc("getpoablocktemplate", ""));
 
     std::string strMode = "template";
-    UniValue lpval = NullUniValue;
+    Value lpval = Value::null;
 
     if (strMode != "template")
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
@@ -744,10 +741,9 @@ UniValue getpoablocktemplate(const UniValue& params, bool fHelp)
     UpdateTime(pblock, pindexPrev);
     pblock->nNonce = 0;
 
-    UniValue aCaps = NullUniValue;
-//    static const Array aCaps = boost::assign::list_of("proposal");
+    static const Array aCaps = boost::assign::list_of("proposal");
 
-    UniValue transactions(UniValue::VARR);
+    Array transactions;
     map<uint256, int64_t> setTxIndex;
     int i = 0;
     BOOST_FOREACH (CTransaction& tx, pblock->vtx) {
@@ -757,13 +753,13 @@ UniValue getpoablocktemplate(const UniValue& params, bool fHelp)
         if (tx.IsCoinBase())
             continue;
 
-        UniValue entry(UniValue::VOBJ);
+        Object entry;
 
         entry.push_back(Pair("data", EncodeHexTx(tx)));
 
         entry.push_back(Pair("hash", txHash.GetHex()));
 
-        UniValue deps(UniValue::VARR);
+        Array deps;
         BOOST_FOREACH (const CTxIn& in, tx.vin) {
             if (setTxIndex.count(in.prevout.hash))
                 deps.push_back(setTxIndex[in.prevout.hash]);
@@ -777,15 +773,16 @@ UniValue getpoablocktemplate(const UniValue& params, bool fHelp)
         transactions.push_back(entry);
     }
 
-    UniValue coinbasetxn(UniValue::VOBJ);
+    Object coinbasetxn;
     CTransaction& tx = pblock->vtx[0];
     coinbasetxn.push_back(Pair("data", EncodeHexTx(tx)));
     coinbasetxn.push_back(Pair("hash", tx.GetHash().GetHex()));
 
-    UniValue aux(UniValue::VOBJ);
+    Object aux;
     aux.push_back(Pair("flags", HexStr(COINBASE_FLAGS.begin(), COINBASE_FLAGS.end())));
 
-    UniValue aMutable(UniValue::VARR);
+
+    static Array aMutable;
     if (aMutable.empty()) {
         aMutable.push_back("time");
         aMutable.push_back("transactions");
@@ -793,9 +790,9 @@ UniValue getpoablocktemplate(const UniValue& params, bool fHelp)
     }
 
     //Information about PoS blocks to be audited
-	UniValue posBlocksAudited(UniValue::VARR);
+    Array posBlocksAudited;
     for (size_t idx = 0; idx < pblock->posBlocksAudited.size(); idx++) {
-    	UniValue entry(UniValue::VOBJ);
+    	Object entry;
     	PoSBlockSummary pos = pblock->posBlocksAudited.at(idx);
     	entry.push_back(Pair("data", EncodeHexPoSBlockSummary(pos)));
     	posBlocksAudited.push_back(entry);
@@ -806,7 +803,7 @@ UniValue getpoablocktemplate(const UniValue& params, bool fHelp)
     hashTarget.SetCompact(pblock->nBits);
 
     pblock->SetVersionPoABlock();
-    UniValue result(UniValue::VOBJ);
+    Object result;
     result.push_back(Pair("version", pblock->nVersion));
     result.push_back(Pair("previouspoablockhash", pblock->hashPrevPoABlock.GetHex()));
     result.push_back(Pair("poamerkleroot", poaMerkleRoot.GetHex()));
@@ -837,13 +834,13 @@ UniValue getpoablocktemplate(const UniValue& params, bool fHelp)
     return result;
 }
 
-UniValue setminingnbits(const UniValue& params, bool fHelp) {
+Value setminingnbits(const Array& params, bool fHelp) {
     if (fHelp || params.size() != 2)
         throw runtime_error(
                 "setminingnbits value 1/0\n");
     unsigned int nbits = (unsigned int) params[0].get_int64();
     int changed= params[1].get_int();
-    UniValue result(UniValue::VOBJ);
+    Object result;
     result.push_back(Pair("previous_bits", strprintf("%08x", N_BITS)));
     if (changed) {
         N_BITS = nbits;
@@ -872,7 +869,7 @@ protected:
     };
 };
 
-UniValue submitblock(const UniValue& params, bool fHelp)
+Value submitblock(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
@@ -944,7 +941,7 @@ UniValue submitblock(const UniValue& params, bool fHelp)
     return BIP22ValidationResult(state);
 }
 
-UniValue estimatefee(const UniValue& params, bool fHelp)
+Value estimatefee(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
         throw runtime_error(
@@ -962,7 +959,7 @@ UniValue estimatefee(const UniValue& params, bool fHelp)
             "\nExample:\n" +
             HelpExampleCli("estimatefee", "6"));
 
-    RPCTypeCheck(params, boost::assign::list_of(UniValue::VNUM));
+    RPCTypeCheck(params, boost::assign::list_of(int_type));
 
     int nBlocks = params[0].get_int();
     if (nBlocks < 1)
@@ -975,7 +972,7 @@ UniValue estimatefee(const UniValue& params, bool fHelp)
     return ValueFromAmount(feeRate.GetFeePerK());
 }
 
-UniValue estimatepriority(const UniValue& params, bool fHelp)
+Value estimatepriority(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
         throw runtime_error(
@@ -993,7 +990,7 @@ UniValue estimatepriority(const UniValue& params, bool fHelp)
             "\nExample:\n" +
             HelpExampleCli("estimatepriority", "6"));
 
-    RPCTypeCheck(params, boost::assign::list_of(UniValue::VNUM));
+    RPCTypeCheck(params, boost::assign::list_of(int_type));
 
     int nBlocks = params[0].get_int();
     if (nBlocks < 1)

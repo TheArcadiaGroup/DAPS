@@ -17,7 +17,7 @@
 #include "rpcserver.h"
 #include "util.h"
 
-#include <univalue.h>
+#include "json/json_spirit_value.h"
 
 #include <openssl/crypto.h>
 
@@ -32,7 +32,6 @@
 #include <QSignalMapper>
 #include <QThread>
 #include <QTime>
-#include <QTimer>
 #include <QStringList>
 
 #if QT_VERSION < 0x050000
@@ -78,40 +77,6 @@ public slots:
 
 signals:
     void reply(int category, const QString& command);
-};
-
-
-/** Class for handling RPC timers
- * (used for e.g. re-locking the wallet after a timeout)
- */
-class QtRPCTimerBase: public QObject, public RPCTimerBase
-{
-    Q_OBJECT
-public:
-    QtRPCTimerBase(boost::function<void(void)>& func, int64_t millis):
-            func(func)
-    {
-        timer.setSingleShot(true);
-        connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));
-        timer.start(millis);
-    }
-    ~QtRPCTimerBase() {}
-private slots:
-            void timeout() { func(); }
-private:
-    QTimer timer;
-    boost::function<void(void)> func;
-};
-
-class QtRPCTimerInterface: public RPCTimerInterface
-{
-public:
-    ~QtRPCTimerInterface() {}
-    const char *Name() { return "Qt"; }
-    RPCTimerBase* NewTimer(boost::function<void(void)>& func, int64_t millis)
-    {
-        return new QtRPCTimerBase(func, millis);
-    }
 };
 
 #include "rpcconsole.moc"
@@ -227,20 +192,20 @@ void RPCExecutor::request(const QString& command)
         std::string strPrint;
         // Convert argument list to JSON objects in method-dependent way,
         // and pass it along with the method name to the dispatcher.
-        UniValue result = tableRPC.execute(
+        json_spirit::Value result = tableRPC.execute(
             args[0],
             RPCConvertValues(args[0], std::vector<std::string>(args.begin() + 1, args.end())));
 
         // Format result reply
-        if (result.isNull())
+        if (result.type() == json_spirit::null_type)
             strPrint = "";
-        else if (result.isStr())
+        else if (result.type() == json_spirit::str_type)
             strPrint = result.get_str();
         else
-            strPrint = result.write(2);
+            strPrint = write_string(result, true);
 
         emit reply(RPCConsole::CMD_REPLY, QString::fromStdString(strPrint));
-    } catch (UniValue& objError) {
+    } catch (json_spirit::Object& objError) {
         try // Nice formatting for standard-format error
         {
             int code = find_value(objError, "code").get_int();
@@ -248,7 +213,7 @@ void RPCExecutor::request(const QString& command)
             emit reply(RPCConsole::CMD_ERROR, QString::fromStdString(message) + " (code " + QString::number(code) + ")");
         } catch (std::runtime_error&) // raised when converting to invalid type, i.e. missing code or message
         {                             // Show raw JSON object
-            emit reply(RPCConsole::CMD_ERROR, QString::fromStdString(objError.write()));
+            emit reply(RPCConsole::CMD_ERROR, QString::fromStdString(write_string(json_spirit::Value(objError), false)));
         }
     } catch (std::exception& e) {
         emit reply(RPCConsole::CMD_ERROR, QString("Error: ") + QString::fromStdString(e.what()));
@@ -295,9 +260,6 @@ RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent),
     ui->label_berkeleyDBVersion->hide();
     ui->berkeleyDBVersion->hide();
 #endif
-    // Register RPC timer interface
-    rpcTimerInterface = new QtRPCTimerInterface();
-    RPCRegisterTimerInterface(rpcTimerInterface);
 
     startExecutor();
     setTrafficGraphRange(INITIAL_TRAFFIC_GRAPH_MINS);
@@ -313,8 +275,6 @@ RPCConsole::~RPCConsole()
     emit stopExecutor();
     delete peersTableContextMenu;
     delete banTableContextMenu;
-    RPCUnregisterTimerInterface(rpcTimerInterface);
-    delete rpcTimerInterface;
     delete ui;
 }
 

@@ -16,9 +16,12 @@
 
 #include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
-#include <univalue.h>
+#include "json/json_spirit_reader_template.h"
+#include "json/json_spirit_utils.h"
+#include "json/json_spirit_writer_template.h"
 
-extern UniValue read_json(const std::string& jsondata);
+using namespace json_spirit;
+extern Array read_json(const std::string& jsondata);
 
 #ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(base58_tests)
@@ -26,11 +29,11 @@ BOOST_AUTO_TEST_SUITE(base58_tests)
 // Goal: test low-level base58 encoding functionality
 BOOST_AUTO_TEST_CASE(base58_EncodeBase58)
 {
-    UniValue tests = read_json(std::string(json_tests::base58_encode_decode, json_tests::base58_encode_decode + sizeof(json_tests::base58_encode_decode)));
-    for (unsigned int idx = 0; idx < tests.size(); idx++) {
-        UniValue test = tests[idx];
-        std::string strTest = test.write();
-
+    Array tests = read_json(std::string(json_tests::base58_encode_decode, json_tests::base58_encode_decode + sizeof(json_tests::base58_encode_decode)));
+    BOOST_FOREACH(Value& tv, tests)
+    {
+        Array test = tv.get_array();
+        std::string strTest = write_string(tv, false);
         if (test.size() < 2) // Allow for extra stuff (useful for comments)
         {
             BOOST_ERROR("Bad test: " << strTest);
@@ -47,14 +50,13 @@ BOOST_AUTO_TEST_CASE(base58_EncodeBase58)
 // Goal: test low-level base58 decoding functionality
 BOOST_AUTO_TEST_CASE(base58_DecodeBase58)
 {
-    UniValue tests = read_json(std::string(json_tests::base58_encode_decode, json_tests::base58_encode_decode + sizeof(json_tests::base58_encode_decode)));
+    Array tests = read_json(std::string(json_tests::base58_encode_decode, json_tests::base58_encode_decode + sizeof(json_tests::base58_encode_decode)));
     std::vector<unsigned char> result;
 
-    for (unsigned int idx = 0; idx < tests.size(); idx++)
+    BOOST_FOREACH(Value& tv, tests)
     {
-        UniValue test = tests[idx];
-        std::string strTest = test.write();
-
+        Array test = tv.get_array();
+        std::string strTest = write_string(tv, false);
         if (test.size() < 2) // Allow for extra stuff (useful for comments)
         {
             BOOST_ERROR("Bad test: " << strTest);
@@ -122,15 +124,15 @@ public:
 // Goal: check that parsed keys match test payload
 BOOST_AUTO_TEST_CASE(base58_keys_valid_parse)
 {
-    UniValue tests = read_json(std::string(json_tests::base58_keys_valid, json_tests::base58_keys_valid + sizeof(json_tests::base58_keys_valid)));
+    Array tests = read_json(std::string(json_tests::base58_keys_valid, json_tests::base58_keys_valid + sizeof(json_tests::base58_keys_valid)));
     std::vector<unsigned char> result;
     CBitcoinSecret secret;
     CBitcoinAddress addr;
 
-    for (unsigned int idx = 0; idx < tests.size(); idx++)  {
-        UniValue test = tests[idx];
-        std::string strTest = test.write();
-
+    BOOST_FOREACH(Value& tv, tests)
+    {
+        Array test = tv.get_array();
+        std::string strTest = write_string(tv, false);
         if (test.size() < 3) // Allow for extra stuff (useful for comments)
         {
             BOOST_ERROR("Bad test: " << strTest);
@@ -138,7 +140,7 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_parse)
         }
         std::string exp_base58string = test[0].get_str();
         std::vector<unsigned char> exp_payload = ParseHex(test[1].get_str());
-        const UniValue &metadata = test[2].get_obj();
+        const Object &metadata = test[2].get_obj();
         bool isPrivkey = find_value(metadata, "isPrivkey").get_bool();
         bool isTestnet = find_value(metadata, "isTestnet").get_bool();
         if (isTestnet)
@@ -181,11 +183,12 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_parse)
 // Goal: check that generated keys match test vectors
 BOOST_AUTO_TEST_CASE(base58_keys_valid_gen)
 {
-    UniValue tests = read_json(std::string(json_tests::base58_keys_valid, json_tests::base58_keys_valid + sizeof(json_tests::base58_keys_valid)));
+    Array tests = read_json(std::string(json_tests::base58_keys_valid, json_tests::base58_keys_valid + sizeof(json_tests::base58_keys_valid)));
     std::vector<unsigned char> result;
-    for (unsigned int idx = 0; idx < tests.size(); idx++) {
-        UniValue test = tests[idx];
-        std::string strTest = test.write();
+    BOOST_FOREACH(Value& tv, tests)
+    {
+        Array test = tv.get_array();
+        std::string strTest = write_string(tv, false);
         if (test.size() < 3) // Allow for extra stuff (useful for comments)
         {
             BOOST_ERROR("Bad test: " << strTest);
@@ -193,7 +196,7 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_gen)
         }
         std::string exp_base58string = test[0].get_str();
         std::vector<unsigned char> exp_payload = ParseHex(test[1].get_str());
-        const UniValue &metadata = test[2].get_obj();
+        const Object &metadata = test[2].get_obj();
         bool isPrivkey = find_value(metadata, "isPrivkey").get_bool();
         bool isTestnet = find_value(metadata, "isTestnet").get_bool();
         if (isTestnet)
@@ -248,15 +251,15 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_gen)
 // Goal: check that base58 parsing code is robust against a variety of corrupted data
 BOOST_AUTO_TEST_CASE(base58_keys_invalid)
 {
-    UniValue tests = read_json(std::string(json_tests::base58_keys_invalid, json_tests::base58_keys_invalid + sizeof(json_tests::base58_keys_invalid))); // Negative testcases
+    Array tests = read_json(std::string(json_tests::base58_keys_invalid, json_tests::base58_keys_invalid + sizeof(json_tests::base58_keys_invalid))); // Negative testcases
     std::vector<unsigned char> result;
     CBitcoinSecret secret;
     CBitcoinAddress addr;
 
-    for (unsigned int idx = 0; idx < tests.size(); idx++) {
-        UniValue test = tests[idx];
-        std::string strTest = test.write();
-
+    BOOST_FOREACH(Value& tv, tests)
+    {
+        Array test = tv.get_array();
+        std::string strTest = write_string(tv, false);
         if (test.size() < 1) // Allow for extra stuff (useful for comments)
         {
             BOOST_ERROR("Bad test: " << strTest);
