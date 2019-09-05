@@ -73,6 +73,8 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
     elif [ "$BUILD_TARGET" = "linux" ]; \
        then echo "Compiling for Linux (x86_64-pc-linux-gnu)..." && \
         apt-get remove libzmq3-dev -y && \
+        cd src/univalue/ && ./autogen.sh && ./configure && make && \
+        cp src/univalue/libunivalue.a ./depends/x86_64-pc-linux-gnu/lib/ && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --prefix=/ && \
         make -j2 && \
