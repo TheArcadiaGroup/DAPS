@@ -431,6 +431,7 @@ bool VerifyBulletProofAggregate(const CTransaction& tx)
 
 bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 {
+	LogPrintf("\nStart VerifyRingSignatureWithTxFee\n");
 	const size_t MAX_VIN = 32;
 	const size_t MAX_DECOYS = MAX_RING_SIZE;	//padding 1 for safety reasons
 	const size_t MAX_VOUT = 5;
@@ -547,6 +548,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 		secp256k1_pedersen_commitment out;
 		size_t length;
 		if (!secp256k1_pedersen_commitment_sum(both, inCptr, tx.vin.size() * 2, outCptr, tx.vout.size() + 1, &out)) {
+			LogPrintf("\nfailed to secp256k1_pedersen_commitment_sum\n");
 			return false;
 		}
 		if (!secp256k1_pedersen_commitment_to_serialized_pubkey(&out, allInPubKeys[tx.vin.size()][j], &length)) {
@@ -565,6 +567,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 			unsigned char P[33];
 			memcpy(P, allInPubKeys[i][j], 33);
 			if (!secp256k1_ec_pubkey_tweak_mul(P, 33, C)) {
+				LogPrintf("\nfailed to mul pubkey\n");
 				return false;
 			}
 
