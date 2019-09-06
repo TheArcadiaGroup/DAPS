@@ -430,7 +430,6 @@ bool VerifyBulletProofAggregate(const CTransaction& tx)
 }
 
 bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
-bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 {
 	const size_t MAX_VIN = 32;
 	const size_t MAX_DECOYS = MAX_RING_SIZE;	//padding 1 for safety reasons
