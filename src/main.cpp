@@ -442,7 +442,10 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 			return false;
 		}
 	}
-	if (tx.vin.size() == 0) return false;
+	if (tx.vin.size() == 0) {
+		LogPrintf("\nTransaction %s has no inputs\n", tx.GetHash().GetHex());
+		return false;
+	}
 
 	if (tx.vin[0].decoys.size() > MAX_DECOYS || tx.vin[0].decoys.size() < MIN_RING_SIZE) {
 		LogPrintf("\nThe number of decoys RingSize %d not within range [%d, %d]\n", tx.vin[0].decoys.size(), MIN_RING_SIZE, MAX_RING_SIZE);
