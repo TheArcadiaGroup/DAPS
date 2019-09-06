@@ -429,7 +429,7 @@ bool VerifyBulletProofAggregate(const CTransaction& tx)
 	return secp256k1_bulletproof_rangeproof_verify(GetContext(), GetScratch(), GetGenerator(), &(tx.bulletproofs[0]), len, NULL, commitments, tx.vout.size(), 64, &secp256k1_generator_const_h, NULL, 0);
 }
 
-bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
+bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
 {
 	LogPrintf("\nStart VerifyRingSignatureWithTxFee\n");
 	const size_t MAX_VIN = 32;
@@ -456,14 +456,14 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 		return false;//maximum decoys = 15
 	}
 
-	unsigned char allInPubKeys[MAX_VIN + 1][MAX_DECOYS + 2][33];
+	unsigned char allInPubKeys[MAX_VIN + 1][MAX_DECOYS + 1][33];
 	unsigned char allKeyImages[MAX_VIN + 1][33];
-	unsigned char allInCommitments[MAX_VIN][MAX_DECOYS + 2][33];
+	unsigned char allInCommitments[MAX_VIN][MAX_DECOYS + 1][33];
 	unsigned char allOutCommitments[MAX_VOUT][33];
 
-	unsigned char SIJ[MAX_VIN + 1][MAX_DECOYS + 2][32];
-	unsigned char LIJ[MAX_VIN + 1][MAX_DECOYS + 2][33];
-	unsigned char RIJ[MAX_VIN + 1][MAX_DECOYS + 2][33];
+	unsigned char SIJ[MAX_VIN + 1][MAX_DECOYS + 1][32];
+	unsigned char LIJ[MAX_VIN + 1][MAX_DECOYS + 1][33];
+	unsigned char RIJ[MAX_VIN + 1][MAX_DECOYS + 1][33];
 
     secp256k1_context2 *both = GetContext();
 
@@ -486,6 +486,29 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 				LogPrintf("\nfailed to find transaction %s\n", decoysForIn[j].hash.GetHex());
 				return false;
 			}
+			CBlockIndex* tip = chainActive.Tip();
+			if (!pindex) tip = pindex;
+
+			//verify that tip and hashBlock must be in the same fork
+			CBlockIndex* atTheblock = mapBlockIndex[hashBlock];
+			if (!atTheblock) {
+				LogPrintf("\nDecoy for transactions %s not in the same chain with block %s\n", decoysForIn[j].hash.GetHex(), tip->GetBlockHash().GetHex());
+				return false;
+			} else {
+				if (atTheblock->nHeight >= tip->nHeight) {
+					LogPrintf("\nDecoy for transactions %s is in a future block\n", decoysForIn[j].hash.GetHex());
+					return false;
+				} else {
+					while (!tip && tip->nHeight > atTheblock->nHeight) {
+						tip = tip->pprev;
+					}
+					if (!tip || (tip && tip->GetBlockHash() != atTheblock->GetBlockHash())) {
+						LogPrintf("\nDecoy for transactions %s not in the same chain with block\n", decoysForIn[j].hash.GetHex());
+						return false;
+					}
+				}
+			}
+
 			CPubKey extractedPub;
 			if (!ExtractPubKey(txPrev.vout[decoysForIn[j].n].scriptPubKey, extractedPub)) {
 				LogPrintf("\nfailed to extract pubkey\n");
@@ -505,7 +528,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 	}
 
 	//compute allInPubKeys[tx.vin.size()][..]
-	secp256k1_pedersen_commitment allInCommitmentsPacked[MAX_VIN][MAX_DECOYS + 2];
+	secp256k1_pedersen_commitment allInCommitmentsPacked[MAX_VIN][MAX_DECOYS + 1];
 	secp256k1_pedersen_commitment allOutCommitmentsPacked[MAX_VOUT + 1]; //+1 for tx fee
 
 	for (size_t i = 0; i < tx.vout.size(); i++) {
@@ -529,7 +552,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 		outCptr[i] = &allOutCommitmentsPacked[i];
 	}
 
-	secp256k1_pedersen_commitment inPubKeysToCommitments[MAX_VIN][MAX_DECOYS + 2];
+	secp256k1_pedersen_commitment inPubKeysToCommitments[MAX_VIN][MAX_DECOYS + 1];
 	for(size_t i = 0; i < tx.vin.size(); i++) {
 		for (size_t j = 0; j < tx.vin[0].decoys.size() + 1; j++) {
 			secp256k1_pedersen_serialized_pubkey_to_commitment(allInPubKeys[i][j], 33, &inPubKeysToCommitments[i][j]);
@@ -1677,7 +1700,7 @@ bool AcceptToMemoryPool(CTxMemPool &pool, CValidationState &state, const CTransa
 
             if (!tx.IsCoinStake() && !tx.IsCoinBase() && !tx.IsCoinAudit()) {
             	if (!tx.IsCoinAudit()) {
-            		if (!VerifyRingSignatureWithTxFee(tx))
+            		if (!VerifyRingSignatureWithTxFee(tx, chainActive.Tip()))
             			return state.DoS(100, error("AcceptToMemoryPool() : Ring Signature check for transaction %s failed",
             					tx.GetHash().ToString()),
             					REJECT_INVALID, "bad-ring-signature");
@@ -2928,7 +2951,7 @@ ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, 
         if (!block.IsPoABlockByVersion() && !tx.IsCoinBase()) {
         	if (!tx.IsCoinStake()) {
         		if (!tx.IsCoinAudit()) {
-        			if (!VerifyRingSignatureWithTxFee(tx))
+        			if (!VerifyRingSignatureWithTxFee(tx, pindex))
         				return state.DoS(100, error("ConnectBlock() : Ring Signature check for transaction %s failed",
         						tx.GetHash().ToString()),
         						REJECT_INVALID, "bad-ring-signature");

@@ -189,7 +189,7 @@ secp256k1_context2* GetContext();
 secp256k1_scratch_space2* GetScratch();
 secp256k1_bulletproof_generators* GetGenerator();
 bool VerifyBulletProofAggregate(const CTransaction& tx);
-bool VerifyRingSignatureWithTxFee(const CTransaction& tx);
+bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex);
 void DestroyContext();
 
 /** 

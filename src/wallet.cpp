@@ -3585,6 +3585,10 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
         if (!GetTransaction(tx.vin[i].prevout.hash, txPrev, hashBlock)) {
             return false;
         }
+
+		CBlockIndex* atTheblock = mapBlockIndex[hashBlock];
+		if (!chainActive.Contains(atTheblock)) continue;
+
         CKeyImage ki;
         if (!generateKeyImage(txPrev.vout[tx.vin[i].prevout.n].scriptPubKey, ki)) {
             LogPrintf("Cannot generate key image");
