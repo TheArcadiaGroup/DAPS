@@ -450,14 +450,14 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 		return false;//maximum decoys = 15
 	}
 
-	unsigned char allInPubKeys[MAX_VIN + 1][MAX_DECOYS + 1][33];
+	unsigned char allInPubKeys[MAX_VIN + 1][MAX_DECOYS + 2][33];
 	unsigned char allKeyImages[MAX_VIN + 1][33];
-	unsigned char allInCommitments[MAX_VIN][MAX_DECOYS + 1][33];
+	unsigned char allInCommitments[MAX_VIN][MAX_DECOYS + 2][33];
 	unsigned char allOutCommitments[MAX_VOUT][33];
 
-	unsigned char SIJ[MAX_VIN + 1][MAX_DECOYS + 1][32];
-	unsigned char LIJ[MAX_VIN + 1][MAX_DECOYS + 1][33];
-	unsigned char RIJ[MAX_VIN + 1][MAX_DECOYS + 1][33];
+	unsigned char SIJ[MAX_VIN + 1][MAX_DECOYS + 2][32];
+	unsigned char LIJ[MAX_VIN + 1][MAX_DECOYS + 2][33];
+	unsigned char RIJ[MAX_VIN + 1][MAX_DECOYS + 2][33];
 
     secp256k1_context2 *both = GetContext();
 
@@ -498,7 +498,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 	}
 
 	//compute allInPubKeys[tx.vin.size()][..]
-	secp256k1_pedersen_commitment allInCommitmentsPacked[MAX_VIN][MAX_DECOYS + 1];
+	secp256k1_pedersen_commitment allInCommitmentsPacked[MAX_VIN][MAX_DECOYS + 2];
 	secp256k1_pedersen_commitment allOutCommitmentsPacked[MAX_VOUT + 1]; //+1 for tx fee
 
 	for (size_t i = 0; i < tx.vout.size(); i++) {
@@ -522,7 +522,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 		outCptr[i] = &allOutCommitmentsPacked[i];
 	}
 
-	secp256k1_pedersen_commitment inPubKeysToCommitments[MAX_VIN][MAX_DECOYS + 1];
+	secp256k1_pedersen_commitment inPubKeysToCommitments[MAX_VIN][MAX_DECOYS + 2];
 	for(size_t i = 0; i < tx.vin.size(); i++) {
 		for (size_t j = 0; j < tx.vin[0].decoys.size() + 1; j++) {
 			secp256k1_pedersen_serialized_pubkey_to_commitment(allInPubKeys[i][j], 33, &inPubKeysToCommitments[i][j]);
