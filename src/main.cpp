@@ -436,7 +436,10 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 	const size_t MAX_DECOYS = MAX_RING_SIZE;	//padding 1 for safety reasons
 	const size_t MAX_VOUT = 5;
 
-	if (tx.vin.size() >= 30) return false;
+	if (tx.vin.size() >= 30) {
+		LogPrintf("\nTx input too many\n");
+		return false;
+	}
 	for(size_t i = 0; i < tx.vin.size(); i++) {
 		if (tx.vin[i].decoys.size() != tx.vin[0].decoys.size()) {
 			LogPrintf("\nThe number of decoys not equal for all inputs, input %d has %d decoys but input 0 has only %d\n", i, tx.vin[i].decoys.size(), tx.vin[0].decoys.size());
