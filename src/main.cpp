@@ -483,6 +483,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 			CTransaction txPrev;
 			uint256 hashBlock;
 			if (!GetTransaction(decoysForIn[j].hash, txPrev, hashBlock)) {
+				LogPrintf("\nfailed to find transaction %s\n", decoysForIn[j].hash.GetHex());
 				return false;
 			}
 			CPubKey extractedPub;
