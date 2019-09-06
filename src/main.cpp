@@ -311,8 +311,7 @@ bool IsKeyImageSpend1(const std::string& kiHex, const uint256& againsHash) {
         return false;
     }
 
-
-    if (!bh.IsNull() && againsHash.IsNull()) {
+    if (againsHash.IsNull()) {
     	//check if bh is in main chain
     	// Find the block it claims to be in
     	BlockMap::iterator mi = mapBlockIndex.find(bh);
@@ -331,62 +330,8 @@ bool IsKeyImageSpend1(const std::string& kiHex, const uint256& againsHash) {
     if (mapBlockIndex.count(bh) < 1) return false;
     CBlockIndex* pindex = mapBlockIndex[againsHash];
     CBlockIndex* bhIndex = mapBlockIndex[bh];
-    while (pindex->nHeight >= bhIndex->nHeight) {
-    	CBlockIndex* temp = pindex;
-    	pindex = pindex->pprev;
-    	if (!pindex) {
-        	LogPrintf("Failed to find previous block in fork for block %s", temp->GetBlockHash().GetHex());
-    		return true;
-    	}
-    }
-
-    if (pindex->GetBlockHash() != bhIndex->GetBlockHash()) {
-    	pindex = mapBlockIndex[againsHash];
-    	bhIndex = mapBlockIndex[bh];
-    	while (bhIndex->nHeight >= pindex->nHeight) {
-        	CBlockIndex* temp = bhIndex;
-    		bhIndex = bhIndex->pprev;
-    		if (!bhIndex) {
-            	LogPrintf("Key Image %s is spent in a stale fork, so consider it as not spent in this fork", kiHex);
-            	return false;
-    		}
-    	}
-        if (pindex->GetBlockHash() != bhIndex->GetBlockHash()) return false;
-    }
-	LogPrintf("\nKey Image %s is spent in block %s and %s\n", kiHex, bh.GetHex(), againsHash.GetHex());
-
-    /*CBlockIndex* bhIdx = mapBlockIndex[bh];
-    CBlockIndex* against = mapBlockIndex[againsHash];
-
-    LogPrintf("\n%s: Checking key image spent = %s, bh = %s, agains = %s\n", __func__, kiHex, bh.GetHex(), againsHash.GetHex());
-
-    if (bhIdx != NULL && !againsHash.IsNull() && bh) return true;
-	if (against == NULL) return true;
-
-    if (IsKeyImageSpend2(kiHex, bh) && IsKeyImageSpend2(kiHex, againsHash)) {
-    	if (bhIdx->nHeight < against->nHeight)
-    		return true;
-    }
-
-    /*if (bhIdx == against) return true;
-    if (bhIdx != NULL && against != NULL) {
-        if (bhIdx->nHeight < against->nHeight) {
-        	if ((chainActive[against->nHeight]->GetBlockHash() == againsHash) && IsKeyImageSpend2(kiHex, bh)) {
-        		if (pwalletMain) {
-        			if (pwalletMain->keyImagesSpends.count(kiHex) == 1) {
-        				pwalletMain->keyImagesSpends[kiHex] = 1;
-        			};
-        		}
-                return true;
-        	}
-        }
-    }*/
-    /*LogPrintf("\n%s: Checking key image spent = %s, bh = %s, agains = %s, not spent yet\n", __func__, kiHex, bh.GetHex(), againsHash.GetHex());
-    if (pwalletMain) {
-        pwalletMain->keyImagesSpends[kiHex] = false;
-    }*/
-
-    return true;
+    CBlockIndex* ancestor = pindex->GetAncestor(bhIndex->nHeight);
+    return ancestor == bhIndex;
 }
 
 secp256k1_context2* GetContext() {
