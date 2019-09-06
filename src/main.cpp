@@ -489,23 +489,16 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
 			CBlockIndex* tip = chainActive.Tip();
 			if (!pindex) tip = pindex;
 
+			uint256 hashTip = tip->GetBlockHash();
 			//verify that tip and hashBlock must be in the same fork
 			CBlockIndex* atTheblock = mapBlockIndex[hashBlock];
 			if (!atTheblock) {
 				LogPrintf("\nDecoy for transactions %s not in the same chain with block %s\n", decoysForIn[j].hash.GetHex(), tip->GetBlockHash().GetHex());
 				return false;
 			} else {
-				if (atTheblock->nHeight >= tip->nHeight) {
-					LogPrintf("\nDecoy for transactions %s is in a future block\n", decoysForIn[j].hash.GetHex());
-					return false;
-				} else {
-					while (!tip && tip->nHeight > atTheblock->nHeight) {
-						tip = tip->pprev;
-					}
-					if (!tip || (tip && tip->GetBlockHash() != atTheblock->GetBlockHash())) {
-						LogPrintf("\nDecoy for transactions %s not in the same chain with block\n", decoysForIn[j].hash.GetHex());
-						return false;
-					}
+				CBlockIndex* ancestor = tip->GetAncestor(atTheblock->nHeight);
+				if (ancestor != atTheblock) {
+					LogPrintf("\nDecoy for transactions %s not in the same chain with block %s\n", decoysForIn[j].hash.GetHex(), tip->GetBlockHash().GetHex());
 				}
 			}
 
