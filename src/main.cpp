@@ -430,6 +430,7 @@ bool VerifyBulletProofAggregate(const CTransaction& tx)
 }
 
 bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
+bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 {
 	const size_t MAX_VIN = 32;
 	const size_t MAX_DECOYS = MAX_RING_SIZE;	//padding 1 for safety reasons
@@ -480,6 +481,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 			}
 			CPubKey extractedPub;
 			if (!ExtractPubKey(txPrev.vout[decoysForIn[j].n].scriptPubKey, extractedPub)) {
+				LogPrintf("\nfailed to extract pubkey\n");
 				return false;
 			}
 			memcpy(allInPubKeys[i][j], extractedPub.begin(), 33);
@@ -502,6 +504,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 	for (size_t i = 0; i < tx.vout.size(); i++) {
 		memcpy(allOutCommitments[i], &(tx.vout[i].commitment[0]), 33);
 		if (!secp256k1_pedersen_commitment_parse(both, &allOutCommitmentsPacked[i], allOutCommitments[i])) {
+			LogPrintf("\nfailed to parse commitment\n");
 			return false;
 		}
 	}
@@ -530,6 +533,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 		const secp256k1_pedersen_commitment *inCptr[MAX_VIN * 2];
 		for (size_t k = 0; k < tx.vin.size(); k++) {
 			if (!secp256k1_pedersen_commitment_parse(both, &allInCommitmentsPacked[k][j], allInCommitments[k][j])) {
+				LogPrintf("\nfailed to parse commitment\n");
 				return false;
 			}
 			inCptr[k] = &allInCommitmentsPacked[k][j];
@@ -544,6 +548,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 			return false;
 		}
 		if (!secp256k1_pedersen_commitment_to_serialized_pubkey(&out, allInPubKeys[tx.vin.size()][j], &length)) {
+			LogPrintf("\nfailed to serialized pubkey\n");
 			return false;
 		}
 	}
@@ -562,6 +567,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 			}
 
 			if (!secp256k1_ec_pubkey_tweak_add(P, 33, SIJ[i][j])) {
+				LogPrintf("\nfailed to add pubkey\n");
 				return false;
 			}
 
@@ -576,6 +582,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 			unsigned char ci[33];
 			memcpy(ci, allKeyImages[i], 33);
 			if (!secp256k1_ec_pubkey_tweak_mul(ci, 33, C)) {
+				LogPrintf("\nfailed to mul tweak\n");
 				return false;
 			}
 
@@ -614,7 +621,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx)
 		uint256 temppi1 = Hash(tempForHash, tempForHash + 2 * (tx.vin.size() + 1) * 33 + 32);
 		memcpy(C, temppi1.begin(), 32);
 	}
-
+	LogPrintf("\nVerifying\n");
 	return HexStr(tx.c.begin(), tx.c.end()) == HexStr(C, C + 32);
 }
 
