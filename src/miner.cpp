@@ -732,7 +732,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
             	}
             }
 
-            MilliSleep(10000);
+            MilliSleep(25000);
 
         }
 
