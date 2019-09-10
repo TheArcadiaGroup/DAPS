@@ -166,7 +166,7 @@ spec:
             [
               "/bin/bash",
               "-c",
-              "sleep 3 && nohup dapscoind -daemon && trap: TERM INT; sleep infinity & wait",
+              "sleep 30 && nohup dapscoind -daemon && trap: TERM INT; sleep infinity & wait",
             ]
           ports:
             - containerPort: 53575
