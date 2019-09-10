@@ -24,7 +24,7 @@ class OptionsModel;
 class WalletModel;
 
 enum Type2FA {
-    NONE = 0,
+    NONE2FA = 0,
     DAY = 1,
     WEEK = 2,
     MONTH = 3,

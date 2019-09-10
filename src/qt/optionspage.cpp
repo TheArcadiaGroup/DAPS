@@ -427,7 +427,7 @@ void OptionsPage::disable2FA() {
     ui->btn_day->setStyleSheet("border-color: none;");
     ui->btn_week->setStyleSheet("border-color: none;");
     ui->btn_month->setStyleSheet("border-color: none;");
-    typeOf2FA = NONE;
+    typeOf2FA = NONE2FA;
 }
 
 void OptionsPage::enable2FA() {
@@ -458,7 +458,7 @@ void OptionsPage::enable2FA() {
     }
      
     int period = settings.value("2FAPeriod").toInt();
-    typeOf2FA = NONE;
+    typeOf2FA = NONE2FA;
     if (period == 1) {
         ui->btn_day->setStyleSheet("border-color: green;");
         typeOf2FA = DAY;
