@@ -85,6 +85,15 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
     ui->code_4->setVisible(false);
     ui->code_5->setVisible(false);
     ui->code_6->setVisible(false);
+
+    timerStakingToggleSync = new QTimer();
+    connect(timerStakingToggleSync, SIGNAL(timeout()), this, SLOT(setStakingStatus()));
+    timerStakingToggleSync->start(20000);
+}
+
+void OptionsPage::setStakingToggle()
+{
+	ui->toggleStaking->setState(fGenerateDapscoins);
 }
 
 void OptionsPage::setModel(WalletModel* model)
@@ -116,6 +125,7 @@ CAmount OptionsPage::getValidatedAmount() {
 
 OptionsPage::~OptionsPage()
 {
+	delete timerStakingToggleSync;
     delete ui;
 }
 

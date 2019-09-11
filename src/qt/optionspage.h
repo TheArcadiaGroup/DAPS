@@ -74,6 +74,7 @@ private:
     Type2FA typeOf2FA;
     void disable2FA();
     void enable2FA();
+    QTimer* timerStakingToggleSync;
 
 private slots:
     void validateNewPass();
@@ -93,6 +94,7 @@ private slots:
     void on_week();
     void on_month();
     void onShowMnemonic();
+    void setStakingToggle();
 };
 
 #endif // BITCOIN_QT_OPTIONSPAGE_H
