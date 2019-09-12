@@ -50,13 +50,13 @@
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
-     <property name="OptionA" stdset="0">
+     <property name="OptionA">
       <string>Dark</string>
      </property>
-     <property name="OptionB" stdset="0">
+     <property name="OptionB">
       <string>Light</string>
      </property>
-     <property name="fixedSize" stdset="0">
+     <property name="fixedSize">
       <size>
        <width>100</width>
        <height>55</height>
@@ -91,13 +91,13 @@
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
-     <property name="OptionA" stdset="0">
+     <property name="OptionA">
       <string>On</string>
      </property>
-     <property name="OptionB" stdset="0">
+     <property name="OptionB">
       <string>Off</string>
      </property>
-     <property name="fixedSize" stdset="0">
+     <property name="fixedSize">
       <size>
        <width>100</width>
        <height>55</height>
@@ -405,13 +405,13 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="OptionA" stdset="0">
+     <property name="OptionA">
       <string>On</string>
      </property>
-     <property name="OptionB" stdset="0">
+     <property name="OptionB">
       <string>Off</string>
      </property>
-     <property name="fixedSize" stdset="0">
+     <property name="fixedSize">
       <size>
        <width>100</width>
        <height>55</height>
