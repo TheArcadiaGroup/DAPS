@@ -20,7 +20,8 @@ RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" && \
     nvm install 10 && \
     cd /DAPS/ && \
-    npm install
+    npm install && \
+    npm audit fix
 
 EXPOSE 3001
 
