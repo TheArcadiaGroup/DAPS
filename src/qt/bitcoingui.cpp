@@ -900,7 +900,7 @@ void BitcoinGUI::setNumConnections(int count)
         break;
     }
     
-    connectionCount->setText(tr("%n connections", "", count));
+    connectionCount->setText(tr("%n Active Connections", "", count));
     if (count < 1)
         networkAction->setIcon(QIcon(":icons/staking_disabled"));
     else
