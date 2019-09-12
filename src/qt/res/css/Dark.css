@@ -21,10 +21,10 @@ QAbstractSpinBox:disabled,
 QLineEdit:disabled,
 .QValidatedLineEdit:disabled,
 QComboBox:disabled,
-QSlider::handle:horizontal:disabled {
+/*QSlider::handle:horizontal:disabled {
   background: rgb(62, 78, 78);
   border: 1px solid rgb(51, 54, 54);
-}
+}*/
 QDialog {
   background: qlineargradient(
     x1: 0 y1: 0,
@@ -318,23 +318,9 @@ QWidget::right-arrow {
 }
 
 /*** Sliders ***/
-QWidget::horizontal {
+/*QWidget::horizontal {
   height: 45px;
-}
-
-QWidget::groove:horizontal {
-  height: 8px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
-  background-color: rgba(0, 0, 0, 0.4);
-  margin: 13px 0;
-  border-radius: 3px;
-}
-
-QWidget::handle:horizontal {
-  width: 31px;
-  margin: -13px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
-  border-radius: 15px;
-  background-color: #83faff;
-}
+}*/
 
 QMenu::item {
     padding: 2px 25px 2px 20px;
@@ -443,3 +429,51 @@ margin-top: 2px; /* make non-selected tabs look smaller */
 }
 QTabBar::tab { color: #5E1C5A; }
 QTabBar::tab:selected { color: gray; }
+
+/*
+QScrollBar:horizontal {
+  background: transparent;
+  height: 15px;
+  max-height: 15px;
+  margin: 0px 15px 0 15px;
+}
+QScrollBar::handle:horizontal {
+  background: transparent;
+  max-height: 15px;
+  border: 1px solid white;
+}
+QScrollBar::add-line:horizontal {
+  background: transparent;
+  width: 15px;
+  max-height: 15px;
+  subcontrol-position: right;
+  subcontrol-origin: margin;
+}
+QScrollBar::sub-line:horizontal {
+  background: transparent;
+  width: 15px;
+  max-height: 15px; 
+  subcontrol-position: left;
+  subcontrol-origin: margin;
+}
+QScrollBar:left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
+  border: 1px solid white;
+  background: transparent;
+}
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+  background: transparent;
+}*/
+
+QWidget::left-arrow {
+  image: url(":/images/leftArrow_small");
+}
+QWidget::left-arrow:disabled {
+  image: url(":/images/leftArrow_small_dark");
+}
+
+QWidget::right-arrow {
+  image: url(":/images/rightArrow_small");
+}
+QWidget::right-arrow:disabled {
+  image: url(":/images/rightArrow_small_dark");
+}
