@@ -14,6 +14,8 @@ ENV DESTDIR=$DESTDIR
 #COPY source
 COPY . /DAPS/
 
+RUN apt-get update
+
 RUN apt-get autoremove -y
 
 RUN cd /DAPS/ && mkdir -p /BUILD/ && \
