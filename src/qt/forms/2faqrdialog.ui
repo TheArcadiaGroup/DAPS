@@ -120,6 +120,9 @@
        <property name="autoDefault">
         <bool>false</bool>
        </property>
+       <property name="shortcut">
+        <string>Esc</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -129,6 +132,9 @@
        </property>
        <property name="autoDefault">
         <bool>false</bool>
+       </property>
+       <property name="shortcut">
+        <string>Return</string>
        </property>
       </widget>
      </item>
