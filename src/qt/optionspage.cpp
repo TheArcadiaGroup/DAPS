@@ -255,9 +255,19 @@ void OptionsPage::on_pushButtonPasswordClear_clicked()
 void OptionsPage::on_pushButtonBackup_clicked(){
     if (model->backupWallet(QString("BackupWallet.dat"))) {
         ui->pushButtonBackup->setStyleSheet("border: 2px solid green");
-        QMessageBox(QMessageBox::Information, tr("Information"), tr("Wallet has been successfully backed up to BackupWallet.dat in the current directory."), QMessageBox::Ok).exec();
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Wallet Backup Successful");
+        msgBox.setText("Wallet has been successfully backed up to BackupWallet.dat in the current directory.");
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.exec();
     } else { ui->pushButtonBackup->setStyleSheet("border: 2px solid red");
-        QMessageBox::critical(this, tr("Error"),tr("Wallet backup failed. Please try again."));
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Wallet Backup Failed");
+        msgBox.setText("Wallet backup failed. Please try again.");
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.exec();
 }
     ui->pushButtonBackup->repaint();
 }
