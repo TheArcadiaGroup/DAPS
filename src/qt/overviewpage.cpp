@@ -483,7 +483,7 @@ void OverviewPage::updateRecentTransactions(){
 }
 
 void OverviewPage::refreshRecentTransactions() {
-	LogPrintf("\n: Refreshing history\n");
+	//LogPrintf("\n: Refreshing history\n");
 	if (isSyncingBlocks) return;
 	updateRecentTransactions();
 }
