@@ -37,8 +37,7 @@
         <number>3</number>
        </property>
        <property name="text">
-        <string>Would you like to lock everything now? 
-(Staking will still work, but no balance or transaction updates)</string>
+        <string>Would you like to lock your keychain wallet now? (Staking will also be stopped)</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
