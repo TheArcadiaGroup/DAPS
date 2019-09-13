@@ -109,5 +109,5 @@ void TwoFAQRDialog::update()
 
 void TwoFAQRDialog::on_btnCopyURI_clicked()
 {
-    GUIUtil::setClipboard(ui->lblURI->text());
+    GUIUtil::setClipboard(settings.value("2FACode").toString());
 }
