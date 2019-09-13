@@ -65,9 +65,9 @@ QDialog {
 }
 
 #connectionCount {
-  font-size: 9px;
+  font-size: 11px;
   font-style: italic;
-  padding-left: 34px;
+  padding-left: 32px;
 }
 
 QDialog .QTabWidget QTabBar::tab {

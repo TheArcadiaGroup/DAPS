@@ -34,10 +34,9 @@ QSlider::handle:horizontal:disabled {
 }
 
 #connectionCount {
-  font-size: 9px;
-  padding-left: 34px;
+  font-size: 11px;
   font-style: italic;
-  color: white;
+  padding-left: 32px;
 }
 
 QDialog {
