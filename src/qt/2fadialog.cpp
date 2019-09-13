@@ -122,7 +122,7 @@ void TwoFADialog::on_acceptCode()
     
     if (result != code) {
         QMessageBox::critical(this, tr("Wrong 2FA Code"),
-                tr("This is wrong code."));
+                tr("Incorrect 2FA code."));
         return;
     }
 
