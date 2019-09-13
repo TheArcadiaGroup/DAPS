@@ -508,6 +508,9 @@ void OptionsPage::confirmDialogIsFinished(int result) {
             disable2FA();
         }
     }
+
+    if (result == QDialog::Rejected)
+        ui->toggle2FA->setState(true);
 }
 
 void OptionsPage::on_day() {
