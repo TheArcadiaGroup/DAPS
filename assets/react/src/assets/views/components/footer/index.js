@@ -15,18 +15,18 @@ class Footer extends Component {
         this.Links = {
             headers: ["Company", "Learn", "Contact Us"],
             '0': [
-                <a key="About" href='https://dapscoin.com/roadmap/' target="_blank">About</a>,
-                <a key="Team" href='https://dapscoin.com/team/' target="_blank">Team</a>,
+                <a key="About" href='https://officialdapscoin.com/roadmap/' target="_blank">About</a>,
+                <a key="Team" href='https://officialdapscoin.com/team/' target="_blank">Team</a>,
                 // <a href='google.com'>Careers</a>,
             ],
             "1": [
-                <a key="Getting Started" href='https://dapscoin.com/roadmap/' target="_blank">Getting Started</a>,
-                <a key="DAPS Blog" href='https://dapscoin.com/daps-project-blog/' target="_blank">DAPS Blog</a>,
-                <a key="What is DAPS" href='https://dapscoin.com/info/' target="_blank">What is DAPS?</a>,
+                <a key="Getting Started" href='https://officialdapscoin.com/roadmap/' target="_blank">Getting Started</a>,
+                <a key="DAPS Blog" href='https://officialdapscoin.com/daps-project-blog/' target="_blank">DAPS Blog</a>,
+                <a key="What is DAPS" href='https://officialdapscoin.com/info/' target="_blank">What is DAPS?</a>,
             ],
             "2": [
                 // <a href='google.com'>Press</a>,
-                <a key="Support" href='https://dapscoin.com/contact/' target="_blank">Support</a>,
+                <a key="Support" href='https://officialdapscoin.com/contact/' target="_blank">Support</a>,
                 // <a href='google.com'>Status</a>,
             ],
             // "3": [<a href='google.com'>Local</a>],

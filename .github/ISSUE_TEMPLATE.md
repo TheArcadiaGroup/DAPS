@@ -1,7 +1,7 @@
 <!--- Remove this description and sections that do not apply -->
 
 This issue tracker is only for technical issues related to DAPScoin.
-General DAPScoin questions and/or support requests and are best directed to the [DAPScoin Discord](https://discord.dapscoin.org).
+General DAPScoin questions and/or support requests and are best directed to the [DAPScoin Discord](https://officialdapscoin.com/discord).
 
 ### Describe the issue
 
