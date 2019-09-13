@@ -136,7 +136,13 @@ void OptionsPage::resizeEvent(QResizeEvent* event)
 
 void OptionsPage::on_pushButtonSave_clicked() {
     if (ui->lineEditWithhold->text().trimmed().isEmpty()) {
-        QMessageBox(QMessageBox::Information, tr("Information"), tr("DAPS reserve amount should be filled"), QMessageBox::Ok).exec();
+        ui->lineEditWithhold->setStyleSheet("border: 2px solid red");
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Reserve Balance Empty");
+        msgBox.setText("DAPS reserve amount is empty and must be a minimum of 1. Click Disable if you would like to turn it off.");
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.exec();
         return;
     }
     nReserveBalance = getValidatedAmount();
@@ -145,7 +151,13 @@ void OptionsPage::on_pushButtonSave_clicked() {
     walletdb.WriteReserveAmount(nReserveBalance / COIN);
 
     emit model->stakingStatusChanged(nLastCoinStakeSearchInterval);
-    QMessageBox(QMessageBox::Information, tr("Information"), tr("Reserve balance " + BitcoinUnits::format(0, nReserveBalance).toUtf8() + " is successfully set!"), QMessageBox::Ok).exec();
+    ui->lineEditWithhold->setStyleSheet(GUIUtil::loadStyleSheet());
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Reserve Balance Set");
+    msgBox.setText("Reserve balance " + BitcoinUnits::format(0, nReserveBalance).toUtf8() + " is successfully set!");
+    msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.exec();
 }
 
 void OptionsPage::on_pushButtonDisable_clicked() {
@@ -156,7 +168,12 @@ void OptionsPage::on_pushButtonDisable_clicked() {
     walletdb.WriteReserveAmount(nReserveBalance / COIN);
 
     emit model->stakingStatusChanged(nLastCoinStakeSearchInterval);
-    QMessageBox(QMessageBox::Information, tr("Information"), tr("Reserve balance disabled!"), QMessageBox::Ok).exec();
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Reserve Balance Disabled");
+    msgBox.setText("Reserve balance disabled!");
+    msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.exec();
 }
 
 void OptionsPage::keyPressEvent(QKeyEvent* event)
