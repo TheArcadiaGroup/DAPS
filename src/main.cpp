@@ -79,6 +79,7 @@ int64_t nReserveBalance = 0;
 
 const int MIN_RING_SIZE = 11;
 const int MAX_RING_SIZE = 15;
+const int MAX_TX_INPUTS = 50;
 
 /** Fees smaller than this (in duffs) are considered zero fee (for relaying and mining)
  * We are ~100 times smaller then bitcoin now (2015-06-23), set minRelayTxFee only 10 times higher
@@ -375,11 +376,11 @@ bool VerifyBulletProofAggregate(const CTransaction& tx)
 bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
 {
 	LogPrintf("\nStart VerifyRingSignatureWithTxFee\n");
-	const size_t MAX_VIN = 32;
+	const size_t MAX_VIN = MAX_TX_INPUTS;
 	const size_t MAX_DECOYS = MAX_RING_SIZE;	//padding 1 for safety reasons
 	const size_t MAX_VOUT = 5;
 
-	if (tx.vin.size() >= 30) {
+	if (tx.vin.size() > MAX_VIN) {
 		LogPrintf("\nTx input too many\n");
 		return false;
 	}

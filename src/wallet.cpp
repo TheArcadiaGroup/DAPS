@@ -3113,11 +3113,11 @@ bool CWallet::makeRingCT(CTransaction& wtxNew, int ringSize, std::string& strFai
 		}
 	}
 
-	const size_t MAX_VIN = 32;
+	const size_t MAX_VIN = MAX_TX_INPUTS;
 	const size_t MAX_DECOYS = MAX_RING_SIZE;	//padding 1 for safety reasons
 	const size_t MAX_VOUT = 5;
 
-	if (wtxNew.vin.size() >= 30 || wtxNew.vin.size() == 0) {
+	if (wtxNew.vin.size() > MAX_TX_INPUTS || wtxNew.vin.size() == 0) {
 		strFailReason = _("Failed due to transaction size too large or the transaction does no have any input");
 		return false;
 	}
@@ -5163,7 +5163,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target) {
 
 	if (vCoins.empty()) return false;
 
-	if (total < target + 4*COIN && vCoins.size() < 30) return false;
+	if (total < target + 4*COIN && vCoins.size() <= MAX_TX_INPUTS) return false;
 
 	// Generate transaction public key
 	CWalletTx wtxNew;
