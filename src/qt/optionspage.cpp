@@ -579,7 +579,11 @@ void OptionsPage::onShowMnemonic() {
     SecureString mnemonicPass;
     if (!hdChainCurrent.GetMnemonic(mnemonic, mnemonicPass))
         return;
-    
-    QMessageBox::information(this, tr("Wallet Mnemonic Phrase"),
-        tr(std::string(mnemonic.begin(), mnemonic.end()).c_str()));
+    QString mPhrase = std::string(mnemonic.begin(), mnemonic.end()).c_str();
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Wallet Mnemonic Phrase");
+    msgBox.setText(mPhrase);
+    msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.exec();
 }
