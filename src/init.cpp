@@ -1456,7 +1456,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
                              " or address book entries might be missing or incorrect."));
                 InitWarning(msg);
             } else if (nLoadWalletRet == DB_TOO_NEW)
-                strErrors << _("Error loading multisig_wallet.dat: Wallet requires newer version of DAPScoin Core") << "\n";
+                strErrors << _("Error loading multisig_wallet.dat: Wallet requires newer version of DAPScoin") << "\n";
             else if (nLoadWalletRet == DB_NEED_REWRITE) {
                 strErrors << _("Wallet needed to be rewritten: restart DAPScoin to complete") << "\n";
                 LogPrintf("%s", strErrors.str());
