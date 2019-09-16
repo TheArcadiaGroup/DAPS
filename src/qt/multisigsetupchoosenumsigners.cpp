@@ -33,7 +33,7 @@ void MultiSigSetupChooseNumSigners::setModel(WalletModel* model)
 void MultiSigSetupChooseNumSigners::closeEvent (QCloseEvent *event)
 {
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::warning(this, "Multisig wallet setup required", "You need to configure multisig wallet to use?", QMessageBox::Retry|QMessageBox::Close);
+    reply = QMessageBox::warning(this, "Multisignature Wallet Setup Required", "You must configure a Multisignature wallet to continue. What would you like to do?", QMessageBox::Retry|QMessageBox::Close);
       if (reply == QMessageBox::Retry) {
       event->ignore();
       } else {
@@ -45,7 +45,7 @@ void MultiSigSetupChooseNumSigners::closeEvent (QCloseEvent *event)
 void MultiSigSetupChooseNumSigners::on_btnCancel()
 {
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::warning(this, "Multisig wallet setup required", "You need to configure multisig wallet to use?", QMessageBox::Retry|QMessageBox::Close);
+    reply = QMessageBox::warning(this, "Multisignature Wallet Setup Required", "You must configure a Multisignature wallet to continue. What would you like to do?", QMessageBox::Retry|QMessageBox::Close);
       if (reply == QMessageBox::Retry) {
       return;
       } else {
