@@ -189,7 +189,7 @@ bool CWallet::checkPassPhraseRule(const char *pass)
 }
 CPubKey CWallet::GenerateNewKey()
 {
-    AssertLockHeld(cs_wallet);                                 // mapKeyMetadata
+    AssertLockHeld(cs_wallet);                 // mapKeyMetadata
     bool fCompressed = CanSupportFeature(FEATURE_COMPRPUBKEY); // default to compressed public keys if we want 0.6.0 wallets
 
     RandAddSeedPerfmon();
@@ -556,6 +556,7 @@ bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool anonymizeOnly
 
     CCrypter crypter;
     CKeyingMaterial vMasterKey;
+    bool rescanNeeded = false;
 
     {
         LOCK(cs_wallet);
@@ -566,20 +567,27 @@ bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool anonymizeOnly
                 continue; // try another master key
             if (CCryptoKeyStore::Unlock(vMasterKey)) {
                 fWalletUnlockAnonymizeOnly = anonymizeOnly;
-                LogPrintf("\nStart rescaning wallet transactions");
-                pwalletMain->RescanAfterUnlock();
-                walletUnlockCountStatus++;
-                LogPrintf("\nFinish rescaning wallet transactions");
-                return true;
+                rescanNeeded = true;
+                break;
             }
         }
     }
+
+    if (rescanNeeded) {
+        LogPrintf("\nStart rescanning wallet transactions");
+        pwalletMain->RescanAfterUnlock();
+        walletUnlockCountStatus++;
+        LogPrintf("\nFinish rescanning wallet transactions");
+        return true;
+    }
+
     return false;
 }
 
 bool CWallet::ChangeWalletPassphrase(const SecureString& strOldWalletPassphrase, const SecureString& strNewWalletPassphrase)
 {
     bool fWasLocked = IsLocked();
+    bool rescanNeeded = false;
     SecureString strOldWalletPassphraseFinal = strOldWalletPassphrase;
 
     {
@@ -614,10 +622,16 @@ bool CWallet::ChangeWalletPassphrase(const SecureString& strOldWalletPassphrase,
                 CWalletDB(strWalletFile).WriteMasterKey(pMasterKey.first, pMasterKey.second);
                 if (fWasLocked)
                     Lock();
-                pwalletMain->RescanAfterUnlock();
-                return true;
+                
+                rescanNeeded = true;
+                break;
             }
         }
+    }
+
+    if (rescanNeeded) {
+        pwalletMain->RescanAfterUnlock();
+        return true;
     }
 
     return false;
@@ -1802,8 +1816,8 @@ void CWallet::ResendWalletTransactions()
 
     // Rebroadcast any of our txes that aren't in a block yet
     LogPrintf("ResendWalletTransactions()\n");
-    {
-        LOCK(cs_wallet);
+    {       
+        LOCK(cs_wallet);       
         // Sort them in chronological order
         multimap<unsigned int, CWalletTx*> mapSorted;
         BOOST_FOREACH (PAIRTYPE(const uint256, CWalletTx) & item, mapWallet) {
@@ -2348,7 +2362,7 @@ bool CWallet::SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int
                 n = getCTxOutValue(*pcoin, pcoin->vout[output.i]);
             }
             int i = output.i;
-            if (tryDenom == 0 && IsDenominatedAmount(n)) continue; // we don't want denom values on first run
+            //if (tryDenom == 0 && IsDenominatedAmount(n)) continue; // we don't want denom values on first run
 
             pair<CAmount, pair<const CWalletTx*, unsigned int> > coin = make_pair(n, make_pair(pcoin, i));
 
@@ -2371,7 +2385,7 @@ bool CWallet::SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int
             }
             return true;
         }
-
+        LogPrintf("\n nValueRet=%d, target value = %d\n", nValueRet, nTotalLower);
         if (nTotalLower < nTargetValue) {
             if (coinLowestLarger.second.first == NULL) // there is no input larger than nTargetValue
             {
@@ -2420,6 +2434,29 @@ bool CWallet::SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int
     return true;
 }
 
+void CWallet::resetPendingOutPoints()
+{
+	if (chainActive.Height() % 20 != 0) return;
+	{
+		LOCK(mempool.cs);
+		{
+			inSpendQueueOutpoints.clear();
+			for (std::map<uint256, CTxMemPoolEntry>::const_iterator it = mempool.mapTx.begin(); it != mempool.mapTx.end(); ++it) {
+				const CTransaction& tx = it->second.GetTx();
+				for(size_t i = 0; i < tx.vin.size(); i++) {
+					COutPoint prevout = findMyOutPoint(tx.vin[i]);
+					if (prevout.hash.IsNull()) {
+						break;
+					} else {
+						inSpendQueueOutpoints[prevout] = true;
+					}
+				}
+
+			}
+		}
+	}
+}
+
 bool CWallet::SelectCoins(const CAmount& nTargetValue, set<pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, const CCoinControl* coinControl, AvailableCoinsType coin_type, bool useIX)
 {
     // Note: this function should never be used for "always free" tx types like dstx
@@ -2465,7 +2502,6 @@ bool CWallet::SelectCoins(const CAmount& nTargetValue, set<pair<const CWalletTx*
                 LOCK(mempool.cs); // protect pool.mapNextTx
                 {
                 	COutPoint outpoint(wtxid, i);
-                	if (mapTxSpends.count(outpoint)) continue;
                 	if (inSpendQueueOutpoints.count(outpoint)) {
                 		continue;
                 	}
@@ -5301,6 +5337,7 @@ void CWallet::UnlockAllCoins()
 
 bool CWallet::IsLockedCoin(uint256 hash, unsigned int n) const
 {
+
     AssertLockHeld(cs_wallet); // setLockedCoins
     COutPoint outpt(hash, n);
 

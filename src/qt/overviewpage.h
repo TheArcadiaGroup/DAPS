@@ -99,6 +99,7 @@ private slots:
     void on_lockUnlock();
     void unlockDialogIsFinished(int result);
     void lockDialogIsFinished(int result);
+    void updateLockStatus(int status);
 };
 
 #endif // BITCOIN_QT_OVERVIEWPAGE_H

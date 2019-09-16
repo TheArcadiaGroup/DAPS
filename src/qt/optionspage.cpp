@@ -181,7 +181,7 @@ void OptionsPage::setMapper()
 void OptionsPage::on_pushButtonPassword_clicked()
 {
     if ( (!ui->lineEditNewPass->text().length()) || (!ui->lineEditNewPassRepeat->text().length()) ) {
-        QMessageBox::critical(this, tr("Wallet encryption failed"),
+        QMessageBox::critical(this, tr("Wallet Encryption Failed"),
                     tr("The passphrase entered for wallet encryption was empty or contained spaces. Please try again."));
         return;
     }
@@ -203,28 +203,28 @@ void OptionsPage::on_pushButtonPassword_clicked()
         double guesses;
 
         if (oldPass == newPass) {
-            QMessageBox::critical(this, tr("Wallet encryption failed"),
+            QMessageBox::critical(this, tr("Wallet Encryption Failed"),
                     tr("The passphrases entered for wallet encryption is older. Please try again."));
         }
         else if (newPass.length() < 10) {
-            QMessageBox::critical(this, tr("Wallet encryption failed"),
+            QMessageBox::critical(this, tr("Wallet Encryption Failed"),
                     tr("The passphrase's length has to be more than 10. Please try again."));
         }
         else if (!pwalletMain->checkPassPhraseRule(newPass.c_str())) {
-            QMessageBox::critical(this, tr("Wallet encryption failed"),
-                    tr("The passphrase must contain lower, upper, digit, symbol."));
+            QMessageBox::critical(this, tr("Wallet Encryption Failed"),
+                    tr("The passphrase must contain lower, upper, digit, symbol. Please try again."));
         }
         else if (zxcvbn_password_strength(newPass.c_str(), NULL, &guesses, NULL) < 0 || guesses < 10000) {
-            QMessageBox::critical(this, tr("Wallet encryption failed"),
-                    tr("The passphrase is weakness."));
+            QMessageBox::critical(this, tr("Wallet Encryption Failed"),
+                    tr("The passphrase is too weak. You must use a minimum passphrase length of 10 characters and use uppercase letters, lowercase letters, numbers, and symbols. Please try again."));
         }
     	else if (model->changePassphrase(oldPass, newPass)) {
-    		QMessageBox::information(this, tr("Passphrase change successful"),
+    		QMessageBox::information(this, tr("Passphrase Change Successful"),
                     tr("Wallet passphrase was successfully changed. Please remember your passphrase as there is no way to recover it."));
     		success = true;
         }
     } else {
-    		QMessageBox::critical(this, tr("Wallet encryption failed"),
+    		QMessageBox::critical(this, tr("Wallet Encryption Failed"),
     				tr("The passphrases entered for wallet encryption do not match. Please try again."));
     }
 
@@ -307,8 +307,8 @@ bool OptionsPage::matchNewPasswords()
 
 void OptionsPage::on_EnableStaking(ToggleButton* widget)
 {
-	if (chainActive.Height() < Params().LAST_POW_BLOCK()) {
-        if (widget->getState()) {
+    if (chainActive.Height() < Params().LAST_POW_BLOCK()) {
+    	if (widget->getState()) {
             QString msg("PoW blocks are still being mined.\nPlease wait until Block #" + Params().LAST_POW_BLOCK());
             QMessageBox msgBox;
             msgBox.setWindowTitle("Information");
@@ -316,10 +316,10 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
             msgBox.setText(msg);
             msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
             msgBox.exec();
-        }
-        widget->setState(false);
-        pwalletMain->WriteStakingStatus(false);
-        pwalletMain->walletStakingInProgress = false;
+    	}
+    	widget->setState(false);
+    	pwalletMain->WriteStakingStatus(false);
+    	pwalletMain->walletStakingInProgress = false;
         return;
     }
     if (widget->getState()){
@@ -403,7 +403,7 @@ void OptionsPage::on_Enable2FA(ToggleButton* widget)
         typeOf2FA = DISABLE;
 
         TwoFAConfirmDialog codedlg;
-        codedlg.setWindowTitle("2FACode verification");
+        codedlg.setWindowTitle("2FACode Verification");
         codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
         connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
         codedlg.exec();
@@ -413,7 +413,7 @@ void OptionsPage::on_Enable2FA(ToggleButton* widget)
 void OptionsPage::qrDialogIsFinished(int result) {
     if(result == QDialog::Accepted){
         TwoFADialog codedlg;
-        codedlg.setWindowTitle("2FACode verification");
+        codedlg.setWindowTitle("2FACode Verification");
         codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
         connect(&codedlg, SIGNAL(finished (int)), this, SLOT(dialogIsFinished(int)));
         codedlg.exec();
@@ -545,7 +545,7 @@ void OptionsPage::on_day() {
     typeOf2FA = DAY;
 
     TwoFAConfirmDialog codedlg;
-    codedlg.setWindowTitle("2FACode verification");
+    codedlg.setWindowTitle("2FACode Verification");
     codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
     connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
     codedlg.exec();
@@ -555,7 +555,7 @@ void OptionsPage::on_week() {
     typeOf2FA = WEEK;
 
     TwoFAConfirmDialog codedlg;
-    codedlg.setWindowTitle("2FACode verification");
+    codedlg.setWindowTitle("2FACode Verification");
     codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
     connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
     codedlg.exec();   
@@ -565,7 +565,7 @@ void OptionsPage::on_month() {
     typeOf2FA = MONTH;
 
     TwoFAConfirmDialog codedlg;
-    codedlg.setWindowTitle("2FACode verification");
+    codedlg.setWindowTitle("2FACode Verification");
     codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
     connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
     codedlg.exec();

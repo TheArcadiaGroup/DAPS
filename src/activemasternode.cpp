@@ -92,7 +92,6 @@ void CActiveMasternode::ManageStatus()
                 LogPrintf("CActiveMasternode::ManageStatus() - %s\n", notCapableReason);
                 return;
             }
-
             LOCK(pwalletMain->cs_wallet);
             pwalletMain->LockCoin(vin.prevout);
 

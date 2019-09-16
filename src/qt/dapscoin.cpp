@@ -182,6 +182,7 @@ public:
 
 public slots:
     void initialize();
+    void registerNodeSignal();
     void shutdown();
     void restart(QStringList args);
 
@@ -239,6 +240,7 @@ public slots:
 
 signals:
     void requestedInitialize();
+    void requestedRegisterNodeSignal();
     void requestedRestart(QStringList args);
     void requestedShutdown();
     void stopThread();
@@ -271,13 +273,17 @@ void BitcoinCore::handleRunawayException(std::exception* e)
     emit runawayException(QString::fromStdString(strMiscWarning));
 }
 
+void BitcoinCore::registerNodeSignal() {
+    RegisterNodeSignals(GetNodeSignals()); 
+}
+
 void BitcoinCore::initialize()
 {
     execute_restart = true;
 
     try {
         qDebug() << __func__ << ": Running AppInit2 in thread";
-        int rv = AppInit2(threadGroup, scheduler);
+        int rv = AppInit2(threadGroup, scheduler, false);
         emit initializeResult(rv);
     } catch (std::exception& e) {
         handleRunawayException(&e);
@@ -408,6 +414,7 @@ void BitcoinApplication::startThread()
     connect(executor, SIGNAL(initializeResult(int)), this, SLOT(initializeResult(int)));
     connect(executor, SIGNAL(shutdownResult(int)), this, SLOT(shutdownResult(int)));
     connect(executor, SIGNAL(runawayException(QString)), this, SLOT(handleRunawayException(QString)));
+    connect(this, SIGNAL(requestedRegisterNodeSignal()), executor, SLOT(registerNodeSignal()));
     connect(this, SIGNAL(requestedInitialize()), executor, SLOT(initialize()));
     connect(this, SIGNAL(requestedShutdown()), executor, SLOT(shutdown()));
     connect(window, SIGNAL(requestedRestart(QStringList)), executor, SLOT(restart(QStringList)));
@@ -460,9 +467,23 @@ void BitcoinApplication::initializeResult(int retval)
 #endif
         clientModel = new ClientModel(optionsModel);
         window->setClientModel(clientModel);
+
+        bool walletUnlocked = false;
 #ifdef ENABLE_WALLET
         if (pwalletMain) {
             walletModel = new WalletModel(pwalletMain, optionsModel);
+
+            if (walletModel->getEncryptionStatus() == WalletModel::Locked) {  
+                UnlockDialog unlockdlg;
+                unlockdlg.setWindowTitle("Unlock Keychain Wallet");
+                unlockdlg.setModel(walletModel);
+                unlockdlg.setStyleSheet(GUIUtil::loadStyleSheet());
+                if (unlockdlg.exec() != QDialog::Accepted)
+                    QApplication::quit();
+                walletUnlocked = true;
+                emit requestedRegisterNodeSignal();
+            }
+
             window->addWallet(BitcoinGUI::DEFAULT_WALLET, walletModel);
             window->setCurrentWallet(BitcoinGUI::DEFAULT_WALLET);
         }
@@ -490,6 +511,9 @@ void BitcoinApplication::initializeResult(int retval)
         		dlg.setWindowTitle("Encrypt Wallet");
         		dlg.setStyleSheet(GUIUtil::loadStyleSheet());
         		dlg.exec();
+
+                emit requestedRegisterNodeSignal();
+                walletModel->updateStatus();
         	}
         }
 #endif

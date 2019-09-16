@@ -24,7 +24,7 @@ bool ShutdownRequested();
 void Interrupt(boost::thread_group& threadGroup);
 void Shutdown();
 void PrepareShutdown();
-bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler);
+bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDaemon);
 
 /** The help message mode determines what help message to show */
 enum HelpMessageMode {

@@ -310,7 +310,7 @@ public:
     COutPoint findMyOutPoint(const CTxIn& txin) const;
     bool SelectCoinsCollateral(std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet);
     static int ComputeTxSize(size_t numIn, size_t numOut, size_t ringSize);
-
+    void resetPendingOutPoints();
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet

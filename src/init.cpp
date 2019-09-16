@@ -677,7 +677,7 @@ bool AppInitServers(boost::thread_group& threadGroup)
 /** Initialize dapscoin.
  *  @pre Parameters should be parsed and config file should be read.
  */
-bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
+bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDaemon)
 {
 // ********************************************************* Step 1: setup
 #ifdef _MSC_VER
@@ -1138,9 +1138,10 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     }  // (!fDisableWallet)
 #endif // ENABLE_WALLET
     // ********************************************************* Step 6: network initialization
-
-    RegisterNodeSignals(GetNodeSignals());
-
+    //run daemon only
+    if (isDaemon)
+        RegisterNodeSignals(GetNodeSignals());       // block first after unlock/lock retry register
+    
     if (mapArgs.count("-onlynet")) {
         std::set<enum Network> nets;
         BOOST_FOREACH (std::string snet, mapMultiArgs["-onlynet"]) {

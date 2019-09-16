@@ -53,7 +53,7 @@ public:
     void setModel(WalletModel* model);
     void setMapper();
     bool matchNewPasswords();
-    StakingStatusError getStakingStatusError(QStringList&);
+    StakingStatusError getStakingStatusError(QString&);
 
 public slots:
     void on_EnableStaking(ToggleButton*);

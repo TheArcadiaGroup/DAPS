@@ -581,7 +581,6 @@ void CObfuscationPool::CheckFinalTransaction()
     if (!fMasterNode) return; // check and relay final tx only on masternode
 
     CWalletTx txNew = CWalletTx(pwalletMain, finalTransaction);
-
     LOCK2(cs_main, pwalletMain->cs_wallet);
     {
         LogPrint("obfuscation", "Transaction 2: %s\n", txNew.ToString());

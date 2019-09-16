@@ -148,7 +148,7 @@ bool AppInit(int argc, char* argv[])
         }
 #endif
         SoftSetBoolArg("-server", true);
-        fRet = AppInit2(threadGroup, scheduler);
+        fRet = AppInit2(threadGroup, scheduler, true);
     } catch (std::exception& e) {
         PrintExceptionContinue(&e, "AppInit()");
     } catch (...) {

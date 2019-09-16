@@ -255,6 +255,8 @@ void OverviewPage::setWalletModel(WalletModel* model)
                                  SLOT(refreshRecentTransactions()));
         connect(model, SIGNAL(WalletUnlocked()), this,
                                          SLOT(updateBalance()));
+        connect(model, SIGNAL(encryptionStatusChanged(int)), this,
+                                         SLOT(updateLockStatus(int)));
         
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
 
@@ -262,14 +264,11 @@ void OverviewPage::setWalletModel(WalletModel* model)
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
 
         connect(walletModel, SIGNAL(RefreshRecent()), this, SLOT(refreshRecentTransactions()));
+
+        updateLockStatus(walletModel->getEncryptionStatus());
     }
     // update the display unit, to not use the default ("DAPS")
     updateDisplayUnit();
-    // update wallet state
-    // if (walletModel->getEncryptionStatus() == WalletModel::Locked || walletModel->getEncryptionStatus() == WalletModel::UnlockedForAnonymizationOnly)
-        ui->btnLockUnlock->setStyleSheet("border-image: url(:/images/lock) 0 0 0 0 stretch stretch; width: 20px;");
-    // else
-        // ui->btnLockUnlock->setStyleSheet("border-image: url(:/images/unlock) 0 0 0 0 stretch stretch;");
 }
 
 void OverviewPage::updateBalance()
@@ -517,4 +516,15 @@ void OverviewPage::lockDialogIsFinished(int result) {
     if(result == QDialog::Accepted){
         ui->btnLockUnlock->setStyleSheet("border-image: url(:/images/lock) 0 0 0 0 stretch stretch; width: 20px;");
     }
+}
+
+void OverviewPage::updateLockStatus(int status) {
+    if (!walletModel)
+        return;
+
+    // update wallet state
+    if (status == WalletModel::Locked || status == WalletModel::UnlockedForAnonymizationOnly)
+        ui->btnLockUnlock->setStyleSheet("border-image: url(:/images/lock) 0 0 0 0 stretch stretch; width: 20px;");
+    else
+        ui->btnLockUnlock->setStyleSheet("border-image: url(:/images/unlock) 0 0 0 0 stretch stretch; width: 30px;");
 }
