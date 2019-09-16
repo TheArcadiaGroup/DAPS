@@ -109,8 +109,8 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
         make HOST="x86_64-apple-darwin11" -j2 && \
         make deploy && \
         make install HOST="x86_64-apple-darwin11" DESTDIR=/BUILD/ && \
-        mv Dapscoin-Core.dmg DAPScoin-QT.dmg && \
-        cp DAPScoin-QT.dmg /BUILD/bin/; \
+        mv Dapscoin-Core.dmg DAPScoin-Qt.dmg && \
+        cp DAPScoin-Qt.dmg /BUILD/bin/; \
 #
     else echo "Build target not recognized."; \
       exit 127; \
