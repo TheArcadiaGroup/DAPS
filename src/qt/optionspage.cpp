@@ -87,8 +87,8 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
     ui->code_6->setVisible(false);
 
     timerStakingToggleSync = new QTimer();
-    connect(timerStakingToggleSync, SIGNAL(timeout()), this, SLOT(setStakingStatus()));
-    timerStakingToggleSync->start(20000);
+    connect(timerStakingToggleSync, SIGNAL(timeout()), this, SLOT(setStakingToggle()));
+    timerStakingToggleSync->start(10000);
 }
 
 void OptionsPage::setStakingToggle()
