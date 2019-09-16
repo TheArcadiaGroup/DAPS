@@ -44,13 +44,7 @@ SendCoinsEntry::SendCoinsEntry(QWidget* parent) : QStackedWidget(parent),
     //Cam: Hide address book button
     ui->addressBookButton->setVisible(false);
 
-    QDoubleValidator *dblVal = new QDoubleValidator(0, Params().MAX_MONEY, 6, ui->payAmount);
-    dblVal->setNotation(QDoubleValidator::StandardNotation);
-    dblVal->setLocale(QLocale::C);
-    ui->payAmount->setValidator(dblVal);
-
-
-    //place holder text for payAmount
+    ui->payAmount->setValidator(new QRegExpValidator(QRegExp("[1-9][0-9]*.[0-9]*"), this));
 }
 
 SendCoinsEntry::~SendCoinsEntry()
