@@ -28,7 +28,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Enter the 6 digit code from your authenticator app below:</string>
+        <string>Enter Code</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
