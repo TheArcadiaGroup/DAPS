@@ -56,10 +56,7 @@ ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent),
         pwalletMain->CreatePrivacyAccount();
      }
 
-    QDoubleValidator *dblVal = new QDoubleValidator(0, Params().MAX_MONEY, 6, ui->reqAmount);
-    dblVal->setNotation(QDoubleValidator::StandardNotation);
-    dblVal->setLocale(QLocale::C);
-    ui->reqAmount->setValidator(dblVal);
+    ui->reqAmount->setValidator(new QRegExpValidator(QRegExp("[0-9]*.[0-9]*"), this));
 }
 
 static inline int64_t roundint64(double d)
