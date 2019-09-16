@@ -127,45 +127,11 @@ void OptionsPage::resizeEvent(QResizeEvent* event)
 }
 
 void OptionsPage::on_pushButtonSave_clicked() {
-    if (ui->lineEditWithhold->text().trimmed().isEmpty()) {
-        ui->lineEditWithhold->setStyleSheet("border: 2px solid red");
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("Reserve Balance Empty");
-        msgBox.setText("DAPS reserve amount is empty and must be a minimum of 1.\nPlease click Disable if you would like to turn it off.");
-        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
-        msgBox.setIcon(QMessageBox::Information);
-        msgBox.exec();
-        return;
-    }
-    nReserveBalance = getValidatedAmount();
-
-    CWalletDB walletdb(pwalletMain->strWalletFile);
-    walletdb.WriteReserveAmount(nReserveBalance / COIN);
-
-    emit model->stakingStatusChanged(nLastCoinStakeSearchInterval);
-    ui->lineEditWithhold->setStyleSheet(GUIUtil::loadStyleSheet());
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("Reserve Balance Set");
-    msgBox.setText("Reserve balance of " + BitcoinUnits::format(0, nReserveBalance).toUtf8() + " is successfully set.");
-    msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
-    msgBox.setIcon(QMessageBox::Information);
-    msgBox.exec();
+    //disable in multisig wallet
 }
 
 void OptionsPage::on_pushButtonDisable_clicked() {
-    ui->lineEditWithhold->setText("0");
-    nReserveBalance = getValidatedAmount();
-
-    CWalletDB walletdb(pwalletMain->strWalletFile);
-    walletdb.WriteReserveAmount(nReserveBalance / COIN);
-
-    emit model->stakingStatusChanged(nLastCoinStakeSearchInterval);
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("Reserve Balance Disabled");
-    msgBox.setText("Reserve balance disabled.");
-    msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
-    msgBox.setIcon(QMessageBox::Information);
-    msgBox.exec();
+    //disable in multisig wallet
 }
 
 void OptionsPage::keyPressEvent(QKeyEvent* event)
@@ -307,87 +273,12 @@ bool OptionsPage::matchNewPasswords()
 
 void OptionsPage::on_EnableStaking(ToggleButton* widget)
 {
-    if (chainActive.Height() < Params().LAST_POW_BLOCK()) {
-    	if (widget->getState()) {
-            QString msg("PoW blocks are still being mined.\nPlease wait until Block #" + Params().LAST_POW_BLOCK());
-            QMessageBox msgBox;
-            msgBox.setWindowTitle("Information");
-            msgBox.setIcon(QMessageBox::Information);
-            msgBox.setText(msg);
-            msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
-            msgBox.exec();
-    	}
-    	widget->setState(false);
-    	pwalletMain->WriteStakingStatus(false);
-    	pwalletMain->walletStakingInProgress = false;
-        return;
-    }
-    if (widget->getState()){
-        QString error;
-        StakingStatusError stt = model->getStakingStatusError(error);
-        if (!error.length()) {
-            pwalletMain->WriteStakingStatus(true);
-            emit model->stakingStatusChanged(true);
-            model->generateCoins(true, 1);
-        } else {
-            if (stt != StakingStatusError::UTXO_UNDER_THRESHOLD) {
-                QMessageBox msgBox;
-                QString msg(error);
-                msgBox.setWindowTitle("Warning: Staking Issue");
-                msgBox.setIcon(QMessageBox::Warning);
-                msgBox.setText(msg);
-                msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
-                msgBox.exec();
-                widget->setState(false);
-                nLastCoinStakeSearchInterval = 0;
-                emit model->stakingStatusChanged(false);
-                pwalletMain->WriteStakingStatus(false);
-            } else {
-                QMessageBox::StandardButton reply;
-                reply = QMessageBox::question(this, "Create Stakable Transaction?", error, QMessageBox::Yes|QMessageBox::No);
-                if (reply == QMessageBox::Yes) {
-                    //ask yes or no
-                    //send to this self wallet MIN staking amount
-                    std::string masterAddr;
-                    model->getCWallet()->ComputeStealthPublicAddress("masteraccount", masterAddr);
-                    CWalletTx resultTx;
-                    bool success = false;
-                    try {
-                        success = model->getCWallet()->SendToStealthAddress(
-                                masterAddr,
-                                CWallet::MINIMUM_STAKE_AMOUNT,
-                                resultTx,
-                                false
-                        );
-                    } catch (const std::exception& err) {
-                        QMessageBox::warning(this, "Could not send", QString(err.what()));
-                        return;
-                    }
-
-                    if (success){
-                        QMessageBox txcomplete;
-                        txcomplete.setText("Transaction initialized.");
-                        txcomplete.setInformativeText(resultTx.GetHash().GetHex().c_str());
-                        txcomplete.setStyleSheet(GUIUtil::loadStyleSheet());
-                        txcomplete.setStyleSheet("QMessageBox {messagebox-text-interaction-flags: 5;}");
-                        txcomplete.exec();
-                        WalletUtil::getTx(pwalletMain, resultTx.GetHash());
-                    }
-                } else {
-                    widget->setState(false);
-                    nLastCoinStakeSearchInterval = 0;
-                    emit model->stakingStatusChanged(false);
-                    pwalletMain->WriteStakingStatus(false);
-                }
-            }
-        }
-    } else {
-        nLastCoinStakeSearchInterval = 0;
-        model->generateCoins(false, 0);
-        emit model->stakingStatusChanged(false);
-        pwalletMain->walletStakingInProgress = false;
-        pwalletMain->WriteStakingStatus(false);
-    }
+	//dont support staking in multisig wallet
+	QString msg("Staking is not supported in multisig wallet!");
+	QStringList l;
+	l.push_back(msg);
+	GUIUtil::prompt(QString("<br><br>")+l.join(QString("<br><br>"))+QString("<br><br>"));
+	widget->setState(false);
 }
 
 void OptionsPage::on_Enable2FA(ToggleButton* widget)
