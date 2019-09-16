@@ -546,6 +546,7 @@ void BitcoinGUI::createToolBars()
 
         toolbar->setMovable(false); // remove unused icon in upper left corner
         overviewAction->setChecked(true);
+        toolbar->setStyleSheet("QToolBar{spacing:25px;}");
 
         // Create NavBar
         QToolBar* bottomToolbar = new QToolBar(this);
