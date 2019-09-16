@@ -258,6 +258,9 @@ void HistoryPage::updateTableData(CWallet* wallet)
 					cell->setData(0, data);
 				}
 				break;
+            case 4: /*confirmations*/
+                cell->setData(0, data.toInt());
+                break;
 			default:
 				cell->setData(0, data);
 				break;
