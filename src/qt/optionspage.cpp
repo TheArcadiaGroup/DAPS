@@ -318,7 +318,7 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
     int status = model->getEncryptionStatus();
     if (status == WalletModel::Locked || status == WalletModel::UnlockedForAnonymizationOnly) {
         QMessageBox::information(this, tr("Staking Setting"),
-        tr("Please first unlock the wallet."));
+        tr("Please unlock the keychain wallet with your passphrase before changing this setting."));
         widget->setState(!widget->getState());
         return;
     }
