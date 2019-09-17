@@ -207,7 +207,6 @@ libbitcoin_server_a_SOURCES = \
   chain.cpp \
   checkpoints.cpp \
   httprpc.cpp \
-  httpserver.cpp \
   init.cpp \
   leveldbwrapper.cpp \
   main.cpp \
