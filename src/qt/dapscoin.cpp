@@ -41,6 +41,7 @@
 #endif
 
 #include "encryptdialog.h"
+#include "unlockdialog.h"
 #include "multisigsetupchoosenumsigners.h"
 #include "multisigsetupaddsigner.h"
 #include "multisigsetupfinish.h"
