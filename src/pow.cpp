@@ -45,10 +45,14 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         uint256 bnTargetLimit = (~uint256(0) >> 24);
         int64_t nTargetSpacing = 60;
         int64_t nTargetTimespan = 60 * 40;
-
+        //finding last PoS block
+        CBlockIndex* pLastPoS = pindexLast->pprev;
+        while(!pLastPoS->IsProofOfStake() && pLastPoS->nHeight > Params().LAST_POW_BLOCK()) {
+        	pLastPoS = pLastPoS->pprev;
+        }
         int64_t nActualSpacing = 0;
         if (pindexLast->nHeight != 0)
-            nActualSpacing = pindexLast->GetBlockTime() - pindexLast->pprev->GetBlockTime();
+            nActualSpacing = pindexLast->GetBlockTime() - pLastPoS->GetBlockTime();
 
         if (nActualSpacing < 0)
             nActualSpacing = 1;
