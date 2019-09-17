@@ -94,5 +94,5 @@ spec:
           claimName: staker-27-pv-claim
       dnsPolicy: ClusterFirst
       imagePullSecrets:
-      - name: regcred
+      - name: codefresh-generated-r.cfcr.io-cfcr-default
       
