@@ -51,7 +51,6 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
     connect(ui->lineEditNewPassRepeat, SIGNAL(textChanged(const QString &)), this, SLOT(validateNewPassRepeat()));
     connect(ui->lineEditOldPass, SIGNAL(textChanged(const QString &)), this, SLOT(onOldPassChanged()));
 
-    ui->line_2->setVisible(false);
     ui->lineEditWithhold->setVisible(false);
     ui->labelStaking->setVisible(false);
     ui->label_2->setVisible(false);
