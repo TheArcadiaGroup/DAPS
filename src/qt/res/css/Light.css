@@ -43,6 +43,7 @@ QComboBox:disabled,
   font-size: 11px;
   font-style: italic;
   padding-left: 32px;
+  color: white;
 }
 
 QDialog {
