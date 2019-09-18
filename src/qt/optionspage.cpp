@@ -383,13 +383,22 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
         			}
 
         			if (success){
-        				QMessageBox txcomplete;
-        				txcomplete.setText("Transaction initialized.");
-        				txcomplete.setInformativeText(resultTx.GetHash().GetHex().c_str());
-        				txcomplete.setStyleSheet(GUIUtil::loadStyleSheet());
-        				txcomplete.setStyleSheet("QMessageBox {messagebox-text-interaction-flags: 5;}");
-        				txcomplete.exec();
-        				WalletUtil::getTx(pwalletMain, resultTx.GetHash());
+                        WalletUtil::getTx(pwalletMain, resultTx.GetHash());
+                        QString txhash = resultTx.GetHash().GetHex().c_str();
+                        QMessageBox msgBox;
+                        QPushButton *copyButton = msgBox.addButton(tr("Copy"), QMessageBox::ActionRole);
+                        copyButton->setStyleSheet("background:transparent;");
+                        copyButton->setIcon(QIcon(":/icons/editcopy"));
+                        msgBox.setWindowTitle("Transaction Initialized");
+                        msgBox.setText("Transaction initialized.\n\n" + txhash);
+                        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+                        msgBox.setIcon(QMessageBox::Information);
+                        msgBox.exec();
+
+                        if (msgBox.clickedButton() == copyButton) {
+                        //Copy txhash to clipboard
+                        GUIUtil::setClipboard(txhash);
+                        }
         			}
         		} else {
         			widget->setState(false);
