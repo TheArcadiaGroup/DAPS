@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Multi-signature Wallet Setup</string>
+   <string>Multisignature Wallet Setup</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0">
    <property name="topMargin">

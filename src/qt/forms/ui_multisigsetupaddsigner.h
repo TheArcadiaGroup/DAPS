@@ -94,7 +94,7 @@ public:
 
     void retranslateUi(QDialog *MultiSigSetupAddSigner)
     {
-        MultiSigSetupAddSigner->setWindowTitle(QCoreApplication::translate("MultiSigSetupAddSigner", "Multi-signature Wallet Setup", nullptr));
+        MultiSigSetupAddSigner->setWindowTitle(QCoreApplication::translate("MultiSigSetupAddSigner", "Multisignature Wallet Setup", nullptr));
         label->setText(QCoreApplication::translate("MultiSigSetupAddSigner", "My Combo Key (1 of 5)", nullptr));
         label_2->setText(QCoreApplication::translate("MultiSigSetupAddSigner", "This is your combo key, consisting of your multisignature keychain wallet's public spend key, \n"
 "and private view key. Send this combo key to your n co-signers", nullptr));
