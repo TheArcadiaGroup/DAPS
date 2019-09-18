@@ -255,7 +255,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Quantity of DAPS to withhold from auto-staking</string>
+      <string>Keep as spendable (not staking)</string>
      </property>
     </widget>
    </item>
