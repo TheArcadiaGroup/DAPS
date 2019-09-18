@@ -277,7 +277,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(overviewAction);
 
-    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&   Create"), this);
+    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&   Create\nTransaction"), this);
     sendCoinsAction->setToolTip(QString());
     sendCoinsAction->setCheckable(true);
 #ifdef Q_OS_MAC
