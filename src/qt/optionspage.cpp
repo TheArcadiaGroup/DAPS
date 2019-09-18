@@ -214,7 +214,7 @@ void OptionsPage::on_pushButtonPassword_clicked()
 
         if (oldPass == newPass) {
             QMessageBox::critical(this, tr("Wallet Encryption Failed"),
-                    tr("The passphrase you have entered is the same as your old passphrase. Please use a different passphrase if you would like to change it".));
+                    tr("The passphrase you have entered is the same as your old passphrase. Please use a different passphrase if you would like to change it."));
         }
         else if (newPass.length() < 10) {
             QMessageBox::critical(this, tr("Wallet Encryption Failed"),
