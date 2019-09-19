@@ -99,6 +99,7 @@ const Genesis = (props) => {
             <span className={`${Style.CopyBackground}`} onClick={() => { navigator.clipboard.writeText(blockData['HASH']) }}>
             </span>
         </div>
+        <h2 className={`${Style.GenesisPhrase}`}>Privacy Is A Right, Not A Privilege</h2>
         
     </div>);
 };
