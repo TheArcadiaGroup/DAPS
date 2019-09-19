@@ -90,7 +90,7 @@ void EncryptDialog::on_acceptPassphrase() {
 
         if (model->setWalletEncrypted(true, newPass))
             QMessageBox::information(this, tr("Wallet encryption successful"),
-                    tr("Wallet passphrase was successfully set.\n Please remember your passphrase as there is no way to recover it."));
+                    tr("Wallet passphrase was successfully set.\nPlease remember your passphrase as there is no way to recover it."));
         accept();
     } else {
             QMessageBox::critical(this, tr("Wallet encryption failed"),

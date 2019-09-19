@@ -102,6 +102,18 @@ public:
     void WriteScreenIndex(int index);
 
     int ReadScreenIndex();
+    
+    bool Write2FA(bool status);
+    bool Read2FA();
+
+    bool Write2FASecret(std::string secret);
+    std::string Read2FASecret();
+
+    bool Write2FAPeriod(int period);
+    int Read2FAPeriod();
+    
+    bool Write2FALastTime(uint64_t lastTime);
+    uint64_t Read2FALastTime();
 
     bool WriteScannedBlockHeight(int height);
     bool ReadScannedBlockHeight(int& height);

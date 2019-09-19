@@ -819,6 +819,14 @@ public:
     static bool CreateCommitmentWithZeroBlind(const CAmount val, unsigned char* pBlind, std::vector<unsigned char>& commitment);
     bool WriteStakingStatus(bool status);
     bool ReadStakingStatus();
+    bool Write2FA(bool status);
+    bool Read2FA();
+    bool Write2FASecret(std::string secret);
+    std::string Read2FASecret();
+    bool Write2FAPeriod(int period);
+    int Read2FAPeriod();
+    bool Write2FALastTime(uint64_t lastTime);
+    uint64_t Read2FALastTime();
     bool MakeShnorrSignature(CTransaction&);
     bool MakeShnorrSignatureTxIn(CTxIn& txin, uint256);
     bool computeSharedSec(const CTransaction& tx, const CTxOut& out, CPubKey& sharedSec) const;

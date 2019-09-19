@@ -28,3 +28,7 @@
 :local(.Circle){
     margin-top:-50%;
 }
+
+:local(.Data){
+    overflow-wrap: break-word;
+}

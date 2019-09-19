@@ -481,6 +481,7 @@ void BitcoinApplication::initializeResult(int retval)
                 unlockdlg.setWindowTitle("Unlock Keychain Wallet");
                 unlockdlg.setModel(walletModel);
                 unlockdlg.setStyleSheet(GUIUtil::loadStyleSheet());
+                unlockdlg.setWindowFlags(Qt::WindowStaysOnTopHint);
                 if (unlockdlg.exec() != QDialog::Accepted)
                     QApplication::quit();
                 walletUnlocked = true;

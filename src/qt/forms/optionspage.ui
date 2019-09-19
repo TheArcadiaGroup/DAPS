@@ -22,88 +22,109 @@
   <property name="sizeGripEnabled">
    <bool>false</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
-   <item alignment="Qt::AlignRight">
-    <widget class="QLabel" name="labelTheme">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Theme Selection:</string>
-     </property>
-    </widget>
-   </item>
-   <item alignment="Qt::AlignRight">
-    <widget class="ToggleButton" name="toggleTheme" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="toolTip">
-      <string>Switch between Dark and Light theme</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="OptionA">
-      <string>Dark</string>
-     </property>
-     <property name="OptionB">
-      <string>Light</string>
-     </property>
-     <property name="fixedSize">
-      <size>
-       <width>100</width>
-       <height>55</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item alignment="Qt::AlignRight">
-    <widget class="QLabel" name="labelStaking">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Staking Status:</string>
-     </property>
-    </widget>
-   </item>
-   <item alignment="Qt::AlignRight">
-    <widget class="ToggleButton" name="toggleStaking" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="toolTip">
-      <string>Turn staking on or off</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="OptionA">
-      <string>On</string>
-     </property>
-     <property name="OptionB">
-      <string>Off</string>
-     </property>
-     <property name="fixedSize">
-      <size>
-       <width>100</width>
-       <height>55</height>
-      </size>
-     </property>
-    </widget>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
+   <item>
+    <layout class="QHBoxLayout" name="hlLayout_9">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <item alignment="Qt::AlignLeft">
+        <widget class="QLabel" name="labelStaking">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Staking Status:</string>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignLeft">
+        <widget class="ToggleButton" name="toggleStaking" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Turn staking on or off</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="OptionA">
+          <string>On</string>
+         </property>
+         <property name="OptionB">
+          <string>Off</string>
+         </property>
+         <property name="fixedSize">
+          <size>
+           <width>100</width>
+           <height>55</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <item alignment="Qt::AlignRight">
+        <widget class="QLabel" name="labelTheme">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Theme Selection:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignRight">
+        <widget class="ToggleButton" name="toggleTheme" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Switch between Dark and Light theme</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="OptionA">
+          <string>Dark</string>
+         </property>
+         <property name="OptionB">
+          <string>Light</string>
+         </property>
+         <property name="fixedSize">
+          <size>
+           <width>100</width>
+           <height>55</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QLabel" name="line_1">
@@ -234,7 +255,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Quantity of DAPS to withhold from auto-staking</string>
+      <string>Quantity of DAPS to keep as spendable (not staking)</string>
      </property>
     </widget>
    </item>

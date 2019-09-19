@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: daps-staker-15
+spec:
+  ports:
+    - port: 53575
+      name: regtest
+    - port: 53573
+      name: testnet
+    - port: 53572
+      name: mainnet
+  selector:
+    app: daps-staker-15
+  sessionAffinity: None
+  type: LoadBalancer
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: staker-15-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 9Gi
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    namespace: default
+    name: staker-15-pv-claim
+  gcePersistentDisk:
+    fsType: ext4
+    pdName: stakingnode-15-service
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: staker-15-pv-claim
+  labels:
+    app: daps-staker-15
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 9Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: daps-staker-15
+  labels:
+    app: daps-staker-15
+spec:
+  selector:
+    matchLabels:
+      app: daps-staker-15
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: daps-staker-15
+    spec:
+      hostAliases:
+      - ip: "10.10.10.65"
+        hostnames:
+        - "staker.15"
+      terminationGracePeriodSeconds: 3
+      containers:
+      - image: r.cfcr.io/hysmagus/daps_min:develop
+        imagePullPolicy: Always
+        name: dapsd
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash","-c","dapscoin-cli stop"]
+        command: ["/bin/bash","-c","sleep 30 && dapscoind -daemon && trap: TERM INT; sleep infinity & wait"]
+        ports:
+        - containerPort: 53575
+          name: regtest
+        - containerPort: 53573
+          name: testnet
+        - containerPort: 53572
+          name: mainnet
+        volumeMounts:
+        - name: staker15data
+          mountPath: /root/.dapscoin/
+      volumes:
+      - name: staker15data
+        persistentVolumeClaim:
+          claimName: staker-15-pv-claim
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: codefresh-generated-r.cfcr.io-cfcr-default
+      

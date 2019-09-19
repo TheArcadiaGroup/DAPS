@@ -135,7 +135,7 @@ spec:
         app: explorer
     spec:
       hostAliases:
-        - ip: "10.10.10.5"
+        - ip: "10.10.10.200"
           hostnames:
             - "explorer"
       terminationGracePeriodSeconds: 600

@@ -245,9 +245,6 @@ extern UniValue createprivacyaccount(const UniValue& params, bool fHelp);
 extern UniValue importkeys(const UniValue& params, bool fHelp);
 extern UniValue revealviewprivatekey(const UniValue& params, bool fHelp);
 extern UniValue revealspendprivatekey(const UniValue& params, bool fHelp);
-extern UniValue addcosigners(const UniValue& params, bool fHelp);
-extern UniValue showmultisigaddress(const UniValue& params, bool fHelp);
-extern UniValue showcombokey(const UniValue& params, bool fHelp);
 extern UniValue showtxprivatekeys(const UniValue& params, bool fHelp);
 extern UniValue rescanwallettransactions(const UniValue& params, bool fHelp);
 extern UniValue decodestealthaddress(const UniValue& params, bool fHelp);
@@ -263,7 +260,6 @@ extern UniValue multisend(const UniValue& params, bool fHelp);
 extern UniValue autocombinerewards(const UniValue& params, bool fHelp);
 
 extern UniValue getrawtransaction(const UniValue& params, bool fHelp); // in rcprawtransaction.cpp
-extern UniValue addtowallet(const UniValue& params, bool fHelp); // in rcprawtransaction.cpp
 extern UniValue getrawtransactionbyblockheight(const UniValue& params, bool fHelp); // in rcprawtransaction.cpp
 extern UniValue listunspent(const UniValue& params, bool fHelp);
 extern UniValue lockunspent(const UniValue& params, bool fHelp);

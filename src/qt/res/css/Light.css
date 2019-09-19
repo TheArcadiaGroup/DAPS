@@ -34,15 +34,16 @@ QComboBox:disabled,
 }
 
 #stakingState {
-  font-size: 9px;
-  padding-left: 34px;
+  font-size: 11px;
+  font-style: italic;
+  padding-left: 40px;
   color: white;
-  font-weight: bold;
 }
 #connectionCount {
   font-size: 11px;
   font-style: italic;
   padding-left: 32px;
+  color: white;
 }
 
 QDialog {
@@ -234,6 +235,10 @@ QPushButton#btn_resync{
   font-size: 15px;
 }
 
+QPushButton#btn_day,QPushButton#btn_month,QPushButton#btn_week{
+  min-height: 35px;
+}
+
 QPushButton#btnLockUnlock{
   margin-right: 9px;
   width: 20px;
@@ -305,13 +310,15 @@ QWidget::right-arrow:disabled {
 /*** Toggle Buttons ***/
 ToggleButton > QPushButton {
   font-size: 10px;
-  padding: 0;
+  padding-right: 15px;
   border-radius: 10px;
 }
 
 ToggleButton > QPushButton:enabled:checked {
   background-color: black;
   color: #93faff;
+  padding: 0;
+  text-align: center;
   border: 1px solid #93faff;
 }
 #TxEntry,

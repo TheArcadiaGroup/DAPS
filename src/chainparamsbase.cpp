@@ -22,7 +22,7 @@ public:
     CBaseMainParams()
     {
         networkID = CBaseChainParams::MAIN;
-        nRPCPort = 53578; //RPC port for multisig wallet
+        nRPCPort = 53573;
     }
 };
 static CBaseMainParams mainParams;
@@ -36,7 +36,7 @@ public:
     CBaseTestNetParams()
     {
         networkID = CBaseChainParams::TESTNET;
-        nRPCPort = 53579;
+        nRPCPort = 53575;
         strDataDir = "testnet4";
     }
 };

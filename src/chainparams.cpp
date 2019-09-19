@@ -10,7 +10,6 @@
 #include "random.h"
 #include "util.h"
 #include "utilstrencodings.h"
-#include "streams.h"
 
 #include <assert.h>
 
@@ -18,20 +17,6 @@
 
 using namespace std;
 using namespace boost::assign;
-
-std::string EncodeHexTx(const CMutableTransaction& tx)
-{
-    CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
-    ssTx << tx;
-    return HexStr(ssTx.begin(), ssTx.end());
-}
-
-std::string EncodeHexBlock(const CBlock& b)
-{
-    CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
-    ssTx << b;
-    return HexStr(ssTx.begin(), ssTx.end());
-}
 
 struct SeedSpec6 {
     uint8_t addr[16];
@@ -110,7 +95,7 @@ public:
         pchMessageStart[2] = 0x79;
         pchMessageStart[3] = 0x84;
         vAlertPubKey = ParseHex("049def8e22e7f78b624dc62007c66c06066d032310b3507642306b143326a8295e03576ffab7469c552e1a68655598d78d501eb10cc27408bfd7876dbadb08b0ee");
-        nDefaultPort = 53570; //default port for multisig
+        nDefaultPort = 53572;
         bnProofOfWorkLimit = ~uint256(0) >> 1; // DAPScoin starting difficulty is 1 / 2^12
         nSubsidyHalvingInterval = 210000;
         nMaxReorganizationDepth = 100;
@@ -149,7 +134,6 @@ public:
         txNew.vin[0].scriptSig = CScript() << 486604799 << CScriptNum(4) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
         txNew.vout[0].nValue = 0 * COIN;
         txNew.vout[0].scriptPubKey = CScript() << ParseHex("041db2a1b75bc00fc1a18e9f8de27c65fede32eb9ac1c11e2587402a66732656d71f7b5de649c8dc7f94aeb433485ce3122ba856644b02e433c2d5fc94ea26bf8e") << OP_CHECKSIG;
-
         genesis.vtx.push_back(txNew);
         genesis.hashPrevBlock = 0;
         genesis.hashMerkleRoot = genesis.BuildMerkleTree();
@@ -187,6 +171,8 @@ public:
             printf("hashMerkleRoot=%s\n",genesis.hashMerkleRoot.ToString().c_str());
 
         }
+
+
 
         hashGenesisBlock = genesis.GetHash();
         assert(hashGenesisBlock == uint256("000000c1f997ef7feee72e7aaa24f33fb94666c7c5cb9806a3bc63437b4e3479"));

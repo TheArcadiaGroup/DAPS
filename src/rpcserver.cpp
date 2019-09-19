@@ -156,7 +156,7 @@ vector<unsigned char> ParseHexO(const UniValue &o, string strKey) {
 
 int ParseInt(const UniValue &o, string strKey) {
     const UniValue &v = find_value(o, strKey);
-    if (v.isNum())
+    if (!v.isNum())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, " + strKey + "is not an int");
 
     return v.get_int();
@@ -164,7 +164,7 @@ int ParseInt(const UniValue &o, string strKey) {
 
 bool ParseBool(const UniValue& o, string strKey) {
     const UniValue& v = find_value(o, strKey);
-    if (v.isBool())
+    if (!v.isBool())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, " + strKey + "is not a bool");
 
     return v.get_bool();
@@ -327,7 +327,6 @@ static const CRPCCommand vRPCCommands[] =
         {"rawtransactions", "decoderawtransaction", &decoderawtransaction, true, false, false},
         {"rawtransactions", "decodescript", &decodescript, true, false, false},
         {"rawtransactions", "getrawtransaction", &getrawtransaction, true, false, false},
-        {"rawtransactions", "addtowallet", &addtowallet, true, false, false},
         {"rawtransactions", "sendrawtransaction", &sendrawtransaction, false, false, false},
         {"rawtransactions", "getrawtransactionbyblockheight", &getrawtransactionbyblockheight, true, false, false},
         /* Utility functions */
@@ -378,9 +377,6 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "importkeys", &importkeys, true, false, true},
         {"wallet", "revealviewprivatekey", &revealviewprivatekey, true, false, true},
         {"wallet", "revealspendprivatekey", &revealspendprivatekey, true, false, true},
-        {"wallet", "addcosigners", &addcosigners, true, false, true},
-        {"wallet", "showmultisigaddress", &showmultisigaddress, true, false, true},
-        {"wallet", "showcombokey", &showcombokey, true, false, true},
         {"wallet", "showtxprivatekeys", &showtxprivatekeys, true, false, true},
         {"wallet", "rescanwallettransactions", &rescanwallettransactions, true, false, true},
         {"wallet", "decodestealthaddress", &decodestealthaddress, true, false, true},

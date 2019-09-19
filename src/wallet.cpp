@@ -401,6 +401,42 @@ int CWallet::ReadScreenIndex() const
 	return 	CWalletDB(strWalletFile).ReadScreenIndex();
 }
 
+bool CWallet::Write2FA(bool status)
+{
+    return CWalletDB(strWalletFile).Write2FA(status);
+}
+bool CWallet::Read2FA()
+{
+    return CWalletDB(strWalletFile).Read2FA();
+}
+
+bool CWallet::Write2FASecret(std::string secret)
+{
+    return CWalletDB(strWalletFile).Write2FASecret(secret);
+}
+std::string CWallet::Read2FASecret()
+{
+    return CWalletDB(strWalletFile).Read2FASecret();
+}
+
+bool CWallet::Write2FAPeriod(int period)
+{
+    return CWalletDB(strWalletFile).Write2FAPeriod(period);
+}
+int CWallet::Read2FAPeriod()
+{
+    return CWalletDB(strWalletFile).Read2FAPeriod();
+}
+
+bool CWallet::Write2FALastTime(uint64_t lastTime)
+{
+    return CWalletDB(strWalletFile).Write2FALastTime(lastTime);
+}
+uint64_t CWallet::Read2FALastTime()
+{
+    return CWalletDB(strWalletFile).Read2FALastTime();
+}
+
 bool CWallet::AddCryptedKey(const CPubKey& vchPubKey,
                             const vector<unsigned char>& vchCryptedSecret)
 {
@@ -759,7 +795,6 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
 
     std::string outString = outpoint.hash.GetHex() + std::to_string(outpoint.n);
     CKeyImage ki = outpointToKeyImages[outString];
-    if (!ki.IsValid()) return false;
     if (IsKeyImageSpend1(ki.GetHex(), uint256())) {
     	return true;
     }
@@ -2991,7 +3026,9 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
             nFeeRet = 0;
             if (nFeePay > 0) nFeeRet = nFeePay;
             unsigned int nBytes = 0;
-            while (true) {
+            int iterations = 0;
+            while (true && iterations < 10) {
+            	iterations++;
                 txNew.vin.clear();
                 txNew.vout.clear();
                 wtxNew.fFromMe = true;
@@ -3060,7 +3097,12 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
                     if (nFeeNeeded < COIN) nFeeNeeded = COIN;
                     newTxOut.nValue -= nFeeNeeded;
                     txNew.nTxFee = nFeeNeeded;
-                    if (newTxOut.nValue <= 0) return false;
+                    if (newTxOut.nValue <= 0) {
+                    	if (GetSpendableBalance() > nValueIn) {
+                    		continue;
+                    	}
+                    	false;
+                    }
                     CPubKey shared;
                     computeSharedSec(txNew, newTxOut, shared);
                     EncodeTxOutAmount(newTxOut, newTxOut.nValue, shared.begin());
@@ -3070,6 +3112,9 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
 						txNew.vout.insert(position, newTxOut);
                     }
                 } else {
+                	if (GetSpendableBalance() > nValueIn) {
+                		continue;
+                	}
                     return false;
                 }
 

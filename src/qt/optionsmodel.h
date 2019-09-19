@@ -49,10 +49,6 @@ public:
         ShowMasternodesTab,  // bool
         Listen,              // bool
         OptionIDRowCount,
-        TwoFA,               // QString
-        TwoFACode,           // QString
-        TwoFAPeriod,         // int
-        TwoFALastTime,       // int
     };
 
     void Init();

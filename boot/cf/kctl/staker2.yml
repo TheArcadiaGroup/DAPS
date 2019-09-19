@@ -65,7 +65,7 @@ spec:
         app: daps-staker-2
     spec:
       hostAliases:
-      - ip: "10.10.10.3"
+      - ip: "10.10.10.52"
         hostnames:
         - "staker.2"
       terminationGracePeriodSeconds: 3

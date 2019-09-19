@@ -129,14 +129,6 @@ void OptionsModel::Init()
         settings.setValue("digits", "2");
     if (!settings.contains("theme"))
         settings.setValue("theme", "dark");
-    if (!settings.contains("2FA"))
-        settings.setValue("2FA", "disabled");
-    if (!settings.contains("2FACode"))
-        settings.setValue("2FACode", "");
-    if (!settings.contains("2FAPeriod"))
-        settings.setValue("2FAPeriod", 0);
-    if (!settings.contains("2FALastTime"))
-        settings.setValue("2FALastTime", 0);
     if (!settings.contains("fCSSexternal"))
         settings.setValue("fCSSexternal", false);
     if (!settings.contains("language"))
@@ -212,14 +204,6 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
             return settings.value("digits");
         case Theme:
             return settings.value("theme");
-        case TwoFA:
-            return settings.value("2FA");
-        case TwoFACode:
-            return settings.value("2FACode");
-        case TwoFAPeriod:
-            return settings.value("2FAPeriod");
-        case TwoFALastTime:
-            return settings.value("2FALastTime");
         case Language:
             return settings.value("language");
         case CoinControlFeatures:
@@ -322,30 +306,6 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
         case Theme:
             if (settings.value("theme") != value) {
                 settings.setValue("theme", value);
-                setRestartRequired(true);
-            }
-            break;
-        case TwoFA:
-            if (settings.value("2FA") != value) {
-                settings.setValue("2FA", value);
-                setRestartRequired(true);
-            }
-            break;
-        case TwoFACode:
-            if (settings.value("2FACode") != value) {
-                settings.setValue("2FACode", value);
-                setRestartRequired(true);
-            }
-            break;
-        case TwoFAPeriod:
-            if (settings.value("2FAPeriod") != value) {
-                settings.setValue("2FAPeriod", value);
-                setRestartRequired(true);
-            }
-            break;
-        case TwoFALastTime:
-            if (settings.value("2FALastTime") != value) {
-                settings.setValue("2FALastTime", value);
                 setRestartRequired(true);
             }
             break;

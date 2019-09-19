@@ -67,7 +67,7 @@ spec:
         test: test
     spec:
       hostAliases:
-      - ip: "10.10.10.4"
+      - ip: "10.10.10.51"
         hostnames:
         - "staker.1"
       terminationGracePeriodSeconds: 3

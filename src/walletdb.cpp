@@ -344,6 +344,55 @@ bool CWalletDB::ReadScannedBlockHeight(int& height)
 	return Read(std::string("scannedblockheight"), height);
 }
 
+bool CWalletDB::Write2FA(bool status)
+{
+    return Write(std::string("2fa"), status);
+}
+bool CWalletDB::Read2FA()
+{
+    bool status;
+    if (!Read(std::string("2fa"), status)) {
+        return false;
+    }
+    return status;
+}
+
+bool CWalletDB::Write2FASecret(std::string secret)
+{
+    return Write(std::string("2fasecret"), secret);
+}
+std::string CWalletDB::Read2FASecret()
+{
+    std::string secret;
+    if (!Read(std::string("2fasecret"), secret))
+        return "";
+    return secret;
+}
+
+bool CWalletDB::Write2FAPeriod(int period)
+{
+    return Write(std::string("2faperiod"), period);
+}
+int CWalletDB::Read2FAPeriod()
+{
+    int period;
+    if (!Read(std::string("2faperiod"), period))
+        return 0;
+    return period;
+}
+
+
+bool CWalletDB::Write2FALastTime(uint64_t lastTime)
+{
+    return Write(std::string("2falasttime"), lastTime);
+}
+uint64_t CWalletDB::Read2FALastTime()
+{
+    uint64_t lastTime;
+    if (!Read(std::string("2falasttime"), lastTime))
+        return 0;
+    return lastTime;
+}
 
 bool CWalletDB::ReadAccount(const string& strAccount, CAccount& account)
 {

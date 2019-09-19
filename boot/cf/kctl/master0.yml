@@ -67,7 +67,7 @@ spec:
         test: test
     spec:
       hostAliases:
-      - ip: "10.10.10.1"
+      - ip: "10.10.10.100"
         hostnames:
         - "master.1"
       terminationGracePeriodSeconds: 3

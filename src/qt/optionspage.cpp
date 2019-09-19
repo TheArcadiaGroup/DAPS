@@ -171,7 +171,7 @@ void OptionsPage::on_pushButtonPassword_clicked()
 
         if (oldPass == newPass) {
             QMessageBox::critical(this, tr("Wallet Encryption Failed"),
-                    tr("The passphrases entered for wallet encryption is older. Please try again."));
+                    tr("The passphrase you have entered is the same as your old passphrase. Please use a different passphrase if you would like to change it."));
         }
         else if (newPass.length() < 10) {
             QMessageBox::critical(this, tr("Wallet Encryption Failed"),
@@ -284,6 +284,15 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
 
 void OptionsPage::on_Enable2FA(ToggleButton* widget)
 {
+    int status = model->getEncryptionStatus();
+    if (status == WalletModel::Locked || status == WalletModel::UnlockedForAnonymizationOnly) {
+        QMessageBox::information(this, tr("2FA Setting"),
+        tr("Please unlock the keychain wallet with your passphrase before changing this setting."));
+
+        ui->toggle2FA->setState(!ui->toggle2FA->getState());
+        return;
+    }
+
     if (widget->getState()) {
         TwoFAQRDialog qrdlg;
         qrdlg.setWindowTitle("2FA QRCode");
@@ -318,9 +327,9 @@ void OptionsPage::qrDialogIsFinished(int result) {
 
 void OptionsPage::dialogIsFinished(int result) {
    if(result == QDialog::Accepted){
-        settings.setValue("2FA", "enabled");
+        pwalletMain->Write2FA(true);
         QDateTime current = QDateTime::currentDateTime();
-        settings.setValue("2FALastTime", current.toTime_t());
+        pwalletMain->Write2FALastTime(current.toTime_t());
         enable2FA();
 
         QMessageBox::information(this, tr("SUCCESS!"),
@@ -368,7 +377,7 @@ void OptionsPage::enable2FA() {
     ui->btn_week->setEnabled(true);
     ui->btn_month->setEnabled(true);
 
-    QString code = settings.value("2FACode").toString();
+    QString code = QString::fromStdString(pwalletMain->Read2FASecret());
     if (code != "") {
         char chrlist[6];
         memcpy(chrlist, code.toUtf8().data(), 6);
@@ -387,7 +396,7 @@ void OptionsPage::enable2FA() {
         ui->code_6->setText(value);
     }
      
-    int period = settings.value("2FAPeriod").toInt();
+    int period = pwalletMain->Read2FAPeriod();
     typeOf2FA = NONE2FA;
     if (period == 1) {
         ui->btn_day->setStyleSheet("border-color: green;");
@@ -406,25 +415,25 @@ void OptionsPage::enable2FA() {
 void OptionsPage::confirmDialogIsFinished(int result) {
     if(result == QDialog::Accepted){
         if (typeOf2FA == DAY) {
-            settings.setValue("2FAPeriod", "1");
+            pwalletMain->Write2FAPeriod(1);
             ui->btn_day->setStyleSheet("border-color: green;");
             ui->btn_week->setStyleSheet("border-color: white;");
             ui->btn_month->setStyleSheet("border-color: white;");
         } else if (typeOf2FA == WEEK) {
-            settings.setValue("2FAPeriod", "7");
+            pwalletMain->Write2FAPeriod(7);
             ui->btn_day->setStyleSheet("border-color: white;");
             ui->btn_week->setStyleSheet("border-color: green;");
             ui->btn_month->setStyleSheet("border-color: white;");
         } else if (typeOf2FA == MONTH) {
-            settings.setValue("2FAPeriod", "30");
+            pwalletMain->Write2FAPeriod(30);
             ui->btn_day->setStyleSheet("border-color: white;");
             ui->btn_week->setStyleSheet("border-color: white;");
             ui->btn_month->setStyleSheet("border-color: green;");
         } else if (typeOf2FA == DISABLE) {
-            settings.setValue("2FA", "disabled");
-            settings.setValue("2FACode", "");
-            settings.setValue("2FAPeriod", 0);
-            settings.setValue("2FALastTime", 0);
+            pwalletMain->Write2FA(false);
+            pwalletMain->Write2FASecret("");
+            pwalletMain->Write2FAPeriod(0);
+            pwalletMain->Write2FALastTime(0);
             disable2FA();
         }
     }
