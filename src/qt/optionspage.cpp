@@ -473,6 +473,16 @@ void OptionsPage::on_month() {
 }
 
 void OptionsPage::onShowMnemonic() {
+    int status = model->getEncryptionStatus();
+    if (status == WalletModel::Locked || status == WalletModel::UnlockedForAnonymizationOnly) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Mnemonic Recovery Phrase");
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.setText("Please unlock the keychain wallet with your passphrase before attempting to view your Mnemonic Recovery Phrase.");
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.exec();
+        return;
+    }
     CHDChain hdChainCurrent;
     if (!pwalletMain->GetDecryptedHDChain(hdChainCurrent))
         return;
