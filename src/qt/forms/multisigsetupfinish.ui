@@ -28,7 +28,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Congratulations! You have successfully setup your multisignature wallet</string>
+        <string>Congratulations! You have successfully setup your multisignature wallet.</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -45,7 +45,7 @@
       </font>
      </property>
      <property name="text">
-      <string>See your public multisignature address below</string>
+      <string>This is your new DAPS address, and all Co-signers should be seeing this exact same address.</string>
      </property>
     </widget>
    </item>
