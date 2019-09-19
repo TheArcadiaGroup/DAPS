@@ -93,8 +93,10 @@ void ReceiveCoinsDialog::loadAccount() {
     	addrList.push_back(multisig);
     	accountList.push_back("Multisig");
     }
+
+    if (addrList.empty()) return;
+
     QList<QString> stringsList;
-    //wl->AllMyPublicAddresses(addrList, accountList);
 
     for(size_t i = 0; i < addrList.size(); i++) {
         bool isDuplicate = false;

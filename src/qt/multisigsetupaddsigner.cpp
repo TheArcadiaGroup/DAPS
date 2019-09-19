@@ -76,6 +76,19 @@ void MultiSigSetupAddSigner::on_btnNext()
 {
 	std::string hexCombo = ui->textComboKey->toPlainText().trimmed().toStdString();
 	if (!IsHex(hexCombo)) return;
+
+	if (pwalletMain->ReadScreenIndex() > 1) {
+		ComboKey mine = pwalletMain->MyComboKey();
+		CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
+		ssTx << mine;
+		std::string hex = HexStr(ssTx.begin(), ssTx.end());
+		if (hex == hexCombo) {
+			QMessageBox::StandardButton reply;
+			reply = QMessageBox::warning(this, "Duplicating your Combokey", "You need to add combo key of co-signers \ndifferent than your combo key?", QMessageBox::Ok);
+			return;
+		}
+	}
+
 	vector<unsigned char> comboData(ParseHex(hexCombo));
 	CDataStream ssdata(comboData, SER_NETWORK, PROTOCOL_VERSION);
 	ComboKey combo;
