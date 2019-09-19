@@ -86,12 +86,12 @@ class Footer extends Component {
                             {this.state.Node - this.state.MasterNode}
                         </span>
                         <span id="StakingPercent" className={`${Style.StakingPercent}`}>
-                            {String(stakingPercent) + '%'}
+                            {String(stakingPercent.toFixed(4)) + '%'}
                         </span>
                     </div>
                     <div id="MasterState" className={`${Style.MasterState}`} style={masterStyle}>
                         <span id="MasterPercent" className={`${Style.MasterPercent}`}>
-                            {String(masterPercent) + '%'}
+                            {String(masterPercent.toFixed(4)) + '%'}
                         </span>
                         <span id="MasterCount" className={`${Style.MasterCount}`}>
                             {this.state.MasterNode}

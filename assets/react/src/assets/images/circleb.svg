@@ -12,5 +12,5 @@
     <feMergeNode in="comp"/>
   </feMerge>
 </filter>
-   <circle cx="50%" cy="50%" r="40%" stroke="#b3faff" class="SvgCircle" stroke-width="3" fill="black" fill-opacity=".2" style="filter:url(#dropshadow)"/>
+   <circle cx="50%" cy="50%" r="40%" stroke="#b3faff" class="SvgCircle" stroke-width="3" fill="transparent" fill-opacity=".0" style="filter:url(#dropshadow)"/>
 </svg> 
