@@ -131,7 +131,7 @@ OverviewPage::OverviewPage(QWidget* parent) : QDialog(parent),
 
     initSyncCircle(.8);
 
-    QTimer* timerBlockHeightLabel = new QTimer(this);
+    timerBlockHeightLabel = new QTimer(this);
     connect(timerBlockHeightLabel, SIGNAL(timeout()), this, SLOT(showBlockCurrentHeight()));
     timerBlockHeightLabel->start(45000);
 
@@ -148,15 +148,15 @@ void OverviewPage::handleTransactionClicked(const QModelIndex& index)
 OverviewPage::~OverviewPage()
 {
     delete animClock;
+    delete timer;
+    delete timerBlockHeightLabel;
     delete ui;
 }
 
 void OverviewPage::getPercentage(CAmount nUnlockedBalance, QString& sDAPSPercentage)
 {
     int nPrecision = 2;
-
     double dPercentage = 100.0;
-    
     sDAPSPercentage = "(" + QLocale(QLocale::system()).toString(dPercentage, 'f', nPrecision) + " %)";
 }
 
