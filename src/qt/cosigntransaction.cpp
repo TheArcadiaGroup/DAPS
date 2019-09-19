@@ -53,6 +53,17 @@ void CoSignTransaction::setClientModel(ClientModel* clientModel)
 void CoSignTransaction::setModel(WalletModel* model)
 {
     this->model = model;
+    if (model && model->getOptionsModel()) {
+    	connect(model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
+    			SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
+    }
+}
+
+void CoSignTransaction::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
+                              const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
+                              const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance)
+{
+    ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(0, balance, false, BitcoinUnits::separatorAlways));
 }
 
 CoSignTransaction::~CoSignTransaction(){
