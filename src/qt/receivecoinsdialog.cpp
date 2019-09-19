@@ -94,12 +94,12 @@ void ReceiveCoinsDialog::loadAccount() {
     	accountList.push_back("Multisig");
     }
     QList<QString> stringsList;
-    wl->AllMyPublicAddresses(addrList, accountList);
+    //wl->AllMyPublicAddresses(addrList, accountList);
 
     for(size_t i = 0; i < addrList.size(); i++) {
         bool isDuplicate = false;
         for (size_t i = 0; i < (size_t)ui->reqAddress->count(); i++) {
-            if (ui->reqAddress->itemText(i).contains(QString(addrList[i].c_str()), Qt::CaseSensitive)) {
+            if (ui->reqAddress->itemText(i).contains(QString("Multisig"), Qt::CaseSensitive)) {
                 isDuplicate = true;
                 break;
             }
