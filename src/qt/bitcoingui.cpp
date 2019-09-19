@@ -287,7 +287,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(sendCoinsAction);
 
-    cosignAction = new QAction(QIcon(":/icons/send"), tr("&   Co-Sign"), this);
+    cosignAction = new QAction(QIcon(":/icons/send"), tr("&   Co-Sign\nTransaction"), this);
     cosignAction->setToolTip(QString());
     cosignAction->setCheckable(true);
 #ifdef Q_OS_MAC
