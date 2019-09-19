@@ -120,14 +120,13 @@ void SendCoinsDialog::on_sendButton_clicked(){
 
     send_address = recipient.address;
     send_amount = recipient.amount;
-    bool status = settings.value("2FA").toString() == "enabled";
+    bool status = pwalletMain->Read2FA();
     if (!status) {
         sendTx();
         return;
     }
-    
-    uint lastTime = settings.value("2FALastTime").toInt();
-    uint period = settings.value("2FAPeriod").toInt();
+    uint lastTime = pwalletMain->Read2FALastTime();
+    uint period = pwalletMain->Read2FAPeriod();
     QDateTime current = QDateTime::currentDateTime();
     uint diffTime = current.toTime_t() - lastTime;
     if (diffTime <= period * 24 * 60 * 60)
