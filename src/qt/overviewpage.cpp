@@ -423,7 +423,6 @@ int OverviewPage::tryNetworkBlockCount(){
 }
 
 void OverviewPage::updateRecentTransactions(){
-	if (isSyncingBlocks) return;
 	if (!pwalletMain || pwalletMain->IsLocked()) return;
     QLayoutItem* item;
     QSettings settings;
