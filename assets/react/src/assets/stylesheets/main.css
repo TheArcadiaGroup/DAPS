@@ -13,7 +13,7 @@
 }
 
 .PageView {
-    background-image: linear-gradient(180deg, rgba(94, 0, 87, .6) 0%, rgba(0, 0, 0, .6) 100%);
+    /*background-image: linear-gradient(180deg, rgba(94, 0, 87, .6) 0%, rgba(0, 0, 0, .6) 100%);*/
     opacity: 0.9;
 }
 
@@ -270,14 +270,14 @@ form {
 
 #blockStatusBar {
     float: left;
-    background-image: url(~Images/techlinesleft.svg);
+    /*background-image: url(~Images/techlinesleft.svg);*/
     background-repeat: repeat-y;
     background-position: left top;
 }
 
 #networkStatusBar {
     float: right;
-    background-image: url(~Images/techlinesright.svg);
+    /*background-image: url(~Images/techlinesright.svg);*/
     background-repeat: repeat-y;
     background-position: right top;
 }

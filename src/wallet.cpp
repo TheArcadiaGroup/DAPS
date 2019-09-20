@@ -2471,22 +2471,25 @@ bool CWallet::SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int
 
 void CWallet::resetPendingOutPoints()
 {
-	if (chainActive.Height() % 20 != 0) return;
+	if (chainActive.Height() % 20 != 0 &&! inSpendQueueOutpoints.empty()) return;
 	{
-		LOCK(mempool.cs);
+		LOCK2(cs_main, cs_wallet);
 		{
-			inSpendQueueOutpoints.clear();
-			for (std::map<uint256, CTxMemPoolEntry>::const_iterator it = mempool.mapTx.begin(); it != mempool.mapTx.end(); ++it) {
-				const CTransaction& tx = it->second.GetTx();
-				for(size_t i = 0; i < tx.vin.size(); i++) {
-					COutPoint prevout = findMyOutPoint(tx.vin[i]);
-					if (prevout.hash.IsNull()) {
-						break;
-					} else {
-						inSpendQueueOutpoints[prevout] = true;
+			LOCK(mempool.cs);
+			{
+				inSpendQueueOutpoints.clear();
+				for (std::map<uint256, CTxMemPoolEntry>::const_iterator it = mempool.mapTx.begin(); it != mempool.mapTx.end(); ++it) {
+					const CTransaction& tx = it->second.GetTx();
+					for(size_t i = 0; i < tx.vin.size(); i++) {
+						COutPoint prevout = findMyOutPoint(tx.vin[i]);
+						if (prevout.hash.IsNull()) {
+							break;
+						} else {
+							inSpendQueueOutpoints[prevout] = true;
+						}
 					}
-				}
 
+				}
 			}
 		}
 	}
@@ -2534,25 +2537,11 @@ bool CWallet::SelectCoins(const CAmount& nTargetValue, set<pair<const CWalletTx*
                 	continue;
                 }
 
-                LOCK(mempool.cs); // protect pool.mapNextTx
                 {
                 	COutPoint outpoint(wtxid, i);
                 	if (inSpendQueueOutpoints.count(outpoint)) {
                 		continue;
                 	}
-					if (mempool.mapNextTx.count(outpoint)) {
-						// Disable replacement feature for now
-						continue;
-					}
-					CCoinsView dummy;
-					CCoinsViewCache view(&dummy);
-		            CCoinsViewMemPool viewMemPool(pcoinsTip, mempool);
-					view.SetBackend(viewMemPool);
-		            const CCoins* coins = view.AccessCoins(wtxid);
-
-		            if (!coins || !coins->IsAvailable(i)) {
-		                continue;
-		            }
                 }
                 vCoins.push_back(COutput(pcoin, i, nDepth, true));
             }
@@ -3020,6 +3009,7 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
     CMutableTransaction txNew;
     txNew.hasPaymentID = wtxNew.hasPaymentID;
     txNew.paymentID = wtxNew.paymentID;
+    CAmount nSpendableBalance = GetSpendableBalance();
     {
         LOCK2(cs_main, cs_wallet);
         {
@@ -3098,7 +3088,7 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
                     newTxOut.nValue -= nFeeNeeded;
                     txNew.nTxFee = nFeeNeeded;
                     if (newTxOut.nValue <= 0) {
-                    	if (GetSpendableBalance() > nValueIn) {
+                    	if (nSpendableBalance > nValueIn) {
                     		continue;
                     	}
                     	false;
@@ -3112,7 +3102,7 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
 						txNew.vout.insert(position, newTxOut);
                     }
                 } else {
-                	if (GetSpendableBalance() > nValueIn) {
+                	if (nSpendableBalance > nValueIn) {
                 		continue;
                 	}
                     return false;
@@ -5538,7 +5528,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target) {
 void CWallet::AutoCombineDust()
 {
 	//if (IsInitialBlockDownload()) return;
-    if (chainActive.Tip()->nTime < (GetAdjustedTime() - 300) || IsLocked()) {
+    if (chainActive.Tip()->nTime < (GetAdjustedTime() - 1800) || IsLocked()) {
         LogPrintf("Time elapsed for autocombine transaction too short\n");
         return;
     }

@@ -80,6 +80,7 @@ int64_t nReserveBalance = 0;
 const int MIN_RING_SIZE = 11;
 const int MAX_RING_SIZE = 15;
 const int MAX_TX_INPUTS = 50;
+const int MIN_TX_INPUTS_FOR_SWEEPING = 25;
 
 /** Fees smaller than this (in duffs) are considered zero fee (for relaying and mining)
  * We are ~100 times smaller then bitcoin now (2015-06-23), set minRelayTxFee only 10 times higher
@@ -443,6 +444,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
 				CBlockIndex* ancestor = tip->GetAncestor(atTheblock->nHeight);
 				if (ancestor != atTheblock) {
 					LogPrintf("\nDecoy for transactions %s not in the same chain with block %s\n", decoysForIn[j].hash.GetHex(), tip->GetBlockHash().GetHex());
+					return false;
 				}
 			}
 
@@ -1641,6 +1643,23 @@ bool CheckHaveInputs(const CCoinsViewCache& view, const CTransaction& tx)
 				if (mapBlockIndex.count(bh) < 1) return false;
 				if (prev.IsCoinStake() || prev.IsCoinAudit() || prev.IsCoinBase()) {
 					if (nSpendHeight - mapBlockIndex[bh]->nHeight < Params().COINBASE_MATURITY()) return false;
+				}
+
+				CBlockIndex* tip = chainActive.Tip();
+				if (!pindexPrev) tip = pindexPrev;
+
+				uint256 hashTip = tip->GetBlockHash();
+				//verify that tip and hashBlock must be in the same fork
+				CBlockIndex* atTheblock = mapBlockIndex[bh];
+				if (!atTheblock) {
+					LogPrintf("\nDecoy for transactions %s not in the same chain with block %s\n", alldecoys[j].hash.GetHex(), tip->GetBlockHash().GetHex());
+					return false;
+				} else {
+					CBlockIndex* ancestor = tip->GetAncestor(atTheblock->nHeight);
+					if (ancestor != atTheblock) {
+						LogPrintf("\nDecoy for transactions %s not in the same chain with block %s\n", alldecoys[j].hash.GetHex(), tip->GetBlockHash().GetHex());
+						return false;
+					}
 				}
 			}
 			if (!tx.IsCoinStake()) {

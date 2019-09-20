@@ -161,6 +161,7 @@ extern int64_t nReserveBalance;
 extern const int MIN_RING_SIZE;
 extern const int MAX_RING_SIZE;
 extern const int MAX_TX_INPUTS;
+extern const int MIN_TX_INPUTS_FOR_SWEEPING;
 
 extern std::map<uint256, int64_t> mapRejectedBlocks;
 extern std::map<unsigned int, unsigned int> mapHashedBlocks;
