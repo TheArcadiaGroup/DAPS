@@ -10,7 +10,7 @@ DAPScoin is a cutting edge cryptocurrency, with many features not available in m
   technology used to secure the network and provide the above features, each Masternode is secured
   with a collateral of 1,000,000 DAPS.
 
-More information at [officialdapscoin.com](http://www.officialdapscoin.com) Visit our ANN thread at [BitcoinTalk](https://bitcointalk.org/index.php?topic=5146718)
+More information at [officialdapscoin.com](https://officialdapscoin.com) Visit our ANN thread at [BitcoinTalk](https://bitcointalk.org/index.php?topic=5146718)
 
 ### Coin Specs
 <table>
