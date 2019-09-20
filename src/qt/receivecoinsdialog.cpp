@@ -55,8 +55,12 @@ ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent),
         pwalletMain->GetKeyFromPool(temp);
         pwalletMain->CreatePrivacyAccount();
      }
-
-    ui->reqAmount->setValidator(new QRegExpValidator(QRegExp("[0-9]*.[0-9]*"), this));
+    QLocale lo(QLocale::C);
+    lo.setNumberOptions(QLocale::RejectGroupSeparator);
+    QDoubleValidator *dblVal = new QDoubleValidator(0, Params().MAX_MONEY, 8, ui->reqAmount);
+    dblVal->setNotation(QDoubleValidator::StandardNotation);
+    dblVal->setLocale(lo);
+    ui->reqAmount->setValidator(dblVal);
 }
 
 static inline int64_t roundint64(double d)
