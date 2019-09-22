@@ -486,3 +486,7 @@ QWidget::right-arrow {
 QWidget::right-arrow:disabled {
   image: url(":/images/rightArrow_small_dark");
 }
+
+QLineEdit#textComboKey{
+  color: white;
+}
