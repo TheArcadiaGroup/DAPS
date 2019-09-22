@@ -98,9 +98,6 @@ void ReceiveCoinsDialog::loadAccount() {
     	addrList.push_back(multisig);
     	accountList.push_back("Multisig");
     }
-
-    std::cout << "multisig address = " << multisig << std::endl;
-
     if (addrList.empty()) return;
 
     QList<QString> stringsList;
