@@ -11,6 +11,9 @@ ENV BUILD_TARGET=${BUILD_TARGET}
 ARG DESTDIR=/daps/bin/
 ENV DESTDIR=$DESTDIR
 
+ARG VERSION=NONE
+ENV VERSION=$VERSION
+
 #COPY source
 COPY . /DAPS/
 
@@ -86,7 +89,7 @@ RUN cd /BUILD/ && \
     #flatten
     tar pcvf - --transform 's/.*\///g' --files-from=/dev/stdin | \
     #compress
-    xz -9 - > $DESTDIR$BUILD_TARGET.tar.xz
+    xz -9 - > $DESTDIR$BUILD_TARGET-v$VERSION.tar.xz
 
 RUN mkdir -p /codefresh/volume/out/bin/ && \
     cp -r /daps/bin/* /codefresh/volume/out/bin/ && \
