@@ -54,7 +54,7 @@ void MultiSigSetupAddSigner::setModel(WalletModel* model)
 void MultiSigSetupAddSigner::closeEvent (QCloseEvent *event)
 {
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::warning(this, "Multisig Wallet Setup Required", "You must configure a Multisignature wallet to continue. What would you like to do?", QMessageBox::Retry|QMessageBox::Close);
+    reply = QMessageBox::warning(this, "Multisignature Wallet Setup Required", "You must configure a Multisignature wallet to continue. What would you like to do?", QMessageBox::Retry|QMessageBox::Close);
       if (reply == QMessageBox::Retry) {
       event->ignore();
       } else {
