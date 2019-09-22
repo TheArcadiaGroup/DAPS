@@ -157,13 +157,6 @@ CPartialTransaction SendCoinsDialog::sendTx() {
     }
 
     if (success){
-        QMessageBox txcomplete;
-        txcomplete.setText("Transaction initialized.");
-        txcomplete.setInformativeText(resultTx.GetHash().GetHex().c_str());
-        txcomplete.setStyleSheet(GUIUtil::loadStyleSheet());
-        txcomplete.setStyleSheet("QMessageBox {messagebox-text-interaction-flags: 5;}");
-        txcomplete.exec();
-        WalletUtil::getTx(pwalletMain, resultTx.GetHash());
         CDataStream ssData(SER_NETWORK, PROTOCOL_VERSION);
         ssData << ptx;
         std::string hex = HexStr(ssData.begin(), ssData.end());
