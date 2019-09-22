@@ -99,6 +99,8 @@ void ReceiveCoinsDialog::loadAccount() {
     	accountList.push_back("Multisig");
     }
 
+    std::cout << "multisig address = " << multisig << std::endl;
+
     if (addrList.empty()) return;
 
     QList<QString> stringsList;
@@ -210,6 +212,9 @@ void ReceiveCoinsDialog::copyAddress(){
     std::vector<std::string> addrList, accountList;
     QClipboard *clipboard = QApplication::clipboard();
     CWallet* wl = model->getCWallet();
-    wl->AllMyPublicAddresses(addrList, accountList);
+    std::string multisig = wl->MyMultisigPubAddress();
+    if (!multisig.empty()) {
+    	addrList.push_back(multisig);
+    }
     clipboard->setText(QString(addrList[0].c_str()));
 }

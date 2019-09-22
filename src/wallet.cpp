@@ -6025,10 +6025,9 @@ std::string CWallet::MyMultisigPubAddress()
 		return "";
 	}
 	multiSigPubSpend = spendAccount.vchPubKey;
-	LogPrintf("\nSuccessfully loaded multisig key, multisig spend key = %s\n", multiSigPubSpend.GetHex());
+	LogPrintf("\nSuccessfully loaded multisig key, multisig spend key\n");
 	std::string ret;
 	EncodeStealthPublicAddress(viewAccount.vchPubKey, spendAccount.vchPubKey, ret);
-
 	//load combokeys
 	CWalletDB(strWalletFile).ReadAllComboKeys(comboKeys);
 	return ret;
