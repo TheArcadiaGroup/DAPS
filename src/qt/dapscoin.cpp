@@ -47,6 +47,9 @@
 #include "multisigsetupfinish.h"
 
 #include <stdint.h>
+#include <execinfo.h>
+#include <signal.h>
+#include <unistd.h>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/thread.hpp>
@@ -570,9 +573,27 @@ WId BitcoinApplication::getMainWinId() const
     return window->winId();
 }
 
+#ifdef DEBUG_BACKTRACE
+void handler(int sig) {
+  void *array[50];
+  size_t size;
+
+  // get void*'s for all entries on the stack
+  size = backtrace(array, 50);
+
+  // print out all the frames to stderr
+  fprintf(stderr, "Error: signal %d:\n", sig);
+  backtrace_symbols_fd(array, size, STDERR_FILENO);
+  exit(1);
+}
+#endif
+
 #ifndef BITCOIN_QT_TEST
 int main(int argc, char* argv[])
 {
+#ifdef DEBUG_BACKTRACE
+    signal(SIGSEGV, handler);   // install our handler
+#endif
     SetupEnvironment();
 
     /// 1. Parse command-line options. These take precedence over anything else.
