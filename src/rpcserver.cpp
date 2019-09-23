@@ -382,6 +382,7 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "showmultisigaddress", &showmultisigaddress, true, false, true},
         {"wallet", "showcombokey", &showcombokey, true, false, true},
         {"wallet", "showtxprivatekeys", &showtxprivatekeys, true, false, true},
+        {"wallet", "generatekeyimageforsync", &generatekeyimageforsync, true, false, true},
         {"wallet", "rescanwallettransactions", &rescanwallettransactions, true, false, true},
         {"wallet", "decodestealthaddress", &decodestealthaddress, true, false, true},
         {"wallet", "sendtostealthaddress", &sendtostealthaddress, false, false, true},

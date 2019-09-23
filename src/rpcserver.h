@@ -249,6 +249,7 @@ extern UniValue addcosigners(const UniValue& params, bool fHelp);
 extern UniValue showmultisigaddress(const UniValue& params, bool fHelp);
 extern UniValue showcombokey(const UniValue& params, bool fHelp);
 extern UniValue showtxprivatekeys(const UniValue& params, bool fHelp);
+extern UniValue generatekeyimageforsync(const UniValue& params, bool fHelp);
 extern UniValue rescanwallettransactions(const UniValue& params, bool fHelp);
 extern UniValue decodestealthaddress(const UniValue& params, bool fHelp);
 extern UniValue sendtostealthaddress(const UniValue& params, bool fHelp);

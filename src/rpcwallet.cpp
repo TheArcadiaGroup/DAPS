@@ -2834,6 +2834,45 @@ UniValue revealspendprivatekey(const UniValue& params, bool fHelp) {
     return CBitcoinSecret(spend).ToString();
 }
 
+UniValue generatekeyimageforsync(const UniValue& params, bool fHelp) {
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+                "generatekeyimageforsync \n"
+                "\nGenerate key image for sync.\n"
+                "\nArguments:\n"
+                "\n 1: hex of transaction in progress\n"
+                "\nResult:\n"
+                "\"Hex of sync key image\"    (string) \n"
+                "\nExamples:\n" +
+                HelpExampleCli("generatekeyimageforsync", "") + HelpExampleCli("generatekeyimageforsync", "\"\"") +
+                HelpExampleCli("generatekeyimageforsync", "") + HelpExampleRpc("generatekeyimageforsync", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+    }
+
+    EnsureWalletIsUnlocked();
+
+    std::string hexCode = params[0].get_str();
+	if (!IsHex(hexCode)) throw runtime_error("Invalid hex code");;
+	vector<unsigned char> partialTxHex(ParseHex(hexCode));
+	CDataStream ssdata(partialTxHex, SER_NETWORK, PROTOCOL_VERSION);
+	CPartialTransaction ptx;
+	try {
+		ssdata >> ptx;
+	} catch (const std::exception&) {
+		throw runtime_error("Invalid hex code");
+	}
+	CListPKeyImageAlpha keyImageAlpha;
+	pwalletMain->generatePKeyImageAlphaListFromPartialTx(ptx, keyImageAlpha);
+	CDataStream ssWritedata(SER_NETWORK, PROTOCOL_VERSION);
+	ssWritedata << keyImageAlpha;
+	std::string hex = HexStr(ssWritedata.begin(), ssWritedata.end());
+	return hex;
+}
+
 UniValue showtxprivatekeys(const UniValue& params, bool fHelp) {
     if (fHelp || params.size() != 1)
         throw runtime_error(
