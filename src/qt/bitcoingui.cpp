@@ -116,6 +116,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
 {
     /* Open CSS when configured */
     this->setStyleSheet(GUIUtil::loadStyleSheet());
+    qApp->setStyleSheet("QToolTip { color: white; background-color: #5E1C5A; border: 1px solid white; border-radius:5px; }");
 
     this->setMinimumSize(1180, 790);
     GUIUtil::restoreWindowGeometry("nWindow", QSize(1180, 790), this);
