@@ -486,7 +486,6 @@ void OverviewPage::updateRecentTransactions(){
 }
 
 void OverviewPage::refreshRecentTransactions() {
-	if (isSyncingBlocks) return;
 	updateRecentTransactions();
 }
 
