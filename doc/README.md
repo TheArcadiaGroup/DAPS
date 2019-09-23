@@ -3,7 +3,7 @@ DAPScoin
 
 Setup
 ---------------------
-[DAPScoin](http://officialdapscoin.com/wallet) is the original DAPScoin client and it builds the backbone of the network. However, it downloads and stores the entire history of DAPScoin transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more. Thankfully you only have to do this once.
+[DAPScoin](https://officialdapscoin.com/wallet) is the original DAPScoin client and it builds the backbone of the network. However, it downloads and stores the entire history of DAPScoin transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more. Thankfully you only have to do this once.
 
 Running
 ---------------------
@@ -28,7 +28,7 @@ Drag DAPScoin-Qt to your applications folder, and then run DAPScoin-Qt.
 
 * See the documentation at the [DAPScoin Wiki](https://en.bitcoin.it/wiki/Main_Page) ***TODO***
 for help and more information.
-* Ask for help on [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or on the [DAPScoin Forum](http://forum.officialdapscoin.com/).
+* Ask for help on [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or on the [DAPScoin Forum](https://forum.officialdapscoin.com/).
 * Join one of our Slack groups [DAPScoin Slack Groups](https://officialdapscoin.com/slack-logins/).
 
 Building
@@ -55,7 +55,7 @@ The Dapscoin repo's [root README](https://github.com/DAPScoin-Project/DAPScoin/b
 
 ### Resources
 
-* Discuss on the [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or the [DAPScoin](http://forum.officialdapscoin.com/) forum.
+* Discuss on the [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or the [DAPScoin](https://forum.officialdapscoin.com/) forum.
 * Join the [DAPScoin-Dev](https://dapscoin-dev.slack.com/) Slack group ([Sign-Up](https://dapscoin-dev.herokuapp.com/)).
 
 ### Miscellaneous
