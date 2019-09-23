@@ -451,7 +451,7 @@ boost::filesystem::path GetDefaultDataDir()
 // Unix: ~/.dapscoin
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "DAPScoin";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "DAPScoin-Multisig";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -463,10 +463,10 @@ boost::filesystem::path GetDefaultDataDir()
     // Mac
     pathRet /= "Library/Application Support";
     TryCreateDirectory(pathRet);
-    return pathRet / "DAPScoin";
+    return pathRet / "DAPScoin-Multisig";
 #else
     // Unix
-    return pathRet / ".dapscoin";
+    return pathRet / ".dapscoin-multisig";
 #endif
 #endif
 }
