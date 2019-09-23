@@ -152,7 +152,12 @@ CPartialTransaction SendCoinsDialog::sendTx() {
             false
         );
     } catch (const std::exception& err) {
-        QMessageBox::warning(this, "Could not send", QString(err.what()));
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Could Not Send");
+        msgBox.setText(err.what());
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.exec();
         return ptx;
     }
 
