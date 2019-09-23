@@ -67,7 +67,9 @@ QT_FORMS_UI = \
   qt/forms/transactiondescdialog.ui \
   qt/forms/txentry.ui \
   qt/forms/unlockdialog.ui \
-  qt/forms/lockdialog.ui
+  qt/forms/lockdialog.ui \
+  qt/forms/importorcreate.ui \
+  qt/forms/entermnemonics.ui
   
 QT_MOC_CPP = \
   qt/moc_2fadialog.cpp \
@@ -134,7 +136,9 @@ QT_MOC_CPP = \
   qt/moc_walletmodel.cpp \
   qt/moc_walletview.cpp \
   qt/moc_unlockdialog.cpp \
-  qt/moc_lockdialog.cpp 
+  qt/moc_lockdialog.cpp \
+  qt/moc_importorcreate.cpp \
+  qt/moc_entermnemonics.cpp
 
 BITCOIN_MM = \
   qt/macdockiconhandler.mm \
@@ -232,7 +236,9 @@ BITCOIN_QT_H = \
   qt/walletview.h \
   qt/winshutdownmonitor.h \
   qt/unlockdialog.h \
-  qt/lockdialog.h 
+  qt/lockdialog.h \
+  qt/importorcreate.h \
+  qt/entermnemonics.h
 
 RES_ICONS = \
   qt/res/icons/add.png \
@@ -376,7 +382,9 @@ BITCOIN_QT_CPP += \
   qt/walletmodeltransaction.cpp \
   qt/walletview.cpp \
   qt/unlockdialog.cpp \
-  qt/lockdialog.cpp 
+  qt/lockdialog.cpp \
+  qt/importorcreate.cpp \
+  qt/entermnemonics.cpp
 
 endif
 

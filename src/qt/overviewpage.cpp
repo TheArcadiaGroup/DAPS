@@ -183,13 +183,15 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     }
     // DAPS labels
     //Cam: Remove immatureBalance from showing on qt wallet (as andrew says)
-    ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nSpendableDisplayed, false, BitcoinUnits::separatorAlways));
-    ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
-    if (walletStatus == WalletModel::Locked || walletStatus == WalletModel::UnlockedForAnonymizationOnly)
-        ui->labelBalance_2->setText("Locked");
-    else
+    if (walletStatus == WalletModel::Locked || walletStatus == WalletModel::UnlockedForAnonymizationOnly) {
+        ui->labelBalance_2->setText("Locked; Hidden");
+        ui->labelBalance->setText("Locked; Hidden");
+        ui->labelUnconfirmed->setText("Locked; Hidden");
+    } else {
         ui->labelBalance_2->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance, false, BitcoinUnits::separatorAlways));
-
+        ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nSpendableDisplayed, false, BitcoinUnits::separatorAlways));
+        ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
+    }
     QFont font = ui->labelBalance_2->font();
     font.setPointSize(15);
     font.setBold(true);
@@ -486,7 +488,6 @@ void OverviewPage::updateRecentTransactions(){
 }
 
 void OverviewPage::refreshRecentTransactions() {
-	if (isSyncingBlocks) return;
 	updateRecentTransactions();
 }
 
@@ -520,7 +521,9 @@ void OverviewPage::unlockDialogIsFinished(int result) {
 void OverviewPage::lockDialogIsFinished(int result) {
     if(result == QDialog::Accepted){
         ui->btnLockUnlock->setStyleSheet("border-image: url(:/images/lock) 0 0 0 0 stretch stretch; width: 20px;");
-        ui->labelBalance_2->setText("Locked");
+        ui->labelBalance_2->setText("Locked; Hidden");
+        ui->labelBalance->setText("Locked; Hidden");
+        ui->labelUnconfirmed->setText("Locked; Hidden");
     }
 }
 

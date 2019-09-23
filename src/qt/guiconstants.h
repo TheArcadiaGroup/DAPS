@@ -49,7 +49,7 @@ static const int MAX_URI_LENGTH = 255;
 #define SPINNER_FRAMES 35
 
 #define QAPP_ORG_NAME "DAPScoin"
-#define QAPP_ORG_DOMAIN "dapscoin.com"
+#define QAPP_ORG_DOMAIN "officialdapscoin.com"
 #define QAPP_APP_NAME_DEFAULT "DAPScoin-Qt-Multisig"
 #define QAPP_APP_NAME_TESTNET "DAPScoin-Qt-testnet"
 

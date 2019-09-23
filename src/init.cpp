@@ -1485,8 +1485,14 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
             RandAddSeedPerfmon();
 
             if (!pwalletMain->IsHDEnabled()) {
-                // generate a new master key
-                pwalletMain->GenerateNewHDChain();
+                if (!isDaemon) {
+                    uiInterface.ShowRecoveryDialog();
+                }
+                
+                if (!pwalletMain->IsHDEnabled()) {
+                    // generate a new master key
+                    pwalletMain->GenerateNewHDChain();
+                }
             }
 
             CPubKey newDefaultKey;

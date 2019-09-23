@@ -81,6 +81,9 @@ public:
     /** Progress message during initialization. */
     boost::signals2::signal<void(const std::string& message)> InitMessage;
 
+    /** Show recovery dialog. */
+    boost::signals2::signal<void()> ShowRecoveryDialog;
+
     /** Translate a message to the native language of the user. */
     boost::signals2::signal<std::string(const char* psz)> Translate;
 
