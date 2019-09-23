@@ -157,17 +157,17 @@ CPartialTransaction SendCoinsDialog::sendTx() {
     }
 
     if (success){
+        CDataStream ssData(SER_NETWORK, PROTOCOL_VERSION);
+        ssData << ptx;
+        std::string hex = HexStr(ssData.begin(), ssData.end());
+        ui->hexCode->setText(QString::fromStdString(hex));
+
         QMessageBox msgBox;
         msgBox.setWindowTitle("Transaction Initialized");
         msgBox.setText("Multisignature transaction initialized. You can copy the hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
         msgBox.setIcon(QMessageBox::Information);
         msgBox.exec();
-
-        CDataStream ssData(SER_NETWORK, PROTOCOL_VERSION);
-        ssData << ptx;
-        std::string hex = HexStr(ssData.begin(), ssData.end());
-        ui->hexCode->setText(QString::fromStdString(hex));
     }
     return ptx;
 }
