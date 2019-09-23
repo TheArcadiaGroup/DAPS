@@ -72,8 +72,6 @@ void SendCoinsDialog::setModel(WalletModel* model)
 
         connect(model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
             SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
-
-        updateRingSize();
     }
 }
 
@@ -196,11 +194,4 @@ SendCoinsEntry* SendCoinsDialog::addEntry()
         bar->setSliderPosition(bar->maximum());
     return entry;
 }
-
-void SendCoinsDialog::updateRingSize()
-{
-    QSettings settings;
-}
-
-
 

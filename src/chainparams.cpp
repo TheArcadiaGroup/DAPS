@@ -196,8 +196,8 @@ public:
 
         vSeeds.push_back(CDNSSeedData("dev-seed1.dapscoin.com", "dev-seed1.dapscoin.com"));        // Single node address
         vSeeds.push_back(CDNSSeedData("dev-seed2.dapscoin.com", "dev-seed2.dapscoin.com"));        // Single node address
-        vSeeds.push_back(CDNSSeedData("stg-seed1.dapscoin.com", "stg-seed1.dapscoin.com"));        // Single node address
-        vSeeds.push_back(CDNSSeedData("stg-seed2.dapscoin.com", "stg-seed2.dapscoin.com"));        // Single node address
+        vSeeds.push_back(CDNSSeedData("seed1.dapscoin.com", "seed1.dapscoin.com"));        // Single node address
+        vSeeds.push_back(CDNSSeedData("seed2.dapscoin.com", "seed2.dapscoin.com"));        // Single node address
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 30);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 13);
