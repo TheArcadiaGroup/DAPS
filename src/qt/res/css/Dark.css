@@ -490,3 +490,25 @@ QWidget::right-arrow:disabled {
 QLineEdit#textComboKey{
   color: white;
 }
+
+QSlider::groove:horizontal { 
+	background-color: gray;
+	border: 0px solid #424242; 
+	height: 10px; 
+	border-radius: 4px;
+}
+
+QSlider::handle:horizontal { 
+	background-color: lightblue; 
+	border: 2px solid lightblue; 
+	width: 16px; 
+	height: 20px; 
+	line-height: 20px; 
+	margin-top: -5px; 
+	margin-bottom: -5px; 
+	border-radius: 10px; 
+}
+
+QSlider::handle:horizontal:hover { 
+	border-radius: 10px;
+}
