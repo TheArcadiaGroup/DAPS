@@ -214,10 +214,16 @@ QComboBox:focus,
 QComboBox::item:selected,
 QMenuBar::item:selected,
 QMenu::item:selected,
-QTextEdit:focus,
-QToolTip {
+QTextEdit:focus {
   border-width: 4px;
   background: #31398c;
+}
+
+QToolTip {
+  color: white;
+  background-color: #5E1C5A;
+  border: 1px solid white;
+  border-radius:5px;
 }
 
 QComboBox:checked {
