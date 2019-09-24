@@ -3019,6 +3019,7 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
     txNew.hasPaymentID = wtxNew.hasPaymentID;
     txNew.paymentID = wtxNew.paymentID;
     CAmount nSpendableBalance = GetSpendableBalance();
+    bool ret = true;
     {
         LOCK2(cs_main, cs_wallet);
         {
@@ -3043,7 +3044,8 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
                 	std::copy(txPub.begin(), txPub.end(), std::back_inserter(txout.txPub));
                 	if (txout.IsDust(::minRelayTxFee)) {
                 		strFailReason = _("Transaction amount too small");
-                		return false;
+                		ret = false;
+                        break;
                 	}
                 	CPubKey sharedSec;
                 	ECDHInfo::ComputeSharedSec(txPrivDes, recipientViewKey, sharedSec);
@@ -3051,6 +3053,8 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
                 	txNew.vout.push_back(txout);
                 	nBytes += ::GetSerializeSize(*(CTxOut*)&txout, SER_NETWORK, PROTOCOL_VERSION);
                 }
+
+                if (!ret) break;
 
                 // Choose coins to use
                 set<pair<const CWalletTx*, unsigned int> > setCoins;
@@ -3072,7 +3076,8 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
                         strFailReason += " " + _("SwiftX requires inputs with at least 6 confirmations, you might need to wait a few minutes and try again.");
                     }
 
-                    return false;
+                    ret = false;
+                    break;
                 }
 
                 CAmount nChange = nValueIn - nValue - nFeeRet;
@@ -3100,7 +3105,8 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
                     	if (nSpendableBalance > nValueIn) {
                     		continue;
                     	}
-                    	false;
+                    	ret = false;
+                        break;
                     }
                     CPubKey shared;
                     computeSharedSec(txNew, newTxOut, shared);
@@ -3114,7 +3120,8 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
                 	if (nSpendableBalance > nValueIn) {
                 		continue;
                 	}
-                    return false;
+                    ret = false;
+                    break;
                 }
 
                 // Fill vin
@@ -3144,7 +3151,7 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
     	wtxNew.vout[i].nValue = 0;
     }
 
-    return true;
+    return ret;
 }
 
 bool CWallet::CreateTransaction(const vector<pair<CScript, CAmount> >& vecSend,

@@ -515,6 +515,8 @@ void OverviewPage::unlockDialogIsFinished(int result) {
     if(result == QDialog::Accepted){
         ui->btnLockUnlock->setStyleSheet("border-image: url(:/images/unlock) 0 0 0 0 stretch stretch; width: 30px;");
         ui->labelBalance_2->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getBalance(), false, BitcoinUnits::separatorAlways));
+        ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getSpendableBalance(), false, BitcoinUnits::separatorAlways));
+        ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getUnconfirmedBalance(), false, BitcoinUnits::separatorAlways));
     }
 }
 
