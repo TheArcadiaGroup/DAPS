@@ -76,7 +76,6 @@ spec:
               command: ["/bin/bash","-c","./launchdaps.sh stop"]
           command: ["/bin/bash","-c","./launchdaps.sh $DAEMONARGS && trap: TERM INT; sleep infinity & wait"]
         ports:
->>>>>>> origin/DAPS-851-CODEFRESH-Deployment
         - containerPort: 53575
           name: regtest
         - containerPort: 53573
