@@ -72,22 +72,10 @@ spec:
         name: dapsd
         lifecycle:
           preStop:
-<<<<<<< Updated upstream
             exec:
-<<<<<<< HEAD
-              command: ["/bin/bash","-c","dapscoin-cli stop"]
-        command: ["/bin/bash","-c","sleep 30 && dapscoind -daemon $DAEMONARGS && trap: TERM INT; sleep infinity & wait"]
-=======
               command: ["/bin/bash","-c","./launchdaps.sh stop"]
-        command: ["/bin/bash","-c","./launchdaps.sh $DAEMONARGS && trap: TERM INT; sleep infinity & wait"]
->>>>>>> origin/DAPS-851-CODEFRESH-Deployment
-        ports:
-=======
-                        exec:
-              command: ["/bin/bash","-c","./launchdaps.sh stop"]
-              command: ["/bin/bash","-c","./launchdaps.sh $DAEMONARGS && trap: TERM INT; sleep infinity & wait"]
+          command: ["/bin/bash","-c","./launchdaps.sh $DAEMONARGS && trap: TERM INT; sleep infinity & wait"]
           ports:
->>>>>>> Stashed changes
         - containerPort: 53575
           name: regtest
         - containerPort: 53573
