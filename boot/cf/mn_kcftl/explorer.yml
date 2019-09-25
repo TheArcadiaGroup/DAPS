@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: explorer
+  name: explorer-mn
   labels:
     app: explorer
 spec:
@@ -20,6 +20,7 @@ spec:
     app: explorer
   sessionAffinity: None
   type: LoadBalancer
+---
 kind: PersistentVolume
 apiVersion: v1
 metadata:
@@ -38,6 +39,7 @@ spec:
   gcePersistentDisk:
     fsType: ext4
     pdName: explorer-node-service-mn
+---
 kind: PersistentVolume
 apiVersion: v1
 metadata:
@@ -55,7 +57,8 @@ spec:
     name: explorer-pv-claim
   gcePersistentDisk:
     fsType: ext4
-    pdName: explorer-daps-service
+    pdName: explorer-daps-service-mn
+---
 kind: PersistentVolume
 apiVersion: v1
 metadata:
@@ -73,7 +76,8 @@ spec:
     name: mongo-pv-claim
   gcePersistentDisk:
     fsType: ext4
-    pdName: explorer-mongo-service
+    pdName: explorer-mongo-service-mn
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -86,6 +90,7 @@ spec:
   resources:
     requests:
       storage: 9Gi
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -98,6 +103,7 @@ spec:
   resources:
     requests:
       storage: 9Gi
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -110,6 +116,7 @@ spec:
   resources:
     requests:
       storage: 9Gi
+---
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
@@ -128,7 +135,7 @@ spec:
         app: explorer
     spec:
       hostAliases:
-        - ip: "10.10.10.200"
+        - ip: "10.10.10.5"
           hostnames:
             - "explorer"
       terminationGracePeriodSeconds: 600
@@ -146,16 +153,21 @@ spec:
             [
               "/bin/bash",
               "-ci",
-              "cd /DAPS/ && npm start & trap: TERM INT; sleep infinity & wait",
+              "cd /DAPS/ && nohup npm start & trap: TERM INT; sleep infinity & wait",
             ]
         - image: r.cfcr.io/hysmagus/daps_min:develop
           imagePullPolicy: Always
           name: dapsd
           lifecycle:
             preStop:
-            exec:
-              command: ["/bin/bash","-c","./launchdaps.sh stop"] 
-              command: ["/bin/bash","-c","./launchdaps.sh $DAEMONARGS && trap: TERM INT; sleep infinity & wait"]
+              exec:
+                command: ["/bin/bash", "-c", "dapscoin-cli stop"]
+          command:
+            [
+              "/bin/bash",
+              "-c",
+              "sleep 30 && nohup dapscoind -daemon && trap: TERM INT; sleep infinity & wait",
+            ]
           ports:
             - containerPort: 53575
               name: regtest
