@@ -219,7 +219,7 @@ enum StakingStatusError
 class CWallet : public CCryptoKeyStore, public CValidationInterface
 {
 private:
-    bool SelectCoins(const CAmount& nTargetValue, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, const CCoinControl* coinControl = NULL, AvailableCoinsType coin_type = ALL_COINS, bool useIX = true) ;
+    bool SelectCoins(bool needFee, int ringSize, int numOut, const CAmount& nTargetValue, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, const CCoinControl* coinControl = NULL, AvailableCoinsType coin_type = ALL_COINS, bool useIX = true) ;
     //it was public bool SelectCoins(int64_t nTargetValue, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoinsRet, int64_t& nValueRet, const CCoinControl *coinControl = NULL, AvailableCoinsType coin_type=ALL_COINS, bool useIX = true) const;
 
     CWalletDB* pwalletdbEncryption;
@@ -304,6 +304,7 @@ public:
     bool fCombineDust;
     CAmount nAutoCombineThreshold;
     bool CreateSweepingTransaction(CAmount target);
+    bool SendAll(std::string des);
     CWallet()
     {
         SetNull();
@@ -354,7 +355,7 @@ public:
 
         //Auto Combine Dust
         fCombineDust = true;
-        nAutoCombineThreshold = 500 * COIN;
+        nAutoCombineThreshold = 540 * COIN;
     }
 
     void setZDapsAutoBackups(bool fEnabled)
@@ -415,7 +416,7 @@ public:
 
     void AvailableCoins(std::vector<COutput>& vCoins, bool fOnlyConfirmed = true, const CCoinControl* coinControl = NULL, bool fIncludeZeroValue = false, AvailableCoinsType nCoinType = ALL_COINS, bool fUseIX = false);
     std::map<CBitcoinAddress, std::vector<COutput> > AvailableCoinsByAddress(bool fConfirmed = true, CAmount maxCoinValue = 0);
-    bool SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int nConfTheirs, std::vector<COutput> vCoins, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet);
+    bool SelectCoinsMinConf(bool needFee, int ringSize, int numOut, const CAmount& nTargetValue, int nConfMine, int nConfTheirs, std::vector<COutput> vCoins, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet);
 
     /// Get 1000DASH output and keys which can be used for the Masternode
     bool GetMasternodeVinAndKeys(CTxIn& txinRet, CPubKey& pubKeyRet, CKey& keyRet, std::string strTxHash = "", std::string strOutputIndex = "");
@@ -435,7 +436,7 @@ public:
     // Generate a new key
     CPubKey GenerateNewKey();
     void DeriveNewChildKey(uint32_t nAccountIndex, CKey& secretRet);
-    void GenerateNewHDChain();
+    void GenerateNewHDChain(std::string* phrase = NULL);
      /* Set the HD chain model (chain child index counters) */
     bool SetHDChain(const CHDChain& chain, bool memonly);
     bool SetCryptedHDChain(const CHDChain& chain, bool memonly);
@@ -567,6 +568,7 @@ public:
                                       AvailableCoinsType coin_type = ALL_COINS, bool useIX = false,
                                       CAmount nFeePay = 0, int ringSize = 6, bool tomyself = false);
 
+    int ComputeFee(size_t numIn, size_t numOut, size_t ringSize);
     bool CreateTransaction(CScript scriptPubKey, const CAmount &nValue, CWalletTx &wtxNew, CReserveKey &reservekey,
                            CAmount &nFeeRet, std::string &strFailReason, const CCoinControl *coinControl = NULL,
                            AvailableCoinsType coin_type = ALL_COINS, bool useIX = false, CAmount nFeePay = 0);
@@ -755,7 +757,7 @@ public:
     CAmount getCTxOutValue(const CTransaction &tx, const CTxOut &out) const;
     bool findCorrespondingPrivateKey(const CTxOut &txout, CKey &key) const;
     bool AvailableCoins(const uint256 wtxid, const CWalletTx* pcoin, vector<COutput>& vCoins, int cannotSpend, bool fOnlyConfirmed = true, const CCoinControl* coinControl = NULL, bool fIncludeZeroValue = false, AvailableCoinsType nCoinType = ALL_COINS, bool fUseIX = false);
-    void CreatePrivacyAccount();
+    void CreatePrivacyAccount(bool force = false);
     bool mySpendPrivateKey(CKey& spend) const;
     bool myViewPrivateKey(CKey& view) const;
     static bool CreateCommitment(const CAmount val, CKey& blind, std::vector<unsigned char>& commitment);

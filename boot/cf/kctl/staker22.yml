@@ -14,7 +14,6 @@ spec:
     app: daps-staker-22
   sessionAffinity: None
   type: LoadBalancer
----
 kind: PersistentVolume
 apiVersion: v1
 metadata:
@@ -33,7 +32,6 @@ spec:
   gcePersistentDisk:
     fsType: ext4
     pdName: stakingnode-22-service
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -46,7 +44,6 @@ spec:
   resources:
     requests:
       storage: 9Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -76,8 +73,8 @@ spec:
         lifecycle:
           preStop:
             exec:
-              command: ["/bin/bash","-c","dapscoin-cli stop"]
-        command: ["/bin/bash","-c","sleep 30 && dapscoind -daemon && trap: TERM INT; sleep infinity & wait"]
+              command: ["/bin/bash","-c","./launchdaps.sh stop"]
+        command: ["/bin/bash","-c","./launchdaps.sh $DAEMONARGS && trap: TERM INT; sleep infinity & wait"]
         ports:
         - containerPort: 53575
           name: regtest

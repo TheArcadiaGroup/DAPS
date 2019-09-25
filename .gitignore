@@ -58,6 +58,7 @@ src/qt/test/moc*.cpp
 .dirstamp
 .libs
 .*.swp
+.inspect.sh.swo
 *.*~*
 *.bak
 *.rej

@@ -53,7 +53,7 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
 
     QLocale lo(QLocale::C);
     lo.setNumberOptions(QLocale::RejectGroupSeparator);
-    QDoubleValidator *dblVal = new QDoubleValidator(0, Params().MAX_MONEY, 8, ui->lineEditWithhold);
+    QDoubleValidator *dblVal = new QDoubleValidator(0, Params().MAX_MONEY, 0, ui->lineEditWithhold);
     dblVal->setNotation(QDoubleValidator::StandardNotation);
     dblVal->setLocale(lo);
     ui->lineEditWithhold->setValidator(dblVal);
@@ -361,7 +361,8 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
 
     if (chainActive.Height() < Params().LAST_POW_BLOCK()) {
     	if (widget->getState()) {
-            QString msg("PoW blocks are still being mined.\nPlease wait until Block #" + Params().LAST_POW_BLOCK());
+            QString msg;
+            msg.sprintf("PoW blocks are still being mined.\nPlease wait until Block #%d", Params().LAST_POW_BLOCK());
             QMessageBox msgBox;
             msgBox.setWindowTitle("Information");
             msgBox.setIcon(QMessageBox::Information);

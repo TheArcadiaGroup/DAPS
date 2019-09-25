@@ -17,6 +17,7 @@ const express = require('express')
   , chalk = require('chalk')
   , dbsync = require('./lib/updatedb')
   , favicon = require('serve-favicon')
+  , bodyParser = require('body-parser');
 
 
 // Database init
@@ -58,6 +59,8 @@ app.use(cors({
   optionsSuccessStatus: 200,
   methods: '*',
 }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 //BlockExplorer - return react app
 app.get(["/explorer/*", '/explorer/'], (req, res, next) => {
@@ -65,6 +68,18 @@ app.get(["/explorer/*", '/explorer/'], (req, res, next) => {
   res.send(fs.readFileSync(path.join(__dirname, '/dist/index.html')));
 });
 app.get('/', (req, res) => { res.redirect('explorer/overview/') });
+app.post('/auth', (req, res) => {
+  var pwd = req.body.pwd;
+  var json_data = {
+      "status":'ok',
+      "result":'',
+  };
+
+  if (pwd !== 'Does Alice owe Bob 1 Million DAPS?')
+    json_data['status'] = 'fail';
+
+  res.send(json_data);
+});
 
 
 // chaincoinapi - get data direct from wallet

@@ -50,9 +50,11 @@ TwoFADialog::TwoFADialog(QWidget *parent) :
     connect(ui->txtcode_5, &QLineEdit::textChanged, this, &TwoFADialog::codeChanged);
     connect(ui->txtcode_6, &QLineEdit::textChanged, this, &TwoFADialog::codeChanged);
 
-    ui->label_2->setVisible(false);
     ui->lblOpenAppURL->setVisible(false);
-
+    bool status = pwalletMain->Read2FA();
+    if (!status) {
+        ui->label_2->setVisible(true);
+    }
 }
 
 TwoFADialog::~TwoFADialog()

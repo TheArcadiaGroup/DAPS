@@ -72,8 +72,6 @@ void SendCoinsDialog::setModel(WalletModel* model)
 
         connect(model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
             SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
-
-        updateRingSize();
     }
 }
 
@@ -81,7 +79,12 @@ void SendCoinsDialog::setBalance(const CAmount& balance, const CAmount& unconfir
                               const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
                               const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance)
 {
-    ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(0, balance, false, BitcoinUnits::separatorAlways));
+    int status = model->getEncryptionStatus();
+    if (status == WalletModel::Locked || status == WalletModel::UnlockedForAnonymizationOnly) {
+        ui->labelBalance->setText("Locked; Hidden");
+    } else {
+        ui->labelBalance->setText(BitcoinUnits::formatHtmlWithUnit(0, balance, false, BitcoinUnits::separatorAlways));
+    }
 }
 
 SendCoinsDialog::~SendCoinsDialog(){
@@ -104,15 +107,32 @@ void SendCoinsDialog::on_sendButton_clicked(){
     if (!isValidAddresss||!isValidAmount)
         return;
 
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Are You Sure?", "Are you sure you would like to send this transaction?", QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+    } else {
+        return;
+    }
+
     bool nStaking = (nLastCoinStakeSearchInterval > 0);
 
     if (nStaking) {
         CAmount spendable = pwalletMain->GetSpendableBalance();
         if (!(recipient.amount <= nReserveBalance && recipient.amount <= spendable)) {
             if (recipient.amount > spendable) {
-                QMessageBox(QMessageBox::Information, tr("Warning"), tr("Insufficient Spendable funds! Send with smaller amount or wait for your coins become mature"), QMessageBox::Ok).exec();
+                QMessageBox msgBox;
+                msgBox.setWindowTitle("Insufficient Spendable Funds!");
+                msgBox.setText("Insufficient spendable funds. Send with smaller amount or wait for your coins become mature");
+                msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+                msgBox.setIcon(QMessageBox::Information);
+                msgBox.exec();
             } else if (recipient.amount > nReserveBalance) {
-                QMessageBox(QMessageBox::Information, tr("Warning"), tr("Insufficient Reserve Funds! Send with smaller amount or turn off staking mode"), QMessageBox::Ok).exec();
+                QMessageBox msgBox;
+                msgBox.setWindowTitle("Insufficient Reserve Funds!");
+                msgBox.setText("Insufficient reserve funds. Send with smaller amount or turn off staking mode.");
+                msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+                msgBox.setIcon(QMessageBox::Information);
+                msgBox.exec();
             }
             return;
         }
@@ -151,12 +171,12 @@ void SendCoinsDialog::sendTx() {
             false
         );
     } catch (const std::exception& err) {
-        QMessageBox txError;
-        txError.setText("Transaction creation error");
-        txError.setInformativeText(err.what());
-        txError.setStyleSheet(GUIUtil::loadStyleSheet());
-        txError.setStyleSheet("QMessageBox {messagebox-text-interaction-flags: 5;}");
-        txError.exec();
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Transaction Creation Error");
+        msgBox.setText(err.what());
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.exec();
         return;
     }
 
@@ -199,11 +219,4 @@ SendCoinsEntry* SendCoinsDialog::addEntry()
         bar->setSliderPosition(bar->maximum());
     return entry;
 }
-
-void SendCoinsDialog::updateRingSize()
-{
-    QSettings settings;
-}
-
-
 

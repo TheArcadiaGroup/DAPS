@@ -135,7 +135,7 @@ spec:
         app: explorer
     spec:
       hostAliases:
-        - ip: "10.10.10.200"
+        - ip: "10.10.10.5"
           hostnames:
             - "explorer"
       terminationGracePeriodSeconds: 600
@@ -153,7 +153,7 @@ spec:
             [
               "/bin/bash",
               "-ci",
-              "cd /DAPS/ && npm start & trap: TERM INT; sleep infinity & wait",
+              "cd /DAPS/ && nohup npm start & trap: TERM INT; sleep infinity & wait",
             ]
         - image: r.cfcr.io/hysmagus/daps_min:develop
           imagePullPolicy: Always
@@ -166,7 +166,7 @@ spec:
             [
               "/bin/bash",
               "-c",
-              "sleep 30 && dapscoind -daemon && trap: TERM INT; sleep infinity & wait",
+              "sleep 30 && nohup dapscoind -daemon && trap: TERM INT; sleep infinity & wait",
             ]
           ports:
             - containerPort: 53575

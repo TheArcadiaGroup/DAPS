@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: daps-control-wallet
+spec:
+  ports:
+    - port: 53575
+      name: regtest
+    - port: 53573
+      name: testnet
+    - port: 53572
+      name: mainnet
+  selector:
+    app: daps-control-wallet
+  sessionAffinity: None
+  type: LoadBalancer
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: control-wallet-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 0.1Gi
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    namespace: default
+    name: control-wallet-pv-claim
+  hostPath:
+    path: "/tmp/pv/control"
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: control-wallet-pv-claim
+  labels:
+    app: daps-control-wallet
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 0.1Gi
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: daps-control-wallet
+  labels:
+    app: daps-control-wallet
+spec:
+  selector:
+    matchLabels:
+      app: daps-control-wallet
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: daps-control-wallet
+      annotations:
+        test: test3
+    spec:
+      hostAliases:
+      - ip: "10.10.10.0"
+        hostnames:
+        - "control.wallet"
+      terminationGracePeriodSeconds: 3
+      containers:
+      - image: r.cfcr.io/hysmagus/daps_min:develop
+        imagePullPolicy: Always
+        name: dapsd
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash","-c","./launchdaps.sh stop"] 
+              command: ["/bin/bash","-c","./launchdaps.sh $DAEMONARGS && trap: TERM INT; sleep infinity & wait"]
+        ports:
+        - containerPort: 53575
+          name: regtest
+        - containerPort: 53573
+          name: testnet
+        - containerPort: 53572
+          name: mainnet
+        volumeMounts:
+        - name: controlwalletdata
+          mountPath: /root/.dapscoin/
+      volumes:
+      - name: controlwalletdata
+        persistentVolumeClaim:
+          claimName: control-wallet-pv-claim
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: regcred
+      

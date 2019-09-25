@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: daps-master-7
+spec:
+  ports:
+    - port: 53575
+      name: regtest
+    - port: 53573
+      name: testnet
+    - port: 53572
+      name: mainnet
+  selector:
+    app: daps-master-7
+  sessionAffinity: None
+  type: LoadBalancer
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: master-7-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 9Gi
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    namespace: default
+    name: master-7-pv-claim
+  gcePersistentDisk:
+    fsType: ext4
+    pdName: masternode-7-service-mn
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: master-7-pv-claim
+  labels:
+    app: daps-master-7
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 9Gi
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: daps-master-7
+  labels:
+    app: daps-master-7
+spec:
+  selector:
+    matchLabels:
+      app: daps-master-7
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: daps-master-7
+      annotations:
+        test: test
+    spec:
+      hostAliases:
+      - ip: "10.10.10.107"
+        hostnames:
+        - "master.7"
+      terminationGracePeriodSeconds: 3
+      containers:
+      - image: r.cfcr.io/hysmagus/daps_min:develop
+        imagePullPolicy: Always
+        name: dapsd
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash","-c","./launchdaps.sh stop"]
+        command: ["/bin/bash","-c","./launchdaps.sh $DAEMONARGS && trap: TERM INT; sleep infinity & wait"]
+        ports:
+        - containerPort: 53575
+          name: regtest
+        - containerPort: 53573
+          name: testnet
+        - containerPort: 53572
+          name: mainnet
+        volumeMounts:
+        - name: master7data
+          mountPath: /root/.dapscoin/
+      volumes:
+      - name: master7data
+        persistentVolumeClaim:
+          claimName: master-7-pv-claim
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: codefresh-generated-r.cfcr.io-cfcr-default
+
+    

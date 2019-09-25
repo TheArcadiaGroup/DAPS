@@ -195,6 +195,8 @@ secp256k1_bulletproof_generators* GetGenerator();
 bool VerifyBulletProofAggregate(const CTransaction& tx);
 bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex);
 void DestroyContext();
+bool VerifyDerivedAddress(const CTxOut& out, std::string stealth);
+bool ReVerifyPoSBlock(CBlockIndex* pindex);
 
 /** 
  * Process an incoming block. This only returns after the best known valid
