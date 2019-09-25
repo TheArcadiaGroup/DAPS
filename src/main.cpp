@@ -2244,7 +2244,7 @@ int64_t GetBlockValue(const CBlockIndex *ptip) {
     }
 
 	if (pForkTip->nHeight < Params().LAST_POW_BLOCK()) {
-		nSubsidy = 200000000 * COIN;
+		nSubsidy = 120000000 * COIN;
 	} else {
         nSubsidy = PoSBlockReward();
         nSubsidy += TeamRewards(pForkTip);
