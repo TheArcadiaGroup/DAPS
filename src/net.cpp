@@ -1370,10 +1370,7 @@ void ThreadOpenConnections() {
 void ThreadOpenAddedConnections() {
     {
         LOCK(cs_vAddedNodes);
-        vAddedNodes.push_back("34.74.33.229:53572");
-        vAddedNodes.push_back("35.227.75.234:53572");
-        vAddedNodes.push_back("35.243.211.34:53572");
-        vAddedNodes.insert(vAddedNodes.end(), mapMultiArgs["-addnode"].begin(), mapMultiArgs["-addnode"].end());
+        vAddedNodes = mapMultiArgs["-addnode"];
     }
 
     if (HaveNameProxy()) {
