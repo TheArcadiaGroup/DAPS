@@ -109,7 +109,8 @@ uint32_t GetListOfPoSInfo(uint32_t currentHeight, std::vector<PoSBlockSummary>& 
         for (int i = Params().LAST_POW_BLOCK() + 1; i <= Params().LAST_POW_BLOCK() + 60; i++) {
             PoSBlockSummary pos;
             pos.hash = chainActive[i]->GetBlockHash();
-            pos.nTime = chainActive[i]->GetBlockHeader().nTime;
+            CBlockIndex* pindex = mapBlockIndex[pos.hash];
+            pos.nTime = ReVerifyPoSBlock(pindex) ? chainActive[i]->GetBlockHeader().nTime : 0;
             pos.height = i;
             audits.push_back(pos);
         }
@@ -133,7 +134,8 @@ uint32_t GetListOfPoSInfo(uint32_t currentHeight, std::vector<PoSBlockSummary>& 
                 if (posBlock.IsProofOfStake()) {
                     PoSBlockSummary pos;
                     pos.hash = chainActive[nextAuditHeight]->GetBlockHash();
-                    pos.nTime = chainActive[nextAuditHeight]->GetBlockHeader().nTime;
+                    CBlockIndex* pindex = mapBlockIndex[pos.hash];
+                    pos.nTime = ReVerifyPoSBlock(pindex) ? chainActive[nextAuditHeight]->GetBlockHeader().nTime : 0;
                     pos.height = nextAuditHeight;
                     audits.push_back(pos);
                 }

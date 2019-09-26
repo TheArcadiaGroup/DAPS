@@ -1,4 +1,3 @@
-
 ARG SRC_PATH=ubuntu
 ARG OS_VERSION=16.04
 
@@ -18,6 +17,10 @@ RUN apt-get update && \
 #COPY binaries
 COPY dapscoind /usr/bin/dapscoind
 COPY dapscoin-cli /usr/bin/dapscoin-cli
+COPY launchdaps.sh /root/.dapscoin/launchdaps.sh
+
+RUN chmod +x /root/.dapscoin/launchdaps.sh && \
+    ls -a /root/.dapscoin/
 
 EXPOSE 53575 53573 53572
 
