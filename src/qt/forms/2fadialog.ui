@@ -28,7 +28,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Enter Code</string>
+        <string>Enabling 2FA in your DAPS Desktop App</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -49,11 +49,17 @@
          <pointsize>9</pointsize>
         </font>
        </property>
+       <property name="lineWidth">
+        <number>2</number>
+       </property>
        <property name="text">
-        <string>Set up DAPS in your authentication app using the backup code from the previous step or by scanning the QR code</string>
+        <string>After this step, you will need to periodically enter another 2FA code anytime you send a transaction from within this desktop app, so do not lose your 2FA code generator.</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
