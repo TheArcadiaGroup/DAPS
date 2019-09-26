@@ -2960,8 +2960,10 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
     vecSend.push_back(make_pair(scriptPubKey, nValue));
     return CreateTransactionBulletProof(ptx, txPrivDes, recipientViewKey, vecSend, wtxNew, reservekey, nFeeRet, strFailReason, coinControl, coin_type, useIX, nFeePay, ringSize, sendtoMyself);
 }
-
-                                  CWalletTx& wtxNew,
+bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey& txPrivDes,
+                                    const CPubKey& recipientViewKey,
+                                    const std::vector<std::pair<CScript, CAmount> >& vecSend,
+                                    CWalletTx& wtxNew,
                                   CReserveKey& reservekey,
                                   CAmount& nFeeRet,
                                   std::string& strFailReason,
