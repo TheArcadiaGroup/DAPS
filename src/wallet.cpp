@@ -2218,7 +2218,7 @@ bool CWallet::SelectCoinsMinConf(bool needFee, int ringSize, int numOut, const C
             return true;
         }
         LogPrintf("\n nValueRet=%d, target value = %d\n", nValueRet, nTotalLower);
-        if (nTotalLower < nTargetValue) {
+        if (nTotalLower < nTargetValue + feeNeeded) {
             if (coinLowestLarger.second.first == NULL) // there is no input larger than nTargetValue
             {
                 if (tryDenom == 0)
@@ -2793,9 +2793,9 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
             nFeeRet = 0;
             if (nFeePay > 0) nFeeRet = nFeePay;
             unsigned int nBytes = 0;
-            int iterations = 0;
-            while (true && iterations < 10) {
-                iterations++;
+            //int iterations = 0;
+            while (true) {
+                //iterations++;
                 txNew.vin.clear();
                 txNew.vout.clear();
                 wtxNew.fFromMe = true;
@@ -2850,6 +2850,8 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
                     ret = false;
                     break;
                 }
+
+                
 
                 CAmount nChange = nValueIn - nValue - nFeeRet;
 
@@ -5395,7 +5397,12 @@ bool CWallet::CreateSweepingTransaction(CAmount target)
     bool ret = true;
 
     {
-        LOCK2(cs_main, cs_wallet);
+        TRY_LOCK(cs_main, lockMain);
+        if (!lockMain)
+            return false;
+        TRY_LOCK(cs_wallet, lockWallet);
+        if (!lockWallet)
+            return false;
         {
             for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
                 const uint256& wtxid = it->first;
