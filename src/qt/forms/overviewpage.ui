@@ -557,7 +557,7 @@
      <item>
       <widget class="QLabel" name="lblHelp">
        <property name="text">
-        <string>It is advised not to send or receive tokens until your current sync is complete.</string>
+        <string>It is advised not to send or receive coins until your current sync is complete.</string>
        </property>
       </widget>
      </item>
