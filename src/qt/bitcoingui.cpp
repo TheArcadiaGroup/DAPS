@@ -280,7 +280,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 
     sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&   Create\nTransaction"), this);
 
-    sendCoinsAction->setToolTip(QString());
+    sendCoinsAction->setToolTip("Create Transaction");
     sendCoinsAction->setCheckable(true);
 #ifdef Q_OS_MAC
     sendCoinsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
@@ -290,7 +290,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     tabGroup->addAction(sendCoinsAction);
 
     cosignAction = new QAction(QIcon(":/icons/send"), tr("&   Co-Sign\nTransaction"), this);
-    cosignAction->setToolTip(QString());
+    cosignAction->setToolTip("Co-Sign Transaction");
     cosignAction->setCheckable(true);
 #ifdef Q_OS_MAC
     cosignAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
@@ -300,7 +300,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     tabGroup->addAction(cosignAction);
 
     keyImageSyncAction = new QAction(QIcon(":/icons/send"), tr("&   Sync\nKeyImage"), this);
-    keyImageSyncAction->setToolTip(QString());
+    keyImageSyncAction->setToolTip("Sync KeyImage");
     keyImageSyncAction->setCheckable(true);
 #ifdef Q_OS_MAC
     keyImageSyncAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_8));
