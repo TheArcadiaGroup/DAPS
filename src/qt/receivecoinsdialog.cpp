@@ -153,25 +153,14 @@ void ReceiveCoinsDialog::on_receiveButton_clicked()
 
     std::vector<std::string> addrList, accountList;
     CWallet* wl = model->getCWallet();
-    wl->AllMyPublicAddresses(addrList, accountList);
+    std::string multisig = wl->MyMultisigPubAddress();
     int selectedIdx = ui->reqAddress->currentIndex();
+    addrList.push_back(multisig);
+    accountList.push_back("Multisig");
     if ((int)addrList.size() > selectedIdx){
         QString address(addrList[selectedIdx].c_str());
         QString label(accountList[selectedIdx].c_str());
         QString reqMes = ui->reqID->text();
-        QString strPaymentID = ui->reqID->text();
-        if (!strPaymentID.trimmed().isEmpty()) {
-            quint64 paymentID = strPaymentID.toULongLong();
-            uint64_t id = paymentID;
-            std::string integratedAddr;
-            if (selectedIdx == 0) {
-                wl->ComputeIntegratedPublicAddress(id, "masteraccount", integratedAddr);
-            } else {
-                wl->ComputeIntegratedPublicAddress(id, accountList[selectedIdx], integratedAddr);
-            }
-            address = QString(integratedAddr.c_str());
-        }
-
         SendCoinsRecipient info(address, label, getValidatedAmount(), reqMes);
         ReceiveRequestDialog* dialog = new ReceiveRequestDialog(this);
         dialog->setAttribute(Qt::WA_DeleteOnClose);
