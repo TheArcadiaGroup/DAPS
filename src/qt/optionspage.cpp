@@ -53,7 +53,7 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
 
     QLocale lo(QLocale::C);
     lo.setNumberOptions(QLocale::RejectGroupSeparator);
-    QDoubleValidator *dblVal = new QDoubleValidator(0, Params().MAX_MONEY, 0, ui->lineEditWithhold);
+    QDoubleValidator *dblVal = new QDoubleValidator(0, 250000000, 0, ui->lineEditWithhold);
     dblVal->setNotation(QDoubleValidator::StandardNotation);
     dblVal->setLocale(lo);
     ui->lineEditWithhold->setValidator(dblVal);
@@ -119,8 +119,6 @@ static inline int64_t roundint64(double d)
 
 CAmount OptionsPage::getValidatedAmount() {
     double dAmount = ui->lineEditWithhold->text().toDouble();
-    if (dAmount < 0.0 || dAmount > Params().MAX_MONEY)
-        throw runtime_error("Invalid amount, amount should be < 2.1B DAPS");
     CAmount nAmount = roundint64(dAmount * COIN);
     return nAmount;
 }
@@ -137,6 +135,7 @@ void OptionsPage::resizeEvent(QResizeEvent* event)
 }
 
 void OptionsPage::on_pushButtonSave_clicked() {
+    double dAmount = ui->lineEditWithhold->text().toDouble();
     if (ui->lineEditWithhold->text().trimmed().isEmpty()) {
         ui->lineEditWithhold->setStyleSheet("border: 2px solid red");
         QMessageBox msgBox;
@@ -144,6 +143,15 @@ void OptionsPage::on_pushButtonSave_clicked() {
         msgBox.setText("DAPS reserve amount is empty and must be a minimum of 1.\nPlease click Disable if you would like to turn it off.");
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
         msgBox.setIcon(QMessageBox::Information);
+        msgBox.exec();
+        return;
+    }
+    if (dAmount < 0.0 || dAmount > 250000000) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Invalid Reserve Amount");
+        msgBox.setText("Invalid reserve amount. The amount should be less than 250,000,000 DAPS.");
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.setIcon(QMessageBox::Warning);
         msgBox.exec();
         return;
     }
