@@ -368,6 +368,7 @@ void OverviewPage::onAnimTick()
     } else {
         blockSyncCircle->setStyleSheet("image:url(':/images/syncb')");
         blockAnimSyncCircle->setVisible(false);
+        ui->lblHelp->setVisible(false);
     }
     if (isSyncingBalance){
         moveSyncCircle(balanceSyncCircle, balanceAnimSyncCircle, 3, -100, 130);
