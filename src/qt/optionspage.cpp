@@ -149,7 +149,7 @@ void OptionsPage::on_pushButtonSave_clicked() {
     if (dAmount < 0.0 || dAmount > 250000000) {
         QMessageBox msgBox;
         msgBox.setWindowTitle("Invalid Reserve Amount");
-        msgBox.setText("Invalid reserve amount. The amount should be less than 250,000,000 DAPS.");
+        msgBox.setText("The amount you have attempted to keep as spendable is greater than the 250,000,000 (250M) limit. Please try a smaller amount.");
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.exec();
