@@ -2558,7 +2558,7 @@ UniValue generateintegratedaddress(const UniValue& params, bool fHelp)
     } else {
         address = pwalletMain->GenerateIntegratedAddressWithRandomPaymentID("masteraccount", paymentID);
     }
-    ret.push_back(Pair("stealthaddress", address));
+    ret.push_back(Pair("integratedaddress", address));
     ret.push_back(Pair("paymentid", paymentID));
     return ret;
 }
