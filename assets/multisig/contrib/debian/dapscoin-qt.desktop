@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Dapscoin
+Comment=Dapscoin P2P Cryptocurrency
+Comment[fr]=Dapscoin, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Dapscoin, eşten eşe kriptografik sanal para birimi
+Exec=dapscoin-qt %u
+Terminal=false
+Type=Application
+Icon=dapscoin128
+MimeType=x-scheme-handler/dapscoin;
+Categories=Office;Finance;

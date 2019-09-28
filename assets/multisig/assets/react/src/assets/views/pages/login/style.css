@@ -1,0 +1,28 @@
+:local(.Title) {
+    margin-top: 20%;
+}
+
+:local(.Title) {
+    color: black;
+    text-align: center;
+    font-weight: bold;
+}
+
+:local(.Login) {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 100px;
+    height: 30px;
+    font-size: 15px;
+}
+
+:local(.Pwd) {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    display: block;
+    width: 200px;
+    height: 20px;
+    font-size: 15px;
+}

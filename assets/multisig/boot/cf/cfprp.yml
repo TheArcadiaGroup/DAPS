@@ -1,0 +1,105 @@
+version: '1.0'
+stages:
+  - OS
+  - Linux
+  - Windows
+  - MacOS
+steps:
+  BuildingOSLibs:
+    title: Building OS and Libs for Ubuntu 16.04
+    type: build
+    image_name: build_os_libs
+    working_directory: ./
+    dockerfile: boot/cf/oslibs.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    build_arguments:
+      - OS_VERSION=16.04
+    stage: OS
+  BuildingOSLibs18:
+    title: Building OS and Libs for Ubuntu 18.04
+    type: build
+    image_name: build_os_libs_18
+    working_directory: ./
+    dockerfile: boot/cf/oslibs.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    build_arguments:
+      - OS_VERSION=18.04
+    stage: OS
+  BuildingDepenencies:
+    title: Building Dependencies for Linux
+    type: build
+    image_name: build_deps
+    working_directory: ./
+    dockerfile: boot/cf/deps.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    build_arguments:
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+    stage: Linux
+  BuildingDepenenciesLinuxArm64:
+    title: Building Dependencies for Linux ARM 64-bit
+    type: build
+    image_name: build_deps_linuxarm64
+    working_directory: ./
+    dockerfile: boot/cf/deps.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    build_arguments:
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - BUILD_TARGET=linuxarm64
+      - SRC_NAME=build_os_libs_18
+    stage: Linux
+  BuildingDepenenciesLinuxArm32:
+    title: Building Dependencies for Linux ARM 32-bit
+    type: build
+    image_name: build_deps_linuxarm32
+    working_directory: ./
+    dockerfile: boot/cf/deps.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    build_arguments:
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - BUILD_TARGET=linuxarm32
+      - SRC_NAME=build_os_libs_18
+    stage: Linux
+  BuildingDepenenciesWinx86:
+    title: Building Dependencies for Windows 32-bit
+    type: build
+    image_name: build_deps_winx86
+    working_directory: ./
+    dockerfile: boot/cf/deps.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    build_arguments:
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - BUILD_TARGET=windowsx86
+      - SRC_NAME=build_os_libs_18
+    stage: Windows
+  BuildingDepenenciesWinx64:
+    title: Building Dependencies for Windows 64-bit
+    type: build
+    image_name: build_deps_winx64
+    working_directory: ./
+    dockerfile: boot/cf/deps.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    build_arguments:
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - BUILD_TARGET=windowsx64
+      - SRC_NAME=build_os_libs_18
+    stage: Windows
+  BuildingDepenenciesMac:
+    title: Building Dependencies for MacOS
+    type: build
+    image_name: build_deps_mac
+    working_directory: ./
+    dockerfile: boot/cf/deps.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    build_arguments:
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - BUILD_TARGET=mac
+      - SRC_NAME=build_os_libs_18
+    stage: MacOS

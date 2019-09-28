@@ -1,0 +1,29 @@
+:local(.page){
+    width: 100%;
+    height: 100%;
+}
+
+:local(.logo){
+    height: 70%;
+    background-image: url(~Images/daps.svg);
+    background-repeat: no-repeat;
+    background-size: 50%;
+    background-position: center;
+}
+
+:local(.title){
+    width: 100%;
+    line-height: 50px;
+    text-align: center;
+    font-family: 'Strike fighter';
+    font-size: 22px;
+}
+
+:local(.word){
+    line-height: 50px;
+    margin-left: 30px;
+    margin-right: 30px;
+    text-align: center;
+    font-family: 'Strike fighter';
+    font-size: 22px;
+}

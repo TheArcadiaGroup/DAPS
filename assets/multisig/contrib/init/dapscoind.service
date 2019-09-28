@@ -1,0 +1,26 @@
+[Unit]
+Description=DAPScoin's distributed currency daemon
+After=network.target
+
+[Service]
+User=dapscoin
+Group=dapscoin
+
+Type=forking
+PIDFile=/var/lib/dapscoind/dapscoind.pid
+
+ExecStart=/usr/bin/dapscoind -daemon -pid=/var/lib/dapscoind/dapscoind.pid \
+          -conf=/etc/dapscoin/dapscoin.conf -datadir=/var/lib/dapscoind
+
+ExecStop=-/usr/bin/dapscoin-cli -conf=/etc/dapscoin/dapscoin.conf \
+         -datadir=/var/lib/dapscoind stop
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

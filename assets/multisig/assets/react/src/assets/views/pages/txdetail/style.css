@@ -1,0 +1,49 @@
+:local(.Page) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    min-height: 95%;
+    /* max-height:100%; */
+}
+
+:local(.TxPanel) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-content: center;
+    float:top;
+}
+
+:local(.TxPanel) h3{
+    padding:0;
+}
+
+:local(.Form) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+}
+
+:local(.IO) {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    float:top;
+}
+:local(.LargeListBox) {
+    float:top;
+}
+:local(.SmallListBox) {
+max-width: 45%;
+width:unset !important;
+}
+
+:local(#txDataTable) {}
+
+
+:local(#input) {}
+
+:local(#output) {}
+:locale(#blockDataTable){}

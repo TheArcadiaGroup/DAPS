@@ -1,0 +1,22 @@
+{
+    "username":"daps-devnet",
+    "password":"test",
+    "project":"dapscoin-216315",
+    "zone":"us-east1-b",
+    "publickeyfile":"/home/daps-devnet/.ssh/google_compute_engine",
+    "main":{"name":"dev-1-blockexplorer", "address":"35.237.161.222"},
+    "masternodes":[
+        {"name":"dev-2-masternode-a", "address":"35.243.245.150"},
+        {"name":"dev-3-masternode-b", "address":"35.237.17.148"}
+    ],
+    "stakingnodes":[
+        {"name":"dev-4-stakingnode-c", "address":"35.237.201.178"},
+        {"name":"dev-5-stakingnode-d", "address":"35.231.153.52"}
+    ],
+    "wallets":[
+        {"name":"mncontrolwallet", "address":"207.148.88.148"}
+    ],
+    "coinamount":10000,
+    "checkworkerinterval":600,
+    "serveroption":"-testnet"
+}

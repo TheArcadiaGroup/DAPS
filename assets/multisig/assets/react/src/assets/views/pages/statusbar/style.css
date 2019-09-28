@@ -1,0 +1,9 @@
+:local(.Column) {
+    max-height: 100%;
+    overflow-x: visible;
+    overflow-y: auto;
+}
+
+:local(.Header) {}
+
+:local(.Item) {}

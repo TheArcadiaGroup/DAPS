@@ -1,0 +1,348 @@
+version: '1.0'
+stages:
+  - Prepare
+  - Compile
+  - Store
+  - Test
+  - Build
+  - Deploy
+steps:
+  BuildingDAPSWinx64:
+    title: Building DAPS for Windows 64-bit
+    type: build
+    image_name: build_src_winx64
+    working_directory: ./
+    dockerfile: boot/cf/compile.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    stage: Compile
+    fail-fast: false
+    build_arguments:
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - BUILD_TARGET=windowsx64
+      - SRC_NAME=build_deps_winx64
+  SaveBinWinx64:
+    title: Saving Executables for Windows 64-bit
+    image: r.cfcr.io/hysmagus/build_src_winx64:${{CF_BRANCH_TAG_NORMALIZED}}
+    working_directory: ./
+    commands: 
+      - mkdir -p /codefresh/volume/out/bin/
+      - cp -r /daps/bin/* /codefresh/volume/out/bin/
+      - rm -rf /codefresh/volume/DAPS/.git
+      - find /codefresh/ -type f | xargs du -sh
+    no_cache: true
+    no_cf_cache: true
+    stage: Store
+  UploadToCloudStorageWinx64:
+    title: Upload Binaries and Executables
+    image: google/cloud-sdk:latest
+    stage: Store
+    working_directory: ./
+    environment:
+      - auth=${{GCS_AUTH}}
+    commands: 
+      - echo $auth>auth.json
+      - gcloud auth activate-service-account --key-file auth.json
+      - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
+      - rm -rf /codefresh/volume/out/*
+  BuildingDAPSWinx86:
+    title: Building DAPS for Windows 32-bit
+    type: build
+    image_name: build_src_winx86
+    working_directory: ./
+    dockerfile: boot/cf/compile.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    stage: Compile
+    fail-fast: false
+    build_arguments:
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - BUILD_TARGET=windowsx86
+      - SRC_NAME=build_deps_winx86
+  SaveBinWinx86:
+    title: Saving Executables for Windows 32-bit
+    image: r.cfcr.io/hysmagus/build_src_winx86:${{CF_BRANCH_TAG_NORMALIZED}}
+    working_directory: ./
+    commands: 
+      - mkdir -p /codefresh/volume/out/bin/
+      - cp -r /daps/bin/* /codefresh/volume/out/bin/
+      - rm -rf /codefresh/volume/DAPS/.git
+      - find /codefresh/ -type f | xargs du -sh
+    no_cache: true
+    no_cf_cache: true
+    stage: Store
+  UploadToCloudStorageWinx86:
+    title: Upload Binaries and Executables
+    image: google/cloud-sdk:latest
+    stage: Store
+    working_directory: ./
+    environment:
+      - auth=${{GCS_AUTH}}
+    commands: 
+      - echo $auth>auth.json
+      - gcloud auth activate-service-account --key-file auth.json
+      - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
+      - rm -rf /codefresh/volume/out/*
+  BuildingDAPSMac:
+    title: Building DAPS for MacOS
+    type: build
+    image_name: build_src_mac
+    working_directory: ./
+    dockerfile: boot/cf/compile.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    stage: Compile
+    fail-fast: false
+    build_arguments:
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - BUILD_TARGET=mac
+      - SRC_NAME=build_deps_mac
+  SaveBinMac:
+    title: Saving Binaries for MacOS
+    image: r.cfcr.io/hysmagus/build_src_mac:${{CF_BRANCH_TAG_NORMALIZED}}
+    working_directory: ./
+    commands: 
+      - mkdir -p /codefresh/volume/out/bin/
+      - cp -r /daps/bin/* /codefresh/volume/out/bin/
+    no_cache: true
+    no_cf_cache: true
+    stage: Store
+  UploadToCloudStorageMac:
+    title: Upload Binaries and Executables
+    image: google/cloud-sdk:latest
+    working_directory: ./
+    stage: Store
+    environment:
+      - auth=${{GCS_AUTH}}
+    commands: 
+      - echo $auth>auth.json
+      - gcloud auth activate-service-account --key-file auth.json
+      - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
+      - rm -rf /codefresh/volume/out/*
+  BuildingDAPS:
+    title: Building DAPS for Linux
+    type: build
+    image_name: build_src
+    working_directory: ./
+    dockerfile: boot/cf/compile.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    stage: Compile
+#    build_arguments:
+#      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+  SaveBinLinux:
+    title: Saving Binaries for Linux
+    image: r.cfcr.io/hysmagus/build_src:${{CF_BRANCH_TAG_NORMALIZED}}
+    working_directory: ./
+    commands: 
+      - mkdir -p /codefresh/volume/out/bin/ codefresh/volume/bin
+      - cp -r /daps/bin/* /codefresh/volume/out/bin/
+      - cp /BUILD/bin/dapscoind ./
+      - cp /BUILD/bin/dapscoin-cli ./
+      - cp /BUILD/bin/dapscoin-tx ./
+      - cp /BUILD/bin/dapscoin-qt ./
+      - rm -rf /codefresh/volume/DAPS/src
+      - rm -rf /codefresh/volume/DAPS/depends
+      - rm -rf /codefresh/volume/DAPS/contrib
+      - rm -rf /codefresh/volume/DAPS/build-aux
+      - rm -rf /codefresh/volume/DAPS/share
+    no_cache: true
+    no_cf_cache: true
+    stage: Store
+  UploadToCloudStorage:
+    title: Upload Binaries and Executables
+    image: google/cloud-sdk:latest
+    working_directory: ./
+    environment:
+      - auth=${{GCS_AUTH}}
+    commands: 
+      - echo $auth>auth.json
+      - gcloud auth activate-service-account --key-file auth.json
+      - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
+      - rm -rf /codefresh/volume/out/*
+    stage: Store
+  BuildingDAPSLinuxArm64:
+    title: Building DAPS for Linux ARM 64-bit
+    type: build
+    image_name: build_src_linuxarm64
+    working_directory: ./
+    dockerfile: boot/cf/compile.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    stage: Compile
+    fail-fast: false
+    build_arguments:
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - BUILD_TARGET=linuxarm64
+      - SRC_NAME=build_deps_linuxarm64
+  SaveBinLinuxArm64:
+    title: Saving Executables for Linux ARM 64-bit
+    image: r.cfcr.io/hysmagus/build_src_linuxarm64:${{CF_BRANCH_TAG_NORMALIZED}}
+    working_directory: ./
+    commands: 
+      - mkdir -p /codefresh/volume/out/bin/
+      - cp -r /daps/bin/* /codefresh/volume/out/bin/
+      - rm -rf /codefresh/volume/DAPS/.git
+      - find /codefresh/ -type f | xargs du -sh
+    no_cache: true
+    no_cf_cache: true
+    stage: Store
+  UploadToCloudStorageLinuxArm64:
+    title: Upload Binaries and Executables
+    image: google/cloud-sdk:latest
+    stage: Store
+    working_directory: ./
+    environment:
+      - auth=${{GCS_AUTH}}
+    commands: 
+      - echo $auth>auth.json
+      - gcloud auth activate-service-account --key-file auth.json
+      - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
+      - rm -rf /codefresh/volume/out/*
+  BuildingDAPSLinuxArm32:
+    title: Building DAPS for Linux ARM 32-bit
+    type: build
+    image_name: build_src_linuxarm32
+    working_directory: ./
+    dockerfile: boot/cf/compile.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    stage: Compile
+    fail-fast: false
+    build_arguments:
+      - SRC_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
+      - BUILD_TARGET=linuxarm32
+      - SRC_NAME=build_deps_linuxarm32
+  SaveBinLinuxArm32:
+    title: Saving Executables for Linux ARM 32-bit
+    image: r.cfcr.io/hysmagus/build_src_linuxarm32:${{CF_BRANCH_TAG_NORMALIZED}}
+    working_directory: ./
+    commands: 
+      - mkdir -p /codefresh/volume/out/bin/
+      - cp -r /daps/bin/* /codefresh/volume/out/bin/
+      - rm -rf /codefresh/volume/DAPS/.git
+      - find /codefresh/ -type f | xargs du -sh
+    no_cache: true
+    no_cf_cache: true
+    stage: Store
+  UploadToCloudStorageLinuxArm32:
+    title: Upload Binaries and Executables
+    image: google/cloud-sdk:latest
+    stage: Store
+    working_directory: ./
+    environment:
+      - auth=${{GCS_AUTH}}
+    commands: 
+      - echo $auth>auth.json
+      - gcloud auth activate-service-account --key-file auth.json
+      - gsutil cp -r /codefresh/volume/out/bin/* gs://daps-builds/${{CF_BRANCH_TAG_NORMALIZED}}/
+      - rm -rf /codefresh/volume/out/*
+  RunQtTests:
+    title: Running QT Tests
+    image:  r.cfcr.io/hysmagus/build_src:${{CF_BRANCH_TAG_NORMALIZED}}
+    working_directory: ./
+    commands: 
+      - cd /BUILD/bin/ && ./test_dapscoin-qt
+    no_cache: true
+    no_cf_cache: true
+    stage: Test
+  BuildingDapsMin:
+    title: Building Daps Container
+    type: build
+    image_name: daps_min
+    dockerfile: boot/cf/min.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    stage: Deploy
+  BuildingExplorerMin:
+    title: Building Explorer Container
+    type: build
+    image_name: explorer_min
+    dockerfile: boot/cf/explorer.Dockerfile
+    no_cache: true
+    no_cf_cache: true
+    stage: Deploy
+  DeployControlWallet:
+    title: Deploying CONTROLWALLET_POD to Cluster
+    type: deploy
+    pullsecret: codefresh-generated-r.cfcr.io-cfcr-default
+    kind: Pod 
+    cluster: standard-cluster-1@DAPS
+    namespace: default
+    file_path: boot/cf/kctl/controlwallet.yml
+    no_cache: true
+    no_cf_cache: true
+    fail-fast: false
+    stage: Deploy
+  DeployMaster0:
+    title: Deploying MASTER0_POD to Cluster
+    type: deploy
+    pullsecret: codefresh-generated-r.cfcr.io-cfcr-default
+    kind: Pod 
+    cluster: standard-cluster-1@DAPS
+    namespace: default
+    file_path: boot/cf/kctl/master0.yml
+    no_cache: true
+    no_cf_cache: true
+    fail-fast: false
+    stage: Deploy
+  DeployMaster1:
+    title: Deploying MASTER1_POD to Cluster
+    type: deploy
+    pullsecret: codefresh-generated-r.cfcr.io-cfcr-default
+    kind: Pod 
+    cluster: standard-cluster-1@DAPS
+    namespace: default
+    file_path: boot/cf/kctl/master1.yml
+    no_cache: true
+    no_cf_cache: true
+    fail-fast: false
+    stage: Deploy
+  DeployStaker0:
+    title: Deploying STAKER0_POD to Cluster
+    type: deploy
+    pullsecret: codefresh-generated-r.cfcr.io-cfcr-default
+    kind: Pod 
+    cluster: standard-cluster-1@DAPS
+    namespace: default
+    file_path: boot/cf/kctl/staker0.yml
+    no_cache: true
+    no_cf_cache: true
+    fail-fast: false
+    stage: Deploy
+  DeployStaker1:
+    title: Deploying STAKER1_POD to Cluster
+    type: deploy
+    pullsecret: codefresh-generated-r.cfcr.io-cfcr-default
+    kind: Pod 
+    cluster: standard-cluster-1@DAPS
+    namespace: default
+    file_path: boot/cf/kctl/staker1.yml
+    no_cache: true
+    no_cf_cache: true
+    fail-fast: false
+    stage: Deploy
+  DeployStaker2:
+    title: Deploying STAKER2_POD to Cluster
+    type: deploy
+    pullsecret: codefresh-generated-r.cfcr.io-cfcr-default
+    kind: Pod 
+    cluster: standard-cluster-2@DAPS
+    namespace: default
+    file_path: boot/cf/kctl/staker2.yml
+    no_cache: true
+    no_cf_cache: true
+    fail-fast: false
+    stage: Deploy
+  DeployExplorer:
+    title: Deploying EXPLORER_POD to Cluster
+    type: deploy
+    pullsecret: codefresh-generated-r.cfcr.io-cfcr-default
+    kind: Pod 
+    cluster: standard-cluster-1@DAPS
+    namespace: default
+    file_path: boot/cf/kctl/explorer.yml
+    no_cache: true
+    no_cf_cache: true
+    fail-fast: false
+    stage: Deploy
