@@ -2444,7 +2444,7 @@ UniValue createprivacyaccount(const UniValue& params, bool fHelp)
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
@@ -2497,7 +2497,7 @@ UniValue showstealthaddress(const UniValue& params, bool fHelp)
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
@@ -2546,7 +2546,7 @@ UniValue generateintegratedaddress(const UniValue& params, bool fHelp)
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     UniValue ret(UniValue::VOBJ);
@@ -2578,7 +2578,7 @@ UniValue importkeys(const UniValue& params, bool fHelp)
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
@@ -2629,7 +2629,7 @@ UniValue createprivacysubaddress(const UniValue& params, bool fHelp)
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     EnsureWalletIsUnlocked();
@@ -2695,7 +2695,7 @@ UniValue decodestealthaddress(const UniValue& params, bool fHelp)
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
     std::string addr = params[0].get_str();
 
@@ -2771,7 +2771,7 @@ UniValue revealviewprivatekey(const UniValue& params, bool fHelp) {
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     EnsureWalletIsUnlocked();
@@ -2796,7 +2796,7 @@ UniValue revealspendprivatekey(const UniValue& params, bool fHelp) {
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     EnsureWalletIsUnlocked();
@@ -2821,7 +2821,7 @@ UniValue showtxprivatekeys(const UniValue& params, bool fHelp) {
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     EnsureWalletIsUnlocked();
@@ -2853,7 +2853,7 @@ UniValue rescanwallettransactions(const UniValue& params, bool fHelp) {
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     EnsureWalletIsUnlocked();
