@@ -2531,6 +2531,38 @@ UniValue showstealthaddress(const UniValue& params, bool fHelp)
     return ret;
 }
 
+UniValue generateintegratedaddress(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() > 1)
+        throw runtime_error(
+                "generateintegratedaddress <paymentID>\n"
+                "\nGenerate integrated addresses for this wallet with a random payment ID.\n"
+                "\nArguments:\n"
+                "optional: paymentID"
+                "\nResult:\n"
+                "\nExamples:\n" +
+                HelpExampleCli("generateintegratedaddress", "1234") + HelpExampleCli("generateintegratedaddress", "\"\"") + HelpExampleCli("generateintegratedaddress", "") + HelpExampleRpc("generateintegratedaddress", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+    }
+
+    UniValue ret(UniValue::VOBJ);
+    uint64_t paymentID = 0;
+    std::string address;
+    if (params.size() == 1) {
+        paymentID = params[0].get_int64();
+        address = pwalletMain->GenerateIntegratedAddressWithProvidedPaymentID("masteraccount", paymentID);
+    } else {
+        address = pwalletMain->GenerateIntegratedAddressWithRandomPaymentID("masteraccount", paymentID);
+    }
+    ret.push_back(Pair("stealthaddress", address));
+    ret.push_back(Pair("paymentid", paymentID));
+    return ret;
+}
+
 UniValue importkeys(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 2)

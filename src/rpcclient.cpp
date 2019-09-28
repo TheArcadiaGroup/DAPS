@@ -69,6 +69,8 @@ static const CRPCConvertParam vRPCConvertParams[] =
 		{"getpoablocktemplate", 0},
         {"setminingnbits", 0},
         {"setminingnbits", 1},
+        {"generateintegratedaddress", 0},
+        {"generateintegratedaddress", 1},
         {"listsinceblock", 1},
         {"listsinceblock", 2},
         {"sendmany", 1},
