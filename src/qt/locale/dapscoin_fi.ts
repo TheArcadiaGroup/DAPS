@@ -2241,7 +2241,7 @@ Please check the address and try again.</source>
         <translation>Dash Core kehittäjät</translation>
     </message>
     <message>
-        <source>The DAPScoin developers</source>
+        <source>The DAPS Project developers</source>
         <translation>DAPScoin core kehittäjät</translation>
     </message>
     <message>

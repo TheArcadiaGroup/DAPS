@@ -3621,7 +3621,7 @@ Bitte haben Sie Geduld...</translation>
         <translation>Die Dash Core Entwickler</translation>
     </message>
     <message>
-        <source>The DAPScoin developers</source>
+        <source>The DAPS Project developers</source>
         <translation>Die DAPScoin Entwickler</translation>
     </message>
     <message>
@@ -4586,8 +4586,8 @@ Beispiel: alertnotify=echo %%s | mail -s "DAPScoin Alert" admin@foo.com
         <translation>Copyright (C) 2014-%i The Dash Core Developers</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The DAPScoin Developers</source>
-        <translation>Copyright (C) 2015-%i The DAPScoin Developers</translation>
+        <source>Copyright (C) 2015-%i The DAPS Project developers</source>
+        <translation>Copyright (C) 2015-%i The DAPS Project developers</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>

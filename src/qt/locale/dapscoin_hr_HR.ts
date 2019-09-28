@@ -4245,7 +4245,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Dash Core programeri</translation>
     </message>
     <message>
-        <source>The DAPScoin developers</source>
+        <source>The DAPS Project developers</source>
         <translation>DAPScoin programeri</translation>
     </message>
     <message>
@@ -5263,8 +5263,8 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Autorska prava (C) 2014-%i The Dash Core Developers</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The DAPScoin Developers</source>
-        <translation>Autorska prava (C) 2015-%i The DAPScoin Developers</translation>
+        <source>Copyright (C) 2015-%i The DAPS Project developers</source>
+        <translation>Autorska prava (C) 2015-%i The DAPS Project developers</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>

@@ -256,7 +256,7 @@ QT_TRANSLATE_NOOP("dapscoin-core", "Connect to a node to retrieve peer addresses
 QT_TRANSLATE_NOOP("dapscoin-core", "Connection options:"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Copyright (C) 2009-%i The Bitcoin Core Developers"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Copyright (C) 2014-%i The Dash Core Developers"),
-QT_TRANSLATE_NOOP("dapscoin-core", "Copyright (C) 2015-%i The DAPScoin Developers"),
+QT_TRANSLATE_NOOP("dapscoin-core", "Copyright (C) 2015-%i The DAPS Project developers"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Corrupted block database detected"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Could not parse -rpcbind value %s as network address"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Could not parse masternode.conf"),

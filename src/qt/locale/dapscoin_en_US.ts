@@ -3292,8 +3292,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>The Dash Core developers</translation>
     </message>
     <message>
-        <source>The DAPScoin developers</source>
-        <translation>The DAPScoin developers</translation>
+        <source>The DAPS Project developers</source>
+        <translation>The DAPS Project developers</translation>
     </message>
     <message>
         <source>[testnet]</source>
@@ -4278,8 +4278,8 @@ for example: alertnotify=echo %%s | mail -s "DAPScoin Alert" admin@foo.com
         <translation>Copyright (C) 2014-%i The Dash Core Developers</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The DAPScoin Developers</source>
-        <translation>Copyright (C) 2015-%i The DAPScoin Developers</translation>
+        <source>Copyright (C) 2015-%i The DAPS Project developers</source>
+        <translation>Copyright (C) 2015-%i The DAPS Project developers</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>

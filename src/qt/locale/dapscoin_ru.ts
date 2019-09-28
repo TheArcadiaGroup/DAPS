@@ -2945,7 +2945,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Разработчики Dash Core</translation>
     </message>
     <message>
-        <source>The DAPScoin developers</source>
+        <source>The DAPS Project developers</source>
         <translation>Разработчики DAPScoin</translation>
     </message>
     <message>
@@ -3234,7 +3234,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Copyright (C) 2014-%i Разработчики Dash Core</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The DAPScoin Developers</source>
+        <source>Copyright (C) 2015-%i The DAPS Project developers</source>
         <translation>Copyright (C) 2015-%i Разработчики DAPScoin</translation>
     </message>
     <message>

@@ -2473,7 +2473,7 @@ Nematura: konfirmita, sed malpli ol 1 minto el la samo nomado post ĝin estis mi
         <translation>La Dash kerno programistoj</translation>
     </message>
     <message>
-        <source>The DAPScoin developers</source>
+        <source>The DAPS Project developers</source>
         <translation>La DAPScoin kerno programistoj</translation>
     </message>
     </context>

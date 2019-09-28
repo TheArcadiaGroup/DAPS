@@ -3622,7 +3622,7 @@ Please be patient...</source>
         <translation>Dash Core разработчици</translation>
     </message>
     <message>
-        <source>The DAPScoin developers</source>
+        <source>The DAPS Project developers</source>
         <translation>DAPScoin разработчици</translation>
     </message>
     <message>

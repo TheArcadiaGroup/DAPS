@@ -3806,7 +3806,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Dash Core 개발자</translation>
     </message>
     <message>
-        <source>The DAPScoin developers</source>
+        <source>The DAPS Project developers</source>
         <translation>DAPScoin 개발자</translation>
     </message>
     <message>
@@ -4815,7 +4815,7 @@ rpcpassword=%s
         <translation>Copyright (C) 2014-%i The Dash Core 개발자들</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The DAPScoin Developers</source>
+        <source>Copyright (C) 2015-%i The DAPS Project developers</source>
         <translation>Copyright (C) 2015-%i The DAPScoin 개발자</translation>
     </message>
     <message>

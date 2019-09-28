@@ -5106,7 +5106,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
     <message>
         <location line="+1"/>
-        <source>The DAPScoin developers</source>
+        <source>The DAPS Project developers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6434,7 +6434,7 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPScoin Alert&quot; admin@foo
     </message>
     <message>
         <location line="+1"/>
-        <source>Copyright (C) 2015-%i The DAPScoin Developers</source>
+        <source>Copyright (C) 2015-%i The DAPS Project developers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

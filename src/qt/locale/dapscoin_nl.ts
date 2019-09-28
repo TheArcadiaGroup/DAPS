@@ -3614,7 +3614,7 @@ Wees alsjeblieft geduldig...</translation>
         <translation>De Dash Kernontwikkelaars</translation>
     </message>
     <message>
-        <source>The DAPScoin developers</source>
+        <source>The DAPS Project developers</source>
         <translation>De DAPScoin Kernontwikkelaars</translation>
     </message>
     <message>
@@ -4627,7 +4627,7 @@ bijvoorbeeld: alertnotify = echo %%s | mail -s "DAPScoin Alert" admin@foo.com
         <translation>Copyright (C) 2014-%i The Dash Kernontwikkelaars</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The DAPScoin Developers</source>
+        <source>Copyright (C) 2015-%i The DAPS Project developers</source>
         <translation>Copyright (C) 2015-%i The DAPScoin Kernontwikkelaars</translation>
     </message>
     <message>
