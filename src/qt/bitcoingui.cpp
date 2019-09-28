@@ -268,6 +268,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     QActionGroup* tabGroup = new QActionGroup(this);
 
     overviewAction = new QAction(QIcon(":/icons/overview"), tr("&Overview"), this);
+    overviewAction->setIconText("    &Overview");
     overviewAction->setStatusTip(QString());
     overviewAction->setToolTip(QString());
     overviewAction->setCheckable(true);
@@ -278,8 +279,8 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(overviewAction);
 
-    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&   Create\nTransaction"), this);
-
+    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Create\nTransaction"), this);
+    sendCoinsAction->setIconText("    &Create\n    Transaction");
     sendCoinsAction->setToolTip("Create Transaction");
     sendCoinsAction->setCheckable(true);
 #ifdef Q_OS_MAC
@@ -289,7 +290,8 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(sendCoinsAction);
 
-    cosignAction = new QAction(QIcon(":/icons/send"), tr("&   Co-Sign\nTransaction"), this);
+    cosignAction = new QAction(QIcon(":/icons/send"), tr("&Co-Sign\nTransaction"), this);
+    cosignAction->setIconText("    &Co-Sign\n    Transaction");
     cosignAction->setToolTip("Co-Sign Transaction");
     cosignAction->setCheckable(true);
 #ifdef Q_OS_MAC
@@ -300,6 +302,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     tabGroup->addAction(cosignAction);
 
     keyImageSyncAction = new QAction(QIcon(":/icons/send"), tr("&   Sync\nKeyImage"), this);
+    keyImageSyncAction->setIconText("    &Sync\n    KeyImage");
     keyImageSyncAction->setToolTip("Sync KeyImage");
     keyImageSyncAction->setCheckable(true);
 #ifdef Q_OS_MAC
@@ -309,7 +312,8 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(keyImageSyncAction);
 
-    receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("&   Receive"), this);
+    receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("&Receive"), this);
+    receiveCoinsAction->setIconText("    &Receive");
     receiveCoinsAction->setToolTip(QString());
     receiveCoinsAction->setCheckable(true);
 #ifdef Q_OS_MAC
@@ -319,7 +323,8 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(receiveCoinsAction);
 
-    historyAction = new QAction(QIcon(":/icons/history"), tr("&   History"), this);
+    historyAction = new QAction(QIcon(":/icons/history"), tr("&History"), this);
+    historyAction->setIconText("    &History");
     historyAction->setToolTip(QString());
     historyAction->setCheckable(true);
 #ifdef Q_OS_MAC
