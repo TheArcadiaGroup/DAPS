@@ -58,7 +58,6 @@ WalletModel::WalletModel(CWallet* wallet, OptionsModel* optionsModel, QObject* p
 
     // This timer will be fired repeatedly to update the balance
     pollTimer = new QTimer(this);
-    pollTimer->setInterval(10);
     connect(pollTimer, SIGNAL(timeout()), this, SLOT(pollBalanceChanged()));
     pollTimer->start(MODEL_UPDATE_DELAY);
 
@@ -175,7 +174,6 @@ bool WalletModel::checkBalanceChanged()
 {
     TRY_LOCK(cs_main, lockMain);
     if (!lockMain) return true;
-    LogPrintf("\n%s:Checking balance changed\n", __func__);
     CAmount newBalance = getBalance();
     CAmount newUnconfirmedBalance = getUnconfirmedBalance();
     CAmount newImmatureBalance = getImmatureBalance();

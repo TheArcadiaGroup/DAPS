@@ -292,6 +292,7 @@ void BitcoinCore::handleRunawayException(std::exception* e)
 
 void BitcoinCore::registerNodeSignal()
 {
+    LogPrintf("REGISTERING SIGNAL");
     RegisterNodeSignals(GetNodeSignals());
 }
 
