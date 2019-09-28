@@ -120,7 +120,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
     this->setMinimumSize(1180, 790);
     GUIUtil::restoreWindowGeometry("nWindow", QSize(1180, 790), this);
 
-    QString windowTitle = tr("DAPScoin") + " - ";
+    QString windowTitle = tr("DAPS Coin") + " ";
 #ifdef ENABLE_WALLET
     /* if compiled with wallet support, -disablewallet can still disable the wallet */
     enableWallet = !GetBoolArg("-disablewallet", false);
@@ -128,7 +128,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
     enableWallet = false;
 #endif // ENABLE_WALLET
     if (enableWallet) {
-        windowTitle += tr("Wallet");
+        windowTitle += tr("Keychain Wallet");
     } else {
         windowTitle += tr("Node");
     }
