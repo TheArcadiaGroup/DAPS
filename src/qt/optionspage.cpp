@@ -491,7 +491,7 @@ void OptionsPage::on_Enable2FA(ToggleButton* widget)
     } else {
         typeOf2FA = DISABLE;
 
-        TwoFAConfirmDialog codedlg;
+        TwoFADialog codedlg;
         codedlg.setWindowTitle("2FA Code Verification");
         codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
         connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
@@ -637,7 +637,7 @@ void OptionsPage::confirmDialogIsFinished(int result) {
 void OptionsPage::on_day() {
     typeOf2FA = DAY;
 
-    TwoFAConfirmDialog codedlg;
+    TwoFADialog codedlg;
     codedlg.setWindowTitle("2FA Code Verification");
     codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
     connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
@@ -647,7 +647,7 @@ void OptionsPage::on_day() {
 void OptionsPage::on_week() {
     typeOf2FA = WEEK;
 
-    TwoFAConfirmDialog codedlg;
+    TwoFADialog codedlg;
     codedlg.setWindowTitle("2FA Code Verification");
     codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
     connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
@@ -657,7 +657,7 @@ void OptionsPage::on_week() {
 void OptionsPage::on_month() {
     typeOf2FA = MONTH;
 
-    TwoFAConfirmDialog codedlg;
+    TwoFADialog codedlg;
     codedlg.setWindowTitle("2FA Code Verification");
     codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
     connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
