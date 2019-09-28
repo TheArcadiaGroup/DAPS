@@ -58,17 +58,10 @@ public slots:
     void gotoSendCoinsPage(QString addr = "");
     /** Switch to explorer page */
     void gotoBlockExplorerPage();
-    /** Show Sign/Verify Message dialog and switch to sign message tab */
-    void gotoSignMessageTab(QString addr = "");
-    /** Show Sign/Verify Message dialog and switch to verify message tab */
-    void gotoVerifyMessageTab(QString addr = "");
     /** Show MultiSend Dialog **/
     void gotoMultiSendDialog();
     /** show a multisig tab **/
     void gotoMultisigDialog(int index);
-    /** Show BIP 38 tool - default to Encryption tab */
-    void gotoBip38Tool();
-
     /** Encrypt the wallet */
     void encryptWallet(bool status);
     /** Backup the wallet */

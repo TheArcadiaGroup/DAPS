@@ -62,6 +62,7 @@ void PoSBlockInfoToJSON(const uint256 hashBlock, int64_t nTime, int height, UniV
     entry.push_back(Pair("posblockhash", hashBlock.GetHex()));
     entry.push_back(Pair("time", nTime));
     entry.push_back(Pair("height", height));
+    entry.push_back(Pair("isauditsuccessful", nTime > 0? "true":"false"));
 }
 
 void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: explorer-mn
+  name: explorer
   labels:
     app: explorer
 spec:
@@ -38,7 +38,7 @@ spec:
     name: explorer-settings-pv-claim
   gcePersistentDisk:
     fsType: ext4
-    pdName: explorer-node-service-mn
+    pdName: explorer-node-service
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -57,7 +57,7 @@ spec:
     name: explorer-pv-claim
   gcePersistentDisk:
     fsType: ext4
-    pdName: explorer-daps-service-mn
+    pdName: explorer-daps-service
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -76,7 +76,7 @@ spec:
     name: mongo-pv-claim
   gcePersistentDisk:
     fsType: ext4
-    pdName: explorer-mongo-service-mn
+    pdName: explorer-mongo-service
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

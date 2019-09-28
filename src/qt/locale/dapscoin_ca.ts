@@ -1294,10 +1294,6 @@
         <translation>DAPS:</translation>
     </message>
     <message>
-        <source>zDAPS:</source>
-        <translation>zDAPS:</translation>
-    </message>
-    <message>
         <source>0 %</source>
         <translation>0 %</translation>
     </message>
@@ -1324,85 +1320,6 @@
         <translation>Temps de Ping</translation>
     </message>
 </context>
-<context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>Zerocoin DAPS (zDAPS)</source>
-        <translation>Zerocoin DAPS (zDAPS)</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>zDAPS</source>
-        <translation>zDAPS</translation>
-    </message>
-    <message>
-        <source>0.000 000 00 DAPS</source>
-        <translation>0.000 000 00 DAPS</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Restableix</translation>
-    </message>
-    <message>
-        <source>Quantity:</source>
-        <translation>Quantitat:</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Import:</translation>
-    </message>
-    <message>
-        <source>0 zDAPS</source>
-        <translation>0 zDAPS</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Alt+P</translation>
-    </message>
-    <message>
-        <source>A&amp;mount:</source>
-        <translation>I&amp;mport:</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation>Prioritat:</translation>
-    </message>
-    <message>
-        <source>Fee:</source>
-        <translation>Comissió:</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>no</translation>
-    </message>
-    <message>
-        <source>Bytes:</source>
-        <translation>Bytes:</translation>
-    </message>
-    <message>
-        <source>medium</source>
-        <translation>mitjana</translation>
-    </message>
-    <message>
-        <source>Change:</source>
-        <translation>Canvi:</translation>
-    </message>
-    <message>
-        <source>Copy quantity</source>
-        <translation>Copia la quantitat</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Copia l'import</translation>
-    </message>
-    </context>
 <context>
     <name>QObject</name>
     <message>
@@ -1989,21 +1906,6 @@
     <message>
         <source>Export the data in the current tab to a file</source>
         <translation>Exporta les dades de la pestanya actual a un fitxer</translation>
-    </message>
-    </context>
-<context>
-    <name>ZDapsControlDialog</name>
-    <message>
-        <source>Quantity</source>
-        <translation>Quantitat</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>zDaps</source>
-        <translation>zDaps</translation>
     </message>
     </context>
 <context>

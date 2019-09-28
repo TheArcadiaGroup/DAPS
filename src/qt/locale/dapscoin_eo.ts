@@ -136,8 +136,8 @@
         <translation>Servas por malŝalti la banalan sendmoney kiam la operaciumo konto estas kompromiti. Ĝi ne donas veran sekurecon.</translation>
     </message>
     <message>
-        <source>For anonymization, automint, and staking only</source>
-        <translation>Por anonimigo, automintii kaj stakado nur</translation>
+        <source>For anonymization and staking only</source>
+        <translation>Por anonimigo kaj stakado nur</translation>
     </message>
     <message>
         <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
@@ -431,10 +431,6 @@
     <message>
         <source>Browse transaction history</source>
         <translation>&amp;Foliumi transakcio historio</translation>
-    </message>
-    <message>
-        <source>Privacy Actions for zDAPS</source>
-        <translation>Privataj agoj por zDAPS</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
@@ -847,14 +843,6 @@ Multisendi: %1</translation>
  MultiSend: %1</source>
         <translation>Staki ne estas aktiva
 Muktisendi: %1</translation>
-    </message>
-    <message>
-        <source>AutoMint is currently enabled and set to </source>
-        <translation>Autominti estas nuntempe ebligita kaj agordita a</translation>
-    </message>
-    <message>
-        <source>AutoMint is disabled</source>
-        <translation>Autominti estas neebligita</translation>
     </message>
     <message>
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt;</source>
@@ -1799,10 +1787,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Via aktuala DAPScoin totalo, nekonformita kaj nematurita transakcioj inkluzivita</translation>
     </message>
     <message>
-        <source>zDAPS Balance</source>
-        <translation>zDAPS kvanto</translation>
-    </message>
-    <message>
         <source>Unconfirmed: less than 20 confirmations
 Immature: confirmed, but less than 1 mint of the same denomination after it was minted</source>
         <translation>Malkonfirmita: malpli ol 20 konfirmacioj
@@ -1836,10 +1820,6 @@ Nematura: konfirmita, sed malpli ol 1 minto el la samo nomado post ĝin estis mi
         <source>Unconfirmed:</source>
         <translation>Nekonfirmita:</translation>
     </message>
-    <message>
-        <source>AutoMint is currently enabled and set to </source>
-        <translation>Autominti estas nuntempe ebligita kaj agordita a</translation>
-    </message>
     </context>
 <context>
     <name>PaymentServer</name>
@@ -1858,167 +1838,6 @@ Nematura: konfirmita, sed malpli ol 1 minto el la samo nomado post ĝin estis mi
     </context>
 <context>
     <name>PeerTableModel</name>
-    </context>
-<context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPScoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>Montrata informon povas esti malmoderna. Via monujo automate sinkronigis kun la DAPScoin reto post konekcio establas, sed ĉi tio procezo ankoraŭ ne kompletigis.</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>zDAPS</source>
-        <translation>zDAPS</translation>
-    </message>
-    <message>
-        <source>0.000 000 00 DAPS</source>
-        <translation>0.000 000 00 DAPS</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Restarigi</translation>
-    </message>
-    <message>
-        <source>Quantity:</source>
-        <translation>Kvanto</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Kvanto</translation>
-    </message>
-    <message>
-        <source>zDAPS Control</source>
-        <translation>zDAPS kontrolu</translation>
-    </message>
-    <message>
-        <source>zDAPS Selected:</source>
-        <translation>Elektita zDAPS</translation>
-    </message>
-    <message>
-        <source>Quantity Selected:</source>
-        <translation>Elektita kvanto:</translation>
-    </message>
-    <message>
-        <source>Spend Zerocoin</source>
-        <translation>Elspezi zerocoin</translation>
-    </message>
-    <message>
-        <source>Available (mature and spendable) zDAPS for spending</source>
-        <translation>Havebla (matura kaj elspezebla) zDAPS por elspezi</translation>
-    </message>
-    <message>
-        <source>0 zDAPS</source>
-        <translation>0 zDAPS</translation>
-    </message>
-    <message>
-        <source>Pay &amp;To:</source>
-        <translation>Pagu &amp;Al:</translation>
-    </message>
-    <message>
-        <source>The DAPScoin address to send the payment to. Creates local payment to yourself when empty.</source>
-        <translation>DAPScoin adreso por alsendi la pago. Kreas lokala pago al vi mem kiam malplenija.</translation>
-    </message>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>Elektu antaŭan uzatan adreson</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Paste address from clipboard</source>
-        <translation>Almetu adreson el poŝo</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Alt+P</translation>
-    </message>
-    <message>
-        <source>&amp;Label:</source>
-        <translation>&amp;Etikedo:</translation>
-    </message>
-    <message>
-        <source>Unconfirmed: less than 20 confirmations
-Immature: confirmed, but less than 1 mint of the same denomination after it was minted</source>
-        <translation>Malkonfirmita: malpli ol 20 konfirmacioj
-Nematura: konfirmita, sed malpli ol 1 minto el la samo nomado post ĝin estis mintita</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation>Prioritato</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation>Tekstetikedo</translation>
-    </message>
-    <message>
-        <source>Fee:</source>
-        <translation>Krompago</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>no</translation>
-    </message>
-    <message>
-        <source>Bytes:</source>
-        <translation>Bajtoj</translation>
-    </message>
-    <message>
-        <source>medium</source>
-        <translation>meza</translation>
-    </message>
-    <message>
-        <source>If this is activated, but the change address is empty or invalid, change will be sent to a newly generated address.</source>
-        <translation>Se estas aktiva sed ŝanĝo-adreso estas malpleniĝa au nevalida, ŝanĝo sendos al nova generita adreson.</translation>
-    </message>
-    <message>
-        <source>Change:</source>
-        <translation>Ŝanĝo:</translation>
-    </message>
-    <message>
-        <source>Copy quantity</source>
-        <translation>Kopi kvanto</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Kopii kvanto</translation>
-    </message>
-    <message>
-        <source> &lt;b&gt;enabled&lt;/b&gt;.</source>
-        <translation>&lt;b&gt;ebligita&lt;/b&gt;.</translation>
-    </message>
-    <message>
-        <source> &lt;b&gt;disabled&lt;/b&gt;.</source>
-        <translation>&lt;b&gt;malebligita&lt;/b&gt;.</translation>
-    </message>
-    <message>
-        <source>Error: Your wallet is locked. Please enter the wallet passphrase first.</source>
-        <translation>Eraro: vian monujo estas fermita. Bonvolu eniri monujon pasfrazon unue.</translation>
-    </message>
-    <message>
-        <source>Message: Enter an amount &gt; 0.</source>
-        <translation>Mesaĝo: eniri kvanto &gt; 0.</translation>
-    </message>
-    <message>
-        <source>Invalid Dapscoin Address</source>
-        <translation>Nevalida Dapscoin adreso</translation>
-    </message>
-    <message>
-        <source>Confirm send coins</source>
-        <translation>Konfirmu sendi monojn</translation>
-    </message>
-    <message>
-        <source>Too much inputs (</source>
-        <translation>Tro eniroj (</translation>
-    </message>
-    <message>
-        <source>address: </source>
-        <translation>adreso:</translation>
-    </message>
     </context>
 <context>
     <name>QObject</name>
@@ -2649,21 +2468,6 @@ Nematura: konfirmita, sed malpli ol 1 minto el la samo nomado post ĝin estis mi
     </message>
     </context>
 <context>
-    <name>ZDapsControlDialog</name>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>zDAPS</source>
-        <translation>zDAPS</translation>
-    </message>
-    <message>
-        <source>Is Spendable</source>
-        <translation>Estas elspezebla</translation>
-    </message>
-</context>
-<context>
     <name>dapscoin-core</name>
     <message>
         <source>Connect through SOCKS5 proxy</source>
@@ -2730,16 +2534,8 @@ Nematura: konfirmita, sed malpli ol 1 minto el la samo nomado post ĝin estis mi
         <translation>Reprovos</translation>
     </message>
     <message>
-        <source>You don't have enough Zerocoins in your wallet</source>
-        <translation>Vi ne havas sufiĉan Zeromonojn en vian monujon</translation>
-    </message>
-    <message>
         <source>Your entries added successfully.</source>
         <translation>Vian enirojn aldonis sukcese.</translation>
-    </message>
-    <message>
-        <source>Zerocoin options:</source>
-        <translation>Zeromono opcioj:</translation>
     </message>
     <message>
         <source>on startup</source>

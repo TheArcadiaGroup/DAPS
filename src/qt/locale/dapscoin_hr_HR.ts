@@ -136,8 +136,8 @@
         <translation>Služi za onemogućavanje spornog slanja novca kada je OS račun ugrožen. Ne pruža nikakvu stvarnu sigurnost.</translation>
     </message>
     <message>
-        <source>For anonymization, automint, and staking only</source>
-        <translation>Samo za anonimizaciju, automint i staking</translation>
+        <source>For anonymization and staking only</source>
+        <translation>Samo za anonimizaciju i staking</translation>
     </message>
     <message>
         <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
@@ -431,10 +431,6 @@
     <message>
         <source>Browse transaction history</source>
         <translation>Pregled povijesti transakcija</translation>
-    </message>
-    <message>
-        <source>Privacy Actions for zDAPS</source>
-        <translation>Postavke privatnosti za zDAPS</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
@@ -847,14 +843,6 @@ Višestruko slanje: %1</translation>
  MultiSend: %1</source>
         <translation>Staking nije aktivan
 Višestruko slanje: %1</translation>
-    </message>
-    <message>
-        <source>AutoMint is currently enabled and set to </source>
-        <translation>AutoMint je trenutno omogućen i podešen na</translation>
-    </message>
-    <message>
-        <source>AutoMint is disabled</source>
-        <translation>AutoMint je onemogućen</translation>
     </message>
     <message>
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt;</source>
@@ -1948,30 +1936,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
 </translation>
     </message>
     <message>
-        <source>Enable automatic minting of DAPS units to zDAPS</source>
-        <translation>Omogućite automint DAPS jedinica na zDAPS</translation>
-    </message>
-    <message>
-        <source>Enable zDAPS Automint</source>
-        <translation>Omogući zDAPS Automint</translation>
-    </message>
-    <message>
-        <source>Percentage of incoming DAPS which get automatically converted to zDAPS via Zerocoin Protocol (min: 10%)</source>
-        <translation>Postotak dolaznih DAPS koji se automatski pretvara u zDAPS putem protokola Zerocoin (min: 10%)</translation>
-    </message>
-    <message>
-        <source>Percentage of autominted zDAPS</source>
-        <translation>Postotak automatiziranog zDAPS</translation>
-    </message>
-    <message>
-        <source>Wait with automatic conversion to Zerocoin until enough DAPS for this denomination is available</source>
-        <translation>Pričekajte s automatskom pretvorbom u Zerocoin dok ne bude dostupno dovoljno DAPS za apoen</translation>
-    </message>
-    <message>
-        <source>Preferred Automint zDAPS Denomination</source>
-        <translation>Preferirana Automint zDAPS denominacijad</translation>
-    </message>
-    <message>
         <source>Stake split threshold:</source>
         <translation>Prag razdvajanja Stake-a:</translation>
     </message>
@@ -2159,16 +2123,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Uključena je vaša trenutna bilanca DAPScoin, nepotvrđene i nezrele transakcije</translation>
     </message>
     <message>
-        <source>zDAPS Balance</source>
-        <translation>zDAPS Bilanca</translation>
-    </message>
-    <message>
-        <source>Mature: more than 20 confirmation and more than 1 mint of the same denomination after it was minted.
-These zDAPS are spendable.</source>
-        <translation>Mature: više od 20 potvrda i više od 1 mint od iste denominacije nakon što je mintan.
-Ti zDAPSs se mogu potrošiti.</translation>
-    </message>
-    <message>
         <source>Unconfirmed: less than 20 confirmations
 Immature: confirmed, but less than 1 mint of the same denomination after it was minted</source>
         <translation>Nepotvrđeno: manje od 20 potvrda
@@ -2219,8 +2173,8 @@ Nezreli: potvrđeno, ali manje od 1 minta iste denominacije nakon mintanja</tran
         <translation>Po potrošiti:</translation>
     </message>
     <message>
-        <source>Locked DAPS or Masternode collaterals. These are excluded from zDAPS minting.</source>
-        <translation>Zaključani DAPS ili Masternode kolateral. Oni su isključeni iz zDAPS kovanja.</translation>
+        <source>Locked DAPS or Masternode collaterals.</source>
+        <translation>Zaključani DAPS ili Masternode kolateral. Oni su isključeni kovanja.</translation>
     </message>
     <message>
         <source>Locked:</source>
@@ -2231,38 +2185,12 @@ Nezreli: potvrđeno, ali manje od 1 minta iste denominacije nakon mintanja</tran
         <translation>Nepotvrđeno:</translation>
     </message>
     <message>
-        <source>Your current zDAPS balance, unconfirmed and immature zDAPS included.</source>
-        <translation>Vaša trenutačna zDAPS bilanca, nepotvrđena i nezrela zDAPS.</translation>
-    </message>
-    <message>
         <source>Recent transactions</source>
         <translation>Nedavne transakcije</translation>
     </message>
     <message>
         <source>out of sync</source>
         <translation>nije sinkronizirano</translation>
-    </message>
-    <message>
-        <source>Current percentage of zDAPS.
-If AutoMint is enabled this percentage will settle around the configured AutoMint percentage (default = 10%).
-</source>
-        <translation>Trenutni postotak zDAPS.
-Ako je omogućeno automatsko navođenje, ovaj postotak će se podmiriti oko konfiguriranog postotka automatskog navođenja (zadano = 10%).
-</translation>
-    </message>
-    <message>
-        <source>AutoMint is currently enabled and set to </source>
-        <translation>AutoMint je trenutno omogućen i podešen na</translation>
-    </message>
-    <message>
-        <source>To disable AutoMint add 'enablezeromint=0' in dapscoin.conf.</source>
-        <translation>Da biste onemogućili AutoMint, dodajte 'enablezeromint=0' u dapscoin.conf.</translation>
-    </message>
-    <message>
-        <source>AutoMint is currently disabled.
-To enable AutoMint change 'enablezeromint=0' to 'enablezeromint=1' in dapscoin.conf</source>
-        <translation>AutoMint je trenutno onemogućen.
-Da biste omogućili, promjenite postavke AutoMint 'enablezeromint=0' na 'enablezeromint=1' u dapscoin.conf</translation>
     </message>
 </context>
 <context>
@@ -2369,655 +2297,6 @@ Da biste omogućili, promjenite postavke AutoMint 'enablezeromint=0' na 'enablez
     <message>
         <source>Ping Time</source>
         <translation>Ping Time</translation>
-    </message>
-</context>
-<context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>Zerocoin Actions:</source>
-        <translation>Zerocoin radnje:</translation>
-    </message>
-    <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPScoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>Prikazane informacije mogu biti zastarjele. Vaš se novčanik automatski sinkronizira s DAPScoin mrežom nakon uspostavljanja veze, ali taj postupak još nije dovršen.</translation>
-    </message>
-    <message>
-        <source>Mint Zerocoin</source>
-        <translation>Mint Zerocoin</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>zDAPS</source>
-        <translation>zDAPS</translation>
-    </message>
-    <message>
-        <source>Available for minting are coins which are confirmed and not locked or Masternode collaterals.</source>
-        <translation>Dostupne za mintanje su kovanice koje su potvrđene i nisu zaključane ili Masternode kolateralne.</translation>
-    </message>
-    <message>
-        <source>Available for Minting:</source>
-        <translation>Dostupno za Minting:</translation>
-    </message>
-    <message>
-        <source>0.000 000 00 DAPS</source>
-        <translation>0.000 000 00 DAPS</translation>
-    </message>
-    <message>
-        <source>Reset Zerocoin Wallet DB. Deletes transactions that did not make it into the blockchain.</source>
-        <translation>Ponovno postavite Zerocoin Wallet DB. Briše transakcije koje nisu dospjele u blockchain.</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Reset</translation>
-    </message>
-    <message>
-        <source>Coin Control...</source>
-        <translation>Upravljanje novčićem...</translation>
-    </message>
-    <message>
-        <source>Quantity:</source>
-        <translation>Količina:</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Iznos:</translation>
-    </message>
-    <message>
-        <source>Rescan the complete blockchain for  Zerocoin mints and their meta-data.</source>
-        <translation>Ponovo skenirajte kompletnog blockchaina za Zerocoin mints i njihove meta-podataka.</translation>
-    </message>
-    <message>
-        <source>ReScan</source>
-        <translation>Ponovno pretraži</translation>
-    </message>
-    <message>
-        <source>Status and/or Mesages from the last Mint Action.</source>
-        <translation>Status i/ili poruke od zadnje Mint akcije</translation>
-    </message>
-    <message>
-        <source>PRIVACY</source>
-        <translation>PRIVATNOST</translation>
-    </message>
-    <message>
-        <source>Enter an amount of Daps to convert to zDAPS</source>
-        <translation>Unesite iznos Daps za pretvorbu u zDAPS</translation>
-    </message>
-    <message>
-        <source>zDAPS Control</source>
-        <translation>Upravljanje zDAPS</translation>
-    </message>
-    <message>
-        <source>zDAPS Selected:</source>
-        <translation>zDAPS Odabrani:</translation>
-    </message>
-    <message>
-        <source>Quantity Selected:</source>
-        <translation>Odabrano:</translation>
-    </message>
-    <message>
-        <source>Spend Zerocoin. Without 'Pay To:' address creates payments to yourself.</source>
-        <translation>Potroši Zerocoin. Bez adrese "Pay To:" stvara plaćanja za sebe.</translation>
-    </message>
-    <message>
-        <source>Spend Zerocoin</source>
-        <translation>Potroši Zerocoin</translation>
-    </message>
-    <message>
-        <source>Available (mature and spendable) zDAPS for spending</source>
-        <translation>Dostupni (zreli) zDAPS za potrošnju</translation>
-    </message>
-    <message>
-        <source>Available Balance:</source>
-        <translation>Dostupna Bilanca:</translation>
-    </message>
-    <message>
-        <source>Available (mature and spendable) zDAPS for spending
-
-zDAPS are mature when they have more than 20 confirmations AND more than 2 mints of the same denomination after them were minted</source>
-        <translation>Dostupni (zreli) zDAPS za potrošnju
-
-zDAPS su zreli kada imaju više od 20 potvrda I više od 2 mint od iste denominacije nakon što su bili mintani</translation>
-    </message>
-    <message>
-        <source>0 zDAPS</source>
-        <translation>0 zDAPS</translation>
-    </message>
-    <message>
-        <source>Security Level for Zerocoin Transactions. More is better, but needs more time and resources.</source>
-        <translation>Razina sigurnosti za Zerocoin transakcije. Više je bolje, ali treba više vremena i resursa.</translation>
-    </message>
-    <message>
-        <source>Security Level:</source>
-        <translation>Razina sigurnosti:</translation>
-    </message>
-    <message>
-        <source>Security Level 1 - 100 (default: 42)</source>
-        <translation>Razina sigurnosti 1 - 100 (zadano: 42)</translation>
-    </message>
-    <message>
-        <source>Pay &amp;To:</source>
-        <translation>Platiti:</translation>
-    </message>
-    <message>
-        <source>The DAPScoin address to send the payment to. Creates local payment to yourself when empty.</source>
-        <translation>DAPScoin adresa za slanje uplate. Stvara lokalno plaćanje za sebe kada je prazno.</translation>
-    </message>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>Odaberite prethodno upotrijebljenu adresu</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Paste address from clipboard</source>
-        <translation>Zalijepite adresu iz međuspremnika</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Alt+P</translation>
-    </message>
-    <message>
-        <source>&amp;Label:</source>
-        <translation>Oznaka:</translation>
-    </message>
-    <message>
-        <source>Enter a label for this address to add it to the list of used addresses</source>
-        <translation>Unesite oznaku za ovu adresu da biste ga dodali na popis upotrijebljenih adresa</translation>
-    </message>
-    <message>
-        <source>A&amp;mount:</source>
-        <translation>Količina:</translation>
-    </message>
-    <message>
-        <source>Convert Change to Zerocoin (might cost additional fees)</source>
-        <translation>Pretvori razliku u Zerocoin (može proizvesti dodatne troškove)</translation>
-    </message>
-    <message>
-        <source>If checked, the wallet tries to minimize the returning change instead of minimizing the number of spent denominations.</source>
-        <translation>Ako je označeno, novčanik pokušava smanjiti povratnu razliku umjesto da minimizira broj utrošenih apoena.</translation>
-    </message>
-    <message>
-        <source>Minimize Change</source>
-        <translation>Minimiziraj razliku</translation>
-    </message>
-    <message>
-        <source>Information about the available Zerocoin funds.</source>
-        <translation>Informacije o dostupnim Zerocoin fondovima.</translation>
-    </message>
-    <message>
-        <source>Zerocoin Stats:</source>
-        <translation>Statistike Zerocoina:</translation>
-    </message>
-    <message>
-        <source>Total Balance including unconfirmed and immature zDAPS</source>
-        <translation>Ukupni saldo uključujući nepotvrđeni i nedovršeni zDAPS</translation>
-    </message>
-    <message>
-        <source>Total Zerocoin  Balance:</source>
-        <translation>Ukupno Zerocoin Stanje:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 1:</source>
-        <translation>Denominacije s vrijednošću 1:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 1:</source>
-        <translation>Denom. s vrijednošću 1:</translation>
-    </message>
-    <message>
-        <source>Unconfirmed: less than 20 confirmations
-Immature: confirmed, but less than 1 mint of the same denomination after it was minted</source>
-        <translation>Nepotvrđeno: manje od 20 potvrda
-Nezreli: potvrđeno, ali manje od 1 minta iste denominacije nakon mintanja</translation>
-    </message>
-    <message>
-        <source>Show the current status of automatic zDAPS minting.
-
-To change the status (restart required):
-- enable: add 'enablezeromint=1' to dapscoin.conf
-- disable: add 'enablezeromint=0' to dapscoin.conf
-
-To change the percentage (no restart required):
-- menu Settings-&gt;Options-&gt;Percentage of autominted zDAPS
-
-</source>
-        <translation>Pokažite trenutačni status automatskog zDAPS mintanja.
-
-Da biste promijenili status (potrebno je ponovno pokretanje):
-- omogući: dodajte 'enablezeromint = 1' u dapscoin.conf
-- onemogućiti: dodajte 'enablezeromint = 0' na dapscoin.conf
-
-Promjena postotka (nije potrebno ponovno pokretanje):
-- izbornik Postavke-&gt; Opcije-&gt; Postotak zDAPS</translation>
-    </message>
-    <message>
-        <source>AutoMint Status</source>
-        <translation>AutoMint Status</translation>
-    </message>
-    <message>
-        <source>Global Supply:</source>
-        <translation>Globalna ponuda:</translation>
-    </message>
-    <message>
-        <source>Denom. 1:</source>
-        <translation>Denom. 1:</translation>
-    </message>
-    <message>
-        <source>Denom. 5:</source>
-        <translation>Denom. 5:</translation>
-    </message>
-    <message>
-        <source>Denom. 10:</source>
-        <translation>Denom. 10:</translation>
-    </message>
-    <message>
-        <source>Denom. 50:</source>
-        <translation>Denom. 50:</translation>
-    </message>
-    <message>
-        <source>Denom. 100:</source>
-        <translation>Denom. 100:</translation>
-    </message>
-    <message>
-        <source>Denom. 500:</source>
-        <translation>Denom. 500:</translation>
-    </message>
-    <message>
-        <source>Denom. 1000:</source>
-        <translation>Denom. 1000:</translation>
-    </message>
-    <message>
-        <source>Denom. 5000:</source>
-        <translation>Denom. 5000:</translation>
-    </message>
-    <message>
-        <source>0 x</source>
-        <translation>0 x</translation>
-    </message>
-    <message>
-        <source>Denominations with value 5:</source>
-        <translation>Denominacije s vrijednošću 5:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 5:</source>
-        <translation>Denom. s vrijednošću 5: </translation>
-    </message>
-    <message>
-        <source>Denominations with value 10:</source>
-        <translation>Denominacije s vrijednošću 10:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 10:</source>
-        <translation>Denom. s vrijednošću 10:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 50:</source>
-        <translation>Denominacije s vrijednošću 50:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 50:</source>
-        <translation>Denom. s vrijednošću 50:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 100:</source>
-        <translation>Denominacije s vrijednošću 100:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 100:</source>
-        <translation>Denom. s vrijednošću 100:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 500:</source>
-        <translation>Denominacije s vrijednošću 500:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 500:</source>
-        <translation>Denom. s vrijednošću 500:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 1000:</source>
-        <translation>Denominacije s vrijednošću 1000:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 1000:</source>
-        <translation>Denom. s vrijednošću 1000:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 5000:</source>
-        <translation>Denominacije s vrijednošću 5000:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 5000:</source>
-        <translation>Denom. s vrijednošću 5000:</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation>Prioritet:</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation>TextLabel</translation>
-    </message>
-    <message>
-        <source>Fee:</source>
-        <translation>Naknada:</translation>
-    </message>
-    <message>
-        <source>Dust:</source>
-        <translation>Dust:</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>ne</translation>
-    </message>
-    <message>
-        <source>Bytes:</source>
-        <translation>Bytovi:</translation>
-    </message>
-    <message>
-        <source>Insufficient funds!</source>
-        <translation>Nedovoljna sredstva!</translation>
-    </message>
-    <message>
-        <source>Coins automatically selected</source>
-        <translation>Kovanice se automatski odabiru</translation>
-    </message>
-    <message>
-        <source>medium</source>
-        <translation>srednje</translation>
-    </message>
-    <message>
-        <source>Coin Control Features</source>
-        <translation>Značajke upravljanja novcem</translation>
-    </message>
-    <message>
-        <source>If this is activated, but the change address is empty or invalid, change will be sent to a newly generated address.</source>
-        <translation>Ako je to aktivirano, ali adresa za izmjenu je prazna ili nije valjana, promjena će biti poslana na novo generiranu adresu.</translation>
-    </message>
-    <message>
-        <source>Custom change address</source>
-        <translation>Prilagođene izmjene adrese</translation>
-    </message>
-    <message>
-        <source>Amount After Fee:</source>
-        <translation>Iznos nakon naknade:</translation>
-    </message>
-    <message>
-        <source>Change:</source>
-        <translation>Razlika:</translation>
-    </message>
-    <message>
-        <source>out of sync</source>
-        <translation>nije sinkronizirano</translation>
-    </message>
-    <message>
-        <source>Mint Status: Okay</source>
-        <translation>Mint Status: U redu</translation>
-    </message>
-    <message>
-        <source>Copy quantity</source>
-        <translation>Kopirajte količinu</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Kopiraj iznos</translation>
-    </message>
-    <message>
-        <source>Starting ResetMintZerocoin: rescanning complete blockchain, this will need up to 30 minutes depending on your hardware.
-Please be patient...</source>
-        <translation>Pokretanje ResetMintZerocoin: ponovno skeniranje potpunog blockchain, to će trajati i do 30 minuta, ovisno o vašem hardveru.</translation>
-    </message>
-    <message>
-        <source>Spending Zerocoin.
-Computationally expensive, might need several minutes depending on the selected Security Level and your hardware.
-Please be patient...</source>
-        <translation>Potrošnja Zerocoina.
-Zahtjevan izračun, možda će trebati nekoliko minuta ovisno o odabranoj razini sigurnosti i vašem hardveru.
-Budite strpljivi ...</translation>
-    </message>
-    <message>
-        <source>) needed.
-Maximum allowed: </source>
-        <translation>) potrebno.
-Maksimalno dopušteno:</translation>
-    </message>
-    <message>
-        <source>zDAPS Spend #: </source>
-        <translation>zDAPS utrošeno #: </translation>
-    </message>
-    <message>
-        <source>zDAPS Mint</source>
-        <translation>zDAPS Mint</translation>
-    </message>
-    <message>
-        <source> &lt;b&gt;enabled&lt;/b&gt;.</source>
-        <translation> &lt;b&gt;omogući&lt;/b&gt;.</translation>
-    </message>
-    <message>
-        <source> &lt;b&gt;disabled&lt;/b&gt;.</source>
-        <translation> &lt;b&gt;onemogući&lt;/b&gt;.</translation>
-    </message>
-    <message>
-        <source> Configured target percentage: &lt;b&gt;</source>
-        <translation> Konfigirani ciljani postotak: &lt;b&gt;</translation>
-    </message>
-    <message>
-        <source>zDAPS is currently disabled due to maintenance.</source>
-        <translation>Zbog održavanja zDAPS je trenutačno onemogućen.</translation>
-    </message>
-    <message>
-        <source>zDAPS is currently undergoing maintenance.</source>
-        <translation>Radovi u tijeku na zDAPS.</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;1&lt;/b&gt;:</source>
-        <translation>Denom. s vrijednošću &lt;b&gt;1&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;5&lt;/b&gt;:</source>
-        <translation>Denom. s vrijednošću &lt;b&gt;5&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;10&lt;/b&gt;:</source>
-        <translation>Denom. s vrijednošću&lt;b&gt;10&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;50&lt;/b&gt;:</source>
-        <translation>Denom. s vrijednošću &lt;b&gt;50&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;100&lt;/b&gt;:</source>
-        <translation>Denom. s vrijednošću &lt;b&gt;100&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;500&lt;/b&gt;:</source>
-        <translation>Denom. s vrijednošću &lt;b&gt;500&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;1000&lt;/b&gt;:</source>
-        <translation>Denom. s vrijednošću &lt;b&gt;1000&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;5000&lt;/b&gt;:</source>
-        <translation>Denom. s vrijednošću &lt;b&gt;5000&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>AutoMint Status:</source>
-        <translation>AutoMint Status:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;1&lt;/b&gt;:</source>
-        <translation>Denom. &lt;b&gt;1&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;5&lt;/b&gt;:</source>
-        <translation>Denom. &lt;b&gt;5&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;10&lt;/b&gt;:</source>
-        <translation>Denom. &lt;b&gt;10&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;50&lt;/b&gt;:</source>
-        <translation>Denom. &lt;b&gt;50&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;100&lt;/b&gt;:</source>
-        <translation>Denom. &lt;b&gt;100&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;500&lt;/b&gt;:</source>
-        <translation>Denom. &lt;b&gt;500&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;1000&lt;/b&gt;:</source>
-        <translation>Denom. &lt;b&gt;1000&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;5000&lt;/b&gt;:</source>
-        <translation>Denom. &lt;b&gt;5000&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Error: Your wallet is locked. Please enter the wallet passphrase first.</source>
-        <translation>Pogreška: vaš je novčanik zaključan. Najprije unesite zaporku novčanika.</translation>
-    </message>
-    <message>
-        <source>Message: Enter an amount &gt; 0.</source>
-        <translation>Poruka: unesite iznos&gt; 0.</translation>
-    </message>
-    <message>
-        <source>Minting </source>
-        <translation>Minting </translation>
-    </message>
-    <message>
-        <source>Successfully minted </source>
-        <translation>Uspješno mintano</translation>
-    </message>
-    <message>
-        <source> zDAPS in </source>
-        <translation> ulazni zDAPS </translation>
-    </message>
-    <message>
-        <source> sec. Used denominations:
-</source>
-        <translation>sek. Upotrijebljene denominacije:</translation>
-    </message>
-    <message>
-        <source>Duration: </source>
-        <translation>Trajanje:</translation>
-    </message>
-    <message>
-        <source> sec.
-</source>
-        <translation> sec.
-</translation>
-    </message>
-    <message>
-        <source>Starting ResetSpentZerocoin: </source>
-        <translation>Pokretanje ResetSpentZerocoin:</translation>
-    </message>
-    <message>
-        <source>No 'Pay To' address provided, creating local payment</source>
-        <translation>Nije dodijeljena adresa "Plati", stvarajući lokalnu uplatu</translation>
-    </message>
-    <message>
-        <source>Invalid Dapscoin Address</source>
-        <translation>Nevažeća Dapscoin Adresa</translation>
-    </message>
-    <message>
-        <source>Invalid Send Amount</source>
-        <translation>Neispravan iznos slanja</translation>
-    </message>
-    <message>
-        <source>Confirm additional Fees</source>
-        <translation>Potvrdite dodatne naknade</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to send?&lt;br /&gt;&lt;br /&gt;</source>
-        <translation>Jeste li sigurni da želite poslati?</translation>
-    </message>
-    <message>
-        <source> to address </source>
-        <translation>na adresu</translation>
-    </message>
-    <message>
-        <source> to a newly generated (unused and therefore anonymous) local address &lt;br /&gt;</source>
-        <translation>na novo generiranu (neiskorištenu i stoga anonimnu) lokalnu adresu</translation>
-    </message>
-    <message>
-        <source>with Security Level </source>
-        <translation>s razinom sigurnosti</translation>
-    </message>
-    <message>
-        <source>Confirm send coins</source>
-        <translation>Potvrdite slanje novca</translation>
-    </message>
-    <message>
-        <source>Version 1 zDAPS require a security level of 100 to successfully spend.</source>
-        <translation>Verzija 1 zDAPS zahtjeva sigurnosnu razinu 100 da se uspješno utroši.</translation>
-    </message>
-    <message>
-        <source>Failed to spend zDAPS</source>
-        <translation>Neuspjelo trošenje zDAPS</translation>
-    </message>
-    <message>
-        <source>Failed to fetch mint associated with serial hash</source>
-        <translation>Neuspjelo dohvaćanje minta asociranog s serijskim hashom</translation>
-    </message>
-    <message>
-        <source>Too much inputs (</source>
-        <translation>Previše unosa (</translation>
-    </message>
-    <message>
-        <source>
-Either mint higher denominations (so fewer inputs are needed) or reduce the amount to spend.</source>
-        <translation>Ili mintaj više vrijedne denominacije (tako da je potrebno manje ulaza) ili smanjiti iznos potrošnje</translation>
-    </message>
-    <message>
-        <source>Spend Zerocoin failed with status = </source>
-        <translation>Utrošak Zerocoina nije uspjela s statusom =</translation>
-    </message>
-    <message numerus="yes">
-        <source>PrivacyDialog</source>
-        <comment>Enter an amount of DAPS to convert to zDAPS</comment>
-        <translation><numerusform>PrivacyDialog</numerusform><numerusform>PrivacyDialog</numerusform><numerusform>PrivacyDialog</numerusform></translation>
-    </message>
-    <message>
-        <source>denomination: </source>
-        <translation>denominacija:</translation>
-    </message>
-    <message>
-        <source>serial: </source>
-        <translation>serijski:</translation>
-    </message>
-    <message>
-        <source>Spend is 1 of : </source>
-        <translation>Potrošnja je 1 od:</translation>
-    </message>
-    <message>
-        <source>value out: </source>
-        <translation>izlazna vrijednost:</translation>
-    </message>
-    <message>
-        <source>address: </source>
-        <translation>adresa:</translation>
-    </message>
-    <message>
-        <source>Sending successful, return code: </source>
-        <translation>Slanje uspješno, povratni kod:</translation>
-    </message>
-    <message>
-        <source>txid: </source>
-        <translation>txid: </translation>
-    </message>
-    <message>
-        <source>fee: </source>
-        <translation>naknada:</translation>
     </message>
 </context>
 <context>
@@ -3300,10 +2579,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     <message>
         <source>Custom Backup Path:</source>
         <translation>Put prilagođenog sigurnosnog kopiranja:</translation>
-    </message>
-    <message>
-        <source>Custom zDAPS Backup Path:</source>
-        <translation>Prilagođeni put zDAPS sigurnosne kopije:</translation>
     </message>
     <message>
         <source>Custom Backups Threshold:</source>
@@ -4530,10 +3805,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>DAPS Stake</translation>
     </message>
     <message>
-        <source>zDAPS Stake</source>
-        <translation>zDAPS Stake</translation>
-    </message>
-    <message>
         <source>Obfuscation Denominate</source>
         <translation>Zameteni denonimi</translation>
     </message>
@@ -4548,34 +3819,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     <message>
         <source>Obfuscation Create Denominations</source>
         <translation>Prikrivanje Stvara Denominacije</translation>
-    </message>
-    <message>
-        <source>Converted DAPS to zDAPS</source>
-        <translation>Pretvoreni DAPS u zDAPS</translation>
-    </message>
-    <message>
-        <source>Spent zDAPS</source>
-        <translation>Utrošeni zDAPS</translation>
-    </message>
-    <message>
-        <source>Received DAPS from zDAPS</source>
-        <translation>Primljeni DAPS od zDAPS</translation>
-    </message>
-    <message>
-        <source>Minted Change as zDAPS from zDAPS Spend</source>
-        <translation>Mintana razlika zDAPS od zDAPS Utroška</translation>
-    </message>
-    <message>
-        <source>Converted zDAPS to DAPS</source>
-        <translation>Pretvoreni zDAPS u DAPS</translation>
-    </message>
-    <message>
-        <source>Anonymous (zDAPS Transaction)</source>
-        <translation>Anonimno (zDAPS Transakcija)</translation>
-    </message>
-    <message>
-        <source>Anonymous (zDAPS Stake)</source>
-        <translation>Anonimno (zDAPS Stake)</translation>
     </message>
     <message>
         <source>Sent to</source>
@@ -4689,18 +3932,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Masternode Nagrada</translation>
     </message>
     <message>
-        <source>Zerocoin Mint</source>
-        <translation>Zerocoin Mint</translation>
-    </message>
-    <message>
-        <source>Zerocoin Spend</source>
-        <translation>Zerocoin utrošak</translation>
-    </message>
-    <message>
-        <source>Zerocoin Spend to Self</source>
-        <translation>Zerocoin utrošen na sebe</translation>
-    </message>
-    <message>
         <source>Other</source>
         <translation>Drugi</translation>
     </message>
@@ -4785,14 +4016,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Izvoz uspješan</translation>
     </message>
     <message>
-        <source>Received DAPS from zDAPS</source>
-        <translation>Primljeni DAPS od zDAPS</translation>
-    </message>
-    <message>
-        <source>Zerocoin Spend, Change in zDAPS</source>
-        <translation>Zerocoin Utrošeno, Razlika (ostatak) u zDAPS</translation>
-    </message>
-    <message>
         <source>The transaction history was successfully saved to %1.</source>
         <translation>Povijest transakcija uspješno je spremljena u %1.</translation>
     </message>
@@ -4858,33 +4081,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
 </context>
 <context>
-    <name>ZDapsControlDialog</name>
-    <message>
-        <source>Select zDAPS to Spend</source>
-        <translation>Odabrani zDAPS za utrošiti</translation>
-    </message>
-    <message>
-        <source>Quantity</source>
-        <translation>Količina</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>zDAPS</source>
-        <translation>zDAPS</translation>
-    </message>
-    <message>
-        <source>Select/Deselect All</source>
-        <translation>Odaberite/poništi odabir za Sve</translation>
-    </message>
-    <message>
-        <source>Is Spendable</source>
-        <translation>Je moguće utrošiti</translation>
-    </message>
-</context>
-<context>
     <name>dapscoin-core</name>
     <message>
         <source>(1 = keep tx meta data e.g. account owner and payment request information, 2 = drop tx meta data)</source>
@@ -4931,24 +4127,12 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Izbrišite sve transakcije lisnice i obnavljajte one dijelove blok-lanca kroz -rescan pri pokretanju</translation>
     </message>
     <message>
-        <source>Delete all zerocoin spends and mints that have been recorded to the blockchain database and reindex them (0-1, default: %u)</source>
-        <translation>Izbriši sve zerocoin utroške i minteve koji su zabilježeni na blockchain database i reindexiraj ih (0-1, default: %u)</translation>
-    </message>
-    <message>
         <source>Distributed under the MIT software license, see the accompanying file COPYING or &lt;http://www.opensource.org/licenses/mit-license.php&gt;.</source>
         <translation>Distribuirano pod MIT softverskom licencom, pogledajte priloženu datoteku COPYING ili &lt;http://www.opensource.org/licenses/mit-license.php&gt;.</translation>
     </message>
     <message>
-        <source>Enable automatic wallet backups triggered after each zDAPS minting (0-1, default: %u)</source>
-        <translation>Omogući automatsko sigurnosno kopiranje novčanika nakon svakog zDAPS mintanja (0-1, default: %u)</translation>
-    </message>
-    <message>
         <source>Enable or disable staking functionality for DAPS inputs (0-1, default: %u)</source>
         <translation>Omogući ili onemogući staking funkcionalnosti za DAPS unose (0-1, default: %u)</translation>
-    </message>
-    <message>
-        <source>Enable or disable staking functionality for zDAPS inputs (0-1, default: %u)</source>
-        <translation>Omogući ili onemogući staking funkcionalnosti za zDAPS unose (0-1, default: %u)</translation>
     </message>
     <message>
         <source>Enter regression test mode, which uses a special chain in which blocks can be solved instantly.</source>
@@ -5308,10 +4492,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Gotovo učitavanje</translation>
     </message>
     <message>
-        <source>Enable automatic Zerocoin minting (0-1, default: %u)</source>
-        <translation>Omogući automatsko Zerocoin stvaranje (0-1, zadano: %u)</translation>
-    </message>
-    <message>
         <source>Enable publish hash transaction (locked via SwiftX) in &lt;address&gt;</source>
         <translation>Omogući objavu hash transakcije (zaključano putem usluge SwiftX) u </translation>
     </message>
@@ -5536,20 +4716,8 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Otkriven nevažeća skripta.</translation>
     </message>
     <message>
-        <source>Percentage of automatically minted Zerocoin  (1-100, default: %u)</source>
-        <translation>Postotak automatskog kovanog Zerocoina (1-100, zadano: %u)</translation>
-    </message>
-    <message>
-        <source>Reindex the DAPS and zDAPS money supply statistics</source>
-        <translation>Ponovno indeksirati statistiku DAPS i zDAPS ponude novca</translation>
-    </message>
-    <message>
-        <source>Reindexing zerocoin database...</source>
-        <translation>Reindeksiranje zerocoin databaze...</translation>
-    </message>
-    <message>
-        <source>Reindexing zerocoin failed</source>
-        <translation>Reindeksiranje zerocoin neuspjelo</translation>
+        <source>Reindex the DAPS money supply statistics</source>
+        <translation>Ponovno indeksirati statistiku DAPS ponude novca</translation>
     </message>
     <message>
         <source>Selected coins value is less than payment target</source>
@@ -5579,8 +4747,8 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>uklonjene nepotvrđene transakcije</translation>
     </message>
     <message>
-        <source>Disable all DAPScoin specific functionality (Masternodes, Zerocoin, SwiftX, Budgeting) (0-1, default: %u)</source>
-        <translation>Onemogući sve specifične funkcije DAPScoin (Masternodes, Zerocoin, SwiftX, Budgeting) (0-1, zadano: %u)</translation>
+        <source>Disable all DAPScoin specific functionality (Masternodes, SwiftX, Budgeting) (0-1, default: %u)</source>
+        <translation>Onemogući sve specifične funkcije DAPScoin (Masternodes, SwiftX, Budgeting) (0-1, zadano: %u)</translation>
     </message>
     <message>
         <source>Enable SwiftX, show confirmations for locked transactions (bool, default: %s)</source>
@@ -5609,14 +4777,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     <message>
         <source>In rare cases, a spend with 7 coins exceeds our maximum allowable transaction size, please retry spend using 6 or less coins</source>
         <translation>U rijetkim slučajevima, potrošnja s 7 kovanica premašuje našu maksimalnu dopuštenu veličinu transakcije, pokušajte ponovo pokušati potrošiti 6 ili manje kovanica</translation>
-    </message>
-    <message>
-        <source>Preferred Denomination for automatically minted Zerocoin  (1/5/10/50/100/500/1000/5000), 0 for no preference. default: %u)</source>
-        <translation>Preferirana denominacija za automatski ovjereni Zerocoin (1/5/10/50/100/500/1000/5000), 0 bez preferencije. zadana vrijednost: %u)</translation>
-    </message>
-    <message>
-        <source>Specify custom backup path to add a copy of any automatic zDAPS backup. If set as dir, every backup generates a timestamped file. If set as file, will rewrite to that file every backup. If backuppath is set as well, 4 backups will happen</source>
-        <translation>Navedite put prilagođenog sigurnosnog kopiranja da biste dodali kopiju bilo koje automatske zDAPS sigurnosne kopije. Ako je postavljeno kao dir, svaka sigurnosna kopija generira vremensku datoteku. Ako je postavljen kao datoteka, prepisat će na tu datoteku svaku kopiju. Ako je postavljen backuppath, dogodit će se 4 sigurnosne kopije</translation>
     </message>
     <message>
         <source>Specify custom backup path to add a copy of any wallet backup. If set as dir, every backup generates a timestamped file. If set as file, will rewrite to that file every backup.</source>
@@ -5681,18 +4841,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     <message>
         <source>Failed to deserialize</source>
         <translation>Deserializiranje nije uspjelo</translation>
-    </message>
-    <message>
-        <source>Failed to find Zerocoins in wallet.dat</source>
-        <translation>Neuspjelo pronalaženje Zerocoina u wallet.dat</translation>
-    </message>
-    <message>
-        <source>Failed to select a zerocoin</source>
-        <translation>Odabir Zerocoina nije uspjelo</translation>
-    </message>
-    <message>
-        <source>Failed to wipe zerocoinDB</source>
-        <translation>Neuspjelo brisanje zerocoinDB</translation>
     </message>
     <message>
         <source>Failed to write coin serial number into wallet</source>
@@ -5943,14 +5091,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Ponovno skeniranje ...</translation>
     </message>
     <message>
-        <source>ResetMintZerocoin finished: </source>
-        <translation>ResetMintZerocoin je završio:</translation>
-    </message>
-    <message>
-        <source>ResetSpentZerocoin finished: </source>
-        <translation>ResetSpentZerocoin završio: </translation>
-    </message>
-    <message>
         <source>Run a thread to flush wallet periodically (default: %u)</source>
         <translation>Pokrenite niti kako biste redovito prigušili novčanik (zadano: %u)</translation>
     </message>
@@ -6107,10 +5247,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Sinkronizacija masternoda...</translation>
     </message>
     <message>
-        <source>Syncing zDAPS wallet...</source>
-        <translation>Sinkronizacija zDAPS novčanika...</translation>
-    </message>
-    <message>
         <source>The coin spend has been used</source>
         <translation>Korištena je potrošnja novčića</translation>
     </message>
@@ -6251,10 +5387,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Korisničko ime za JSON-RPC veze</translation>
     </message>
     <message>
-        <source>Value is below the smallest available denomination (= 1) of zDAPS</source>
-        <translation>Vrijednost je niža od najmanje dostupne denominacije (= 1) zDAPS-a</translation>
-    </message>
-    <message>
         <source>Value more than Obfuscation pool maximum allows.</source>
         <translation>Vrijednost veća od maksimalnog broja Prikrivanja zbirnih sredstava.</translation>
     </message>
@@ -6265,10 +5397,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     <message>
         <source>Verifying wallet...</source>
         <translation>Provjera novčanika...</translation>
-    </message>
-    <message>
-        <source>Version 1 zDAPS require a security level of 100 to successfully spend.</source>
-        <translation>Verzija 1 zDAPS zahtjeva sigurnosnu razinu 100 da se uspješno utroši.</translation>
     </message>
     <message>
         <source>Wallet %s resides outside data directory %s</source>
@@ -6311,10 +5439,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Ponovno pokušati...</translation>
     </message>
     <message>
-        <source>You don't have enough Zerocoins in your wallet</source>
-        <translation>Nemate dovoljno Zerocoina u novčaniku</translation>
-    </message>
-    <message>
         <source>You need to rebuild the database using -reindex to change -txindex</source>
         <translation>orate obnoviti bazu podataka koristeći -index za promjenu -txindexa</translation>
     </message>
@@ -6333,10 +5457,6 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     <message>
         <source>ZeroMQ notification options:</source>
         <translation>Mogućnosti ZeroMQ obavijesti:</translation>
-    </message>
-    <message>
-        <source>Zerocoin options:</source>
-        <translation>Zerocoin mogućnosti:</translation>
     </message>
     <message>
         <source>on startup</source>

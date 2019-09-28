@@ -54,54 +54,9 @@ Removal of Heavy Running Transaction Search Code
 ---------------------
 Many areas of the block validation code use a "slow" transaction search, which searches redundantly for transactions. This "slow" search has been removed upstream in Bitcoin and is now removed in DAPScoin. This provides a more efficient syncing process and generally better performing wallet.
 
-Sync Fix for Block 908000
----------------------
-Many wallets were having trouble getting past block 908000. This block recalculates certain aspects of the money supply and zDAPS transactions, and is known to take longer to sync. Code has been added to allow block 908000 to be validated without the user needing to enter any special commands into the debug console.
-
 Working Testnet
 ---------------------
 Testnet is now accessible with this release of the wallet. Testnet can be accessed using the `-testnet` startup flag.
-
-zDAPS Spending Fix
----------------------
-zDAPS that were minted between block 891730 and 895400 were experiencing an error initializing the accumulator witness data correctly, causing an inability to spend those mints. This has been fixed.
-
-
-3.0.6 Change log
-=================
-
-Detailed release notes follow. This overview includes changes that affect
-behavior, not code moves, refactors and string updates. For convenience in locating
-the code changes and accompanying discussion, both the pull request and
-git merge commit are mentioned.
-
-### RPC and other APIs
-- #366 `f361344` Do not stringify beyond OP_ZEROCOINSPEND for CScript::ToString() (presstab)
-- #385 `732bfb0` getspentzerocoinamount RPC call. (whateverpal)
-- #417 `f97b409` [RPC] Fix typo for `obfuscation` RPC command (Patrick Collins)
-
-### Block and Transaction Handling
-- #395 `5c5a9c6` [Main] Avoid slow transaction search with txindex enabled (Fuzzbawls)
-- #405 `e415420` [Main] Automate database corruption fix caused by out of sync txdb. (presstab)
-- #408 `beae959` Fix "accumulator does not verify" when spending zDAPS. (presstab)
-- #418 `90b0310` Fix edge case segfault. (presstab)
-
-### P2P Protocol and Network Code
-- #393 `58ec23f` [Testnet] Adjust testnet chainparams to new hard coded values. (presstab)
-
-### Wallet
-- #412 `2fb5f17` Double check tx size when creating zDAPS tx's. (presstab)
-
-### GUI
-- #384 `7897f60` [Qt] Periodic make translate (Fuzzbawls)
-
-### Build System
-- #402 `e383b94` Change git info in genbuild.sh (Jon Spock)
-- #419 `79956d4` [Travis] Add logprint-scanner.py to TravisCI (Fuzzbawls)
-
-### Miscellaneous
-- #401 `f30d9b7` [Scripts] LogPrint(f) scanner script (Sonic, PeterL73)
-- #409 `4f78e67` Handle debug.log "CWalletTx::GetAmounts: Unknown transaction type" spam. (presstab)
 
 Credits
 =======

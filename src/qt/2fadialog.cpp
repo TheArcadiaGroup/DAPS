@@ -52,8 +52,9 @@ TwoFADialog::TwoFADialog(QWidget *parent) :
 
     ui->lblOpenAppURL->setVisible(false);
     bool status = pwalletMain->Read2FA();
-    if (!status) {
-        ui->label_2->setVisible(true);
+    if (status) {
+        ui->label_2->setVisible(false);
+        ui->label->setText("Disabling 2 Factor Authentication");
     }
 }
 

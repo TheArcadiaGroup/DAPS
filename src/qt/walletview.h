@@ -89,17 +89,10 @@ public slots:
     void gotoOptionsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
-
-    /** Show Sign/Verify Message dialog and switch to sign message tab */
-    void gotoSignMessageTab(QString addr = "");
-    /** Show Sign/Verify Message dialog and switch to verify message tab */
-    void gotoVerifyMessageTab(QString addr = "");
     /** Show MultiSend Dialog */
     void gotoMultiSendDialog();
     /** Show a multisig tab **/
     void gotoMultisigDialog(int index);
-    /** Show BIP 38 tool - default to Encryption tab */
-    void gotoBip38Tool();
 
     /** Show incoming transaction notification for new transactions.
 

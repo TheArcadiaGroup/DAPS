@@ -209,6 +209,7 @@ extern UniValue submitblock(const UniValue& params, bool fHelp);
 extern UniValue estimatefee(const UniValue& params, bool fHelp);
 extern UniValue estimatepriority(const UniValue& params, bool fHelp);
 
+extern UniValue generateintegratedaddress(const UniValue& params, bool fHelp); // in rpcwallet.cpp
 extern UniValue getnewaddress(const UniValue& params, bool fHelp); // in rpcwallet.cpp
 extern UniValue getaccountaddress(const UniValue& params, bool fHelp);
 extern UniValue getrawchangeaddress(const UniValue& params, bool fHelp);
@@ -242,6 +243,7 @@ extern UniValue walletlock(const UniValue& params, bool fHelp);
 extern UniValue encryptwallet(const UniValue& params, bool fHelp);
 extern UniValue createprivacywallet(const UniValue& params, bool fHelp);
 extern UniValue createprivacyaccount(const UniValue& params, bool fHelp);
+extern UniValue showstealthaddress(const UniValue& params, bool fHelp);
 extern UniValue importkeys(const UniValue& params, bool fHelp);
 extern UniValue revealviewprivatekey(const UniValue& params, bool fHelp);
 extern UniValue revealspendprivatekey(const UniValue& params, bool fHelp);

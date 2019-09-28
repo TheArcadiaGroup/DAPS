@@ -108,6 +108,7 @@ public:
     int nLastPOWBlock;
     int TEAM_REWARD_FREQUENCY = 3; //every  TEAM_REWARD_FREQUENCY PoA blocks, reward the daps team
     double MAX_MONEY;
+    CAmount TOTAL_SUPPLY = 70000000000*COIN; //70B DAPS
 
 protected:
     CChainParams() {}

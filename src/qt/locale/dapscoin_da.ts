@@ -1989,121 +1989,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
 </context>
 <context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPScoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>De viste informationer kan være uddaterede. Deres tegnebog synkronisere automatism med DAPScoin netværket så snart en forbindelse er etalbleret, men denne proces er ikke færdiggjort endnu. </translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Nulstil</translation>
-    </message>
-    <message>
-        <source>Quantity:</source>
-        <translation>Antal:</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Beløb</translation>
-    </message>
-    <message>
-        <source>Pay &amp;To:</source>
-        <translation>Betal &amp;Til</translation>
-    </message>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>Benyt en tidligere anvendt adresse.</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Paste address from clipboard</source>
-        <translation>Indsæt adresse fra udklipsholderen.</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Alt+P</translation>
-    </message>
-    <message>
-        <source>&amp;Label:</source>
-        <translation>&amp;Mærkning</translation>
-    </message>
-    <message>
-        <source>Enter a label for this address to add it to the list of used addresses</source>
-        <translation>Indtast et mærke til denne adresse for at tilføje den til listen over brugte adresser</translation>
-    </message>
-    <message>
-        <source>A&amp;mount:</source>
-        <translation>A&amp;mount</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation>Prioritet:</translation>
-    </message>
-    <message>
-        <source>Fee:</source>
-        <translation>Gebyr:</translation>
-    </message>
-    <message>
-        <source>Dust:</source>
-        <translation>Affald:</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>nej</translation>
-    </message>
-    <message>
-        <source>Bytes:</source>
-        <translation>Bytes:</translation>
-    </message>
-    <message>
-        <source>Insufficient funds!</source>
-        <translation>Saldo for lille!</translation>
-    </message>
-    <message>
-        <source>medium</source>
-        <translation>Middel</translation>
-    </message>
-    <message>
-        <source>Coin Control Features</source>
-        <translation>Møntkontrol, features</translation>
-    </message>
-    <message>
-        <source>If this is activated, but the change address is empty or invalid, change will be sent to a newly generated address.</source>
-        <translation>Hvis denne er aktiveret, men tilbagebetalingsadressen er tom, eller ugyldig, overskydende beløb vil blive fremsendt til en nyoprettet adresse</translation>
-    </message>
-    <message>
-        <source>Custom change address</source>
-        <translation>Brugerdefineret tilbagebetalingsadresse</translation>
-    </message>
-    <message>
-        <source>Change:</source>
-        <translation>Penge tilbage:</translation>
-    </message>
-    <message>
-        <source>out of sync</source>
-        <translation>Ude af synk</translation>
-    </message>
-    <message>
-        <source>Copy quantity</source>
-        <translation>Kopiér antal</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Kopiér beløb</translation>
-    </message>
-    <message>
-        <source>Confirm send coins</source>
-        <translation>Bekræft at De vil sende mønter</translation>
-    </message>
-    </context>
-<context>
     <name>QObject</name>
     <message>
         <source>Amount</source>
@@ -3731,13 +3616,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Tegnebogens data blev gemt i %1</translation>
     </message>
 </context>
-<context>
-    <name>ZDapsControlDialog</name>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    </context>
 <context>
     <name>dapscoin-core</name>
     <message>

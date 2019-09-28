@@ -418,10 +418,6 @@
         <translation>Olhar histórico de transação</translation>
     </message>
     <message>
-        <source>Privacy Actions for zDAPS</source>
-        <translation>Ações privadas para zDAPS</translation>
-    </message>
-    <message>
         <source>E&amp;xit</source>
         <translation>&amp;Sair</translation>
     </message>
@@ -1878,10 +1874,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>DAPS:</translation>
     </message>
     <message>
-        <source>zDAPS:</source>
-        <translation>zDAPS:</translation>
-    </message>
-    <message>
         <source>0 %</source>
         <translation>0 %</translation>
     </message>
@@ -1896,10 +1888,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     <message>
         <source>Unlocked:</source>
         <translation>Destravado:</translation>
-    </message>
-    <message>
-        <source>Zerocoin Balance</source>
-        <translation>Saldo Zerocoin</translation>
     </message>
     <message>
         <source>Unconfirmed:</source>
@@ -1962,209 +1950,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     <message>
         <source>Ping Time</source>
         <translation>Tempo de resposta</translation>
-    </message>
-</context>
-<context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>DAPS which were anonymized via Zerocin Protocol</source>
-        <translation>DAPS que foram anonimizadas via protocolo Zerocoin</translation>
-    </message>
-    <message>
-        <source>Zerocoin DAPS (zDAPS)</source>
-        <translation>Zerocoin DAPS (zDAPS)</translation>
-    </message>
-    <message>
-        <source>Zerocoin Actions:</source>
-        <translation>Ações Zerocoin:</translation>
-    </message>
-    <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPScoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>A informação mostrada pode estar desatualizada. A sua carteira se sincroniza automaticamente com a rede DAPScoin após estabelecer uma conexão, mas esse processo ainda não foi concluído.</translation>
-    </message>
-    <message>
-        <source>Enter an amount of Daps to convert to zDaps</source>
-        <translation>Insira uma quantia de Daps para converter para zDaps</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>zDAPS</source>
-        <translation>zDAPS</translation>
-    </message>
-    <message>
-        <source>0.000 000 00 DAPS</source>
-        <translation>0.000 000 00 DAPS</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Reinicia</translation>
-    </message>
-    <message>
-        <source>Quantity:</source>
-        <translation>Quantidade:</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Quantia:</translation>
-    </message>
-    <message>
-        <source>Security Level 1 - 100 (default: 42)</source>
-        <translation>Nível de segurança 1 - 100 (padrão: 42)</translation>
-    </message>
-    <message>
-        <source>Pay &amp;To:</source>
-        <translation>Pagar &amp;Para:</translation>
-    </message>
-    <message>
-        <source>The DAPScoin address to send the payment to. Creates local payment to yourself when empty.</source>
-        <translation>O endereço DAPScoin para enviar o pagamento. Cria um pagamento local para si mesmo quando vazio.</translation>
-    </message>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>Escolha o endereço previamente utilizado</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Paste address from clipboard</source>
-        <translation>Cole o endereço da área de transferência</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Alt+P</translation>
-    </message>
-    <message>
-        <source>&amp;Label:</source>
-        <translation>&amp;Rótulo:</translation>
-    </message>
-    <message>
-        <source>Enter a label for this address to add it to the list of used addresses</source>
-        <translation>Coloque uma etiqueta neste endereço para adicioná-lo à lista de endereços utilizados</translation>
-    </message>
-    <message>
-        <source>A&amp;mount:</source>
-        <translation>Quantia:</translation>
-    </message>
-    <message>
-        <source>Information about the available Zerocoin funds.</source>
-        <translation>Informação sobre os fundos disponíveis em Zerocoin.</translation>
-    </message>
-    <message>
-        <source>Zerocoin Stats:</source>
-        <translation>Estatísticas zerocoin:</translation>
-    </message>
-    <message>
-        <source>Total Balance including unconfirmed and immature zDAPS</source>
-        <translation>Balanço Total incluindo não confirmadas e imaturas zDAPS</translation>
-    </message>
-    <message>
-        <source>Total Zerocoin  Balance:</source>
-        <translation>Balanço Total Zerocoin:</translation>
-    </message>
-    <message>
-        <source>0 x</source>
-        <translation>0 x</translation>
-    </message>
-    <message>
-        <source>Denominations with value 10:</source>
-        <translation>Denominações com valor 10:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 50:</source>
-        <translation>Denominações com valor 50:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 100:</source>
-        <translation>Denominações com valor 100:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 500:</source>
-        <translation>Denominações com valor 500:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 1000:</source>
-        <translation>Denominações com valor 1000:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 5000:</source>
-        <translation>Denominações com valor 5000:</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation>Prioridade:</translation>
-    </message>
-    <message>
-        <source>Fee:</source>
-        <translation>Taxa:</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>não</translation>
-    </message>
-    <message>
-        <source>Bytes:</source>
-        <translation>Bytes:</translation>
-    </message>
-    <message>
-        <source>Insufficient funds!</source>
-        <translation>Fundos insuficientes!</translation>
-    </message>
-    <message>
-        <source>medium</source>
-        <translation>médio</translation>
-    </message>
-    <message>
-        <source>Coin Control Features</source>
-        <translation>Funções do Controle de Moedas</translation>
-    </message>
-    <message>
-        <source>Amount After Fee:</source>
-        <translation>Quantia depois da taxa:</translation>
-    </message>
-    <message>
-        <source>Change:</source>
-        <translation>Troco:</translation>
-    </message>
-    <message>
-        <source>out of sync</source>
-        <translation>fora de sincronia</translation>
-    </message>
-    <message>
-        <source>Copy quantity</source>
-        <translation>Copiar quantidade</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Copiar quantia</translation>
-    </message>
-    <message>
-        <source>Error: Your wallet is locked. Please enter the wallet passphrase first.</source>
-        <translation>Erro: Sua carteira está travada. Favor inserir a palavra-chave da carteira primeiro.</translation>
-    </message>
-    <message>
-        <source>Message: Enter an amount &gt; 0.</source>
-        <translation>Mensagem: Insira uma quantia &gt; 0.</translation>
-    </message>
-    <message>
-        <source>Confirm send coins</source>
-        <translation>Confirmar envio de moedas</translation>
-    </message>
-    <message>
-        <source>Sending successful, return code: </source>
-        <translation>Enviado com sucesso, código de retorno:</translation>
-    </message>
-    <message>
-        <source>txid: </source>
-        <translation>txid:</translation>
-    </message>
-    <message>
-        <source>fee: </source>
-        <translation>taxa:</translation>
     </message>
 </context>
 <context>
@@ -3444,24 +3229,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Ofuscado</translation>
     </message>
     <message>
-        <source>Spent zDaps</source>
-        <translation>zDaps gasto</translation>
-    </message>
-    <message>
-        <source>Received Daps from zDaps</source>
-        <translation>Recebido Daps de zDaps</translation>
-    </message>
-    <message>
-        <source>Converted zDaps to Daps</source>
-        <translation>Convertido zDaps para Daps</translation>
-    </message>
-    <message>
         <source>watch-only</source>
         <translation>somente visualização</translation>
-    </message>
-    <message>
-        <source>zDaps Accumulator</source>
-        <translation>zDaps Acumulador</translation>
     </message>
     <message>
         <source>(n/a)</source>
@@ -3553,10 +3322,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     <message>
         <source>Masternode Reward</source>
         <translation>Recompensa de Masternode</translation>
-    </message>
-    <message>
-        <source>Received Daps from zDaps</source>
-        <translation>Recebido Daps de zDaps</translation>
     </message>
     <message>
         <source>Other</source>
@@ -3715,21 +3480,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Os dados da carteira foram salvos em %1 com sucesso.</translation>
     </message>
 </context>
-<context>
-    <name>ZDapsControlDialog</name>
-    <message>
-        <source>Quantity</source>
-        <translation>Quantia</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>Select/Deselect All</source>
-        <translation>Selecionar/Deselecionar todos</translation>
-    </message>
-    </context>
 <context>
     <name>dapscoin-core</name>
     <message>
@@ -4469,10 +4219,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     <message>
         <source>Zapping all transactions from wallet...</source>
         <translation>Eliminando todas as transações da carteira...</translation>
-    </message>
-    <message>
-        <source>failed to validate zerocoin</source>
-        <translation>falhou em validar zerocoin</translation>
     </message>
     <message>
         <source>on startup</source>

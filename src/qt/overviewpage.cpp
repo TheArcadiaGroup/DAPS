@@ -161,7 +161,6 @@ void OverviewPage::getPercentage(CAmount nUnlockedBalance, QString& sDAPSPercent
 }
 
 void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
-                              const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
                               const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance)
 {
     int walletStatus = walletModel->getEncryptionStatus();
@@ -182,7 +181,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
         nSpendableDisplayed = nSpendableDisplayed > nReserveBalance ? nReserveBalance:nSpendableDisplayed;
     }
     // DAPS labels
-    //Cam: Remove immatureBalance from showing on qt wallet (as andrew says)
+    //TODO-NOTE: Remove immatureBalance from showing on qt wallet (as requested)
     if (walletStatus == WalletModel::Locked || walletStatus == WalletModel::UnlockedForAnonymizationOnly) {
         ui->labelBalance_2->setText("Locked; Hidden");
         ui->labelBalance->setText("Locked; Hidden");
@@ -195,19 +194,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     QFont font = ui->labelBalance_2->font();
     font.setPointSize(15);
     font.setBold(true);
-    ui->labelBalance_2->setFont(font);
-
-    // zDAPS labels
-    QString szPercentage = "";
-    QString sPercentage = "";
-    CAmount nLockedBalance = 0;
-    if (pwalletMain) {
-        nLockedBalance = pwalletMain->GetLockedCoins();
-    }
-
-    CAmount nTotalBalance = balance + unconfirmedBalance;
-    CAmount nUnlockedBalance = nTotalBalance - nLockedBalance;
-    getPercentage(nUnlockedBalance, sPercentage);
+    ui->labelBalance_2->setFont(font);   
 }
 
 // show/hide watch-only labels
@@ -252,10 +239,9 @@ void OverviewPage::setWalletModel(WalletModel* model)
 
         // Keep up to date with wallet
         setBalance(model->getBalance(), model->getUnconfirmedBalance(), model->getImmatureBalance(),
-                   0, 0, 0,
                    model->getWatchBalance(), model->getWatchUnconfirmedBalance(), model->getWatchImmatureBalance());
-        connect(model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this, 
-                         SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
+        connect(model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this, 
+                         SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
         connect(model, SIGNAL(stakingStatusChanged(bool)), this, 
                          SLOT(setSpendableBalance(bool)));
         connect(model, SIGNAL(WalletUnlocked()), this,
@@ -282,7 +268,6 @@ void OverviewPage::updateBalance()
 {
 	WalletModel* model = this->walletModel;
 	setBalance(model->getBalance(), model->getUnconfirmedBalance(), model->getImmatureBalance(),
-			0, 0, 0,
 			model->getWatchBalance(), model->getWatchUnconfirmedBalance(), model->getWatchImmatureBalance());
 }
 
@@ -291,7 +276,7 @@ void OverviewPage::updateDisplayUnit()
     if (walletModel && walletModel->getOptionsModel()) {
         nDisplayUnit = walletModel->getOptionsModel()->getDisplayUnit();
         if (currentBalance != -1)
-            setBalance(currentBalance, currentUnconfirmedBalance, currentImmatureBalance, 0, 0, 0,
+            setBalance(currentBalance, currentUnconfirmedBalance, currentImmatureBalance,
                 currentWatchOnlyBalance, currentWatchUnconfBalance, currentWatchImmatureBalance);
 
         // Update txdelegate->unit with the current unit
@@ -368,6 +353,7 @@ void OverviewPage::onAnimTick()
     } else {
         blockSyncCircle->setStyleSheet("image:url(':/images/syncb')");
         blockAnimSyncCircle->setVisible(false);
+        ui->lblHelp->setVisible(false);
     }
     if (isSyncingBalance){
         moveSyncCircle(balanceSyncCircle, balanceAnimSyncCircle, 3, -100, 130);

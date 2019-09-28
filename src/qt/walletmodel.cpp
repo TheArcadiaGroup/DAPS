@@ -168,7 +168,6 @@ void WalletModel::emitBalanceChanged()
         return;
     
     emit balanceChanged(cachedBalance, cachedUnconfirmedBalance, cachedImmatureBalance,
-        0, 0, 0,
         cachedWatchOnlyBalance, cachedWatchUnconfBalance, cachedWatchImmatureBalance);
 }
 
@@ -200,7 +199,6 @@ bool WalletModel::checkBalanceChanged()
         cachedWatchUnconfBalance = newWatchUnconfBalance;
         cachedWatchImmatureBalance = newWatchImmatureBalance;
         emit balanceChanged(newBalance, newUnconfirmedBalance, newImmatureBalance,
-            0, 0, 0,
             newWatchOnlyBalance, newWatchUnconfBalance, newWatchImmatureBalance);
         return false;
     }
