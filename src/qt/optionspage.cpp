@@ -492,7 +492,7 @@ void OptionsPage::on_Enable2FA(ToggleButton* widget)
         typeOf2FA = DISABLE;
 
         TwoFAConfirmDialog codedlg;
-        codedlg.setWindowTitle("2FACode Verification");
+        codedlg.setWindowTitle("2FA Code Verification");
         codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
         connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
         codedlg.exec();
@@ -502,7 +502,7 @@ void OptionsPage::on_Enable2FA(ToggleButton* widget)
 void OptionsPage::qrDialogIsFinished(int result) {
     if(result == QDialog::Accepted){
         TwoFADialog codedlg;
-        codedlg.setWindowTitle("2FACode Verification");
+        codedlg.setWindowTitle("2FA Code Verification");
         codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
         connect(&codedlg, SIGNAL(finished (int)), this, SLOT(dialogIsFinished(int)));
         codedlg.exec();
@@ -638,7 +638,7 @@ void OptionsPage::on_day() {
     typeOf2FA = DAY;
 
     TwoFAConfirmDialog codedlg;
-    codedlg.setWindowTitle("2FACode Verification");
+    codedlg.setWindowTitle("2FA Code Verification");
     codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
     connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
     codedlg.exec();
@@ -648,7 +648,7 @@ void OptionsPage::on_week() {
     typeOf2FA = WEEK;
 
     TwoFAConfirmDialog codedlg;
-    codedlg.setWindowTitle("2FACode Verification");
+    codedlg.setWindowTitle("2FA Code Verification");
     codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
     connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
     codedlg.exec();   
@@ -658,7 +658,7 @@ void OptionsPage::on_month() {
     typeOf2FA = MONTH;
 
     TwoFAConfirmDialog codedlg;
-    codedlg.setWindowTitle("2FACode Verification");
+    codedlg.setWindowTitle("2FA Code Verification");
     codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
     connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
     codedlg.exec();

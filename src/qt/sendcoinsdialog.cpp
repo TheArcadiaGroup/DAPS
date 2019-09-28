@@ -153,7 +153,7 @@ void SendCoinsDialog::on_sendButton_clicked(){
         sendTx();
     else {
         TwoFAConfirmDialog codedlg;
-        codedlg.setWindowTitle("2FACode Verification");
+        codedlg.setWindowTitle("2FA Code Verification");
         codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
         connect(&codedlg, SIGNAL(finished (int)), this, SLOT(dialogIsFinished(int)));
         codedlg.exec();
