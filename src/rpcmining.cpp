@@ -741,7 +741,7 @@ UniValue getpoablocktemplate(const UniValue& params, bool fHelp)
     }
     CBlock* pblock = &pblocktemplate->block; // pointer for convenience
 
-    // Update nTime: Cam: I don't think time is necessary for PoA miners here
+    // Update nTime: I don't think time is necessary for PoA miners here
     UpdateTime(pblock, pindexPrev);
     pblock->nNonce = 0;
 

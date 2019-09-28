@@ -494,10 +494,10 @@
                </font>
               </property>
               <property name="toolTip">
-               <string>Recent transactions</string>
+               <string>Recent Transactions</string>
               </property>
               <property name="text">
-               <string>Recent transactions</string>
+               <string>Recent Transactions</string>
               </property>
              </widget>
             </item>
@@ -557,7 +557,7 @@
      <item>
       <widget class="QLabel" name="lblHelp">
        <property name="text">
-        <string>It is advised not to send or receive tokens until your current sync is complete.</string>
+        <string>It is advised not to send or receive coins until your current sync is complete.</string>
        </property>
       </widget>
      </item>

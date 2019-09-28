@@ -158,27 +158,6 @@ void WalletFrame::gotoKeyImageSyncPage()
         i.value()->gotoKeyImageSyncPage();
 }
 
-void WalletFrame::gotoSignMessageTab(QString addr)
-{
-    WalletView* walletView = currentWalletView();
-    if (walletView)
-        walletView->gotoSignMessageTab(addr);
-}
-
-void WalletFrame::gotoVerifyMessageTab(QString addr)
-{
-    WalletView* walletView = currentWalletView();
-    if (walletView)
-        walletView->gotoVerifyMessageTab(addr);
-}
-
-void WalletFrame::gotoBip38Tool()
-{
-    WalletView* walletView = currentWalletView();
-    if (walletView)
-        walletView->gotoBip38Tool();
-}
-
 void WalletFrame::gotoMultiSendDialog()
 {
     WalletView* walletView = currentWalletView();

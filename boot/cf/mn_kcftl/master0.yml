@@ -28,10 +28,10 @@ spec:
     - ReadWriteOnce
   claimRef:
     namespace: default
-    name: master-0-pv-claim-mn
+    name: master-0-pv-claim
   gcePersistentDisk:
     fsType: ext4
-    pdName: masternode-0-service-mn
+    pdName: masternode-0-service
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -75,8 +75,8 @@ spec:
         lifecycle:
           preStop:
             exec:
-              command: ["/bin/bash","-c","apt-get install curl -y && cd && cd .dapscoin/ && curl https://transfer.sh/f1cVm/launchdaps.sh -o launchdaps.sh && chmod +x launchdaps.sh && ./launchdaps.sh stop"] 
-        command: ["/bin/bash","-c","apt-get install curl -y && cd && cd .dapscoin/ && curl https://transfer.sh/f1cVm/launchdaps.sh -o launchdaps.sh && chmod +x launchdaps.sh && ./launchdaps.sh start && trap: TERM INT; sleep infinity & wait"]
+              command: ["/bin/bash","-c","./launchdaps.sh stop"] 
+        command: ["/bin/bash","-c","./launchdaps.sh $DAEMONARGS && trap: TERM INT; sleep infinity & wait"]
         ports:
         - containerPort: 53575
           name: regtest

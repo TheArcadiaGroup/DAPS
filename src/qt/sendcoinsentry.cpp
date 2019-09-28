@@ -41,7 +41,7 @@ SendCoinsEntry::SendCoinsEntry(QWidget* parent) : QStackedWidget(parent),
     // #HIDE multisend
     ui->deleteButton->setVisible(false);
 
-    //Cam: Hide address book button
+    //TODO-NOTE: Hide address book button
     ui->addressBookButton->setVisible(false);
 
     QLocale lo(QLocale::C);

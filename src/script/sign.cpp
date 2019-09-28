@@ -217,7 +217,6 @@ static CScript CombineSignatures(const CScript &scriptPubKey, const CTransaction
         case TX_NULL_DATA:
             /**
             * @author Wang
-            * @type zerocoin
             */
             // Don't know anything about this, assume bigger one is correct:
             if (sigs1.size() >= sigs2.size())

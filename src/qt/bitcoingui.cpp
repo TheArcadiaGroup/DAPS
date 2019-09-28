@@ -85,9 +85,6 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
                                                                             cosignAction(0),
                                                                             usedSendingAddressesAction(0),
                                                                             usedReceivingAddressesAction(0),
-                                                                            signMessageAction(0),
-                                                                            verifyMessageAction(0),
-                                                                            bip38ToolAction(0),
                                                                             multisigCreateAction(0),
                                                                             multisigSpendAction(0),
                                                                             multisigSignAction(0),
@@ -366,6 +363,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     aboutQtAction->setStatusTip(tr("Show information about Qt"));
     aboutQtAction->setMenuRole(QAction::AboutQtRole);
     optionsAction = new QAction(QIcon(":/icons/options"), tr("&Settings"), this);
+    optionsAction->setIconText("   Settings");
     optionsAction->setStatusTip(tr("Modify settings"));
     optionsAction->setMenuRole(QAction::PreferencesRole);
     optionsAction->setToolTip(optionsAction->statusTip());
@@ -375,6 +373,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     networkAction = new QAction(QIcon(":/icons/options"), tr("&Network"), this);
     networkAction->setMenuRole(QAction::NoRole);
     networkAction->setText("Network Status");
+    networkAction->setIconText("   Network Status");
     connectionCount = new QLabel(this);
     connectionCount->setObjectName("connectionCount");
 
@@ -391,12 +390,6 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     unlockWalletAction = new QAction(tr("&Unlock Wallet..."), this);
     unlockWalletAction->setToolTip(tr("Unlock wallet"));
     lockWalletAction = new QAction(tr("&Lock Wallet"), this);
-    signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &message..."), this);
-    signMessageAction->setStatusTip(tr("Sign messages with your DAPScoin addresses to prove you own them"));
-    verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify message..."), this);
-    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified DAPScoin addresses"));
-    bip38ToolAction = new QAction(QIcon(":/icons/key"), tr("&BIP38 tool"), this);
-    bip38ToolAction->setToolTip(tr("Encrypt and decrypt private keys using a passphrase"));
     multiSendAction = new QAction(QIcon(":/icons/edit"), tr("&MultiSend"), this);
     multiSendAction->setToolTip(tr("MultiSend Settings"));
     multiSendAction->setCheckable(true);
@@ -453,9 +446,6 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
         connect(changePassphraseAction, SIGNAL(triggered()), walletFrame, SLOT(changePassphrase()));
         connect(unlockWalletAction, SIGNAL(triggered()), walletFrame, SLOT(unlockWallet()));
         connect(lockWalletAction, SIGNAL(triggered()), walletFrame, SLOT(lockWallet()));
-        connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
-        connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
-        connect(bip38ToolAction, SIGNAL(triggered()), this, SLOT(gotoBip38Tool()));
         connect(usedSendingAddressesAction, SIGNAL(triggered()), walletFrame, SLOT(usedSendingAddresses()));
         connect(usedReceivingAddressesAction, SIGNAL(triggered()), walletFrame, SLOT(usedReceivingAddresses()));
         connect(openAction, SIGNAL(triggered()), this, SLOT(openClicked()));
@@ -482,8 +472,6 @@ void BitcoinGUI::createMenuBar()
     if (walletFrame) {
         file->addAction(openAction);
         file->addAction(backupWalletAction);
-        file->addAction(signMessageAction);
-        file->addAction(verifyMessageAction);
         file->addSeparator();
         file->addAction(usedSendingAddressesAction);
         file->addAction(usedReceivingAddressesAction);
@@ -501,7 +489,6 @@ void BitcoinGUI::createMenuBar()
         settings->addAction(changePassphraseAction);
         settings->addAction(unlockWalletAction);
         settings->addAction(lockWalletAction);
-        settings->addAction(bip38ToolAction);
         settings->addAction(multiSendAction);
         settings->addSeparator();
     }
@@ -679,12 +666,9 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     encryptWalletAction->setEnabled(enabled);
     backupWalletAction->setEnabled(enabled);
     changePassphraseAction->setEnabled(enabled);
-    signMessageAction->setEnabled(enabled);
-    verifyMessageAction->setEnabled(enabled);
     multisigCreateAction->setEnabled(enabled);
     multisigSpendAction->setEnabled(enabled);
     multisigSignAction->setEnabled(enabled);
-    bip38ToolAction->setEnabled(enabled);
     usedSendingAddressesAction->setEnabled(enabled);
     usedReceivingAddressesAction->setEnabled(enabled);
     openAction->setEnabled(enabled);
@@ -729,10 +713,6 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(keyImageSyncAction);
     trayIconMenu->addAction(cosignAction);
     trayIconMenu->addAction(receiveCoinsAction);
-    trayIconMenu->addSeparator();
-    trayIconMenu->addAction(signMessageAction);
-    trayIconMenu->addAction(verifyMessageAction);
-    trayIconMenu->addAction(bip38ToolAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(openInfoAction);
@@ -843,16 +823,6 @@ void BitcoinGUI::gotoKeyImageSyncPage()
     if (walletFrame) walletFrame->gotoKeyImageSyncPage();
 }
 
-void BitcoinGUI::gotoSignMessageTab(QString addr)
-{
-    if (walletFrame) walletFrame->gotoSignMessageTab(addr);
-}
-
-void BitcoinGUI::gotoVerifyMessageTab(QString addr)
-{
-    if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
-}
-
 void BitcoinGUI::gotoMultisigCreate()
 {
     if (walletFrame) walletFrame->gotoMultisigDialog(0);
@@ -866,11 +836,6 @@ void BitcoinGUI::gotoMultisigSpend()
 void BitcoinGUI::gotoMultisigSign()
 {
     if (walletFrame) walletFrame->gotoMultisigDialog(2);
-}
-
-void BitcoinGUI::gotoBip38Tool()
-{
-    if (walletFrame) walletFrame->gotoBip38Tool();
 }
 
 void BitcoinGUI::gotoMultiSendDialog()

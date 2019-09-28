@@ -1695,18 +1695,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Карта порта, использующего &amp;UPnP</translation>
     </message>
     <message>
-        <source>Percentage of incoming DAPS which get automatically converted to zDAPS via Zerocoin Protocol (min: 10%)</source>
-        <translation>Процент приходящих DAPS, которые автоматически конвертируются в zDAPS благодаря Zerocoin протоколу (min: 10%)</translation>
-    </message>
-    <message>
-        <source>Percentage of autominted zDAPS</source>
-        <translation>Процент  авточеканненых zDAPS</translation>
-    </message>
-    <message>
-        <source>Preferred Automint zDAPS Denomination</source>
-        <translation>Предпочитаемый номинал авточеканной  монеты  zDAPS</translation>
-    </message>
-    <message>
         <source>Connect to the DAPScoin network through a SOCKS5 proxy.</source>
         <translation>Подключиться к сети DAPScoin через SOCKS5 прокси.</translation>
     </message>
@@ -1906,16 +1894,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>DAPS:</translation>
     </message>
     <message>
-        <source>zDAPS:</source>
-        <translation>zDAPS:</translation>
-    </message>
-    <message>
         <source>0 %</source>
         <translation>0 %</translation>
-    </message>
-    <message>
-        <source>Zerocoin Balance</source>
-        <translation>Баланс Zerocoin </translation>
     </message>
     <message>
         <source>Recent transactions</source>
@@ -2028,169 +2008,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Время отклика</translation>
     </message>
 </context>
-<context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>DAPS which were anonymized via Zerocin Protocol</source>
-        <translation>DAPS, который был анонимно использован через Zerocoin протокол</translation>
-    </message>
-    <message>
-        <source>Zerocoin Actions:</source>
-        <translation>Действия Zerocoin </translation>
-    </message>
-    <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPScoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>Возможно отображаемая информация устарела. Ваш кошелек автоматически синхронизируется с сетью DAPScoin после установки соединения, но этот процесс еще не завершен. </translation>
-    </message>
-    <message>
-        <source>Enter an amount of Daps to convert to zDaps</source>
-        <translation>Введите сумму в Daps для  конвертации в zDaps</translation>
-    </message>
-    <message>
-        <source>Mint Zerocoin</source>
-        <translation>Создать Zerocoin</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>Available for Minting:</source>
-        <translation>Доступный для чеканки</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Сброс</translation>
-    </message>
-    <message>
-        <source>Quantity:</source>
-        <translation>Количество:</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Сумма:</translation>
-    </message>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>Выбрать ранее использованный адрес</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Paste address from clipboard</source>
-        <translation>Вставить адрес из буфера обмена</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Alt+P</translation>
-    </message>
-    <message>
-        <source>Denominations with value 1:</source>
-        <translation>Номинал со значением 1:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 1:</source>
-        <translation>Номинал со значением 1:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 5:</source>
-        <translation>Номинал со значением 5:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 5:</source>
-        <translation>Номинал со значением 5:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 10:</source>
-        <translation>Номинал со значением 10:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 10:</source>
-        <translation>Номинал со значением 10:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 50:</source>
-        <translation>Номинал со значением 50:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 50:</source>
-        <translation>Номинал со значением 50:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 100:</source>
-        <translation>Номинал со значением 100:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 100:</source>
-        <translation>Номинал со значением 100:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 500:</source>
-        <translation>Номинал со значением 500:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 500:</source>
-        <translation>Номинал со значением 500:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 1000:</source>
-        <translation>Номинал со значением 1000:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 1000:</source>
-        <translation>Номинал со значением 1000:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 5000:</source>
-        <translation>Номинал со значением 5000:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 5000:</source>
-        <translation>Номинал со значением 5000:</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation>Приоритет:</translation>
-    </message>
-    <message>
-        <source>Fee:</source>
-        <translation>Комиссия:</translation>
-    </message>
-    <message>
-        <source>Dust:</source>
-        <translation>Пыль:</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>нет</translation>
-    </message>
-    <message>
-        <source>Bytes:</source>
-        <translation>Байты:</translation>
-    </message>
-    <message>
-        <source>medium</source>
-        <translation>промежуточный</translation>
-    </message>
-    <message>
-        <source>Change:</source>
-        <translation>Изменить:</translation>
-    </message>
-    <message>
-        <source>out of sync</source>
-        <translation>несинронизировано</translation>
-    </message>
-    <message>
-        <source>Copy quantity</source>
-        <translation>Копировать количество</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Копировать сумму</translation>
-    </message>
-    </context>
 <context>
     <name>QObject</name>
     <message>
@@ -3194,13 +3011,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     <message>
         <source>Backup Wallet</source>
         <translation>Резервная копия кошелька</translation>
-    </message>
-    </context>
-<context>
-    <name>ZDapsControlDialog</name>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
     </message>
     </context>
 <context>

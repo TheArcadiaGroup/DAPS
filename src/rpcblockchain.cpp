@@ -131,13 +131,15 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
         //Read information of PoS blocks audited by this PoA block
     	result.push_back(Pair("previouspoahash", block.hashPrevPoABlock.GetHex()));
         UniValue posBlockInfos(UniValue::VARR);
+        bool auditResult = true;
         for (int i = 0; i < block.posBlocksAudited.size(); i++) {
             UniValue objPoSBlockInfo(UniValue::VOBJ);
             PoSBlockInfoToJSON(block.posBlocksAudited[i].hash,
                         		block.posBlocksAudited[i].nTime, block.posBlocksAudited[i].height, objPoSBlockInfo);
             posBlockInfos.push_back(objPoSBlockInfo);
+            auditResult = auditResult & (block.posBlocksAudited[i].nTime > 0);
         }
-
+        result.push_back(Pair("auditsuccess", auditResult? "true": "false"));
         result.push_back(Pair("posblocks", posBlockInfos));
         result.push_back(Pair("poscount", (int)block.posBlocksAudited.size()));
     }

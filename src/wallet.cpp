@@ -2253,20 +2253,22 @@ map<CBitcoinAddress, vector<COutput> > CWallet::AvailableCoinsByAddress(bool fCo
     return mapCoins;
 }
 
-static void ApproximateBestSubset(vector<pair<CAmount, pair<const CWalletTx*, unsigned int> > > vValue, const CAmount& nTotalLower, const CAmount& nTargetValue, vector<char>& vfBest, CAmount& nBest, int iterations = 1000)
+static CAmount ApproximateBestSubset(int numOut, int ringSize, vector<pair<CAmount, pair<const CWalletTx*, unsigned int> > > vValue, const CAmount& nTotalLower, const CAmount& nTargetValue, vector<char>& vfBest, CAmount& nBest, int iterations = 1000)
 {
     vector<char> vfIncluded;
 
     vfBest.assign(vValue.size(), true);
     nBest = nTotalLower;
-
+    int estimateTxSize = 0;
+    CAmount nFeeNeeded = 0;
     seed_insecure_rand();
 
-    for (int nRep = 0; nRep < iterations && nBest != nTargetValue; nRep++) {
+    for (int nRep = 0; nRep < iterations && nBest != nTargetValue + nFeeNeeded; nRep++) {
         vfIncluded.assign(vValue.size(), false);
         CAmount nTotal = 0;
         bool fReachedTarget = false;
         for (int nPass = 0; nPass < 2 && !fReachedTarget; nPass++) {
+            int numSelected = 0;
             for (unsigned int i = 0; i < vValue.size(); i++) {
                 //The solver here uses a randomized algorithm,
                 //the randomness serves no real security purpose but is just
@@ -2277,7 +2279,10 @@ static void ApproximateBestSubset(vector<pair<CAmount, pair<const CWalletTx*, un
                 if (nPass == 0 ? insecure_rand() & 1 : !vfIncluded[i]) {
                     nTotal += vValue[i].first;
                     vfIncluded[i] = true;
-                    if (nTotal >= nTargetValue) {
+                    numSelected++;
+                    estimateTxSize = CWallet::ComputeTxSize(numSelected, numOut, ringSize);
+                    nFeeNeeded = CWallet::GetMinimumFee(estimateTxSize, nTxConfirmTarget, mempool);
+                    if (nTotal >= nTargetValue + nFeeNeeded) {
                         fReachedTarget = true;
                         if (nTotal < nBest) {
                             nBest = nTotal;
@@ -2285,11 +2290,13 @@ static void ApproximateBestSubset(vector<pair<CAmount, pair<const CWalletTx*, un
                         }
                         nTotal -= vValue[i].first;
                         vfIncluded[i] = false;
+                        numSelected--;
                     }
                 }
             }
         }
     }
+    return nFeeNeeded;
 }
 
 
@@ -2401,6 +2408,7 @@ bool CWallet::SelectCoinsMinConf(bool needFee, int ringSize, int numOut, const C
             if (!IsSpent(pcoin->GetHash(), output.i)) {
                 n = getCTxOutValue(*pcoin, pcoin->vout[output.i]);
             }
+            if (n == 0) continue;
             int i = output.i;
 
             pair<CAmount, pair<const CWalletTx*, unsigned int> > coin = make_pair(n, make_pair(pcoin, i));
@@ -2429,7 +2437,7 @@ bool CWallet::SelectCoinsMinConf(bool needFee, int ringSize, int numOut, const C
             return true;
         }
         LogPrintf("\n nValueRet=%d, target value = %d\n", nValueRet, nTotalLower);
-        if (nTotalLower < nTargetValue) {
+        if (nTotalLower < nTargetValue + feeNeeded) {
             if (coinLowestLarger.second.first == NULL) // there is no input larger than nTargetValue
             {
                 if (tryDenom == 0)
@@ -2447,13 +2455,38 @@ bool CWallet::SelectCoinsMinConf(bool needFee, int ringSize, int numOut, const C
         break;
     }
 
+    if (vValue.size() <= MAX_TX_INPUTS) {
+        //putting all into the transaction
+        string s = "CWallet::SelectCoinsMinConf best subset: ";
+        for (unsigned int i = 0; i < vValue.size(); i++) {
+            setCoinsRet.insert(vValue[i].second);
+            nValueRet += vValue[i].first;
+            s += FormatMoney(vValue[i].first) + " ";
+        }
+        LogPrintf("%s - total %s\n", s, FormatMoney(nValueRet));
+        return true;
+    }    
+
     // Solve subset sum by stochastic approximation
     sort(vValue.rbegin(), vValue.rend(), CompareValueOnly());
+    //fees for 50 inputs
+    feeNeeded = ComputeFee(50, numOut, ringSize); 
+    //check if the sum of first 50 largest UTXOs > nTargetValue + nfeeNeeded
+    for (unsigned int i = 0; i <= MAX_TX_INPUTS; i++) {
+        nValueRet += vValue[i].first;                
+    }
+    if (nValueRet < nTargetValue + feeNeeded) {
+        nValueRet = 0;
+        for (unsigned int i = 0; i < vValue.size(); i++) {
+            setCoinsRet.insert(vValue[i].second);
+        }
+        return false; //transaction too large
+    }
+    nValueRet = 0;
+
     vector<char> vfBest;
     CAmount nBest;
-    ApproximateBestSubset(vValue, nTotalLower, nTargetValue, vfBest, nBest, 1000);
-    if (nBest != nTargetValue + feeNeeded && nTotalLower >= nTargetValue + feeNeeded)
-        ApproximateBestSubset(vValue, nTotalLower, nTargetValue + feeNeeded, vfBest, nBest, 1000);
+    feeNeeded = ApproximateBestSubset(numOut, ringSize, vValue, nTotalLower, nTargetValue, vfBest, nBest, 1000);
 
     // If we have a bigger coin and (either the stochastic approximation didn't find a good solution,
     //                                   or the next bigger coin is closer), return the bigger coin
@@ -3047,11 +3080,13 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
                 if (!SelectCoins(true, ringSize, 2, nTotalValue, setCoins, nValueIn, coinControl, coin_type, useIX)) {
                     if (coin_type == ALL_COINS) {
                         CAmount fee = ComputeFee(setCoins.size(), 2, ringSize);
-                        if (nSpendableBalance < nValueIn + fee) {
+                        if (nSpendableBalance < nTotalValue + fee) {
                             strFailReason = ("Insufficient funds. Transaction requires a fee of " + FormatMoney(fee));
                         } else if (setCoins.size() > MAX_TX_INPUTS) {
                             strFailReason = _("You have attempted to send more than 50 UTXOs in a single transaction. This is a rare occurrence, and to work around this limitation, please either lower the total amount of the transaction, or send two separate transactions with 50% of your total desired amount.");
-                        }
+                        } else if (nValueIn == 0) {
+                            strFailReason = _("No coin set found.");
+                        } 
                     } else if (coin_type == ONLY_NOT1000000IFMN) {
                         strFailReason = _("Unable to locate enough funds for this transaction that are not equal 10000 DAPS.");
                     } else if (coin_type == ONLY_NONDENOMINATED_NOT1000000IFMN) {

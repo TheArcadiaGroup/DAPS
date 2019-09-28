@@ -975,53 +975,6 @@ MultiSend: %1</translation>
     <name>PeerTableModel</name>
     </context>
 <context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>Quantity:</source>
-        <translation>Quantità:</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Totale:</translation>
-    </message>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>Scegli l'indirizzo utilizzato in precedenza</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Paste address from clipboard</source>
-        <translation>Incolla l'indirizzo dagli appunti</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Alt+P</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation>Priorità:</translation>
-    </message>
-    <message>
-        <source>Fee:</source>
-        <translation>Tassa:</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>no</translation>
-    </message>
-    <message>
-        <source>Change:</source>
-        <translation>Differenza:</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Copia ammontare</translation>
-    </message>
-    </context>
-<context>
     <name>QObject</name>
     <message>
         <source>Amount</source>
@@ -1316,9 +1269,6 @@ MultiSend: %1</translation>
         <source>Export the data in the current tab to a file</source>
         <translation>Esporta i dati della scheda corrente in un file</translation>
     </message>
-    </context>
-<context>
-    <name>ZDapsControlDialog</name>
     </context>
 <context>
     <name>dapscoin-core</name>

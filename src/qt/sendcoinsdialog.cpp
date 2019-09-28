@@ -70,13 +70,12 @@ void SendCoinsDialog::setModel(WalletModel* model)
             }
         }
 
-        connect(model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
-            SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
+        connect(model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
+            SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
     }
 }
 
 void SendCoinsDialog::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
-                              const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
                               const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance)
 {
     int status = model->getEncryptionStatus();
@@ -153,7 +152,7 @@ void SendCoinsDialog::on_sendButton_clicked(){
         sendTx();
     else {
         TwoFAConfirmDialog codedlg;
-        codedlg.setWindowTitle("2FACode Verification");
+        codedlg.setWindowTitle("2FA Code Verification");
         codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
         connect(&codedlg, SIGNAL(finished (int)), this, SLOT(dialogIsFinished(int)));
         codedlg.exec();
@@ -173,8 +172,8 @@ CPartialTransaction SendCoinsDialog::sendTx() {
         );
     } catch (const std::exception& err) {
         QMessageBox msgBox;
-        msgBox.setWindowTitle("Could Not Send");
-        msgBox.setText(err.what());
+        msgBox.setWindowTitle("Transaction Creation Error");
+        msgBox.setText(QString(err.what()));
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
         msgBox.setIcon(QMessageBox::Critical);
         msgBox.exec();
@@ -216,4 +215,3 @@ SendCoinsEntry* SendCoinsDialog::addEntry()
         bar->setSliderPosition(bar->maximum());
     return entry;
 }
-

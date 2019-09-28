@@ -51,6 +51,7 @@
 #include <signal.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <execinfo.h>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/thread.hpp>
@@ -91,6 +92,8 @@ Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin);
 #if QT_VERSION < 0x050000
 #include <QTextCodec>
 #endif
+
+#define DEBUG_BACKTRACE 1
 
 static bool needShowRecoveryDialog = false;
 

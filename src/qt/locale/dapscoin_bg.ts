@@ -1723,22 +1723,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</source
 https://www.transifex.com/dapscoin-project/dapscoin-project-translations</translation>
     </message>
     <message>
-        <source>Percentage of incoming DAPS which get automatically converted to zDAPS via Zerocoin Protocol (min: 10%)</source>
-        <translation>Процент от входящите DAPS, който автоматично да се конвертира в zDAPS посредтвом Zerocoin Протокола (мин: 10%)</translation>
-    </message>
-    <message>
-        <source>Percentage of autominted zDAPS</source>
-        <translation>Процент автоматично сечени zDAPS</translation>
-    </message>
-    <message>
-        <source>Wait with automatic conversion to Zerocoin until enough DAPS for this denomination is available</source>
-        <translation>Не бързай с автоматичното конвертиране в zDAPS докато не се съберат достатъчно DAPS за тази деноминация</translation>
-    </message>
-    <message>
-        <source>Preferred Automint zDAPS Denomination</source>
-        <translation>Предпочитани деноминации, в които да се сече автоматичен zDAPS</translation>
-    </message>
-    <message>
         <source>Connect to the DAPScoin network through a SOCKS5 proxy.</source>
         <translation>Свържи се с DAPScoin мрежата със SOCKS5 прокси.</translation>
     </message>
@@ -1938,20 +1922,12 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>DAPS:</translation>
     </message>
     <message>
-        <source>zDAPS:</source>
-        <translation>zDAPS:</translation>
-    </message>
-    <message>
         <source>0 %</source>
         <translation>0 %</translation>
     </message>
     <message>
         <source>0.000 000 00 DAPS</source>
         <translation>0.000 000 00 DAPS</translation>
-    </message>
-    <message>
-        <source>Zerocoin Balance</source>
-        <translation>Zerocoin баланс</translation>
     </message>
     <message>
         <source>Recent transactions</source>
@@ -2066,447 +2042,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     <message>
         <source>Ping Time</source>
         <translation>Ping отговор</translation>
-    </message>
-</context>
-<context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>DAPS which were anonymized via Zerocin Protocol</source>
-        <translation>DAPS скрити посредством Зерокойн протокола</translation>
-    </message>
-    <message>
-        <source>Zerocoin DAPS (zDAPS)</source>
-        <translation>Zerocoin DAPS (zDAPS)</translation>
-    </message>
-    <message>
-        <source>Zerocoin Actions:</source>
-        <translation>Zerocoin Действия:</translation>
-    </message>
-    <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPScoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>Информацията на вашия екран може би е стара. Вашия портфейла синхронизира автоматично с DAPScoin мрежата след като има успешна свръзка, но процеса отнема време и не е завършил все още.</translation>
-    </message>
-    <message>
-        <source>Enter an amount of Daps to convert to zDaps</source>
-        <translation>Въведете колко DAPS  да се конвертират в zDAPS</translation>
-    </message>
-    <message>
-        <source>Mint Zerocoin</source>
-        <translation>Сечене на Zerocoin</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>zDAPS</source>
-        <translation>zDAPS</translation>
-    </message>
-    <message>
-        <source>Available for Minting:</source>
-        <translation>Налични за сечене:</translation>
-    </message>
-    <message>
-        <source>0.000 000 00 DAPS</source>
-        <translation>0.000 000 00 DAPS</translation>
-    </message>
-    <message>
-        <source>Reset Zerocoin Wallet DB. Deletes transactions that did not make it into the blockchain.</source>
-        <translation>Ресетна базата данни на Zerocoin Портфейла. Изтрива преводите, които не са успели да се качат на блокчена.</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Ресет</translation>
-    </message>
-    <message>
-        <source>Coin Control...</source>
-        <translation>Монетен контрол...</translation>
-    </message>
-    <message>
-        <source>Quantity:</source>
-        <translation>Количество:</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Сума:</translation>
-    </message>
-    <message>
-        <source>Rescan the complete blockchain for  Zerocoin mints and their meta-data.</source>
-        <translation>Сканирай повторно блокчена за Zerocoin монети и техните мета-данни.</translation>
-    </message>
-    <message>
-        <source>ReScan</source>
-        <translation>Сканирай</translation>
-    </message>
-    <message>
-        <source>Status and/or Mesages from the last Mint Action.</source>
-        <translation>Състояния и/или Съобщения от последните действия по сечене на монети.</translation>
-    </message>
-    <message>
-        <source>zDaps Control</source>
-        <translation>zDAPS Контрол</translation>
-    </message>
-    <message>
-        <source>zDaps Selected:</source>
-        <translation>Избрани zDAPS:</translation>
-    </message>
-    <message>
-        <source>Quantity Selected:</source>
-        <translation>Избратно Количество:</translation>
-    </message>
-    <message>
-        <source>Spend Zerocoin. Without 'Pay To:' address creates payments to yourself.</source>
-        <translation>Похарчи Zerocoin. Без "Плати до: адрес - плащането е към себе си.</translation>
-    </message>
-    <message>
-        <source>Spend Zerocoin</source>
-        <translation>Похарчи Zerocoin</translation>
-    </message>
-    <message>
-        <source>Available Balance:</source>
-        <translation>Налични:</translation>
-    </message>
-    <message>
-        <source>0 zDAPS</source>
-        <translation>0 zDAPS</translation>
-    </message>
-    <message>
-        <source>Security Level for Zerocoin Transactions. More is better, but needs more time and resources.</source>
-        <translation>Сигурност на Zerocoin Преводите. Повече - означава по-добра сигурност, но изисква повече време и ресурси.</translation>
-    </message>
-    <message>
-        <source>Security Level:</source>
-        <translation>Сигурност:</translation>
-    </message>
-    <message>
-        <source>Security Level 1 - 100 (default: 42)</source>
-        <translation>Ниво на Сигурност 1 - 100 (42 по подразбиране)</translation>
-    </message>
-    <message>
-        <source>Pay &amp;To:</source>
-        <translation>Плати На:</translation>
-    </message>
-    <message>
-        <source>The DAPScoin address to send the payment to. Creates local payment to yourself when empty.</source>
-        <translation>Адреса на който да изпратим плащането. Ако е празно - плащането е до себе си.</translation>
-    </message>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>Изберете предишноизползван адрес</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Алт+А</translation>
-    </message>
-    <message>
-        <source>Paste address from clipboard</source>
-        <translation>Постави адреса от буфера</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Алт+П</translation>
-    </message>
-    <message>
-        <source>&amp;Label:</source>
-        <translation>Етикет:</translation>
-    </message>
-    <message>
-        <source>Enter a label for this address to add it to the list of used addresses</source>
-        <translation>Въведете етикет за този адрес.</translation>
-    </message>
-    <message>
-        <source>A&amp;mount:</source>
-        <translation>Сума:</translation>
-    </message>
-    <message>
-        <source>Convert Change to Zerocoin (might cost additional fees)</source>
-        <translation>Изсечи zDAPS от рестото (ще струва допълнително заради таксите)</translation>
-    </message>
-    <message>
-        <source>If checked, the wallet tries to minimize the returning change instead of minimizing the number of spent denominations.</source>
-        <translation>Ако е избрана опцията, портфейла се опитва да намали върнатото ресто вместо да намали броя на похарчените деноминации.</translation>
-    </message>
-    <message>
-        <source>Minimize Change</source>
-        <translation>Намали Рестото</translation>
-    </message>
-    <message>
-        <source>Information about the available Zerocoin funds.</source>
-        <translation>Информация за наличните Zerocoin средства.</translation>
-    </message>
-    <message>
-        <source>Zerocoin Stats:</source>
-        <translation>Zerocoin статистика:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 1:</source>
-        <translation>Деноминации от 1:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 1:</source>
-        <translation>Деном. със стойност 1:</translation>
-    </message>
-    <message>
-        <source>0 x</source>
-        <translation>0 х</translation>
-    </message>
-    <message>
-        <source>Denominations with value 5:</source>
-        <translation>Деноминации от 5:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 5:</source>
-        <translation>Деном. със стойност 5:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 10:</source>
-        <translation>Деноминации от 10:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 10:</source>
-        <translation>Деном. със стойност от 10:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 50:</source>
-        <translation>Деноминации от 50:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 50:</source>
-        <translation>Деном. със стойност от 50:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 100:</source>
-        <translation>Деноминации от 100:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 100:</source>
-        <translation>Деном. със стойност от 100:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 500:</source>
-        <translation>Деноминации от 500:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 500:</source>
-        <translation>Деном. със стойност от 500:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 1000:</source>
-        <translation>Деноминации от 1000:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 1000:</source>
-        <translation>Деном. със стойност от 1000:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 5000:</source>
-        <translation>Деноминации от 5000:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 5000:</source>
-        <translation>Деном. със стойност от 5000:</translation>
-    </message>
-    <message>
-        <source>Note: This hidden objects are used for communication between the 'Coin Control' dialog and its parent objects. We don't want to change/reimplement the existing Coin Control, so this objects must be here, even when we don't use them. No, we don't like this approach, either.</source>
-        <translation>Внимание: Тези скрити обекти служат за общуване между "Монетен Контрол" прозореца и неговите предходни елементи. Не е удачно да проемняме Монетен Контрол, така че тези елементи са тук, въпреки, че не се използват. Не ни харесва и на нас, но няма как.</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation>Приоритет:</translation>
-    </message>
-    <message>
-        <source>Fee:</source>
-        <translation>Такса:</translation>
-    </message>
-    <message>
-        <source>Dust:</source>
-        <translation>Остатък:</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>не</translation>
-    </message>
-    <message>
-        <source>Bytes:</source>
-        <translation>Байтове:</translation>
-    </message>
-    <message>
-        <source>Insufficient funds!</source>
-        <translation>Средсвтата Ви не достигат!</translation>
-    </message>
-    <message>
-        <source>Coins automatically selected</source>
-        <translation>Автоматично избрани монети</translation>
-    </message>
-    <message>
-        <source>medium</source>
-        <translation>средно</translation>
-    </message>
-    <message>
-        <source>Coin Control Features</source>
-        <translation>Насйтройки Монетен Контрол</translation>
-    </message>
-    <message>
-        <source>If this is activated, but the change address is empty or invalid, change will be sent to a newly generated address.</source>
-        <translation>Ако това е включено, но адреса за ресто е невалиден, рестото ще се изпраща в новогенериран адрес.</translation>
-    </message>
-    <message>
-        <source>Custom change address</source>
-        <translation>Друг адрес за ресто</translation>
-    </message>
-    <message>
-        <source>Amount After Fee:</source>
-        <translation>Сума след Такси:</translation>
-    </message>
-    <message>
-        <source>Change:</source>
-        <translation>Ресто:</translation>
-    </message>
-    <message>
-        <source>out of sync</source>
-        <translation>не е синхронизиран</translation>
-    </message>
-    <message>
-        <source>Mint Status: Okay</source>
-        <translation>Състояние на монето-сечене: OK</translation>
-    </message>
-    <message>
-        <source>Copy quantity</source>
-        <translation>Копирай количеството</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Копирай сумата</translation>
-    </message>
-    <message>
-        <source>Error: Your wallet is locked. Please enter the wallet passphrase first.</source>
-        <translation>Грешка: Портфейла е заключен. Моля първо въведете Вашата парола.</translation>
-    </message>
-    <message>
-        <source>Message: Enter an amount &gt; 0.</source>
-        <translation>Съобщение: Въведете стойност &gt; 0.</translation>
-    </message>
-    <message>
-        <source>Minting </source>
-        <translation>Сечене</translation>
-    </message>
-    <message>
-        <source>Successfully minted </source>
-        <translation>Успешно изсечени</translation>
-    </message>
-    <message>
-        <source> zDAPS in </source>
-        <translation>zDAPS в</translation>
-    </message>
-    <message>
-        <source> sec. Used denominations:
-</source>
-        <translation>сек. Използвани деноминации:
-</translation>
-    </message>
-    <message>
-        <source>Starting ResetMintZerocoin: rescanning complete blockchain, this will need up to 30 minutes depending on your hardware. 
-Please be patient...</source>
-        <translation>Стартиране на ResetMintZerocoin: сканираме цялия блокчейн, това ще изисква около 30 минути, в зависимост от вашия компютър.
-Моля изчакате...</translation>
-    </message>
-    <message>
-        <source>Duration: </source>
-        <translation>Времетраене:</translation>
-    </message>
-    <message>
-        <source> sec.
-</source>
-        <translation>сек.
-</translation>
-    </message>
-    <message>
-        <source>Starting ResetSpentZerocoin: </source>
-        <translation>Стартиране на ResetMintZerocoin:</translation>
-    </message>
-    <message>
-        <source>No 'Pay To' address provided, creating local payment</source>
-        <translation>Без 'Плати На' адрес, плащането е локално</translation>
-    </message>
-    <message>
-        <source>Invalid Dapscoin Address</source>
-        <translation>Невалиден DAPScoin адрес</translation>
-    </message>
-    <message>
-        <source>Invalid Send Amount</source>
-        <translation>Невалидна сума за изпращане</translation>
-    </message>
-    <message>
-        <source>Confirm additional Fees</source>
-        <translation>Потвърдете допълнителни такси</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to send?&lt;br /&gt;&lt;br /&gt;</source>
-        <translation>Сигурни ли сте, че желаете да изпратите? &lt;br /&gt;&lt;br /&gt;</translation>
-    </message>
-    <message>
-        <source> to address </source>
-        <translation>на адрес</translation>
-    </message>
-    <message>
-        <source>with Security Level </source>
-        <translation>с Ниво на Сигурност</translation>
-    </message>
-    <message>
-        <source>Confirm send coins</source>
-        <translation>Потвърждаване на изпращането</translation>
-    </message>
-    <message>
-        <source>Spending Zerocoin.
-Computationally expensive, might need several minutes depending on the selected Security Level and your hardware. 
-Please be patient...</source>
-        <translation>Харчене на Zerocoin.
-Математически скъп превод, който може да има нужда от няколко минути за потвърждение, в зависимост от избраното Ниво на Сигурност и Вашият хардуер.
-Моля проявете търпение...</translation>
-    </message>
-    <message>
-        <source>Spend Zerocoin failed with status = </source>
-        <translation>Харченето на Zerocoin се провали със статус =</translation>
-    </message>
-    <message>
-        <source>zDaps Spend #: </source>
-        <translation>zDAPS Похарчени #:</translation>
-    </message>
-    <message>
-        <source>denomination: </source>
-        <translation>деноминация:</translation>
-    </message>
-    <message>
-        <source>serial: </source>
-        <translation>сериен номер:</translation>
-    </message>
-    <message>
-        <source>Spend is 1 of : </source>
-        <translation>Харча е 1 от:</translation>
-    </message>
-    <message>
-        <source>value out: </source>
-        <translation>изходна стойност:</translation>
-    </message>
-    <message>
-        <source>address: </source>
-        <translation>адрес:</translation>
-    </message>
-    <message>
-        <source>zDaps Mint</source>
-        <translation>Сечене на zDAPS</translation>
-    </message>
-    <message>
-        <source>Sending successful, return code: </source>
-        <translation>Изпращането успешно, програмен код: </translation>
-    </message>
-    <message>
-        <source>txid: </source>
-        <translation>номер на транзакцията:</translation>
-    </message>
-    <message>
-        <source>fee: </source>
-        <translation>такса:</translation>
     </message>
 </context>
 <context>
@@ -3910,32 +3445,8 @@ Please be patient...</source>
         <translation>Обфускирани</translation>
     </message>
     <message>
-        <source>Converted Daps to zDaps</source>
-        <translation>Конвертиран DAPS във zDAPS</translation>
-    </message>
-    <message>
-        <source>Spent zDaps</source>
-        <translation>Похарчени zDAPS</translation>
-    </message>
-    <message>
-        <source>Received Daps from zDaps</source>
-        <translation>Получен DAPS от zDAPS</translation>
-    </message>
-    <message>
-        <source>Minted Change as zDaps from zDaps Spend</source>
-        <translation>Исечено ресто като zDAPS от похарчените zDAPS</translation>
-    </message>
-    <message>
-        <source>Converted zDaps to Daps</source>
-        <translation>Конвертирани zDAPS в DAPS</translation>
-    </message>
-    <message>
         <source>watch-only</source>
         <translation>наблюдение само</translation>
-    </message>
-    <message>
-        <source>zDaps Accumulator</source>
-        <translation>zDAPS Акумулатор</translation>
     </message>
     <message>
         <source>(n/a)</source>
@@ -4039,26 +3550,6 @@ Please be patient...</source>
     <message>
         <source>Masternode Reward</source>
         <translation>Мастърноуд възнаграждение</translation>
-    </message>
-    <message>
-        <source>Received Daps from zDaps</source>
-        <translation>Получен DAPS от zDAPS</translation>
-    </message>
-    <message>
-        <source>Zerocoin Mint</source>
-        <translation>Сечене на Zerocoin</translation>
-    </message>
-    <message>
-        <source>Zerocoin Spend</source>
-        <translation>Харчене на Zerocoin</translation>
-    </message>
-    <message>
-        <source>Zerocoin Spend, Change in zDaps</source>
-        <translation>Харчене на Zerocoin, Ресто в zDAPS</translation>
-    </message>
-    <message>
-        <source>Zerocoin Spend to Self</source>
-        <translation>Харчене на Zerocoin за себе си</translation>
     </message>
     <message>
         <source>Other</source>
@@ -4207,33 +3698,6 @@ Please be patient...</source>
     <message>
         <source>The wallet data was successfully saved to %1.</source>
         <translation>Данните за портфейла бяха успенш записани в %1.</translation>
-    </message>
-</context>
-<context>
-    <name>ZDapsControlDialog</name>
-    <message>
-        <source>Select zDaps to Spend</source>
-        <translation>Изберете zDAPS за Изпращане</translation>
-    </message>
-    <message>
-        <source>Quantity</source>
-        <translation>Количество</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>zDaps</source>
-        <translation>zDAPS</translation>
-    </message>
-    <message>
-        <source>Select/Deselect All</source>
-        <translation>Избери/Премахни Всички</translation>
-    </message>
-    <message>
-        <source>Is Spendable</source>
-        <translation>В Налични за харечене</translation>
     </message>
 </context>
 <context>
@@ -4391,10 +3855,6 @@ Please be patient...</source>
         <translation>Край на зареждането</translation>
     </message>
     <message>
-        <source>Enable automatic Zerocoin minting (0-1, default: %u)</source>
-        <translation>Активирай автоматично сечене на Zerocoin (0-1, По подразбиране: %u)</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>Грешка</translation>
     </message>
@@ -4415,20 +3875,12 @@ Please be patient...</source>
         <translation>Грешен личен ключ.</translation>
     </message>
     <message>
-        <source>Preferred Denomination for automatically minted Zerocoin  (1/5/10/50/100/500/1000/5000), 0 for no preference. default: %u)</source>
-        <translation>Предпочитани деноминации за автоматично изсечените Zerocoin (1/5/10/50/100/500/1000/5000), 0 за каквито и да е. (По подразбиране: %u)</translation>
-    </message>
-    <message>
         <source>No Masternodes detected.</source>
         <translation>Не се засичат Мастърноудове.</translation>
     </message>
     <message>
         <source>No compatible Masternode found.</source>
         <translation>Не е намерен съвместим Мастърноуд.</translation>
-    </message>
-    <message>
-        <source>Percentage of automatically minted Zerocoin  (10-100, default: %u)</source>
-        <translation>Процент автоматично изсечени Zerocoin (10-100, по подразбиране: %u)</translation>
     </message>
     <message>
         <source>Server private key (default: %s)</source>
@@ -4445,14 +3897,6 @@ Please be patient...</source>
     <message>
         <source>Warning</source>
         <translation>Внимание</translation>
-    </message>
-    <message>
-        <source>Zerocoin options:</source>
-        <translation>Zerocoin опции</translation>
-    </message>
-    <message>
-        <source>failed to validate zerocoin</source>
-        <translation>провал при валидирането на Zerocoin</translation>
     </message>
     </context>
 </TS>

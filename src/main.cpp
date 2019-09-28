@@ -836,6 +836,9 @@ void FinalizeNode(NodeId nodeid)
     LOCK(cs_main);
     CNodeState* state = State(nodeid);
 
+    if (!state)
+        return;
+    
     if (state->fSyncStarted)
         nSyncStarted--;
 
@@ -1749,7 +1752,7 @@ bool CheckHaveInputs(const CCoinsViewCache& view, const CTransaction& tx)
                     return false;
                 }
 
-                //Cam: 07/06/2019 Remove this condition as colateral will be cheated as a normal tx
+                //TODO-NOTE: 07/06/2019 Remove this condition as colateral will be cheated as a normal tx
                 //UTXO with 1M DAPS can only be consumed in a transaction with that single UTXO
                 /*if (decoysSize > 1 && prev.vout[alldecoys[j].n].nValue == 1000000 * COIN) {
 					return false;
@@ -2369,11 +2372,19 @@ int64_t GetBlockValue(const CBlockIndex* ptip)
         pForkTip = chainActive.Tip();
     }
 
+    if (pForkTip->nMoneySupply >= Params().TOTAL_SUPPLY) {
+        //zero rewards when total supply reach 70B DAPS
+        return 0;
+    }
 	if (pForkTip->nHeight < Params().LAST_POW_BLOCK()) {
 		nSubsidy = 120000000 * COIN;
 	} else {
         nSubsidy = PoSBlockReward();
         nSubsidy += TeamRewards(pForkTip);
+    }
+
+    if (pForkTip->nMoneySupply + nSubsidy >= Params().TOTAL_SUPPLY) {
+        nSubsidy = Params().TOTAL_SUPPLY - pForkTip->nMoneySupply;
     }
 
     return nSubsidy;
@@ -4434,7 +4445,7 @@ bool AcceptBlockHeader(const CBlock& block, CValidationState& state, CBlockIndex
         LogPrintf("AcceptBlockHeader(): CheckBlockHeader failed \n");
         return false;
     }
-    LogPrintf("\n%s: get priveous block", __func__);
+    LogPrintf("\n%s: get previous block", __func__);
     // Get prev block index
     CBlockIndex* pindexPrev = NULL;
     if (hash != Params().HashGenesisBlock()) {

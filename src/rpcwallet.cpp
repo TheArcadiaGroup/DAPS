@@ -2482,6 +2482,55 @@ UniValue createprivacyaccount(const UniValue& params, bool fHelp)
     return ret;
 }
 
+UniValue showstealthaddress(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+                "showstealthaddress \n"
+                "\nShow stealth address.\n"
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"account address\"    (string) the address of the created account\n"
+                "\nExamples:\n" +
+                HelpExampleCli("showstealthaddress", "") + HelpExampleCli("showstealthaddress", "\"\"") + HelpExampleCli("showstealthaddress", "") + HelpExampleRpc("showstealthaddress", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+    }
+
+    CWalletDB walletdb(pwalletMain->strWalletFile);
+    UniValue ret(UniValue::VOBJ);
+    int i = 0;
+    while (i < 10) {
+        std::string viewAccountLabel = "viewaccount";
+        std::string spendAccountLabel = "spendaccount";
+
+        CAccount viewAccount;
+        walletdb.ReadAccount(viewAccountLabel, viewAccount);
+        if (!viewAccount.vchPubKey.IsValid()) {
+            std::string viewAccountAddress = GetHDAccountAddress(viewAccountLabel, 0).ToString();
+        }
+
+        CAccount spendAccount;
+        walletdb.ReadAccount(spendAccountLabel, spendAccount);
+        if (!spendAccount.vchPubKey.IsValid()) {
+            std::string spendAccountAddress = GetHDAccountAddress(spendAccountLabel, 1).ToString();
+        }
+        if (viewAccount.vchPubKey.GetHex() == "" || spendAccount.vchPubKey.GetHex() == "") {
+            i++;
+            continue;
+        }
+        std::string stealthAddr;
+        if (pwalletMain->EncodeStealthPublicAddress(viewAccount.vchPubKey, spendAccount.vchPubKey, stealthAddr)) {
+            ret.push_back(Pair("stealthaddress", stealthAddr));
+        }
+        break;
+    }
+    return ret;
+}
+
 UniValue importkeys(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 2)

@@ -242,6 +242,7 @@ extern UniValue walletlock(const UniValue& params, bool fHelp);
 extern UniValue encryptwallet(const UniValue& params, bool fHelp);
 extern UniValue createprivacywallet(const UniValue& params, bool fHelp);
 extern UniValue createprivacyaccount(const UniValue& params, bool fHelp);
+extern UniValue showstealthaddress(const UniValue& params, bool fHelp);
 extern UniValue importkeys(const UniValue& params, bool fHelp);
 extern UniValue revealviewprivatekey(const UniValue& params, bool fHelp);
 extern UniValue revealspendprivatekey(const UniValue& params, bool fHelp);
