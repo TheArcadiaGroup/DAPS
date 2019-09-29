@@ -193,8 +193,6 @@ public:
         assert(hashGenesisBlock == uint256("00000f49187f4e4a9a630661f85f3a153619985b5b838441864ff130ee76daf5"));
         assert(genesis.hashMerkleRoot == uint256("553ecf8ea9cea9e99bf4a1ed99551c5a69785fb1c7f69b881c8f0ca84215024f"));
 
-        vSeeds.push_back(CDNSSeedData("dev-seed1.dapscoin.com", "dev-seed1.dapscoin.com"));        // Single node address
-        vSeeds.push_back(CDNSSeedData("dev-seed2.dapscoin.com", "dev-seed2.dapscoin.com"));        // Single node address
         vSeeds.push_back(CDNSSeedData("seed.dapscoin.com", "seed.dapscoin.com"));        // Single node address
         vSeeds.push_back(CDNSSeedData("seed1.dapscoin.com", "seed1.dapscoin.com"));        // Single node address
         vSeeds.push_back(CDNSSeedData("seed2.dapscoin.com", "seed2.dapscoin.com"));        // Single node address
