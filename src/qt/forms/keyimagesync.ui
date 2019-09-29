@@ -85,19 +85,23 @@
    <item>
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Existing transaction waiting for key image synchronization </string>
+      <string>Existing transaction waiting for key image synchronization: </string>
      </property>
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
        <property name="spacing">
         <number>3</number>
        </property>
        <item>
-        <widget class="QTextEdit" name="hexCode"/>
+        <widget class="QTextEdit" name="hexCode">
+         <property name="acceptRichText">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -122,8 +126,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>824</width>
-        <height>34</height>
+        <width>830</width>
+        <height>27</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -178,15 +182,15 @@
              </property>
              <property name="minimumSize">
               <size>
-               <width>150</width>
+               <width>220</width>
                <height>0</height>
               </size>
              </property>
              <property name="toolTip">
-              <string>Confirm the send action</string>
+              <string>Sync Key Images</string>
              </property>
              <property name="text">
-              <string>Synchronize Key Images</string>
+              <string>Sync Key Images</string>
              </property>
              <property name="autoDefault">
               <bool>false</bool>
@@ -223,17 +227,19 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Hex Code Of Transaction with key image. Please go to Co-sign page in order to sign the transaction</string>
+      <string>Hex Code of transaction with key image (Please go to Co-Sign tab in order to sign the transaction.): </string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QTextEdit" name="signedHex"/>
+    <widget class="QTextEdit" name="signedHex">
+     <property name="acceptRichText">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../dapscoin.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
