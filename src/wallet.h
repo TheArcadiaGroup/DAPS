@@ -800,6 +800,8 @@ public:
     bool EncodeIntegratedAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, uint64_t paymentID, std::string& pubAddr);
     bool EncodeIntegratedAddress(const std::vector<unsigned char>& pubViewKey, const std::vector<unsigned char>& pubSpendKey, uint64_t paymentID, std::string& pubAddrb58);
     bool GenerateIntegratedAddress(const std::string& accountName, std::string& pubAddr);
+    std::string GenerateIntegratedAddressWithRandomPaymentID(std::string accountName, uint64_t& paymentID);
+    std::string GenerateIntegratedAddressWithProvidedPaymentID(std::string accountName, uint64_t paymentID);
     bool GenerateIntegratedAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr);
     bool AllMyPublicAddresses(std::vector<std::string>& addresses, std::vector<std::string>& accountNames);
     bool RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmount &amount, CKey&) const;

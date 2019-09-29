@@ -26,7 +26,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
     if [ "$BUILD_TARGET" = "windowsx64" ]; \
       then echo "Compiling for Windows 64-bit (x86_64-w64-mingw32)..." && \
         ./autogen.sh && \
-        CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && \
+        CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ --enable-reduce-exports --disable-tests --disable-gui-tests --disable-bench && \
         make -j2 && \
         make deploy && \
         make install DESTDIR=/BUILD/ && \
@@ -35,7 +35,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
     elif [ "$BUILD_TARGET" = "windowsx86" ]; \
       then echo "Compiling for Windows 32-bit (i686-w64-mingw32)..." && \
         ./autogen.sh && \
-        CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
+        CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ --enable-reduce-exports --disable-tests --disable-gui-tests --disable-bench && \
         make -j2 && \
         make deploy && \
         make install DESTDIR=/BUILD/ && \
@@ -45,7 +45,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
        then echo "Compiling for Linux (x86_64-pc-linux-gnu)..." && \
         apt-get remove libzmq3-dev -y && \
         ./autogen.sh && \
-        CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --prefix=/ && \
+        CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --prefix=/ --enable-reduce-exports --disable-tests --disable-gui-tests --disable-bench && \
         make -j2 && \
         strip src/dapscoind-multisig && \
         strip src/dapscoin-cli-multisig && \
@@ -56,21 +56,21 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
     elif [ "$BUILD_TARGET" = "linuxarm64" ]; \
        then echo "Compiling for Linux ARM 64-bit (aarch64-linux-gnu)..." && \
         ./autogen.sh && \
-        CONFIG_SITE=$PWD/depends/aarch64-linux-gnu/share/config.site ./configure --prefix=/ && \
+        CONFIG_SITE=$PWD/depends/aarch64-linux-gnu/share/config.site ./configure --prefix=/ --enable-reduce-exports --disable-tests --disable-gui-tests --disable-bench && \
         make -j2 && \
         make install DESTDIR=/BUILD/; \
 #
     elif [ "$BUILD_TARGET" = "linuxarm32" ]; \
        then echo "Compiling for Linux ARM 32-bit (arm-linux-gnueabihf)" && \
         ./autogen.sh && \
-        CONFIG_SITE=$PWD/depends/arm-linux-gnueabihf/share/config.site ./configure --prefix=/ && \
+        CONFIG_SITE=$PWD/depends/arm-linux-gnueabihf/share/config.site ./configure --prefix=/ --enable-reduce-exports --disable-tests --disable-gui-tests --disable-bench && \
         make -j2 && \
         make install DESTDIR=/BUILD/; \
 #
     elif [ "$BUILD_TARGET" = "mac" ]; \
        then echo "Compiling for MacOS (x86_64-apple-darwin11)..." && \
         ./autogen.sh --with-gui=yes && \
-        CONFIG_SITE=$PWD/depends/x86_64-apple-darwin11/share/config.site ./configure --prefix=/ && \
+        CONFIG_SITE=$PWD/depends/x86_64-apple-darwin11/share/config.site ./configure --prefix=/ --enable-reduce-exports --disable-tests --disable-gui-tests --disable-bench && \
         make HOST="x86_64-apple-darwin11" -j2 && \
         make deploy && \
         make install HOST="x86_64-apple-darwin11" DESTDIR=/BUILD/ && \
