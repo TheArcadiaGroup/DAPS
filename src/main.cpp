@@ -1579,16 +1579,6 @@ bool CheckTransaction(const CTransaction& tx, bool fzcActive, bool fRejectBadUTX
         }
     }
 
-    // Check for duplicate inputs
-    set<CKeyImage> keyimages;
-    for (const CTxIn& txin : tx.vin) {
-        if (keyimages.count(txin.keyImage)) {
-            return state.DoS(100, error("CheckTransaction() : duplicate inputs"),
-                REJECT_INVALID, "bad-txns-inputs-duplicate");
-        }
-    }
-
-
     if (tx.IsCoinBase()) {
         if (tx.vin[0].scriptSig.size() < 2 || tx.vin[0].scriptSig.size() > 150)
             return state.DoS(100, error("CheckTransaction() : coinbase script size=%d", tx.vin[0].scriptSig.size()),
@@ -4069,6 +4059,19 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                                             GetAdjustedTime() + (block.IsProofOfStake() ? 180 : 7200)) // 3 minute future drift for PoS
         return state.Invalid(error("CheckBlock() : block timestamp too far in the future"),
             REJECT_INVALID, "time-too-new");
+
+    //check duplicate key image in blocks
+    set<CKeyImage> keyimages;
+    for(size_t i = 0; i < block.vtx.size(); i++) {
+        for (const CTxIn& txin : block.vtx[i].vin) {
+        	if (!txin.keyImage.IsValid()) continue;
+        	if (keyimages.count(txin.keyImage)) {
+        		return state.DoS(100, error("CheckBlock() : duplicate inputs"),
+        				REJECT_INVALID, "bad-txns-inputs-duplicate");
+        	}
+            keyimages.insert(txin.keyImage);
+        }
+    }
 
     // Check the merkle root.
     if (fCheckMerkleRoot) {
