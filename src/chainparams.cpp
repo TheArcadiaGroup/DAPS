@@ -142,7 +142,7 @@ public:
          *     CTxOut(nValue=50.00000000, scriptPubKey=0xA9037BAC7050C479B121CF)
          *   vMerkleTree: e0028e
          */
-        const char* pszTimestamp = "Sep 12 2018 DAPS Coin Development Team - Privacy Is A Right, Not A Privilege";
+        const char* pszTimestamp = "30 September 2019 DAPS Coin Development Team - Privacy Is A Right, Not A Privilege";
         CMutableTransaction txNew;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
@@ -153,12 +153,12 @@ public:
         genesis.hashPrevBlock = 0;
         genesis.hashMerkleRoot = genesis.BuildMerkleTree();
         genesis.nVersion = 1;
-        genesis.nTime = 1569319143; //09/24/2019 @ 9:59am (UTC)
+        genesis.nTime = 1569750052; //09/29/2019 @ 9:40am (UTC)
         genesis.nBits = 0x1e0ffff0;
-        genesis.nNonce = 17787590;
+        genesis.nNonce = 18289272;
 
         //change blockhash from 0x00000e9468bba3df97334bfb5015543488a0fb38193c82b101472937590e3037 because of transaction structure change
-        if(genesis.GetHash()!=uint256("00000f49187f4e4a9a630661f85f3a153619985b5b838441864ff130ee76daf5"))
+        if(genesis.GetHash()!=uint256("0000039a711dba61e12c29fb86542fa059e9616aafe9b4c61e065d393f31535e"))
         {
             printf("Searchingforgenesisblock...\n");
             uint256 hashTarget=uint256().SetCompact(genesis.nBits);
@@ -190,8 +190,8 @@ public:
 
 
         hashGenesisBlock = genesis.GetHash();
-        assert(hashGenesisBlock == uint256("00000f49187f4e4a9a630661f85f3a153619985b5b838441864ff130ee76daf5"));
-        assert(genesis.hashMerkleRoot == uint256("553ecf8ea9cea9e99bf4a1ed99551c5a69785fb1c7f69b881c8f0ca84215024f"));
+        assert(hashGenesisBlock == uint256("0000039a711dba61e12c29fb86542fa059e9616aafe9b4c61e065d393f31535e"));
+        assert(genesis.hashMerkleRoot == uint256("4dc798fa29a037570075a87a39c9a54c210f005c4c59c72f32036a87273f4cf8"));
 
         vSeeds.push_back(CDNSSeedData("seed.dapscoin.com", "seed.dapscoin.com"));        // Single node address
         vSeeds.push_back(CDNSSeedData("seed1.dapscoin.com", "seed1.dapscoin.com"));        // Single node address
@@ -270,9 +270,9 @@ public:
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1569319143;
-        genesis.nNonce = 13929554;
+        genesis.nNonce = 14995439;
 
-        if(genesis.GetHash()!=uint256("00000c2db43b3f58ecd78cd9011b72af8f3e3112a670d2d4d7c8d0e00137c2f6"))
+        if(genesis.GetHash()!=uint256("0000061003c91526e4ecb49305e5bc8f5e880e7542ca4d4b3b1057688aa9aba4"))
         {
             printf("Searchingforgenesisblock...\n");
             uint256 hashTarget=uint256().SetCompact(genesis.nBits);
@@ -302,7 +302,7 @@ public:
         }
 
         hashGenesisBlock = genesis.GetHash();
-        assert(hashGenesisBlock == uint256("00000c2db43b3f58ecd78cd9011b72af8f3e3112a670d2d4d7c8d0e00137c2f6"));
+        assert(hashGenesisBlock == uint256("0000061003c91526e4ecb49305e5bc8f5e880e7542ca4d4b3b1057688aa9aba4"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -366,9 +366,9 @@ public:
         bnProofOfWorkLimit = ~uint256(0) >> 1;
         genesis.nTime = 1569319143;
         genesis.nBits = 0x207fffff;
-        genesis.nNonce = 12358;
+        genesis.nNonce = 12359;
 
-        if(genesis.GetHash()!=uint256("574c37442fb88d9df479dda51551d53a6eb0c73f1b9e4d85dec448a97175a581"))
+        if(genesis.GetHash()!=uint256("2ed32054ce47f012ff186e6116b4906a8cd9d73ff5c689a8623bf36aed774536"))
         {
             printf("Searchingforgenesisblock...\n");
             uint256 hashTarget=uint256().SetCompact(genesis.nBits);
@@ -400,7 +400,7 @@ public:
         hashGenesisBlock = genesis.GetHash();
         nDefaultPort = 51476;
 
-        assert(hashGenesisBlock == uint256("574c37442fb88d9df479dda51551d53a6eb0c73f1b9e4d85dec448a97175a581"));
+        assert(hashGenesisBlock == uint256("2ed32054ce47f012ff186e6116b4906a8cd9d73ff5c689a8623bf36aed774536"));
 
         vFixedSeeds.clear(); //! Testnet mode doesn't have any fixed seeds.
         vSeeds.clear();      //! Testnet mode doesn't have any DNS seeds.

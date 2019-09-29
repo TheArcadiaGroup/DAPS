@@ -249,6 +249,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
         // This vector will be sorted into a priority queue:
         vector<TxPriority> vecPriority;
         vecPriority.reserve(mempool.mapTx.size());
+        std::set<CKeyImage> keyImages;
         for (map<uint256, CTxMemPoolEntry>::iterator mi = mempool.mapTx.begin();
              mi != mempool.mapTx.end(); ++mi) {
             const CTransaction& tx = mi->second.GetTx();
@@ -268,24 +269,27 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
             if (!fKeyImageCheck) {
             	continue;
             }
+
+            if (!CheckHaveInputs(view, tx)) continue;
+
             COrphan* porphan = NULL;
             double dPriority = 0;
             CAmount nTotalIn = 0;
             bool fMissingInputs = false;
             for (const CTxIn& txin : tx.vin) {
                 // Read prev transaction
-                if (!view.HaveCoins(txin.prevout.hash)) {
+                //if (!view.HaveCoins(txin.prevout.hash)) {
                     // This should never happen; all transactions in the memory
                     // pool should connect to either transactions in the chain
                     // or other transactions in the memory pool.
-                    if (!mempool.mapTx.count(txin.prevout.hash)) {
+                    /*if (!mempool.mapTx.count(txin.prevout.hash)) {
                         LogPrintf("ERROR: mempool transaction missing input\n");
                         if (fDebug) assert("mempool transaction missing input" == 0);
                         fMissingInputs = true;
                         if (porphan)
                             vOrphan.pop_back();
                         break;
-                    }
+                    }*/
 
                     // Has to wait for dependencies
                     if (!porphan) {
@@ -293,10 +297,10 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
                         vOrphan.push_back(COrphan(&tx));
                         porphan = &vOrphan.back();
                     }
-                    mapDependers[txin.prevout.hash].push_back(porphan);
-                    porphan->setDependsOn.insert(txin.prevout.hash);
-                    continue;
-                }
+                    //mapDependers[txin.prevout.hash].push_back(porphan);
+                    //porphan->setDependsOn.insert(txin.prevout.hash);
+                    //continue;
+                //}
 
                 //Check for invalid/fraudulent inputs. They shouldn't make it through mempool, but check anyways.
                 if (mapInvalidOutPoints.count(txin.prevout)) {
@@ -314,13 +318,20 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
             uint256 hash = tx.GetHash();
             mempool.ApplyDeltas(hash, dPriority, nTotalIn);
 
-            CFeeRate feeRate(nTotalIn - tx.GetValueOut(), nTxSize);
+            CFeeRate feeRate(tx.nTxFee, nTxSize);
 
-            if (porphan) {
-                porphan->dPriority = dPriority;
-                porphan->feeRate = feeRate;
-            } else
-                vecPriority.push_back(TxPriority(dPriority, feeRate, &mi->second.GetTx()));
+            bool isDuplicate = false;
+            for (const CTxIn& txin: tx.vin) {
+            	const CKeyImage& keyImage = txin.keyImage;
+            	if (keyImages.count(keyImage)) {
+            		isDuplicate = true;
+            		break;
+            	}
+            	keyImages.insert(keyImage);
+            }
+            if (isDuplicate) continue;
+            vecPriority.push_back(TxPriority(dPriority, feeRate, &mi->second.GetTx()));
+
         }
 
         // Collect transactions into block
