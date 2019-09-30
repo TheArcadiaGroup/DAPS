@@ -598,8 +598,8 @@
         <translation>Panel nástrojov Záložky</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
@@ -618,11 +618,11 @@
         <translation>Prezrieť masternody</translation>
     </message>
     <message>
-        <source>&amp;About DAPScoin</source>
+        <source>&amp;About DAPS</source>
         <translation>O DAPScoin</translation>
     </message>
     <message>
-        <source>Show information about DAPScoin</source>
+        <source>Show information about DAPS</source>
         <translation>Zobraziť informácie o DAPScoin</translation>
     </message>
     <message>
@@ -900,15 +900,15 @@ MultiSend: %1</translation>
 <context>
     <name>HelpMessageDialog</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     </context>
 <context>
     <name>Intro</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1210,8 +1210,8 @@ MultiSend: %1</translation>
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     </context>
 <context>

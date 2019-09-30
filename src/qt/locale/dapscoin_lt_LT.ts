@@ -645,8 +645,8 @@
         <translation>Skirtukų įrankių juosta</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
@@ -669,11 +669,11 @@
         <translation>Naršyti masternod'us</translation>
     </message>
     <message>
-        <source>&amp;About DAPScoin</source>
+        <source>&amp;About DAPS</source>
         <translation>&amp;Apie DAPScoin</translation>
     </message>
     <message>
-        <source>Show information about DAPScoin</source>
+        <source>Show information about DAPS</source>
         <translation>Rodyti informaciją apie DAPScoin</translation>
     </message>
     <message>
@@ -1223,15 +1223,15 @@ MultiSend: %1</translation>
         <translation>versija</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>(%1-bit)</source>
         <translation>(%1-bitai)</translation>
     </message>
     <message>
-        <source>About DAPScoin</source>
+        <source>About DAPS</source>
         <translation>Apie DAPScoin</translation>
     </message>
     <message>
@@ -1298,8 +1298,8 @@ MultiSend: %1</translation>
         <translation>Naudoti pasirinktą duomenų katalogą:</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -1876,8 +1876,8 @@ Patikrinkite adresą ir bandykite dar kartą.</translation>
         <translation>&amp;Tinklas</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
-        <translation>Čia galite nustatyti vartotojo sąsajos kalbą. Šis nustatymas įsigalios iš naujo paleidus "DAPScoin".</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
+        <translation>Čia galite nustatyti vartotojo sąsajos kalbą. Šis nustatymas įsigalios iš naujo paleidus "DAPS".</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
@@ -3229,8 +3229,8 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos tos pačio nominal
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     </context>
 <context>

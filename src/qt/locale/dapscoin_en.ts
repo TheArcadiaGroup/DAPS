@@ -811,7 +811,7 @@
     <message>
         <location line="-427"/>
         <location line="+890"/>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -841,12 +841,12 @@
     </message>
     <message>
         <location line="+31"/>
-        <source>&amp;About DAPScoin</source>
+        <source>&amp;About DAPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Show information about DAPScoin</source>
+        <source>Show information about DAPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1552,7 +1552,7 @@ Address: %4
     </message>
     <message>
         <location line="+0"/>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1563,7 +1563,7 @@ Address: %4
     </message>
     <message>
         <location line="+4"/>
-        <source>About DAPScoin</source>
+        <source>About DAPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1646,7 +1646,7 @@ Address: %4
     </message>
     <message>
         <location filename="../intro.cpp" line="+77"/>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5086,7 +5086,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     <name>SplashScreen</name>
     <message>
         <location filename="../splashscreen.cpp" line="+36"/>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

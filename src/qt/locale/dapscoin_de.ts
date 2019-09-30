@@ -602,8 +602,8 @@
         <translation>Registerkartenleiste</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
@@ -626,11 +626,11 @@
         <translation>Masternodes durchsuchen</translation>
     </message>
     <message>
-        <source>&amp;About DAPScoin</source>
+        <source>&amp;About DAPS</source>
         <translation>Über.DAPScoin</translation>
     </message>
     <message>
-        <source>Show information about DAPScoin</source>
+        <source>Show information about DAPS</source>
         <translation>Zeigt Informationen über DAPScoin</translation>
     </message>
     <message>
@@ -1179,15 +1179,15 @@ Adresse: %4</translation>
         <translation>Version</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>(%1-bit)</source>
         <translation>(%1-Bit)</translation>
     </message>
     <message>
-        <source>About DAPScoin</source>
+        <source>About DAPS</source>
         <translation>Über DAPScoin</translation>
     </message>
     <message>
@@ -1254,8 +1254,8 @@ Adresse: %4</translation>
         <translation>Ein benutzerdefiniertes Datenverzeichnis verwenden:</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -3605,8 +3605,8 @@ Bitte haben Sie Geduld...</translation>
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Version %1</source>

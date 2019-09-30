@@ -150,8 +150,8 @@
         <translation>Otvori konfiguracijsku datoteku</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>&amp;Privacy</source>
@@ -260,15 +260,15 @@
 <context>
     <name>HelpMessageDialog</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     </context>
 <context>
     <name>Intro</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Error</source>
@@ -650,8 +650,8 @@
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Version %1</source>

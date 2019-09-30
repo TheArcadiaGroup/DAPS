@@ -602,8 +602,8 @@
         <translation>标签工具栏</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
@@ -626,11 +626,11 @@
         <translation>浏览主节点</translation>
     </message>
     <message>
-        <source>&amp;About DAPScoin</source>
+        <source>&amp;About DAPS</source>
         <translation>&amp;A关于DAPScoin</translation>
     </message>
     <message>
-        <source>Show information about DAPScoin</source>
+        <source>Show information about DAPS</source>
         <translation>显示DAPS  Core的相关信息</translation>
     </message>
     <message>
@@ -857,11 +857,11 @@ Address: %4
 <context>
     <name>HelpMessageDialog</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
-        <source>About DAPScoin</source>
+        <source>About DAPS</source>
         <translation>关于DAPScoin</translation>
     </message>
     </context>
@@ -880,8 +880,8 @@ Address: %4
         <translation>DAPScoin将下载并存储DAPScoin区块链副本。 至少 %1 GB的数据将存储在此目录中，并且会随着时间的推移而增长。 钱包也将存储在此目录中。</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1503,8 +1503,8 @@ Address: %4
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     </context>
 <context>

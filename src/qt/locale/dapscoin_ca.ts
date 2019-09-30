@@ -418,8 +418,8 @@
         <translation>A&amp;juda</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
@@ -434,7 +434,7 @@
         <translation>&amp;Masternodes</translation>
     </message>
     <message>
-        <source>&amp;About DAPScoin</source>
+        <source>&amp;About DAPS</source>
         <translation>&amp;Sobre DAPScoin</translation>
     </message>
     <message>
@@ -864,15 +864,15 @@
         <translation>versió</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>(%1-bit)</source>
         <translation>(%1-bit)</translation>
     </message>
     <message>
-        <source>About DAPScoin</source>
+        <source>About DAPS</source>
         <translation>Sobre DAPScoin</translation>
     </message>
     <message>
@@ -935,8 +935,8 @@
         <translation>Usar una carpeta de dades personalitzada:</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -1808,8 +1808,8 @@
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Version %1</source>

@@ -613,7 +613,7 @@
         <translation>Sekme tablosu</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS CORE</translation>
     </message>
     <message>
@@ -637,11 +637,11 @@
         <translation>Masternodları ara</translation>
     </message>
     <message>
-        <source>&amp;About DAPScoin</source>
+        <source>&amp;About DAPS</source>
         <translation>Pıvx core Hakkında</translation>
     </message>
     <message>
-        <source>Show information about DAPScoin</source>
+        <source>Show information about DAPS</source>
         <translation>Pıvx Core hakkında bilgi göster</translation>
     </message>
     <message>
@@ -1117,7 +1117,7 @@ Adres: %4</translation>
         <translation>versiyon</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS CORE</translation>
     </message>
     <message>
@@ -1148,7 +1148,7 @@ Adres: %4</translation>
         <translation>Varsayılan veri dosyasını kullanınız</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS CORE</translation>
     </message>
     <message>
@@ -1594,7 +1594,7 @@ Adres: %4</translation>
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS CORE</translation>
     </message>
     </context>

@@ -591,7 +591,7 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
         <translation>&amp;Apua</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Ydin</translation>
     </message>
     <message>
@@ -611,11 +611,11 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
         <translation>Selaa masternodeja</translation>
     </message>
     <message>
-        <source>&amp;About DAPScoin</source>
+        <source>&amp;About DAPS</source>
         <translation>DAPS &amp;ytimestä</translation>
     </message>
     <message>
-        <source>Show information about DAPScoin</source>
+        <source>Show information about DAPS</source>
         <translation>Näytä tietoja DAPS Ytimestä</translation>
     </message>
     <message>
@@ -934,7 +934,7 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
 <context>
     <name>HelpMessageDialog</name>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Ydin</translation>
     </message>
     <message>
@@ -957,7 +957,7 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
         <translation>Tervetuloa DAPS Ytimeen.</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Ydin</translation>
     </message>
     <message>
@@ -2225,7 +2225,7 @@ Please check the address and try again.</source>
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Ydin</translation>
     </message>
     <message>

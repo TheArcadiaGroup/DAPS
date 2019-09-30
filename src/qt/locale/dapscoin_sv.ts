@@ -583,7 +583,7 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
         <translation>flik vertygsrad</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Kärna</translation>
     </message>
     <message>
@@ -603,11 +603,11 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
         <translation>Utforska masternoder</translation>
     </message>
     <message>
-        <source>&amp;About DAPScoin</source>
+        <source>&amp;About DAPS</source>
         <translation>Om DAPS Kärnan</translation>
     </message>
     <message>
-        <source>Show information about DAPScoin</source>
+        <source>Show information about DAPS</source>
         <translation>Visa information om DAPS Kärnan</translation>
     </message>
     <message>
@@ -837,14 +837,14 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
 <context>
     <name>HelpMessageDialog</name>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Kärna</translation>
     </message>
     </context>
 <context>
     <name>Intro</name>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Kärna</translation>
     </message>
     <message>
@@ -1239,7 +1239,7 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Kärna</translation>
     </message>
     </context>

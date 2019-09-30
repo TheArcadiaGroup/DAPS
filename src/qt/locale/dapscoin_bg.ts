@@ -602,7 +602,7 @@
         <translation>Колан с инструменти</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Ядро</translation>
     </message>
     <message>
@@ -626,11 +626,11 @@
         <translation>Разгледай мастърноудове</translation>
     </message>
     <message>
-        <source>&amp;About DAPScoin</source>
+        <source>&amp;About DAPS</source>
         <translation>&amp;Относно DAPS Ядрото</translation>
     </message>
     <message>
-        <source>Show information about DAPScoin</source>
+        <source>Show information about DAPS</source>
         <translation>Информациза за DAPS Ядрото</translation>
     </message>
     <message>
@@ -1184,7 +1184,7 @@ Address: %4
         <translation>версия</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Ядро</translation>
     </message>
     <message>
@@ -1192,7 +1192,7 @@ Address: %4
         <translation>(%1-bit)</translation>
     </message>
     <message>
-        <source>About DAPScoin</source>
+        <source>About DAPS</source>
         <translation>Относно DAPS Ядрото</translation>
     </message>
     <message>
@@ -1259,7 +1259,7 @@ Address: %4
         <translation>Задай своя папка за данни:</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Ядро</translation>
     </message>
     <message>
@@ -3606,7 +3606,7 @@ Please be patient...</source>
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Ядро</translation>
     </message>
     <message>

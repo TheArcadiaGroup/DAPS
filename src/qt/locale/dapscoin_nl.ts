@@ -602,7 +602,7 @@
         <translation>Tabblad werkbalk</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Kern</translation>
     </message>
     <message>
@@ -626,11 +626,11 @@
         <translation>Bekijk masternodes</translation>
     </message>
     <message>
-        <source>&amp;About DAPScoin</source>
+        <source>&amp;About DAPS</source>
         <translation>&amp;Over DAPS Kern</translation>
     </message>
     <message>
-        <source>Show information about DAPScoin</source>
+        <source>Show information about DAPS</source>
         <translation>Toon informatie over DAPS Kern</translation>
     </message>
     <message>
@@ -1176,7 +1176,7 @@ MultiSend: %1</translation>
         <translation>versie</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Kern</translation>
     </message>
     <message>
@@ -1184,7 +1184,7 @@ MultiSend: %1</translation>
         <translation>(%1-bit)</translation>
     </message>
     <message>
-        <source>About DAPScoin</source>
+        <source>About DAPS</source>
         <translation>Over DAPScoin</translation>
     </message>
     <message>
@@ -1243,7 +1243,7 @@ MultiSend: %1</translation>
         <translation>Gebruik een aangepaste data directory:</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Kern</translation>
     </message>
     <message>
@@ -3598,7 +3598,7 @@ Wees alsjeblieft geduldig...</translation>
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DAPScoin</source>
+        <source>DAPS</source>
         <translation>DAPS Kern</translation>
     </message>
     <message>
