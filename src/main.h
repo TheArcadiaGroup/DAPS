@@ -122,7 +122,7 @@ static const unsigned char REJECT_DUST = 0x41;
 static const unsigned char REJECT_INSUFFICIENTFEE = 0x42;
 static const unsigned char REJECT_CHECKPOINT = 0x43;
 
-static const std::string FOUNDATION_WALLET = "41iA4tAZ6oJUHJuHQJwEQVKLKbkKK9cRw7HNn2DqaFUsVbEVAmY31vyUHkyGoHJ3FEYkb8fjMNLekZuo6wqEfcTd18x9kq6x2zL";
+static const std::string FOUNDATION_WALLET = "41jsGvYo3GMWCvFVZekSnrRV8ptJfMGhuhRjB9tYEv5NSA47VqyLp6gKSCpS3wHTBhCGu9DJ5k1HMWXeHVnL9nUs15CjyeCQDiT";
 
 struct BlockHasher {
     size_t operator()(const uint256& hash) const { return hash.GetLow64(); }
