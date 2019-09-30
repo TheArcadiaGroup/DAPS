@@ -627,14 +627,14 @@
     </message>
     <message>
         <source>&amp;About DAPS</source>
-        <translation>&amp;A关于DAPScoin</translation>
+        <translation>&amp;A关于DAPS</translation>
     </message>
     <message>
         <source>Show information about DAPS</source>
         <translation>显示DAPS  Core的相关信息</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
+        <source>Modify configuration options for DAPS</source>
         <translation>修改DAPScoin的配置选项</translation>
     </message>
     <message>
@@ -862,14 +862,14 @@ Address: %4
     </message>
     <message>
         <source>About DAPS</source>
-        <translation>关于DAPScoin</translation>
+        <translation>关于DAPS</translation>
     </message>
     </context>
 <context>
     <name>Intro</name>
     <message>
         <source>Welcome to DAPS.</source>
-        <translation>欢迎使用 DAPScoin</translation>
+        <translation>欢迎使用 DAPS</translation>
     </message>
     <message>
         <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
@@ -975,7 +975,7 @@ Address: %4
     </message>
     <message>
         <source>&amp;Start DAPS on system login</source>
-        <translation>&amp;开机启动DAPScoin</translation>
+        <translation>&amp;开机启动DAPS</translation>
     </message>
     <message>
         <source>Enable coin &amp;control features</source>

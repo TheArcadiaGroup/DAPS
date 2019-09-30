@@ -626,8 +626,8 @@
         <translation>Vis information om DAPS kerne</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Ret konfigurationsindstillinger for DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Ret konfigurationsindstillinger for DAPS</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -3867,7 +3867,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>Obfuscation uses exact denominated amounts to send funds, you might simply need to anonymize some more coins.</source>
-        <translation>Tilsløring bruger hele det tilslørede designerede beløb til at sende betalinger. De kan blot tilsløre yderligere DAPScoin</translation>
+        <translation>Tilsløring bruger hele det tilslørede designerede beløb til at sende betalinger. De kan blot tilsløre yderligere DAPS</translation>
     </message>
     <message>
         <source>Output debugging information (default: %u, supplying &lt;category&gt; is optional)</source>
@@ -4182,7 +4182,7 @@ For eksempel: alertnotify=Echo %% | mail - s "DAPS ALARM!" e-mail@administrator.
         <translation>Fejl ved indlæsning af wallet.dat: Tegnebogen er beskadiget</translation>
     </message>
     <message>
-        <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
+        <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
         <translation>Fejl ved indlæsning af wallet.dat: Tegnebogen kræver en nyere version af DAPS core</translation>
     </message>
     <message>

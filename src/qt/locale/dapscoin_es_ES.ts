@@ -291,7 +291,7 @@
     </message>
     <message>
         <source>Encrypt the private key for this DAPS address</source>
-        <translation>Cifrar la llave privada para esta dirección DAPScoin</translation>
+        <translation>Cifrar la llave privada para esta dirección DAPS</translation>
     </message>
     <message>
         <source>Reset all fields</source>
@@ -555,7 +555,7 @@
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>Firme el mensaje para probar que Ud. es el propietario de esta dirección DAPScoin</translation>
+        <translation>Firme el mensaje para probar que Ud. es el propietario de esta dirección DAPS</translation>
     </message>
     <message>
         <source>Reset all sign message fields</source>

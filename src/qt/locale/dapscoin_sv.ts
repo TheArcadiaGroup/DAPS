@@ -611,8 +611,8 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
         <translation>Visa information om DAPS Kärnan</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Ändra konfigurationsval för DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Ändra konfigurationsval för DAPS</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>

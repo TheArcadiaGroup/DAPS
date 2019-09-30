@@ -634,7 +634,7 @@
         <translation>Toon informatie over DAPS Kern</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
+        <source>Modify configuration options for DAPS</source>
         <translation>Wijzig DAPS configuratie opties</translation>
     </message>
     <message>
@@ -1185,7 +1185,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>About DAPS</source>
-        <translation>Over DAPScoin</translation>
+        <translation>Over DAPS</translation>
     </message>
     <message>
         <source>Command-line options</source>
@@ -1224,7 +1224,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>Welcome to DAPS.</source>
-        <translation>Welkom bij DAPScoin</translation>
+        <translation>Welkom bij DAPS</translation>
     </message>
     <message>
         <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
@@ -4707,8 +4707,8 @@ bijvoorbeeld: alertnotify = echo %%s | mail -s "DAPS Alert" admin@foo.com
         <translation>Error tijdens het laden van wallet.dat: Portemonnee corrupt</translation>
     </message>
     <message>
-        <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
-        <translation>Fout bij het laden van wallet.dat: Portemonnee vereist een nieuwere versie van DAPScoin</translation>
+        <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
+        <translation>Fout bij het laden van wallet.dat: Portemonnee vereist een nieuwere versie van DAPS</translation>
     </message>
     <message>
         <source>Error opening block database</source>

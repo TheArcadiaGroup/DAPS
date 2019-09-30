@@ -662,7 +662,7 @@
         <translation>DAPScoin에 대한 정보 표시</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
+        <source>Modify configuration options for DAPS</source>
         <translation>DAPScoin에 대한 구성 옵션 수정</translation>
     </message>
     <message>
@@ -4895,7 +4895,7 @@ rpcpassword=%s
         <translation>wallet.dat을 불러오는 중 오류가 발생했습니다: 지갑 손상됨</translation>
     </message>
     <message>
-        <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
+        <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
         <translation>wallet.dat를 로드하는 중 오류가 발생했습니다. 지갑에 최신 버전의 DAPS 코어가 필요합니다.</translation>
     </message>
     <message>

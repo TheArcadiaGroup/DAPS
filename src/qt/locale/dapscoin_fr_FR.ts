@@ -252,7 +252,7 @@
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>Signer le message pour prouver que vous possédez cette adresse DAPScoin</translation>
+        <translation>Signer le message pour prouver que vous possédez cette adresse DAPS</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -535,7 +535,7 @@
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
-        <translation>Envoyer des pièces à une adresse DAPScoin</translation>
+        <translation>Envoyer des pièces à une adresse DAPS</translation>
     </message>
     <message>
         <source>&amp;Masternodes</source>
@@ -546,8 +546,8 @@
         <translation>Afficher les masternodes</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Modifier les options de configuration pour DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Modifier les options de configuration pour DAPS</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -1606,7 +1606,7 @@ Veuillez vérifier l'adresse et réessayer.</translation>
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>Signer le message pour prouver que vous possédez cette adresse DAPScoin</translation>
+        <translation>Signer le message pour prouver que vous possédez cette adresse DAPS</translation>
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>

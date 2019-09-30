@@ -280,7 +280,7 @@
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>Firmare il messaggio per dimostrare di possedere questo indirizzo DAPScoin</translation>
+        <translation>Firmare il messaggio per dimostrare di possedere questo indirizzo DAPS</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -595,7 +595,7 @@
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
-        <translation>Invia monete all' indirizzo DAPScoin</translation>
+        <translation>Invia monete all' indirizzo DAPS</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
@@ -611,15 +611,15 @@
     </message>
     <message>
         <source>&amp;About DAPS</source>
-        <translation>&amp;Informazioni DAPScoin</translation>
+        <translation>&amp;Informazioni DAPS</translation>
     </message>
     <message>
         <source>Show information about DAPS</source>
-        <translation>Visualizza informazioni su DAPScoin</translation>
+        <translation>Visualizza informazioni su DAPS</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Modifica le opzioni di configurazione per DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Modifica le opzioni di configurazione per DAPS</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -647,7 +647,7 @@
     </message>
     <message>
         <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
-        <translation>Mostra il messaggio di aiuto DAPS per ottenere un elenco con le possibili opzioni di riga di comando DAPScoin</translation>
+        <translation>Mostra il messaggio di aiuto DAPS per ottenere un elenco con le possibili opzioni di riga di comando DAPS</translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -1176,7 +1176,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>Firmare il messaggio per dimostrare di possedere questo indirizzo DAPScoin</translation>
+        <translation>Firmare il messaggio per dimostrare di possedere questo indirizzo DAPS</translation>
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>

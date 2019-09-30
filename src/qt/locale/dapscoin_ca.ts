@@ -423,7 +423,7 @@
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
-        <translation>Envia monedes a una adreça DAPScoin</translation>
+        <translation>Envia monedes a una adreça DAPS</translation>
     </message>
     <message>
         <source>&amp;Privacy</source>
@@ -435,7 +435,7 @@
     </message>
     <message>
         <source>&amp;About DAPS</source>
-        <translation>&amp;Sobre DAPScoin</translation>
+        <translation>&amp;Sobre DAPS</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -873,7 +873,7 @@
     </message>
     <message>
         <source>About DAPS</source>
-        <translation>Sobre DAPScoin</translation>
+        <translation>Sobre DAPS</translation>
     </message>
     <message>
         <source>Command-line options</source>

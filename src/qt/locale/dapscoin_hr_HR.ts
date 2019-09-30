@@ -670,15 +670,15 @@
     </message>
     <message>
         <source>&amp;About DAPS</source>
-        <translation>O DAPScoin</translation>
+        <translation>O DAPS</translation>
     </message>
     <message>
         <source>Show information about DAPS</source>
         <translation>Prikaz informacija o DAPScoin-u</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Izmijenite konfiguracijske opcije za DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Izmijenite konfiguracijske opcije za DAPS</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -1240,7 +1240,7 @@ Višestruko slanje: %1</translation>
     </message>
     <message>
         <source>About DAPS</source>
-        <translation>O DAPScoin</translation>
+        <translation>O DAPS</translation>
     </message>
     <message>
         <source>Command-line options</source>
@@ -5352,7 +5352,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Pogreška pri učitavanju wallet.dat: novčanik oštećen</translation>
     </message>
     <message>
-        <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
+        <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
         <translation>Pogreška prilikom učitavanja wallet.dat: Novčanik zahtijeva noviju verziju DAPS jezgre</translation>
     </message>
     <message>
@@ -6280,7 +6280,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart DAPS to complete</source>
-        <translation>Potrebno je prepisati novčanik: ponovo pokrenite DAPScoin</translation>
+        <translation>Potrebno je prepisati novčanik: ponovo pokrenite DAPS</translation>
     </message>
     <message>
         <source>Wallet options:</source>

@@ -603,7 +603,7 @@
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
-        <translation>Odoslať mince na adresu DAPScoin</translation>
+        <translation>Odoslať mince na adresu DAPS</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
@@ -619,15 +619,15 @@
     </message>
     <message>
         <source>&amp;About DAPS</source>
-        <translation>O DAPScoin</translation>
+        <translation>O DAPS</translation>
     </message>
     <message>
         <source>Show information about DAPS</source>
-        <translation>Zobraziť informácie o DAPScoin</translation>
+        <translation>Zobraziť informácie o DAPS</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Zmeňte možnosti konfigurácie pre DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Zmeňte možnosti konfigurácie pre DAPS</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -679,7 +679,7 @@
     </message>
     <message>
         <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
-        <translation>Zobraziť pomocnú správu programu DAPS a získajte zoznam možností príkazového riadka DAPScoin</translation>
+        <translation>Zobraziť pomocnú správu programu DAPS a získajte zoznam možností príkazového riadka DAPS</translation>
     </message>
     <message>
         <source>DAPS client</source>

@@ -670,14 +670,14 @@
     </message>
     <message>
         <source>&amp;About DAPS</source>
-        <translation>&amp;Apie DAPScoin</translation>
+        <translation>&amp;Apie DAPS</translation>
     </message>
     <message>
         <source>Show information about DAPS</source>
-        <translation>Rodyti informaciją apie DAPScoin</translation>
+        <translation>Rodyti informaciją apie DAPS</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
+        <source>Modify configuration options for DAPS</source>
         <translation>Keisti DAPS konfigūravimo parinktis</translation>
     </message>
     <message>
@@ -1232,7 +1232,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>About DAPS</source>
-        <translation>Apie DAPScoin</translation>
+        <translation>Apie DAPS</translation>
     </message>
     <message>
         <source>Command-line options</source>
@@ -1279,7 +1279,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>Welcome to DAPS.</source>
-        <translation>Sveiki atvykę į DAPScoin</translation>
+        <translation>Sveiki atvykę į DAPS</translation>
     </message>
     <message>
         <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
@@ -3494,7 +3494,7 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos tos pačio nominal
         <translation>Klaida kraunant wallet.dat: Piniginė yra sugadinta</translation>
     </message>
     <message>
-        <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
+        <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
         <translation>Klaida kraunant wallet.dat: Piniginė reikalauja naujesnės DAPS versijos</translation>
     </message>
     <message>

@@ -630,8 +630,8 @@
         <translation>Show information about DAPS</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Modify configuration options for DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Modify configuration options for DAPS</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -4350,8 +4350,8 @@ for example: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
         <translation>Error loading wallet.dat: Wallet corrupted</translation>
     </message>
     <message>
-        <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
-        <translation>Error loading wallet.dat: Wallet requires newer version of DAPScoin</translation>
+        <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
+        <translation>Error loading wallet.dat: Wallet requires newer version of DAPS</translation>
     </message>
     <message>
         <source>Error opening block database</source>

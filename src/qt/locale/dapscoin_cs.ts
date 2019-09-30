@@ -659,15 +659,15 @@
     </message>
     <message>
         <source>&amp;About DAPS</source>
-        <translation>&amp;O DAPScoin</translation>
+        <translation>&amp;O DAPS</translation>
     </message>
     <message>
         <source>Show information about DAPS</source>
-        <translation>Zobraz informace o DAPScoin</translation>
+        <translation>Zobraz informace o DAPS</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Upravit možnosti konfigurace pro DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Upravit možnosti konfigurace pro DAPS</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -1189,7 +1189,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>About DAPS</source>
-        <translation>O DAPScoin</translation>
+        <translation>O DAPS</translation>
     </message>
     <message>
         <source>Command-line options</source>

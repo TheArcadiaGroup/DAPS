@@ -627,14 +627,14 @@
     </message>
     <message>
         <source>&amp;About DAPS</source>
-        <translation>Über.DAPScoin</translation>
+        <translation>Über.DAPS</translation>
     </message>
     <message>
         <source>Show information about DAPS</source>
-        <translation>Zeigt Informationen über DAPScoin</translation>
+        <translation>Zeigt Informationen über DAPS</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
+        <source>Modify configuration options for DAPS</source>
         <translation>Konfiguration von DAPS verändern</translation>
     </message>
     <message>
@@ -1188,7 +1188,7 @@ Adresse: %4</translation>
     </message>
     <message>
         <source>About DAPS</source>
-        <translation>Über DAPScoin</translation>
+        <translation>Über DAPS</translation>
     </message>
     <message>
         <source>Command-line options</source>
@@ -4658,7 +4658,7 @@ Beispiel: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
         <translation>Fehler beim Laden von wallet.dat : Wallet beschädigt</translation>
     </message>
     <message>
-        <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
+        <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
         <translation>Fehler beim Laden der wallet.dat: Neuere DAPS Version benötigt</translation>
     </message>
     <message>

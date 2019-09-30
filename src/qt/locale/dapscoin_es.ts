@@ -280,7 +280,7 @@
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>Firme el mensaje para demostrar que eres el propietario de esta dirección DAPScoin</translation>
+        <translation>Firme el mensaje para demostrar que eres el propietario de esta dirección DAPS</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -603,11 +603,11 @@
     </message>
     <message>
         <source>DAPS</source>
-        <translation>Núcleo DAPScoin</translation>
+        <translation>Núcleo DAPS</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
-        <translation>Enviar coins a una dirección DAPScoin</translation>
+        <translation>Enviar coins a una dirección DAPS</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
@@ -627,15 +627,15 @@
     </message>
     <message>
         <source>&amp;About DAPS</source>
-        <translation>&amp;Sobre el núcleo de DAPScoin</translation>
+        <translation>&amp;Sobre el núcleo de DAPS</translation>
     </message>
     <message>
         <source>Show information about DAPS</source>
-        <translation>Mostrar información sobre el núcleo de DAPScoin</translation>
+        <translation>Mostrar información sobre el núcleo de DAPS</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Modificar las opciones de configuración de DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Modificar las opciones de configuración de DAPS</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -691,7 +691,7 @@
     </message>
     <message>
         <source>DAPS client</source>
-        <translation>Cliente DAPScoin</translation>
+        <translation>Cliente DAPS</translation>
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to DAPS network</source>
@@ -1185,7 +1185,7 @@ MultiEnvío: %1</translation>
     </message>
     <message>
         <source>DAPS</source>
-        <translation>Núcleo DAPScoin</translation>
+        <translation>Núcleo DAPS</translation>
     </message>
     <message>
         <source>(%1-bit)</source>
@@ -1193,7 +1193,7 @@ MultiEnvío: %1</translation>
     </message>
     <message>
         <source>About DAPS</source>
-        <translation>Acerca de DAPScoin</translation>
+        <translation>Acerca de DAPS</translation>
     </message>
     <message>
         <source>Command-line options</source>
@@ -1260,7 +1260,7 @@ MultiEnvío: %1</translation>
     </message>
     <message>
         <source>DAPS</source>
-        <translation>Núcleo DAPScoin</translation>
+        <translation>Núcleo DAPS</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -3520,7 +3520,7 @@ Por favor tenga paciencia...</translation>
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>Firme el mensaje para demostrar que eres el propietario de esta dirección DAPScoin</translation>
+        <translation>Firme el mensaje para demostrar que eres el propietario de esta dirección DAPS</translation>
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
@@ -3615,7 +3615,7 @@ Por favor tenga paciencia...</translation>
     <name>SplashScreen</name>
     <message>
         <source>DAPS</source>
-        <translation>Núcleo DAPScoin</translation>
+        <translation>Núcleo DAPS</translation>
     </message>
     <message>
         <source>Version %1</source>
@@ -3631,7 +3631,7 @@ Por favor tenga paciencia...</translation>
     </message>
     <message>
         <source>The DAPS Project developers</source>
-        <translation>Los desarrolladores de DAPScoin</translation>
+        <translation>Los desarrolladores de DAPS</translation>
     </message>
     <message>
         <source>[testnet]</source>
@@ -4723,8 +4723,8 @@ por ejemplo: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
         <translation>Error al cargar wallet.dat: Billetera dañada</translation>
     </message>
     <message>
-        <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
-        <translation>Error al cargar wallet.dat: La Billetera requiere una nueva versión del Núcleo DAPScoin</translation>
+        <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
+        <translation>Error al cargar wallet.dat: La Billetera requiere una nueva versión del Núcleo DAPS</translation>
     </message>
     <message>
         <source>Error opening block database</source>

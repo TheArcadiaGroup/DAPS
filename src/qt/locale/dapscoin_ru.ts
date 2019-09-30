@@ -276,7 +276,7 @@
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>Подпишите сообщение, чтобы подтвердить свой адрес DAPScoin</translation>
+        <translation>Подпишите сообщение, чтобы подтвердить свой адрес DAPS</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -619,15 +619,15 @@
     </message>
     <message>
         <source>&amp;About DAPS</source>
-        <translation>&amp;О DAPScoin</translation>
+        <translation>&amp;О DAPS</translation>
     </message>
     <message>
         <source>Show information about DAPS</source>
-        <translation>Показать информацию о DAPScoin</translation>
+        <translation>Показать информацию о DAPS</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Изменение параметров конфигурации DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Изменение параметров конфигурации DAPS</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -679,11 +679,11 @@
     </message>
     <message>
         <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
-        <translation>Смотрите помощь к программе, чтобы получить документацию ко всем возможным опциям комманды DAPScoin</translation>
+        <translation>Смотрите помощь к программе, чтобы получить документацию ко всем возможным опциям комманды DAPS</translation>
     </message>
     <message>
         <source>DAPS client</source>
-        <translation>Клиент DAPScoin</translation>
+        <translation>Клиент DAPS</translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -1161,7 +1161,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>About DAPS</source>
-        <translation>О DAPScoin</translation>
+        <translation>О DAPS</translation>
     </message>
     <message>
         <source>Command-line options</source>
@@ -2875,7 +2875,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>Подпишите сообщение, чтобы подтвердить свой адрес DAPScoin</translation>
+        <translation>Подпишите сообщение, чтобы подтвердить свой адрес DAPS</translation>
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
@@ -2946,7 +2946,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>The DAPS Project developers</source>
-        <translation>Разработчики DAPScoin</translation>
+        <translation>Разработчики DAPS</translation>
     </message>
     <message>
         <source>[testnet]</source>
@@ -3235,7 +3235,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>Copyright (C) 2015-%i The DAPS Project developers</source>
-        <translation>Copyright (C) 2015-%i Разработчики DAPScoin</translation>
+        <translation>Copyright (C) 2015-%i Разработчики DAPS</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>

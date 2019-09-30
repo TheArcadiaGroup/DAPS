@@ -619,7 +619,7 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
         <translation>Näytä tietoja DAPS Ytimestä</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
+        <source>Modify configuration options for DAPS</source>
         <translation>Muokkaa konfiguraatio vaihtoehtoja DAPScoin:lle</translation>
     </message>
     <message>
@@ -1151,11 +1151,11 @@ Please check the address and try again.</source>
     </message>
     <message>
         <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
-        <translation>Käytä 2 erillistä masternodea sekoittaaksesi enintään 1000000 DAPScoin</translation>
+        <translation>Käytä 2 erillistä masternodea sekoittaaksesi enintään 1000000 DAPS</translation>
     </message>
     <message>
         <source>Use 8 separate masternodes to mix funds up to 1000000 DAPS</source>
-        <translation>Käytä 8 erillistä masternodea sekoittaaksesi enintään 1000000 DAPScoin</translation>
+        <translation>Käytä 8 erillistä masternodea sekoittaaksesi enintään 1000000 DAPS</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>
@@ -1163,11 +1163,11 @@ Please check the address and try again.</source>
     </message>
     <message>
         <source>This option is the quickest and will cost about ~0.025 DAPS to anonymize 10000 DAPS</source>
-        <translation>Tämä vaihtoehto on nopein ja maksaa noin ~0.025 DAPS anonymoidaksesi 10000 DAPScoin</translation>
+        <translation>Tämä vaihtoehto on nopein ja maksaa noin ~0.025 DAPS anonymoidaksesi 10000 DAPS</translation>
     </message>
     <message>
         <source>This option is moderately fast and will cost about 0.05 DAPS to anonymize 10000 DAPS</source>
-        <translation>Tämä vaihtoehto on suhteellisen nopea ja maksaa 0.05 DAPS anonymoidaksesi 10000 DAPScoin</translation>
+        <translation>Tämä vaihtoehto on suhteellisen nopea ja maksaa 0.05 DAPS anonymoidaksesi 10000 DAPS</translation>
     </message>
     <message>
         <source>This is the slowest and most secure option. Using maximum anonymity will cost</source>
@@ -2602,7 +2602,7 @@ Please check the address and try again.</source>
         <translation>Virhe ladattaessa wallet.dat tiedostoa: Lompakko korruptoitunut</translation>
     </message>
     <message>
-        <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
+        <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
         <translation>Virhe ladattaessa wallet.dat tiedostoa: Lompakko vaatii uudemman version DAPScoinsta</translation>
     </message>
     <message>

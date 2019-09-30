@@ -603,14 +603,14 @@
     </message>
     <message>
         <source>&amp;About DAPS</source>
-        <translation>&amp;關於 DAPScoin</translation>
+        <translation>&amp;關於 DAPS</translation>
     </message>
     <message>
         <source>Show information about DAPS</source>
         <translation>顯示 DAPS 相關資訊</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
+        <source>Modify configuration options for DAPS</source>
         <translation>修改 DAPS 設定</translation>
     </message>
     <message>

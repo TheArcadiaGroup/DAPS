@@ -276,7 +276,7 @@
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>Assine a mensagem para provar que você possui este endereço DAPScoin</translation>
+        <translation>Assine a mensagem para provar que você possui este endereço DAPS</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -623,7 +623,7 @@
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
-        <translation>Enviar moedas para um endereço DAPScoin</translation>
+        <translation>Enviar moedas para um endereço DAPS</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
@@ -643,15 +643,15 @@
     </message>
     <message>
         <source>&amp;About DAPS</source>
-        <translation>&amp;Sobre o DAPScoin</translation>
+        <translation>&amp;Sobre o DAPS</translation>
     </message>
     <message>
         <source>Show information about DAPS</source>
-        <translation>Mostra informação sobre o DAPScoin</translation>
+        <translation>Mostra informação sobre o DAPS</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Modificar opções de configuração para DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Modificar opções de configuração para DAPS</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -703,11 +703,11 @@
     </message>
     <message>
         <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
-        <translation>Mostra a ajuda da DAPS para receber uma lista com possíveis opções de linha de comando DAPScoin</translation>
+        <translation>Mostra a ajuda da DAPS para receber uma lista com possíveis opções de linha de comando DAPS</translation>
     </message>
     <message>
         <source>DAPS client</source>
-        <translation>Cliente Core DAPScoin</translation>
+        <translation>Cliente Core DAPS</translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -1148,7 +1148,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>The entered address "%1" is not a valid DAPS address.</source>
-        <translation>O endereço que você selecionou, "%1" , não é um endereço válido de DAPScoin</translation>
+        <translation>O endereço que você selecionou, "%1" , não é um endereço válido de DAPS</translation>
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
@@ -1202,7 +1202,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>About DAPS</source>
-        <translation>Sobre o DAPScoin</translation>
+        <translation>Sobre o DAPS</translation>
     </message>
     <message>
         <source>Command-line options</source>
@@ -3046,7 +3046,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>Assine a mensagem para provar que você possui este endereço DAPScoin</translation>
+        <translation>Assine a mensagem para provar que você possui este endereço DAPS</translation>
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
@@ -3153,7 +3153,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>The DAPS Project developers</source>
-        <translation>Os desenvolvedores do DAPScoin</translation>
+        <translation>Os desenvolvedores do DAPS</translation>
     </message>
     <message>
         <source>[testnet]</source>
@@ -3870,7 +3870,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>Copyright (C) 2015-%i The DAPS Project developers</source>
-        <translation>Todos os direitos reservados (C) 2015-%i aos Desenvolvedores do DAPScoin</translation>
+        <translation>Todos os direitos reservados (C) 2015-%i aos Desenvolvedores do DAPS</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>
@@ -3929,8 +3929,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Erro no carregamento da wallet.dat: Carteira corrompida</translation>
     </message>
     <message>
-        <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
-        <translation>Erro ao carregar wallet.dat: A Carteira requer uma nova versão da DAPScoin</translation>
+        <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
+        <translation>Erro ao carregar wallet.dat: A Carteira requer uma nova versão da DAPS</translation>
     </message>
     <message>
         <source>Error opening block database</source>

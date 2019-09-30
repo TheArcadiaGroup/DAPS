@@ -677,8 +677,8 @@
         <translation>Montri informon pri DAPS Kerno</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Modifi agordajn opciojn por DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Modifi agordajn opciojn por DAPS</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>

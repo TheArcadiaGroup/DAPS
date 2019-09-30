@@ -519,11 +519,11 @@
     </message>
     <message>
         <source>DAPS</source>
-        <translation>&amp;Rdzeń DAPScoin</translation>
+        <translation>&amp;Rdzeń DAPS</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
-        <translation>Wyślij monety do adresu DAPScoin</translation>
+        <translation>Wyślij monety do adresu DAPS</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
@@ -546,8 +546,8 @@
         <translation>Pokaż informacje o rdzeniu bitcoina</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Modyfikuj opcje konfiguracji DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Modyfikuj opcje konfiguracji DAPS</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -555,7 +555,7 @@
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
-        <translation>Zweryfikuj wiadomości by upewnić się, że zostały zatwierdzone z podanego adresu DAPScoin</translation>
+        <translation>Zweryfikuj wiadomości by upewnić się, że zostały zatwierdzone z podanego adresu DAPS</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -913,7 +913,7 @@ MultiWysyłlka: %1</translation>
     <name>HelpMessageDialog</name>
     <message>
         <source>DAPS</source>
-        <translation>&amp;Rdzeń DAPScoin</translation>
+        <translation>&amp;Rdzeń DAPS</translation>
     </message>
     </context>
 <context>
@@ -928,7 +928,7 @@ MultiWysyłlka: %1</translation>
     </message>
     <message>
         <source>DAPS</source>
-        <translation>&amp;Rdzeń DAPScoin</translation>
+        <translation>&amp;Rdzeń DAPS</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1228,7 +1228,7 @@ Proszę sprawdzić adres i spróbować ponownie</translation>
     </message>
     <message>
         <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
-        <translation>Język interfejsu użytkownika może być wybrany tutaj. Ustawienia ulegną zmianie po restarcie DAPScoin</translation>
+        <translation>Język interfejsu użytkownika może być wybrany tutaj. Ustawienia ulegną zmianie po restarcie DAPS</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
@@ -1951,7 +1951,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations </trans
     <name>SplashScreen</name>
     <message>
         <source>DAPS</source>
-        <translation>&amp;Rdzeń DAPScoin</translation>
+        <translation>&amp;Rdzeń DAPS</translation>
     </message>
     </context>
 <context>

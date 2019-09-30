@@ -645,7 +645,7 @@
         <translation>Pıvx Core hakkında bilgi göster</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
+        <source>Modify configuration options for DAPS</source>
         <translation>DAPS için yapılandırma seçeneklerini değiştirin</translation>
     </message>
     <message>

@@ -851,7 +851,7 @@
     </message>
     <message>
         <location line="+10"/>
-        <source>Modify configuration options for DAPScoin</source>
+        <source>Modify configuration options for DAPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6549,7 +6549,7 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+1"/>
-        <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
+        <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

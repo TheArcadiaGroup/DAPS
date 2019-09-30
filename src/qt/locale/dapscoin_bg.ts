@@ -634,7 +634,7 @@
         <translation>Информациза за DAPS Ядрото</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
+        <source>Modify configuration options for DAPS</source>
         <translation>Промени DAPS конфигурацията</translation>
     </message>
     <message>
