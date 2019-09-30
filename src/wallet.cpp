@@ -2279,7 +2279,7 @@ StakingStatusError CWallet::StakingCoinStatus(CAmount& minFee, CAmount& maxFee)
                 CAmount MaxFeeSpendingReserve = ComputeFee(1, 2, MAX_RING_SIZE);
                 CAmount estimatedFee = 0;
                 bool selectCoinRet = SelectCoinsMinConf(true, estimatedFee, ringSize, 2, nReserveBalance + MaxFeeSpendingReserve, 1, 6, vCoins, setCoinsRet, nValueRet);
-                if (!selectCoinRet) {
+                if (!selectCoinRet && nBalance < nReserveBalance + MINIMUM_STAKE_AMOUNT + maxFee) {
                     //fail to even select coins to consolidation for reserve funds => ask to reduce
                     return StakingStatusError::UNSTAKABLE_BALANCE_RESERVE_TOO_HIGH_CONSOLIDATION_FAILED;
                 } 
