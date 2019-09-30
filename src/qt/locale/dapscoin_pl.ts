@@ -227,8 +227,8 @@
         <translation>Zakodowany klucz:</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Zatwierdź wiadomość, aby udowodnić, że podany adres DAPScoin jest w twoim posiadaniu</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Zatwierdź wiadomość, aby udowodnić, że podany adres DAPS jest w twoim posiadaniu</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -522,7 +522,7 @@
         <translation>&amp;Rdzeń DAPScoin</translation>
     </message>
     <message>
-        <source>Send coins to a DAPScoin address</source>
+        <source>Send coins to a DAPS address</source>
         <translation>Wyślij monety do adresu DAPScoin</translation>
     </message>
     <message>
@@ -550,11 +550,11 @@
         <translation>Modyfikuj opcje konfiguracji DAPScoin</translation>
     </message>
     <message>
-        <source>Sign messages with your DAPScoin addresses to prove you own them</source>
+        <source>Sign messages with your DAPS addresses to prove you own them</source>
         <translation>Zatwierdź wiadomość z twoimi adresami DAPScoin, by udowodnić, że jesteś w ich posiadaniu</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified DAPScoin addresses</source>
+        <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
         <translation>Zweryfikuj wiadomości by upewnić się, że zostały zatwierdzone z podanego adresu DAPScoin</translation>
     </message>
     <message>
@@ -594,12 +594,12 @@
         <translation>Okno eksplorera bloków</translation>
     </message>
     <message>
-        <source>Show the DAPScoin help message to get a list with possible DAPScoin command-line options</source>
-        <translation>Pokaż wiadomość pomocy rdzenia DAPScoin, aby dostać listę możliwych opcji DAPScoin command-line</translation>
+        <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
+        <translation>Pokaż wiadomość pomocy rdzenia DAPScoin, aby dostać listę możliwych opcji DAPS command-line</translation>
     </message>
     <message>
         <source>DAPScoin client</source>
-        <translation>Rdzeń DAPScoin klient</translation>
+        <translation>Rdzeń DAPS klient</translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -1203,12 +1203,12 @@ Proszę sprawdzić adres i spróbować ponownie</translation>
         <translation>Zezwól na przychodzące połączenia</translation>
     </message>
     <message>
-        <source>Automatically start DAPScoin after logging in to the system.</source>
-        <translation>Automatycznie uruchom DAPScoin po zalogowaniu do systemu</translation>
+        <source>Automatically start DAPS after logging in to the system.</source>
+        <translation>Automatycznie uruchom DAPS po zalogowaniu do systemu</translation>
     </message>
     <message>
-        <source>&amp;Start DAPScoin on system login</source>
-        <translation>&amp;Uruchom DAPScoin podczas logowania do systemu</translation>
+        <source>&amp;Start DAPS on system login</source>
+        <translation>&amp;Uruchom DAPS podczas logowania do systemu</translation>
     </message>
     <message>
         <source>Whether to show coin control features or not.</source>
@@ -1237,8 +1237,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</source
 https://www.transifex.com/dapscoin-project/dapscoin-project-translations </translation>
     </message>
     <message>
-        <source>Connect to the DAPScoin network through a SOCKS5 proxy.</source>
-        <translation>Połącz z siecią DAPScoin poprzez SOCKS5 proxy.</translation>
+        <source>Connect to the DAPS network through a SOCKS5 proxy.</source>
+        <translation>Połącz z siecią DAPS poprzez SOCKS5 proxy.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -1476,8 +1476,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations </trans
         <translation>Liczba</translation>
     </message>
     <message>
-        <source>Enter a DAPScoin address (e.g. %1)</source>
-        <translation>Wprowadź adres DAPScoin (np. %1)</translation>
+        <source>Enter a DAPS address (e.g. %1)</source>
+        <translation>Wprowadź adres DAPS (np. %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -1915,8 +1915,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations </trans
         <translation>Alt+P</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Zatwierdź wiadomość, aby udowodnić, że podany adres DAPScoin jest w twoim posiadaniu</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Zatwierdź wiadomość, aby udowodnić, że podany adres DAPS jest w twoim posiadaniu</translation>
     </message>
     <message>
         <source>Clear &amp;All</source>

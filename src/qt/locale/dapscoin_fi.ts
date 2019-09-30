@@ -62,12 +62,12 @@
         <translation>Vastaanottavat osoitteet</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Nämä ovat sinun DAPScoin osoitteesi maksujen lähetystä varten. Tarkista aina määrä ja vastaanottava osoite ennen kolikoiden lähettämistä.</translation>
+        <source>These are your DAPS addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Nämä ovat sinun DAPS osoitteesi maksujen lähetystä varten. Tarkista aina määrä ja vastaanottava osoite ennen kolikoiden lähettämistä.</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Nämä ovat sinun DAPScoin osoitteesi maksujen vastaanottamista varten. On suositeltavaa käyttää uutta vastaanottavaa osoitetta jokaiselle uudelle rahansiirrolle.</translation>
+        <source>These are your DAPS addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Nämä ovat sinun DAPS osoitteesi maksujen vastaanottamista varten. On suositeltavaa käyttää uutta vastaanottavaa osoitetta jokaiselle uudelle rahansiirrolle.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -244,7 +244,7 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
         <translation>Osoite:</translation>
     </message>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
+        <source>The DAPS address to sign the message with</source>
         <translation>DAPScoin osoite, jolla viesti allekirjoitetaan</translation>
     </message>
     <message>
@@ -276,8 +276,8 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
         <translation>Kopioi nykyinen allekirjoitus järjestelmän leikepöydälle</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Allekirjoita viesti todistaaksesi, että omistat tämän DAPScoin osoitteen</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Allekirjoita viesti todistaaksesi, että omistat tämän DAPS osoitteen</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -300,12 +300,12 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
         <translation>Syötä BIP 38 salattu yksityisavain. Syötä salausavain laatikkoon. Paina Avaa Salaus tuottaaksesi yksityisavaimen. Kun avain on dekryptattu, painamalla "Import osoite" lisää tämän yksityisavaimen lompakkoon.</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
+        <source>The DAPS address the message was signed with</source>
         <translation>DAPScoin osoite, jolla viesti allekirjoitettiin</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>Vahvista että viesti on allekirjoitettu kyseessä olevalla DAPScoin osoitteella.</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>Vahvista että viesti on allekirjoitettu kyseessä olevalla DAPS osoitteella.</translation>
     </message>
     <message>
         <source>Decrypt &amp;Key</source>
@@ -595,8 +595,8 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
         <translation>DAPScoin Ydin</translation>
     </message>
     <message>
-        <source>Send coins to a DAPScoin address</source>
-        <translation>Lähetä kolikkoja DAPScoin osoitteeseen</translation>
+        <source>Send coins to a DAPS address</source>
+        <translation>Lähetä kolikkoja DAPS osoitteeseen</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
@@ -616,19 +616,19 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
     </message>
     <message>
         <source>Show information about DAPScoin</source>
-        <translation>Näytä tietoja DAPScoin Ytimestä</translation>
+        <translation>Näytä tietoja DAPS Ytimestä</translation>
     </message>
     <message>
         <source>Modify configuration options for DAPScoin</source>
         <translation>Muokkaa konfiguraatio vaihtoehtoja DAPScoin:lle</translation>
     </message>
     <message>
-        <source>Sign messages with your DAPScoin addresses to prove you own them</source>
+        <source>Sign messages with your DAPS addresses to prove you own them</source>
         <translation>Allekirjoita viestejä todistaaksesi, että omistat ne.</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified DAPScoin addresses</source>
-        <translation>Vahvista viestit varmistaaksesi, että ne allekirjoitettiin tietyllä DAPScoin osoiteella.</translation>
+        <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
+        <translation>Vahvista viestit varmistaaksesi, että ne allekirjoitettiin tietyllä DAPS osoiteella.</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -671,8 +671,8 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
         <translation>Lohkon tutkija näkymä</translation>
     </message>
     <message>
-        <source>Show the DAPScoin help message to get a list with possible DAPScoin command-line options</source>
-        <translation>Näytä DAPScoin Ydin apuviesti saadaksesi lista mahdollisista DAPScoin komentolinja komennoista.</translation>
+        <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
+        <translation>Näytä DAPS Ydin apuviesti saadaksesi lista mahdollisista DAPS komentolinja komennoista.</translation>
     </message>
     <message>
         <source>DAPScoin client</source>
@@ -953,8 +953,8 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
         <translation>Tervetuloa</translation>
     </message>
     <message>
-        <source>Welcome to DAPScoin.</source>
-        <translation>Tervetuloa DAPScoin Ytimeen.</translation>
+        <source>Welcome to DAPS.</source>
+        <translation>Tervetuloa DAPS Ytimeen.</translation>
     </message>
     <message>
         <source>DAPScoin</source>
@@ -1167,7 +1167,7 @@ Please check the address and try again.</source>
     </message>
     <message>
         <source>This option is moderately fast and will cost about 0.05 DAPS to anonymize 10000 DAPS</source>
-        <translation>Tämä vaihtoehto on suhteellisen nopea ja maksaa 0.05 DAPScoin anonymoidaksesi 10000 DAPScoin</translation>
+        <translation>Tämä vaihtoehto on suhteellisen nopea ja maksaa 0.05 DAPS anonymoidaksesi 10000 DAPScoin</translation>
     </message>
     <message>
         <source>This is the slowest and most secure option. Using maximum anonymity will cost</source>
@@ -1224,12 +1224,12 @@ Please check the address and try again.</source>
         <translation>Ekspertti</translation>
     </message>
     <message>
-        <source>Automatically start DAPScoin after logging in to the system.</source>
-        <translation>Automaattisesti käynnistä DAPScoin kun kirjaudut sisään.</translation>
+        <source>Automatically start DAPS after logging in to the system.</source>
+        <translation>Automaattisesti käynnistä DAPS kun kirjaudut sisään.</translation>
     </message>
     <message>
-        <source>&amp;Start DAPScoin on system login</source>
-        <translation>&amp;Aloita DAPScoin järjestelmän kirjautumisessa</translation>
+        <source>&amp;Start DAPS on system login</source>
+        <translation>&amp;Aloita DAPS järjestelmän kirjautumisessa</translation>
     </message>
     <message>
         <source>Enable coin &amp;control features</source>
@@ -1252,8 +1252,8 @@ Please check the address and try again.</source>
         <translation>Käyttöliittymän kielen voi säätää täällä. Tämä asetus tulee voimaan uudelleenkäynnistettyäsi lompakon.</translation>
     </message>
     <message>
-        <source>Connect to the DAPScoin network through a SOCKS5 proxy.</source>
-        <translation>Yhdistä DAPScoin verkkoon SOCKS5 proxyn kautta</translation>
+        <source>Connect to the DAPS network through a SOCKS5 proxy.</source>
+        <translation>Yhdistä DAPS verkkoon SOCKS5 proxyn kautta</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -1557,8 +1557,8 @@ Please check the address and try again.</source>
         <translation>Lohko ketju</translation>
     </message>
     <message>
-        <source>Open the DAPScoin debug log file from the current data directory. This can take a few seconds for large log files.</source>
-        <translation>Avaa DAPScoin debug loki nykyisestä sijainnista. Tämä voi kestää muutaman sekunnin suurille lokeille</translation>
+        <source>Open the DAPS debug log file from the current data directory. This can take a few seconds for large log files.</source>
+        <translation>Avaa DAPS debug loki nykyisestä sijainnista. Tämä voi kestää muutaman sekunnin suurille lokeille</translation>
     </message>
     <message>
         <source>Number of Masternodes</source>
@@ -1669,8 +1669,8 @@ Please check the address and try again.</source>
         <translation>Ulos:</translation>
     </message>
     <message>
-        <source>Welcome to the DAPScoin RPC console.</source>
-        <translation>Tervetuloa DAPScoin RPC konsoliin.</translation>
+        <source>Welcome to the DAPS RPC console.</source>
+        <translation>Tervetuloa DAPS RPC konsoliin.</translation>
     </message>
     <message>
         <source>never</source>
@@ -1712,12 +1712,12 @@ Please check the address and try again.</source>
         <translation>Vaihtoehtoinen nimike uudelle vastaanottavalle osoitteelle</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the DAPScoin network.</source>
-        <translation>Vaihtoehtoinen viesti joka liitetään maksupyyntöön, joka näytetään kun pyyntö avataan. Huomio: Viestiä ei lähetetä maksun mukana DAPScoin verkolle.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the DAPS network.</source>
+        <translation>Vaihtoehtoinen viesti joka liitetään maksupyyntöön, joka näytetään kun pyyntö avataan. Huomio: Viestiä ei lähetetä maksun mukana DAPS verkolle.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the DAPScoin network.</source>
-        <translation>Vaihtoehtoinen viesti, joka liitetään maksupyyntöö, joka näytetään kun pyyntö avataan. &lt;br&gt; Huomio: Tätä viestiä ei lähetetä maksun mukana DAPScoin  verkolle.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the DAPS network.</source>
+        <translation>Vaihtoehtoinen viesti, joka liitetään maksupyyntöö, joka näytetään kun pyyntö avataan. &lt;br&gt; Huomio: Tätä viestiä ei lähetetä maksun mukana DAPS  verkolle.</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -1993,8 +1993,8 @@ Please check the address and try again.</source>
         <translation>käyttää</translation>
     </message>
     <message>
-        <source>Warning: Invalid DAPScoin address</source>
-        <translation>Varoitus: Virheellinen DAPScoin osoite</translation>
+        <source>Warning: Invalid DAPS address</source>
+        <translation>Varoitus: Virheellinen DAPS osoite</translation>
     </message>
     <message>
         <source>Are you sure you want to send?</source>
@@ -2040,7 +2040,7 @@ Please check the address and try again.</source>
         <translation>Tämä on normaali maksu.</translation>
     </message>
     <message>
-        <source>The DAPScoin address to send the payment to</source>
+        <source>The DAPS address to send the payment to</source>
         <translation>DAPScoin osoite johon maksu lähetetään</translation>
     </message>
     <message>
@@ -2083,7 +2083,7 @@ Please check the address and try again.</source>
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>DAPScoin is shutting down...</source>
+        <source>DAPS is shutting down...</source>
         <translation>DAPScoin core sammuu...</translation>
     </message>
     <message>
@@ -2102,7 +2102,7 @@ Please check the address and try again.</source>
         <translation>Voit allekirjoittaa viestejä osoitteillasi todistaaksesi, että omistat ne. Ole varovainen ettet allekirjoita mitään kummallista, sillä kalasteluyritykset saattavat yrittää huijata sinut luovuttamaan tietoja. Allekirjoita vain täysin yksityiskohtaisia sanomia, jotka hyväksyt.</translation>
     </message>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
+        <source>The DAPS address to sign the message with</source>
         <translation>DAPScoin osoite, jolla viesti allekirjoitetaan</translation>
     </message>
     <message>
@@ -2134,16 +2134,16 @@ Please check the address and try again.</source>
         <translation>Kopioi nykyinen allekirjoitus järjestelmän leikepöydälle</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Allekirjoita viesti todistaaksesi, että omistat tämän DAPScoin osoitteen</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Allekirjoita viesti todistaaksesi, että omistat tämän DAPS osoitteen</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
+        <source>The DAPS address the message was signed with</source>
         <translation>DAPScoin osoite, jolla viesti allekirjoitettiin</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>Vahvista että viesti on allekirjoitettu kyseessä olevalla DAPScoin osoitteella.</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>Vahvista että viesti on allekirjoitettu kyseessä olevalla DAPS osoitteella.</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>

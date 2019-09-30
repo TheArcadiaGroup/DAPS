@@ -1597,7 +1597,7 @@ bool BindListenPort(const CService &addrBind, string &strError, bool fWhiteliste
     if (::bind(hListenSocket, (struct sockaddr *) &sockaddr, len) == SOCKET_ERROR) {
         int nErr = WSAGetLastError();
         if (nErr == WSAEADDRINUSE)
-            strError = strprintf(_("Unable to bind to %s on this computer. DAPScoin is probably already running."),
+            strError = strprintf(_("Unable to bind to %s on this computer. DAPS is probably already running."),
                                  addrBind.ToString());
         else
             strError = strprintf(_("Unable to bind to %s on this computer (bind returned error %s)"),

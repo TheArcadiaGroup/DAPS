@@ -12,7 +12,7 @@
 #include "protocol.h"
 
 //
-// Bootup the Masternode, look for a 1000000 DAPScoin input and register on the network
+// Bootup the Masternode, look for a 1000000 DAPS input and register on the network
 //
 void CActiveMasternode::ManageStatus()
 {

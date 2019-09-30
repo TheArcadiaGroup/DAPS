@@ -115,7 +115,7 @@
         <translation>Alt+P</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
+        <source>The DAPS address the message was signed with</source>
         <translation>DAPScoin adresa s kojom je potpisana poruka</translation>
     </message>
     <message>
@@ -612,7 +612,7 @@
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>DAPScoin is shutting down...</source>
+        <source>DAPS is shutting down...</source>
         <translation>DAPScoin se gasi...</translation>
     </message>
     </context>
@@ -635,7 +635,7 @@
         <translation>Alt+P</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
+        <source>The DAPS address the message was signed with</source>
         <translation>DAPScoin adresa s kojom je potpisana poruka</translation>
     </message>
     <message>

@@ -62,12 +62,12 @@
         <translation>Prijímacia adresa</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Toto sú vaše DAPScoin adresy na odosielanie platieb. Pred odoslaním vždy skontrolujte výšku a adresu prijemcu.</translation>
+        <source>These are your DAPS addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Toto sú vaše DAPS adresy na odosielanie platieb. Pred odoslaním vždy skontrolujte výšku a adresu prijemcu.</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Toto sú vaše DAPScoin adresy na prijímanie platieb. Pre každú transakciu sa odporúča použiť novú prijímaciu adresu.</translation>
+        <source>These are your DAPS addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Toto sú vaše DAPS adresy na prijímanie platieb. Pre každú transakciu sa odporúča použiť novú prijímaciu adresu.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -247,7 +247,7 @@
         <translation>Adresa:</translation>
     </message>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
+        <source>The DAPS address to sign the message with</source>
         <translation>Adresa DAPScoin, ktorou chcete správu podpísať</translation>
     </message>
     <message>
@@ -279,8 +279,8 @@
         <translation>Skopírujte aktuálny podpis do schránky</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Podpíšte správu, aby ste preukázali, že ste vlastníkom tejto DAPScoin adresy</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Podpíšte správu, aby ste preukázali, že ste vlastníkom tejto DAPS adresy</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -303,12 +303,12 @@
         <translation>Zadajte súkromný kľúč zašifrovaný BIP 38. Zadajte prístupovú frázu do stredného poľa. Kliknite na Dešifrovať kľúč, ak chcete vypočítať privátny kľúč. Po dešifrovaní kľúča pridáte do peňaženky tento súkromný kľúč kliknutím na položku 'Importovať adresu'.</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
+        <source>The DAPS address the message was signed with</source>
         <translation>DAPScoin adresa, ktorou bola správa podpísaná</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>Skontrolujte správu, aby ste sa uistili, že bola podpísaná zadanou DAPScoin adresou</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>Skontrolujte správu, aby ste sa uistili, že bola podpísaná zadanou DAPS adresou</translation>
     </message>
     <message>
         <source>Decrypt &amp;Key</source>
@@ -602,7 +602,7 @@
         <translation>DAPScoin</translation>
     </message>
     <message>
-        <source>Send coins to a DAPScoin address</source>
+        <source>Send coins to a DAPS address</source>
         <translation>Odoslať mince na adresu DAPScoin</translation>
     </message>
     <message>
@@ -630,12 +630,12 @@
         <translation>Zmeňte možnosti konfigurácie pre DAPScoin</translation>
     </message>
     <message>
-        <source>Sign messages with your DAPScoin addresses to prove you own them</source>
+        <source>Sign messages with your DAPS addresses to prove you own them</source>
         <translation>Podpíšte správy pomocou adresy DAPScoin, aby ste preukázali, že ich vlastníte</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified DAPScoin addresses</source>
-        <translation>Overte správy, aby sa zabezpečilo, že boli podpísané zadanými DAPScoin adresami</translation>
+        <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
+        <translation>Overte správy, aby sa zabezpečilo, že boli podpísané zadanými DAPS adresami</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -678,8 +678,8 @@
         <translation>Okno blockchain prehliadača</translation>
     </message>
     <message>
-        <source>Show the DAPScoin help message to get a list with possible DAPScoin command-line options</source>
-        <translation>Zobraziť pomocnú správu programu DAPScoin a získajte zoznam možností príkazového riadka DAPScoin</translation>
+        <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
+        <translation>Zobraziť pomocnú správu programu DAPS a získajte zoznam možností príkazového riadka DAPScoin</translation>
     </message>
     <message>
         <source>DAPScoin client</source>
@@ -1139,7 +1139,7 @@ MultiSend: %1</translation>
 <context>
     <name>SignVerifyMessageDialog</name>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
+        <source>The DAPS address to sign the message with</source>
         <translation>Adresa DAPScoin, ktorou chcete správu podpísať</translation>
     </message>
     <message>
@@ -1163,16 +1163,16 @@ MultiSend: %1</translation>
         <translation>Skopírujte aktuálny podpis do schránky</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Podpíšte správu, aby ste preukázali, že ste vlastníkom tejto DAPScoin adresy</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Podpíšte správu, aby ste preukázali, že ste vlastníkom tejto DAPS adresy</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
+        <source>The DAPS address the message was signed with</source>
         <translation>DAPScoin adresa, ktorou bola správa podpísaná</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>Skontrolujte správu, aby ste sa uistili, že bola podpísaná zadanou DAPScoin adresou</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>Skontrolujte správu, aby ste sa uistili, že bola podpísaná zadanou DAPS adresou</translation>
     </message>
     <message>
         <source>Reset all sign message fields</source>

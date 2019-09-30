@@ -155,7 +155,7 @@ ShutdownWindow::ShutdownWindow(QWidget* parent, Qt::WindowFlags f) : QWidget(par
 {
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(new QLabel(
-        tr("DAPScoin is shutting down...") + "<br /><br />" +
+        tr("DAPS is shutting down...") + "<br /><br />" +
         tr("Do not shut down the computer until this window disappears.")));
     setLayout(layout);
 }

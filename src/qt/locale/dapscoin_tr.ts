@@ -62,12 +62,12 @@
         <translation>Alıcı Adres</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Bunlar ödemeleri göndermek için olan DAPScoin adreslerinizdir.Coinleri göndermeden önce her zaman gönderilen miktarı ve adresi kontrol edin</translation>
+        <source>These are your DAPS addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Bunlar ödemeleri göndermek için olan DAPS adreslerinizdir.Coinleri göndermeden önce her zaman gönderilen miktarı ve adresi kontrol edin</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Bunlar ödemeleri almak için olan DAPScoin adreslerinizdirHer işlem için yeni bir adres kullanmanız önerilir.</translation>
+        <source>These are your DAPS addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Bunlar ödemeleri almak için olan DAPS adreslerinizdirHer işlem için yeni bir adres kullanmanız önerilir.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -251,8 +251,8 @@
         <translation>adres</translation>
     </message>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
-        <translation>Ile mesaj imzalamak için DAPScoin adresi
+        <source>The DAPS address to sign the message with</source>
+        <translation>Ile mesaj imzalamak için DAPS adresi
 </translation>
     </message>
     <message>
@@ -289,8 +289,8 @@
 </translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Bu DAPScoin adresinin sahibi olduğunuzu kanıtlamak için mesajı imzala
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Bu DAPS adresinin sahibi olduğunuzu kanıtlamak için mesajı imzala
 </translation>
     </message>
     <message>
@@ -316,12 +316,12 @@
         <translation>BIP 38 şifreli özel anahtarını girin. Orta kutuya şifreyi  girin. Özel anahtarı hesaplamak için Anahtarın Çözülmesini tıklayın. Anahtar çözüldükten sonra 'Alma Adresi'ni tıklamak, bu özel anahtarı cüzdana ekleyecektir.</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
-        <translation>Mesajın imzalandığı DAPScoin adresi</translation>
+        <source>The DAPS address the message was signed with</source>
+        <translation>Mesajın imzalandığı DAPS adresi</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>Belirtilen DAPScoin adresi ile imzalanmış olduğundan emin olmak için iletiyi doğrulayın</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>Belirtilen DAPS adresi ile imzalanmış olduğundan emin olmak için iletiyi doğrulayın</translation>
     </message>
     <message>
         <source>Decrypt &amp;Key</source>
@@ -617,8 +617,8 @@
         <translation>DAPScoin CORE</translation>
     </message>
     <message>
-        <source>Send coins to a DAPScoin address</source>
-        <translation>Koinleri DAPScoin adresine gönder</translation>
+        <source>Send coins to a DAPS address</source>
+        <translation>Koinleri DAPS adresine gönder</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
@@ -649,12 +649,12 @@
         <translation>DAPScoin için yapılandırma seçeneklerini değiştirin</translation>
     </message>
     <message>
-        <source>Sign messages with your DAPScoin addresses to prove you own them</source>
-        <translation>Sahip olduğunuzu kanıtlamak için mesajlarınızı DAPScoin adresleriyle imzalayın</translation>
+        <source>Sign messages with your DAPS addresses to prove you own them</source>
+        <translation>Sahip olduğunuzu kanıtlamak için mesajlarınızı DAPS adresleriyle imzalayın</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified DAPScoin addresses</source>
-        <translation>Belirtilen DAPScoin adresleriyle imzalanmış olduklarından emin olmak için iletileri doğrulayın</translation>
+        <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
+        <translation>Belirtilen DAPS adresleriyle imzalanmış olduklarından emin olmak için iletileri doğrulayın</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -698,12 +698,12 @@
         <translation>Kaşif penceresini engelle</translation>
     </message>
     <message>
-        <source>Show the DAPScoin help message to get a list with possible DAPScoin command-line options</source>
-        <translation>Olası DAPScoin komut satırı seçeneklerine sahip bir liste almak için DAPScoin yardım mesajını gösterin</translation>
+        <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
+        <translation>Olası DAPS komut satırı seçeneklerine sahip bir liste almak için DAPS yardım mesajını gösterin</translation>
     </message>
     <message>
         <source>DAPScoin client</source>
-        <translation>DAPScoin istemci</translation>
+        <translation>DAPS istemci</translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -1140,7 +1140,7 @@ Adres: %4</translation>
         <translation>Hoşgeldiniz</translation>
     </message>
     <message>
-        <source>Welcome to DAPScoin.</source>
+        <source>Welcome to DAPS.</source>
         <translation>DAPScoin'a hoşgeldiniz.</translation>
     </message>
     <message>
@@ -1515,8 +1515,8 @@ Adres: %4</translation>
 <context>
     <name>SignVerifyMessageDialog</name>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
-        <translation>Ile mesaj imzalamak için DAPScoin adresi
+        <source>The DAPS address to sign the message with</source>
+        <translation>Ile mesaj imzalamak için DAPS adresi
 </translation>
     </message>
     <message>
@@ -1545,17 +1545,17 @@ Adres: %4</translation>
 </translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Bu DAPScoin adresinin sahibi olduğunuzu kanıtlamak için mesajı imzala
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Bu DAPS adresinin sahibi olduğunuzu kanıtlamak için mesajı imzala
 </translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
-        <translation>Mesajın imzalandığı DAPScoin adresi</translation>
+        <source>The DAPS address the message was signed with</source>
+        <translation>Mesajın imzalandığı DAPS adresi</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>Belirtilen DAPScoin adresi ile imzalanmış olduğundan emin olmak için iletiyi doğrulayın</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>Belirtilen DAPS adresi ile imzalanmış olduğundan emin olmak için iletiyi doğrulayın</translation>
     </message>
     <message>
         <source>Reset all sign message fields</source>

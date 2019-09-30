@@ -19,7 +19,7 @@ If you are running an older version, shut it down. Wait until it has completely 
 Compatibility
 ==============
 
-DAPScoin is extensively tested on multiple operating systems using
+DAPS is extensively tested on multiple operating systems using
 the Linux kernel, macOS 10.8+, and Windows Vista and later.
 
 Microsoft ended support for Windows XP on [April 8th, 2014](https://www.microsoft.com/en-us/WindowsForBusiness/end-of-xp-support),
@@ -40,7 +40,7 @@ Notable Changes
 
 Automated Database Corruption Repair
 ---------------------
-There have been cases of blockchain database corruption that can occur when DAPScoin client is not closed gracefully. The most common cases of corruption have been identified and the wallet will now automatically fix most of these corruptions. Certain corruption states are still unable to be fixed, but now provide more detailed error messages to the user as well as prompting the user to reindex their database.
+There have been cases of blockchain database corruption that can occur when DAPS client is not closed gracefully. The most common cases of corruption have been identified and the wallet will now automatically fix most of these corruptions. Certain corruption states are still unable to be fixed, but now provide more detailed error messages to the user as well as prompting the user to reindex their database.
 
 More Accurate Error Messages
 ---------------------

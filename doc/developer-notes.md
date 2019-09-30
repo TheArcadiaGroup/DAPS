@@ -123,7 +123,7 @@ are testing multi-machine code that needs to operate across the internet.
 
 **DEBUG_LOCKORDER**
 
-DAPScoin is a multithreaded application, and deadlocks or other multithreading bugs
+DAPS is a multithreaded application, and deadlocks or other multithreading bugs
 can be very difficult to track down. Compiling with -DDEBUG_LOCKORDER (configure
 CXXFLAGS="-DDEBUG_LOCKORDER -g") inserts run-time checks to keep track of which locks
 are held, and adds warnings to the debug.log file if inconsistencies are detected.
@@ -212,7 +212,7 @@ Development guidelines
 ============================
 
 A few non-style-related recommendations for developers, as well as points to
-pay attention to for reviewers of DAPScoin code.
+pay attention to for reviewers of DAPS code.
 
 General DAPScoin
 ----------------------
@@ -324,7 +324,7 @@ Strings and formatting
 
 - For `strprintf`, `LogPrint`, `LogPrintf` formatting characters don't need size specifiers
 
-  - *Rationale*: DAPScoin uses tinyformat, which is type safe. Leave them out to avoid confusion
+  - *Rationale*: DAPS uses tinyformat, which is type safe. Leave them out to avoid confusion
 
 Threads and synchronization
 ----------------------------

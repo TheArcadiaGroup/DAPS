@@ -62,12 +62,12 @@
         <translation>받는 주소</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>이 주소들은 전송할 DAPScoin 주소입니다. 송금하기 전 항상 금액과 전송할 주소를 확인해주세요.</translation>
+        <source>These are your DAPS addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>이 주소들은 전송할 DAPS 주소입니다. 송금하기 전 항상 금액과 전송할 주소를 확인해주세요.</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>이 주소들은 전송 받을 DAPScoin 주소입니다. 각 트랜잭션별로 새로운 입금 주소를 사용하는 것이 좋습니다.</translation>
+        <source>These are your DAPS addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>이 주소들은 전송 받을 DAPS 주소입니다. 각 트랜잭션별로 새로운 입금 주소를 사용하는 것이 좋습니다.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -247,8 +247,8 @@
         <translation>주소:</translation>
     </message>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
-        <translation>메세지를 서명하기 위한 DAPScoin 주소</translation>
+        <source>The DAPS address to sign the message with</source>
+        <translation>메세지를 서명하기 위한 DAPS 주소</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -279,8 +279,8 @@
         <translation>현재 서명을 시스템 클립 보드에 복사</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>이 DAPScoin 주소를 소유하고 있다는 것을 증명하기 위해 메세지에 서명하십시오</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>이 DAPS 주소를 소유하고 있다는 것을 증명하기 위해 메세지에 서명하십시오</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -303,12 +303,12 @@
         <translation>BIP 38 암호화 된 개인 키를 입력하십시오. 중간 입력창에 암호를 입력하십시오. 키를 암호해제 후 '주소 가져오기'를 클릭하면 개인 키가 지갑에 추가됩니다.</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
-        <translation>메세지에 서명된 DAPScoin 주소</translation>
+        <source>The DAPS address the message was signed with</source>
+        <translation>메세지에 서명된 DAPS 주소</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>메세지가 지정된 DAPScoin 주소로 서명되었는지 확인해주세요</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>메세지가 지정된 DAPS 주소로 서명되었는지 확인해주세요</translation>
     </message>
     <message>
         <source>Decrypt &amp;Key</source>
@@ -634,7 +634,7 @@
         <translation>DAPScoin</translation>
     </message>
     <message>
-        <source>Send coins to a DAPScoin address</source>
+        <source>Send coins to a DAPS address</source>
         <translation>DAPScoin 주소로 전송하기</translation>
     </message>
     <message>
@@ -666,12 +666,12 @@
         <translation>DAPScoin에 대한 구성 옵션 수정</translation>
     </message>
     <message>
-        <source>Sign messages with your DAPScoin addresses to prove you own them</source>
+        <source>Sign messages with your DAPS addresses to prove you own them</source>
         <translation>DAPScoin 주소로 메시지에 서명하여 소유하고 있음을 증명하십시오.</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified DAPScoin addresses</source>
-        <translation>메시지가 지정된 DAPScoin 주소로 서명되었는지 확인합니다.</translation>
+        <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
+        <translation>메시지가 지정된 DAPS 주소로 서명되었는지 확인합니다.</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -714,16 +714,16 @@
         <translation>블록 탐색 창</translation>
     </message>
     <message>
-        <source>Show the DAPScoin help message to get a list with possible DAPScoin command-line options</source>
-        <translation>DAPScoin 도움말 메세지를 표시하여 사용 가능한 DAPScoin 명령행 옵션 목록 표시</translation>
+        <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
+        <translation>DAPScoin 도움말 메세지를 표시하여 사용 가능한 DAPS 명령행 옵션 목록 표시</translation>
     </message>
     <message>
         <source>DAPScoin client</source>
         <translation>DAPScoin 클라이언트</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to DAPScoin network</source>
-        <translation><numerusform>%n 개 DAPScoin 네트웍에 연결</numerusform></translation>
+        <source>%n active connection(s) to DAPS network</source>
+        <translation><numerusform>%n 개 DAPS 네트웍에 연결</numerusform></translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -1166,8 +1166,8 @@ Address: %4
         <translation>보내는 주소 수정</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid DAPScoin address.</source>
-        <translation>입력된 주소 "%1"는 올바른 DAPScoin 주소가 아닙니다.</translation>
+        <source>The entered address "%1" is not a valid DAPS address.</source>
+        <translation>입력된 주소 "%1"는 올바른 DAPS 주소가 아닙니다.</translation>
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
@@ -1267,16 +1267,16 @@ Address: %4
         <translation>환영합니다</translation>
     </message>
     <message>
-        <source>Welcome to DAPScoin.</source>
+        <source>Welcome to DAPS.</source>
         <translation>DAPScoin에 오신 것을 환영합니다.</translation>
     </message>
     <message>
-        <source>As this is the first time the program is launched, you can choose where DAPScoin will store its data.</source>
+        <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
         <translation>이 프로그램이 처음 실행되었으므로 DAPScoin가 데이터를 저장할 위치를 선택할 수 있습니다.</translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPScoin block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin는 DAPScoin 블록체인을 다운로드하여 저장합니다. 최소 %1GB의 데이터가 디렉토리에 저장되며 시간이 지날수록 증가합니다. 또한 지갑도 해당 디렉토리에 저장됩니다.</translation>
+        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>DAPScoin는 DAPS 블록체인을 다운로드하여 저장합니다. 최소 %1GB의 데이터가 디렉토리에 저장되며 시간이 지날수록 증가합니다. 또한 지갑도 해당 디렉토리에 저장됩니다.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -1429,12 +1429,12 @@ Address: %4
         <translation>보낼 주소 입력</translation>
     </message>
     <message>
-        <source>MultiSend allows you to automatically send up to 100% of your stake or masternode reward to a list of other DAPScoin addresses after it matures.
-To Add: enter percentage to give and DAPScoin address to add to the MultiSend vector.
+        <source>MultiSend allows you to automatically send up to 100% of your stake or masternode reward to a list of other DAPS addresses after it matures.
+To Add: enter percentage to give and DAPS address to add to the MultiSend vector.
 To Delete: Enter address to delete and press delete.
 MultiSend will not be activated unless you have clicked Activate</source>
-        <translation>다중전송을 사용하면 성취 한 뒤 다른 DAPScoin 주소 목록에 최대 100% 스테이크 또는 마스터노드 보상을 자동으로 보낼 수 있습니다.
-추가하려면 : 부여 할 백분율과 다중전송 벡터에 추가 할 DAPScoin 주소를 입력하십시오.
+        <translation>다중전송을 사용하면 성취 한 뒤 다른 DAPS 주소 목록에 최대 100% 스테이크 또는 마스터노드 보상을 자동으로 보낼 수 있습니다.
+추가하려면 : 부여 할 백분율과 다중전송 벡터에 추가 할 DAPS 주소를 입력하십시오.
 삭제하려면 삭제할 주소를 입력하고 삭제를 누릅니다.
 활성화를 클릭하지 않으면 다중전송이 활성화되지 않습니다.</translation>
     </message>
@@ -1753,8 +1753,8 @@ Please check the address and try again.</source>
         <translation>확인되지 않은 변경사항을 사용하지 않도록 설정하면 해당 트랜잭션에 하나 이상의 컨펌이 진행되야&lt;br/&gt;트랜잭션에 변경사항을 적용할 수 있습니다.&lt;br/&gt;또한 이것은 잔액 계산 방식에도 영향을 줍니다.</translation>
     </message>
     <message>
-        <source>Automatically open the DAPScoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>라우터에서 DAPScoin 클라이언트 포트를 자동으로 엽니다. 이 기능은 라우터가 UPnP를 지원하고 활성화 된 경우에만 사용할 수 있습니다.</translation>
+        <source>Automatically open the DAPS client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>라우터에서 DAPS 클라이언트 포트를 자동으로 엽니다. 이 기능은 라우터가 UPnP를 지원하고 활성화 된 경우에만 사용할 수 있습니다.</translation>
     </message>
     <message>
         <source>Accept connections from outside</source>
@@ -1773,12 +1773,12 @@ Please check the address and try again.</source>
         <translation>전문적</translation>
     </message>
     <message>
-        <source>Automatically start DAPScoin after logging in to the system.</source>
+        <source>Automatically start DAPS after logging in to the system.</source>
         <translation>시스템 로그인 후 DAPScoin을 자동으로 시작합니다.</translation>
     </message>
     <message>
-        <source>&amp;Start DAPScoin on system login</source>
-        <translation>&amp;시스템 로그인시 DAPScoin 시작</translation>
+        <source>&amp;Start DAPS on system login</source>
+        <translation>&amp;시스템 로그인시 DAPS 시작</translation>
     </message>
     <message>
         <source>Whether to show coin control features or not.</source>
@@ -1835,8 +1835,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>선호하는 자동생성 zDAPS 디노미네이션 </translation>
     </message>
     <message>
-        <source>Connect to the DAPScoin network through a SOCKS5 proxy.</source>
-        <translation>SOCKS5 프록시를 통해 DAPScoin 네트워크에 연결해주세요.</translation>
+        <source>Connect to the DAPS network through a SOCKS5 proxy.</source>
+        <translation>SOCKS5 프록시를 통해 DAPS 네트워크에 연결해주세요.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -1994,8 +1994,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>아직 완료되지 않은 스테이크 및 마스터노드 보상</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPScoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>표시된 정보가 오래되었을 수 있습니다. 연결이 완료되면 지갑이 DAPScoin 네트워크와 자동으로 동기화될 예정이지만, 아직 해당 프로세스가 완료되지 않았습니다.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPS network after a connection is established, but this process has not completed yet.</source>
+        <translation>표시된 정보가 오래되었을 수 있습니다. 연결이 완료되면 지갑이 DAPS 네트워크와 자동으로 동기화될 예정이지만, 아직 해당 프로세스가 완료되지 않았습니다.</translation>
     </message>
     <message>
         <source>Unconfirmed transactions to watch-only addresses</source>
@@ -2109,8 +2109,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>DAPScoin을 시작할 수 없습니다: 결제하기 위한 클릭 처리</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid DAPScoin address or malformed URI parameters.</source>
-        <translation>URI를 분석할 수 없습니다! 이는 잘못된 DAPScoin 주소 또는 URI 매개변수 손상으로 인해 발생할 수 있습니다.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid DAPS address or malformed URI parameters.</source>
+        <translation>URI를 분석할 수 없습니다! 이는 잘못된 DAPS 주소 또는 URI 매개변수 손상으로 인해 발생할 수 있습니다.</translation>
     </message>
     <message>
         <source>Payment request file cannot be read! This can be caused by an invalid payment request file.</source>
@@ -2203,8 +2203,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>제로코인 관리:</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPScoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>표시된 정보가 오래되었을 수 있습니다. 연결이 완료되면 지갑이 DAPScoin 네트워크와 자동으로 동기화될 예정이지만, 아직 해당 프로세스가 완료되지 않았습니다.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPS network after a connection is established, but this process has not completed yet.</source>
+        <translation>표시된 정보가 오래되었을 수 있습니다. 연결이 완료되면 지갑이 DAPS 네트워크와 자동으로 동기화될 예정이지만, 아직 해당 프로세스가 완료되지 않았습니다.</translation>
     </message>
     <message>
         <source>Enter an amount of Daps to convert to zDaps</source>
@@ -2311,8 +2311,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>지불 &amp;대상:</translation>
     </message>
     <message>
-        <source>The DAPScoin address to send the payment to. Creates local payment to yourself when empty.</source>
-        <translation>DAPS를 전송할 DAPScoin 주소입니다. 비어있을 때 자신에게 지불할 주소를 생성합니다.</translation>
+        <source>The DAPS address to send the payment to. Creates local payment to yourself when empty.</source>
+        <translation>DAPS를 전송할 DAPS 주소입니다. 비어있을 때 자신에게 지불할 주소를 생성합니다.</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -2570,7 +2570,7 @@ Please be patient...</source>
     </message>
     <message>
         <source>Invalid Dapscoin Address</source>
-        <translation>잘못된 DAPScoin 주소</translation>
+        <translation>잘못된 DAPS 주소</translation>
     </message>
     <message>
         <source>Invalid Send Amount</source>
@@ -2671,7 +2671,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>금액</translation>
     </message>
     <message>
-        <source>Enter a DAPScoin address (e.g. %1)</source>
+        <source>Enter a DAPS address (e.g. %1)</source>
         <translation>DAPScoin 주소를 입력하세요 (예 %1)</translation>
     </message>
     <message>
@@ -2809,8 +2809,8 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>블록체인</translation>
     </message>
     <message>
-        <source>Open the DAPScoin debug log file from the current data directory. This can take a few seconds for large log files.</source>
-        <translation>현재 데이터 디렉토리에서 DAPScoin 디버그 로그 파일을 엽니다. 로그 파일이 클 경우, 약간의 시간이 걸릴 수 있습니다.</translation>
+        <source>Open the DAPS debug log file from the current data directory. This can take a few seconds for large log files.</source>
+        <translation>현재 데이터 디렉토리에서 DAPS 디버그 로그 파일을 엽니다. 로그 파일이 클 경우, 약간의 시간이 걸릴 수 있습니다.</translation>
     </message>
     <message>
         <source>Number of Masternodes</source>
@@ -2990,7 +2990,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>출력:</translation>
     </message>
     <message>
-        <source>Welcome to the DAPScoin RPC console.</source>
+        <source>Welcome to the DAPS RPC console.</source>
         <translation>DAPScoin RPC 콘솔에 오신 것을 환영합니다.</translation>
     </message>
     <message>
@@ -3069,12 +3069,12 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>새로운 수신 주소와 연결할 선택적 라벨.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the DAPScoin network.</source>
-        <translation>요청이 열릴 때 표시되는 결제 요청에 첨부할 선택적 메세지 입니다. 참고: DAPScoin 네트워크를 통한 결제는 메세지가 전송되지 않습니다.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the DAPS network.</source>
+        <translation>요청이 열릴 때 표시되는 결제 요청에 첨부할 선택적 메세지 입니다. 참고: DAPS 네트워크를 통한 결제는 메세지가 전송되지 않습니다.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the DAPScoin network.</source>
-        <translation>요청이 열릴 때 표시되는 결제 요청에 첨부할 선택적 메세지 입니다.&lt;br&gt;참고: DAPScoin 네트워크를 통한 결제는 메세지가 전송되지 않습니다.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the DAPS network.</source>
+        <translation>요청이 열릴 때 표시되는 결제 요청에 첨부할 선택적 메세지 입니다.&lt;br&gt;참고: DAPS 네트워크를 통한 결제는 메세지가 전송되지 않습니다.</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -3362,8 +3362,8 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>트랜잭션이 250바이트 인 경우 사용자 지정 수수료가 1000 uDAPSs로 설정되고,&lt;br /&gt;1000 uDAPSs 안에는 전체에서 최소 "킬로바이트당" 250 uDAPSs 만 지불합니다. 1 킬로바이트보다 큰 트랜잭션의 경우 모두 킬로바이트 단위로 지불합니다.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for DAPScoin transactions than the network can process.</source>
-        <translation>블록의 공간보다 트랜잭션량이 적으면 최소 수수료만 지불하면 됩니다.&lt;br /&gt;하지만 DAPScoin 트랜잭션 수가 많으면 미확인된 트랜잭션로 네트워크가 처리할 수도 있습니다.</translation>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for DAPS transactions than the network can process.</source>
+        <translation>블록의 공간보다 트랜잭션량이 적으면 최소 수수료만 지불하면 됩니다.&lt;br /&gt;하지만 DAPS 트랜잭션 수가 많으면 미확인된 트랜잭션로 네트워크가 처리할 수도 있습니다.</translation>
     </message>
     <message>
         <source>normal</source>
@@ -3466,8 +3466,8 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>익명 자금</translation>
     </message>
     <message>
-        <source>Warning: Invalid DAPScoin address</source>
-        <translation>경고: 잘못된 DAPScoin 주소</translation>
+        <source>Warning: Invalid DAPS address</source>
+        <translation>경고: 잘못된 DAPS 주소</translation>
     </message>
     <message>
         <source>any available funds (not recommended)</source>
@@ -3573,8 +3573,8 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>지불 &amp;대상:</translation>
     </message>
     <message>
-        <source>The DAPScoin address to send the payment to</source>
-        <translation>전송할 DAPScoin 주소</translation>
+        <source>The DAPS address to send the payment to</source>
+        <translation>전송할 DAPS 주소</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3613,8 +3613,8 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>메세지:</translation>
     </message>
     <message>
-        <source>A message that was attached to the DAPScoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPScoin network.</source>
-        <translation>참조용으로 트랜잭션과 함께 기록되는 DAPScoin : URI에 첨부된 메세지입니다. 참고: 이 메세지는 DAPScoin 네트워크를 통해 전송되지 않습니다.</translation>
+        <source>A message that was attached to the DAPScoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
+        <translation>참조용으로 트랜잭션과 함께 기록되는 DAPS : URI에 첨부된 메세지입니다. 참고: 이 메세지는 DAPS 네트워크를 통해 전송되지 않습니다.</translation>
     </message>
     <message>
         <source>This is an unverified payment request.</source>
@@ -3640,7 +3640,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>DAPScoin is shutting down...</source>
+        <source>DAPS is shutting down...</source>
         <translation>DAPScoin가 종료됩니다...</translation>
     </message>
     <message>
@@ -3663,8 +3663,8 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>자신의 주소로 메세지에 서명할 수 있습니다. 피싱 공격으로 사용자를 속일 수 있으므로 서명에 주의해주세요. 동의하는 바에 한하여 서명하십시오.</translation>
     </message>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
-        <translation>메세지를 서명하기 위한 DAPScoin 주소</translation>
+        <source>The DAPS address to sign the message with</source>
+        <translation>메세지를 서명하기 위한 DAPS 주소</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3695,16 +3695,16 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>현재 서명을 시스템 클립 보드에 복사</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>이 DAPScoin 주소를 소유하고 있다는 것을 증명하기 위해 메세지에 서명하십시오</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>이 DAPS 주소를 소유하고 있다는 것을 증명하기 위해 메세지에 서명하십시오</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
-        <translation>메세지에 서명된 DAPScoin 주소</translation>
+        <source>The DAPS address the message was signed with</source>
+        <translation>메세지에 서명된 DAPS 주소</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>메세지가 지정된 DAPScoin 주소로 서명되었는지 확인해주세요</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>메세지가 지정된 DAPS 주소로 서명되었는지 확인해주세요</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -4463,7 +4463,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>계산된 누산기 체크포인트는 블록 인덱스에 의해 기록되는 것이 아닙니다.</translation>
     </message>
     <message>
-        <source>Cannot obtain a lock on data directory %s. DAPScoin is probably already running.</source>
+        <source>Cannot obtain a lock on data directory %s. DAPS is probably already running.</source>
         <translation>        &lt;translation&gt;잠겨진 데이터 디렉토리 %s 를 가져올 수 없습니다. DAPScoin는 이미 실행 중입니다.</translation>
     </message>
     <message>
@@ -4631,7 +4631,7 @@ rpcpassword=%s
 </translation>
     </message>
     <message>
-        <source>Unable to bind to %s on this computer. DAPScoin is probably already running.</source>
+        <source>Unable to bind to %s on this computer. DAPS is probably already running.</source>
         <translation>이 컴퓨터를 %s 로 지정하는것은 불가능합니다. DAPScoin는 이미 실행 중입니다.</translation>
     </message>
     <message>
@@ -4659,8 +4659,8 @@ rpcpassword=%s
         <translation>경고 : -paytxfee가 매우 높게 설정되었습니다! 이것은 전송할 경우 지불 할 트랜잭션 수수료입니다.</translation>
     </message>
     <message>
-        <source>Warning: Please check that your computer's date and time are correct! If your clock is wrong DAPScoin will not work properly.</source>
-        <translation>경고: 컴퓨터의 날짜와 시간이 올바르게 설정되어 있는지 확인해 주세요! 만일 시계가 잘못되어 있다면 DAPScoin 코어는 정상적으로 작동하지 않을 수 있습니다.</translation>
+        <source>Warning: Please check that your computer's date and time are correct! If your clock is wrong DAPS will not work properly.</source>
+        <translation>경고: 컴퓨터의 날짜와 시간이 올바르게 설정되어 있는지 확인해 주세요! 만일 시계가 잘못되어 있다면 DAPS 코어는 정상적으로 작동하지 않을 수 있습니다.</translation>
     </message>
     <message>
         <source>Warning: The network does not appear to fully agree! Some miners appear to be experiencing issues.</source>
@@ -4816,7 +4816,7 @@ rpcpassword=%s
     </message>
     <message>
         <source>Copyright (C) 2015-%i The DAPS Project developers</source>
-        <translation>Copyright (C) 2015-%i The DAPScoin 개발자</translation>
+        <translation>Copyright (C) 2015-%i The DAPS 개발자</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>
@@ -4896,7 +4896,7 @@ rpcpassword=%s
     </message>
     <message>
         <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
-        <translation>wallet.dat를 로드하는 중 오류가 발생했습니다. 지갑에 최신 버전의 DAPScoin 코어가 필요합니다.</translation>
+        <translation>wallet.dat를 로드하는 중 오류가 발생했습니다. 지갑에 최신 버전의 DAPS 코어가 필요합니다.</translation>
     </message>
     <message>
         <source>Error opening block database</source>
@@ -5007,7 +5007,7 @@ rpcpassword=%s
         <translation>정보</translation>
     </message>
     <message>
-        <source>Initialization sanity check failed. DAPScoin is shutting down.</source>
+        <source>Initialization sanity check failed. DAPS is shutting down.</source>
         <translation>초기화 정확성 검사에 실패 했습니다. DAPScoin가 종료됩니다.</translation>
     </message>
     <message>
@@ -5667,8 +5667,8 @@ rpcpassword=%s
         <translation>지갑이 잠겼습니다.</translation>
     </message>
     <message>
-        <source>Wallet needed to be rewritten: restart DAPScoin to complete</source>
-        <translation>지갑을 다시 작성해야 합니다: 완료하려면 DAPScoin 코어를 재시작해야 합니다</translation>
+        <source>Wallet needed to be rewritten: restart DAPS to complete</source>
+        <translation>지갑을 다시 작성해야 합니다: 완료하려면 DAPS 코어를 재시작해야 합니다</translation>
     </message>
     <message>
         <source>Wallet options:</source>

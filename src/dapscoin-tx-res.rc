@@ -17,7 +17,7 @@ BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
             VALUE "CompanyName",        "DAPScoin"
-            VALUE "FileDescription",    "dapscoin-tx (CLI DAPScoin transaction editor utility)"
+            VALUE "FileDescription",    "dapscoin-tx (CLI DAPS transaction editor utility)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
             VALUE "InternalName",       "dapscoin-tx"
             VALUE "LegalCopyright",     COPYRIGHT_STR

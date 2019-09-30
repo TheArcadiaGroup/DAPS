@@ -58,12 +58,12 @@
         <translation>Mottagar adresser</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Det här är dina DAPScoin adresser för att sända betalningar. Kontrollera alltid summan och mottagaradressen före du sänder mynt.</translation>
+        <source>These are your DAPS addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Det här är dina DAPS adresser för att sända betalningar. Kontrollera alltid summan och mottagaradressen före du sänder mynt.</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Det här är dina DAPScoin adresser för att ta emot betalningar. Det är rekomenderat att använda en ny mottagaradress för varje transaktion.</translation>
+        <source>These are your DAPS addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Det här är dina DAPS adresser för att ta emot betalningar. Det är rekomenderat att använda en ny mottagaradress för varje transaktion.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -232,7 +232,7 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
         <translation>Adress:</translation>
     </message>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
+        <source>The DAPS address to sign the message with</source>
         <translation>DAPScoin adressen för signera meddelandet med</translation>
     </message>
     <message>
@@ -264,8 +264,8 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
         <translation>Kopiera den nuvarande signaturen till systemets urklipp</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Signera meddelandet för att bevisa att du äger denna DAPScoin adress</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Signera meddelandet för att bevisa att du äger denna DAPS adress</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -288,12 +288,12 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
         <translation>Ange BIP 38 krypterade privata nyckeln. Ange lösenfrasen i med mittersta boxen. Tryck på krypetra nyckel för att beräkna den privata nyckeln. Efter att nyckeln är avkrypterad, Tryck på 'Importera Adress' kommer att lägga till denna privata nyckel till plånboken.</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
+        <source>The DAPS address the message was signed with</source>
         <translation>DAPScoin adressen meddelandet blev signerat med</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>Verifiera meddelandet för att säkerställa att de blev signerat med den specifika DAPScoin adressen.</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>Verifiera meddelandet för att säkerställa att de blev signerat med den specifika DAPS adressen.</translation>
     </message>
     <message>
         <source>Decrypt &amp;Key</source>
@@ -587,8 +587,8 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
         <translation>DAPScoin Kärna</translation>
     </message>
     <message>
-        <source>Send coins to a DAPScoin address</source>
-        <translation>Skicka mynt till en DAPScoin adress</translation>
+        <source>Send coins to a DAPS address</source>
+        <translation>Skicka mynt till en DAPS adress</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
@@ -604,23 +604,23 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
     </message>
     <message>
         <source>&amp;About DAPScoin</source>
-        <translation>Om DAPScoin Kärnan</translation>
+        <translation>Om DAPS Kärnan</translation>
     </message>
     <message>
         <source>Show information about DAPScoin</source>
-        <translation>Visa information om DAPScoin Kärnan</translation>
+        <translation>Visa information om DAPS Kärnan</translation>
     </message>
     <message>
         <source>Modify configuration options for DAPScoin</source>
         <translation>Ändra konfigurationsval för DAPScoin</translation>
     </message>
     <message>
-        <source>Sign messages with your DAPScoin addresses to prove you own them</source>
-        <translation>Signera meddelanden med din DAPScoin adress för att visa att du äger dem</translation>
+        <source>Sign messages with your DAPS addresses to prove you own them</source>
+        <translation>Signera meddelanden med din DAPS adress för att visa att du äger dem</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified DAPScoin addresses</source>
-        <translation>Verifiera meddelandet för att säkerställa att de blev signerat med den specifika DAPScoin adressen.</translation>
+        <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
+        <translation>Verifiera meddelandet för att säkerställa att de blev signerat med den specifika DAPS adressen.</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -1164,7 +1164,7 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
 <context>
     <name>SignVerifyMessageDialog</name>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
+        <source>The DAPS address to sign the message with</source>
         <translation>DAPScoin adressen för signera meddelandet med</translation>
     </message>
     <message>
@@ -1188,16 +1188,16 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
         <translation>Kopiera den nuvarande signaturen till systemets urklipp</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Signera meddelandet för att bevisa att du äger denna DAPScoin adress</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Signera meddelandet för att bevisa att du äger denna DAPS adress</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
+        <source>The DAPS address the message was signed with</source>
         <translation>DAPScoin adressen meddelandet blev signerat med</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>Verifiera meddelandet för att säkerställa att de blev signerat med den specifika DAPScoin adressen.</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>Verifiera meddelandet för att säkerställa att de blev signerat med den specifika DAPS adressen.</translation>
     </message>
     <message>
         <source>Reset all sign message fields</source>

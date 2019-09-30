@@ -36,7 +36,7 @@ couldn't mess with the sources.
 
 Setup
 ---------
-Configuring the github-merge tool for the DAPScoin repository is done in the following way:
+Configuring the github-merge tool for the DAPS repository is done in the following way:
 
     git config githubmerge.repository DAPScoin-Project/DAPScoin
     git config githubmerge.testcmd "make -j4 check" (adapt to whatever you want to use for testing)

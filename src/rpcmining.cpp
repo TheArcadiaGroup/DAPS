@@ -496,10 +496,10 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
 
     if (vNodes.empty())
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DAPScoin is not connected!");
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DAPS is not connected!");
 
     if (IsInitialBlockDownload())
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DAPScoin is downloading blocks...");
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DAPS is downloading blocks...");
 
     static unsigned int nTransactionsUpdatedLast;
 
@@ -709,10 +709,10 @@ UniValue getpoablocktemplate(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
 
     if (vNodes.empty())
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DAPScoin is not connected!");
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DAPS is not connected!");
 
     if (IsInitialBlockDownload())
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DAPScoin is downloading blocks...");
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DAPS is downloading blocks...");
 
     // Update block
     static CBlockIndex* pindexPrev;

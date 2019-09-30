@@ -34,7 +34,7 @@ class Footer extends Component {
         this.SocialLinks = {
             "headers": [],
             "0": [
-                <a key="discord" href='https://discord.gg/w898czA' id='discordlink' className='SocialLink' target="_blank" ><div id='discord' /></a>,
+                <a key="discord" href='https://officialdapscoin.com/discord' id='discordlink' className='SocialLink' target="_blank" ><div id='discord' /></a>,
                 <a key="facebook" href='https://www.facebook.com/dapscoinofficial/' id='facebooklink' className='SocialLink' target="_blank" ><div id='facebook' /></a>,
                 <a key="reddit" href='https://www.reddit.com/r/DAPSCoin/' id='redditlink' className='SocialLink' target="_blank"><div id='reddit' /></a>,
                 <a key="telegram" href='https://t.me/dapscoin' id='telegramlink' className='SocialLink' target="_blank" ><div id='telegram' /></a>,
@@ -61,7 +61,7 @@ class Footer extends Component {
                         <div id="CR">
                             <h2>Version: Beta</h2>
                             <br />
-                            <h3>&copy; 2019 DAPScoin All Rights Reserved</h3>
+                            <h3>&copy; 2019 The DAPS Project All Rights Reserved</h3>
                         </div>
                     </div>
                    </div>
@@ -108,7 +108,7 @@ class Footer extends Component {
                 <div id="CR">
                     <h2>Version: Beta</h2>
                     <br />
-                    <h3>&copy; 2019 DAPScoin All Rights Reserved</h3>
+                    <h3>&copy; 2019 The DAPS Project All Rights Reserved</h3>
                 </div>
             </div>
         </div>

@@ -62,12 +62,12 @@
         <translation>接收的位址</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>這是你用來付款的 DAPScoin 位址, 送出前, 請務必確認金額及接收位址是否正確.</translation>
+        <source>These are your DAPS addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>這是你用來付款的 DAPS 位址, 送出前, 請務必確認金額及接收位址是否正確.</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>這是你用來接收款項的 DAPScoin 位址, 建議你每次付款都使用新的位址.</translation>
+        <source>These are your DAPS addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>這是你用來接收款項的 DAPS 位址, 建議你每次付款都使用新的位址.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -235,8 +235,8 @@
         <translation>位址:</translation>
     </message>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
-        <translation>對訊息簽名的 DAPScoin 位址</translation>
+        <source>The DAPS address to sign the message with</source>
+        <translation>對訊息簽名的 DAPS 位址</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -267,8 +267,8 @@
         <translation>拷貝目前的簽章到系統剪貼簿</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>使用簽章來證明你是該  DAPScoin 位址的擁有者,</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>使用簽章來證明你是該  DAPS 位址的擁有者,</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -287,12 +287,12 @@
         <translation>&amp;BIP 38 解密</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
-        <translation>此訊息之 DAPScoin 位址已簽章於</translation>
+        <source>The DAPS address the message was signed with</source>
+        <translation>此訊息之 DAPS 位址已簽章於</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>驗證訊息以確保該  DAPScoin 位址已被簽章</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>驗證訊息以確保該  DAPS 位址已被簽章</translation>
     </message>
     <message>
         <source>Decrypt &amp;Key</source>
@@ -586,8 +586,8 @@
         <translation>DAPScoin</translation>
     </message>
     <message>
-        <source>Send coins to a DAPScoin address</source>
-        <translation>送出錢幣到 DAPScoin 地址</translation>
+        <source>Send coins to a DAPS address</source>
+        <translation>送出錢幣到 DAPS 地址</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
@@ -607,19 +607,19 @@
     </message>
     <message>
         <source>Show information about DAPScoin</source>
-        <translation>顯示 DAPScoin 相關資訊</translation>
+        <translation>顯示 DAPS 相關資訊</translation>
     </message>
     <message>
         <source>Modify configuration options for DAPScoin</source>
-        <translation>修改 DAPScoin 設定</translation>
+        <translation>修改 DAPS 設定</translation>
     </message>
     <message>
-        <source>Sign messages with your DAPScoin addresses to prove you own them</source>
-        <translation>使用你的 DAPScoin 位址對訊息簽章, 來證明你是擁有者</translation>
+        <source>Sign messages with your DAPS addresses to prove you own them</source>
+        <translation>使用你的 DAPS 位址對訊息簽章, 來證明你是擁有者</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified DAPScoin addresses</source>
-        <translation>驗證訊息簽章與 DAPScoin 位址吻合</translation>
+        <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
+        <translation>驗證訊息簽章與 DAPS 位址吻合</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -662,8 +662,8 @@
         <translation>區塊鏈瀏覽視窗</translation>
     </message>
     <message>
-        <source>Show the DAPScoin help message to get a list with possible DAPScoin command-line options</source>
-        <translation>顯示 DAPScoin 幫助訊息以取得 DAPScoin 命令列表選項</translation>
+        <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
+        <translation>顯示 DAPS 幫助訊息以取得 DAPS 命令列表選項</translation>
     </message>
     <message>
         <source>DAPScoin client</source>
@@ -839,8 +839,8 @@
 <context>
     <name>SignVerifyMessageDialog</name>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
-        <translation>對訊息簽名的 DAPScoin 位址</translation>
+        <source>The DAPS address to sign the message with</source>
+        <translation>對訊息簽名的 DAPS 位址</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -863,16 +863,16 @@
         <translation>拷貝目前的簽章到系統剪貼簿</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>使用簽章來證明你是該  DAPScoin 位址的擁有者,</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>使用簽章來證明你是該  DAPS 位址的擁有者,</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
-        <translation>此訊息之 DAPScoin 位址已簽章於</translation>
+        <source>The DAPS address the message was signed with</source>
+        <translation>此訊息之 DAPS 位址已簽章於</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>驗證訊息以確保該  DAPScoin 位址已被簽章</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>驗證訊息以確保該  DAPS 位址已被簽章</translation>
     </message>
     <message>
         <source>Reset all sign message fields</source>

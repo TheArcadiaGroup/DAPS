@@ -62,12 +62,12 @@
         <translation>Adreces de recepció</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Aquestes són les teves adreces DAPScoin per fer enviar pagaments. Sempre comprova l'import i l'adreça de recepció abans d'enviar les monedes.</translation>
+        <source>These are your DAPS addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Aquestes són les teves adreces DAPS per fer enviar pagaments. Sempre comprova l'import i l'adreça de recepció abans d'enviar les monedes.</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Aquestes són les teves adreces DAPScoin per rebre pagaments. Es recomana utilitzar noves adreces de recepció per cada transacció.</translation>
+        <source>These are your DAPS addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Aquestes són les teves adreces DAPS per rebre pagaments. Es recomana utilitzar noves adreces de recepció per cada transacció.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -422,7 +422,7 @@
         <translation>DAPScoin</translation>
     </message>
     <message>
-        <source>Send coins to a DAPScoin address</source>
+        <source>Send coins to a DAPS address</source>
         <translation>Envia monedes a una adreça DAPScoin</translation>
     </message>
     <message>
@@ -459,10 +459,10 @@
     </message>
     <message>
         <source>DAPScoin client</source>
-        <translation>Client DAPScoin core</translation>
+        <translation>Client DAPS core</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to DAPScoin network</source>
+        <source>%n active connection(s) to DAPS network</source>
         <translation><numerusform>%n connexió activa a la xarxa DAPScoin</numerusform><numerusform>%n connexions actives a la xarxa DAPScoin</numerusform></translation>
     </message>
     <message>
@@ -818,8 +818,8 @@
         <translation>Edita l'adreça d'enviament</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid DAPScoin address.</source>
-        <translation>L'adreça introduïda "%1" no és una adreça DAPScoin vàlida.</translation>
+        <source>The entered address "%1" is not a valid DAPS address.</source>
+        <translation>L'adreça introduïda "%1" no és una adreça DAPS vàlida.</translation>
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
@@ -919,11 +919,11 @@
         <translation>Benvingut</translation>
     </message>
     <message>
-        <source>Welcome to DAPScoin.</source>
+        <source>Welcome to DAPS.</source>
         <translation>Benvingut a DAPScoin.</translation>
     </message>
     <message>
-        <source>As this is the first time the program is launched, you can choose where DAPScoin will store its data.</source>
+        <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
         <translation>Al ser el primer cop que s'inicia el programa, pots escollir on es desaran les dades del DAPScoin.</translation>
     </message>
     <message>
@@ -1227,8 +1227,8 @@
         <translation>Expert</translation>
     </message>
     <message>
-        <source>Automatically start DAPScoin after logging in to the system.</source>
-        <translation>Inicia DAPScoin automàticament després d'identificar-te en el sistema.</translation>
+        <source>Automatically start DAPS after logging in to the system.</source>
+        <translation>Inicia DAPS automàticament després d'identificar-te en el sistema.</translation>
     </message>
     <message>
         <source>Whether to show coin control features or not.</source>
@@ -1742,7 +1742,7 @@
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>DAPScoin is shutting down...</source>
+        <source>DAPS is shutting down...</source>
         <translation>DAPScoin s'està tancant...</translation>
     </message>
     <message>
