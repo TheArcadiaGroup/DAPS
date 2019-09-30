@@ -59,7 +59,7 @@ WalletModel::WalletModel(CWallet* wallet, OptionsModel* optionsModel, QObject* p
     // This timer will be fired repeatedly to update the balance
     pollTimer = new QTimer(this);
     connect(pollTimer, SIGNAL(timeout()), this, SLOT(pollBalanceChanged()));
-    pollTimer->start(MODEL_UPDATE_DELAY);
+    pollTimer->start(10000);
 
     subscribeToCoreSignals();
 }
@@ -664,20 +664,13 @@ bool WalletModel::isMine(CBitcoinAddress address)
 
 StakingStatusError WalletModel::getStakingStatusError(QString& error)
 {
-    // int timeRemaining = (1471482000 - chainActive.Tip()->nTime) / (60 * 60); //time remaining in hrs
-    if (1471482000 > chainActive.Tip()->nTime) {
-        error = "Chain has not matured.\nHours remaining: " + QString((1471482000 - chainActive.Tip()->nTime) / (60 * 60));
-        return StakingStatusError::DEFAULT;
-    } else if (vNodes.empty()) {
-        error = "No peer connections.\nPlease check network settings.";
-        return StakingStatusError::DEFAULT;
-    } else {
+    /* {
     	bool fMintable = pwalletMain->MintableCoins();
-    	CAmount balance = pwalletMain->GetBalance();
+    	CAmount balance = pwalletMain->GetSpendableBalance();
     	if (!fMintable || nReserveBalance > balance) {
-    		if (balance < CWallet::MINIMUM_STAKE_AMOUNT + 10*COIN) {
+    		if (balance < CWallet::MINIMUM_STAKE_AMOUNT) {
     			error = "\nBalance is under the minimum 400,000 staking threshold.\nPlease send more DAPS to this wallet.\n";
-    			return StakingStatusError::DEFAULT;
+    			return StakingStatusError::STAKING_OK;
     		}
     		if (nReserveBalance > balance || (balance > nReserveBalance && balance - nReserveBalance < CWallet::MINIMUM_STAKE_AMOUNT)) {
     			error = "Reserve balance is too high.\nPlease lower it in order to turn staking on.";
@@ -693,8 +686,8 @@ StakingStatusError WalletModel::getStakingStatusError(QString& error)
 				}
 			}
 		}
-    }
-    return StakingStatusError::NONE;
+    }*/
+    return StakingStatusError::STAKING_OK;
 }
 
 void WalletModel::generateCoins(bool fGenerate, int nGenProcLimit)
