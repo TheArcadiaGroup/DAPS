@@ -454,23 +454,13 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
             model->generateCoins(true, 1);
             pwalletMain->fCombineDust = true;
             pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
-            bool success = false;
-        	try {
-        		success = model->getCWallet()->CreateSweepingTransaction(
-								CWallet::MINIMUM_STAKE_AMOUNT,
-								CWallet::MINIMUM_STAKE_AMOUNT);
-                if (success) {
-                    QString msg = "Consolidation transaction created!";
-                    QMessageBox msgBox;
-                    msgBox.setWindowTitle("Information");
-                    msgBox.setIcon(QMessageBox::Information);
-                    msgBox.setText(msg);
-                    msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
-                    msgBox.exec();
-                }
-            } catch (const std::exception& err) {
-                LogPrintf("Sweeping failed, will be done automatically when coins become mature");
-        	}            
+            QString msg = "Consolidation started!";
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Information");
+            msgBox.setIcon(QMessageBox::Information);
+            msgBox.setText(msg);
+            msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+            msgBox.exec();
             return;
         } else {
             nLastCoinStakeSearchInterval = 0;
