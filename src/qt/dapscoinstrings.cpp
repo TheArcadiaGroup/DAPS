@@ -178,7 +178,7 @@ QT_TRANSLATE_NOOP("dapscoin-core", ""
 "If the file does not exist, create it with owner-readable-only file "
 "permissions.\n"
 "It is also recommended to set alertnotify so you are notified of problems;\n"
-"for example: alertnotify=echo %%s | mail -s \"DAPScoin Alert\" admin@foo.com\n"),
+"for example: alertnotify=echo %%s | mail -s \"DAPS Alert\" admin@foo.com\n"),
 QT_TRANSLATE_NOOP("dapscoin-core", ""
 "Unable to bind to %s on this computer. DAPS is probably already running."),
 QT_TRANSLATE_NOOP("dapscoin-core", ""

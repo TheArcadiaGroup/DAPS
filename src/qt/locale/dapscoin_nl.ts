@@ -176,8 +176,8 @@
         <translation>Bevestig versleuteling van de portemonnee</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin zal nu afsluiten om het versleutelingsproces te voltooien. Onthoud dat het versleutelen van uw portemonnee u niet volledig kan beschermen: Malware kan uw computer infecteren en uw DAPSs stelen.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS zal nu afsluiten om het versleutelingsproces te voltooien. Onthoud dat het versleutelen van uw portemonnee u niet volledig kan beschermen: Malware kan uw computer infecteren en uw DAPSs stelen.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -603,7 +603,7 @@
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Kern</translation>
+        <translation>DAPS Kern</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
@@ -690,8 +690,8 @@
         <translation>Toon het DAPS help bericht om een ​​lijst te krijgen met mogelijke DAPS command line opties</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin client</translation>
+        <source>DAPS client</source>
+        <translation>DAPS client</translation>
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to DAPS network</source>
@@ -1177,7 +1177,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Kern</translation>
+        <translation>DAPS Kern</translation>
     </message>
     <message>
         <source>(%1-bit)</source>
@@ -1231,8 +1231,8 @@ MultiSend: %1</translation>
         <translation>Aangezien dit de eerste keer is dat het programma is gestart, kun je kiezen waar DAPS zijn gegevens opslaat.</translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin zal een kopie van de DAPS blockchain downloaden en opslaan. Tenminste %1GB aan data zal worden opgeslagen in deze map en het zal over de tijd groeien. De portemonnee wordt ook in deze map opgeslagen.</translation>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>DAPS zal een kopie van de DAPS blockchain downloaden en opslaan. Tenminste %1GB aan data zal worden opgeslagen in deze map en het zal over de tijd groeien. De portemonnee wordt ook in deze map opgeslagen.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -1244,7 +1244,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Kern</translation>
+        <translation>DAPS Kern</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -1669,11 +1669,11 @@ Controleer het adres alsjeblieft en probeer het opnieuw.</translation>
     </message>
     <message>
         <source>Automatically start DAPS after logging in to the system.</source>
-        <translation>DAPScoin automatisch opstarten na inloggen op het systeem.</translation>
+        <translation>DAPS automatisch opstarten na inloggen op het systeem.</translation>
     </message>
     <message>
         <source>&amp;Start DAPS on system login</source>
-        <translation>&amp;DAPScoin starten bij systeemlogin</translation>
+        <translation>&amp;DAPS starten bij systeemlogin</translation>
     </message>
     <message>
         <source>Whether to show coin control features or not.</source>
@@ -3599,7 +3599,7 @@ Wees alsjeblieft geduldig...</translation>
     <name>SplashScreen</name>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Kern</translation>
+        <translation>DAPS Kern</translation>
     </message>
     <message>
         <source>Version %1</source>
@@ -4428,7 +4428,7 @@ rpcpassword=%s
 The username and password MUST NOT be the same.
 If the file does not exist, create it with owner-readable-only file permissions.
 It is also recommended to set alertnotify so you are notified of problems;
-for example: alertnotify=echo %%s | mail -s "DAPScoin Alert" admin@foo.com
+for example: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
 </source>
         <translation>Om dapscoind of de -server optie om dapscoin-qt te gebruiken, moet je een rpcpassword instellen in het configuratiebestand:
 %s
@@ -4439,7 +4439,7 @@ rpcpassword=%s
 De gebruikersnaam en het wachtwoord MOETEN NIET hetzelfde zijn.
 Als het bestand niet bestaat, creëer het dan met owner-readable-only bestandsrechten.
 Het is ook aan te raden om alertnotify in te stellen, zodat je van problemen op de hoogte wordt gebracht;
-bijvoorbeeld: alertnotify = echo %%s | mail -s "DAPScoin Alert" admin@foo.com
+bijvoorbeeld: alertnotify = echo %%s | mail -s "DAPS Alert" admin@foo.com
 </translation>
     </message>
     <message>

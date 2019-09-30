@@ -176,8 +176,8 @@
         <translation>cüzdan şifrelemesini onayla</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin şifreleme işlemini tamamlamak için şimdi kapanacaktır. Cüzdanınızı şifrelemenin, DAPS'lerinizi bilgisayarınıza bulaşan kötücül yazılımlar tarafından çalınmasına tamamen engelleyemediğini unutmayın</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS şifreleme işlemini tamamlamak için şimdi kapanacaktır. Cüzdanınızı şifrelemenin, DAPS'lerinizi bilgisayarınıza bulaşan kötücül yazılımlar tarafından çalınmasına tamamen engelleyemediğini unutmayın</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -614,7 +614,7 @@
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin CORE</translation>
+        <translation>DAPS CORE</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
@@ -646,7 +646,7 @@
     </message>
     <message>
         <source>Modify configuration options for DAPScoin</source>
-        <translation>DAPScoin için yapılandırma seçeneklerini değiştirin</translation>
+        <translation>DAPS için yapılandırma seçeneklerini değiştirin</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -702,7 +702,7 @@
         <translation>Olası DAPS komut satırı seçeneklerine sahip bir liste almak için DAPS yardım mesajını gösterin</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
+        <source>DAPS client</source>
         <translation>DAPS istemci</translation>
     </message>
     <message>
@@ -1118,7 +1118,7 @@ Adres: %4</translation>
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin CORE</translation>
+        <translation>DAPS CORE</translation>
     </message>
     <message>
         <source>Usage:</source>
@@ -1149,7 +1149,7 @@ Adres: %4</translation>
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin CORE</translation>
+        <translation>DAPS CORE</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1595,7 +1595,7 @@ Adres: %4</translation>
     <name>SplashScreen</name>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin CORE</translation>
+        <translation>DAPS CORE</translation>
     </message>
     </context>
 <context>

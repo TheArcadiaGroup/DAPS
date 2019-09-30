@@ -3833,7 +3833,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     txNew.txType = TX_TYPE_REVEAL_BOTH;
 
     // Choose coins to use
-    LogPrintf("%s: Start staking", __func__);
+    LogPrintf("%s: Start staking\n", __func__);
 
     CAmount nSpendableBalance = 0;
     CAmount nTargetAmount = 9223372036854775807;

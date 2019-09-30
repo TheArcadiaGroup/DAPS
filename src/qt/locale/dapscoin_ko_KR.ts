@@ -176,7 +176,7 @@
         <translation>지갑 암호화 확인</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
         <translation>DAPScoin는 이제 암호화 프로세스를 마치기 위해 닫힐것입니다. 지갑을 암호화하더라도 맬웨어로 인한 DAPSs 의 도난당하는 것을 완벽하게 보호 할 수는 없습니다.</translation>
     </message>
     <message>
@@ -635,7 +635,7 @@
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
-        <translation>DAPScoin 주소로 전송하기</translation>
+        <translation>DAPS 주소로 전송하기</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
@@ -655,7 +655,7 @@
     </message>
     <message>
         <source>&amp;About DAPScoin</source>
-        <translation>DAPScoin &amp;정보</translation>
+        <translation>DAPS &amp;정보</translation>
     </message>
     <message>
         <source>Show information about DAPScoin</source>
@@ -667,7 +667,7 @@
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
-        <translation>DAPScoin 주소로 메시지에 서명하여 소유하고 있음을 증명하십시오.</translation>
+        <translation>DAPS 주소로 메시지에 서명하여 소유하고 있음을 증명하십시오.</translation>
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
@@ -715,11 +715,11 @@
     </message>
     <message>
         <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
-        <translation>DAPScoin 도움말 메세지를 표시하여 사용 가능한 DAPS 명령행 옵션 목록 표시</translation>
+        <translation>DAPS 도움말 메세지를 표시하여 사용 가능한 DAPS 명령행 옵션 목록 표시</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin 클라이언트</translation>
+        <source>DAPS client</source>
+        <translation>DAPS 클라이언트</translation>
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to DAPS network</source>
@@ -1221,7 +1221,7 @@ Address: %4
     </message>
     <message>
         <source>About DAPScoin</source>
-        <translation>DAPScoin 정보</translation>
+        <translation>DAPS 정보</translation>
     </message>
     <message>
         <source>Command-line options</source>
@@ -1275,7 +1275,7 @@ Address: %4
         <translation>이 프로그램이 처음 실행되었으므로 DAPScoin가 데이터를 저장할 위치를 선택할 수 있습니다.</translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
         <translation>DAPScoin는 DAPS 블록체인을 다운로드하여 저장합니다. 최소 %1GB의 데이터가 디렉토리에 저장되며 시간이 지날수록 증가합니다. 또한 지갑도 해당 디렉토리에 저장됩니다.</translation>
     </message>
     <message>
@@ -2672,7 +2672,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
     <message>
         <source>Enter a DAPS address (e.g. %1)</source>
-        <translation>DAPScoin 주소를 입력하세요 (예 %1)</translation>
+        <translation>DAPS 주소를 입력하세요 (예 %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -2991,7 +2991,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
     <message>
         <source>Welcome to the DAPS RPC console.</source>
-        <translation>DAPScoin RPC 콘솔에 오신 것을 환영합니다.</translation>
+        <translation>DAPS RPC 콘솔에 오신 것을 환영합니다.</translation>
     </message>
     <message>
         <source>Do you want to continue?.&lt;br /&gt;</source>
@@ -3807,7 +3807,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
     <message>
         <source>The DAPS Project developers</source>
-        <translation>DAPScoin 개발자</translation>
+        <translation>DAPS 개발자</translation>
     </message>
     <message>
         <source>[testnet]</source>
@@ -4616,7 +4616,7 @@ rpcpassword=%s
 The username and password MUST NOT be the same.
 If the file does not exist, create it with owner-readable-only file permissions.
 It is also recommended to set alertnotify so you are notified of problems;
-for example: alertnotify=echo %%s | mail -s "DAPScoin Alert" admin@foo.com
+for example: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
 </source>
         <translation>DAPScoind 또는 DAPScoin-qt에 대한 -server 옵션 파일을 사용하려면 configuration 파일에서 rpcpassword를 설정해야 합니다:
 %s
@@ -4627,7 +4627,7 @@ rpcpassword=%s
 유저 이름과 비밀번호는 반드시 달라야 합니다.
 파일이 존재하지 않는다면 작성자만 읽기 가능한 권한으로 파일을 생성하십시오.
 또한 문제 발생 알림을 받을려면 alertnotify를 설정하는 것을 추천합니다.
-예시: alertnotify=echo %%s | mail -s "DAPScoin Alert" admin@foo.com
+예시: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
 </translation>
     </message>
     <message>

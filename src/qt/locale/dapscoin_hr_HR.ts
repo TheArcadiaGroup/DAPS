@@ -176,8 +176,8 @@
         <translation>Potvrdi šifriranje novčanika</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin se sada zatvara kako bi dovršio proces šifriranja. Ne zaboravite da šifriranje vašeg novčanika ne može u potpunosti zaštititi vaše DAPS od krađe zlonamjernog softvera koji zarazi vaše računalo.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS se sada zatvara kako bi dovršio proces šifriranja. Ne zaboravite da šifriranje vašeg novčanika ne može u potpunosti zaštititi vaše DAPS od krađe zlonamjernog softvera koji zarazi vaše računalo.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -259,7 +259,7 @@
     </message>
     <message>
         <source>The DAPS address to encrypt</source>
-        <translation>DAPScoin adresa za šifriranje</translation>
+        <translation>DAPS adresa za šifriranje</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -733,7 +733,7 @@
         <translation>Pokažite poruku DAPS pomoći da biste dobili popis s mogućim DAPS opcijama naredbenog retka</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
+        <source>DAPS client</source>
         <translation>DAPSIX Core Klijent</translation>
     </message>
     <message numerus="yes">
@@ -1294,8 +1294,8 @@ Višestruko slanje: %1</translation>
         <translation>Budući da je prvi put pokrenut program, možete odabrati gdje će DAPS pohraniti svoje podatke.</translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin preuzima i pohranjuje kopiju DAPS blok-lanca. Barem će %1GB podataka biti pohranjeno u ovom direktoriju i to će s vremenom rasti. Novčanik će također biti pohranjena u ovom direktoriju.</translation>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>DAPS preuzima i pohranjuje kopiju DAPS blok-lanca. Barem će %1GB podataka biti pohranjeno u ovom direktoriju i to će s vremenom rasti. Novčanik će također biti pohranjena u ovom direktoriju.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -2503,7 +2503,7 @@ zDAPS su zreli kada imaju više od 20 potvrda I više od 2 mint od iste denomina
     </message>
     <message>
         <source>The DAPS address to send the payment to. Creates local payment to yourself when empty.</source>
-        <translation>DAPScoin adresa za slanje uplate. Stvara lokalno plaćanje za sebe kada je prazno.</translation>
+        <translation>DAPS adresa za slanje uplate. Stvara lokalno plaćanje za sebe kada je prazno.</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -4013,7 +4013,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
     <message>
         <source>The DAPS address to send the payment to</source>
-        <translation>DAPScoin adresa za slanje uplate</translation>
+        <translation>DAPS adresa za slanje uplate</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -4080,7 +4080,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     <name>ShutdownWindow</name>
     <message>
         <source>DAPS is shutting down...</source>
-        <translation>DAPScoin se zatvara ...</translation>
+        <translation>DAPS se zatvara ...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -4103,7 +4103,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>DAPScoin adresa za potpisivanje poruke</translation>
+        <translation>DAPS adresa za potpisivanje poruke</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -4139,7 +4139,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin adresa s kojom je potpisana poruka</translation>
+        <translation>DAPS adresa s kojom je potpisana poruka</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
@@ -4246,7 +4246,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
     <message>
         <source>The DAPS Project developers</source>
-        <translation>DAPScoin programeri</translation>
+        <translation>DAPS programeri</translation>
     </message>
     <message>
         <source>[testnet]</source>

@@ -26,10 +26,10 @@ Drag DAPScoin-Qt to your applications folder, and then run DAPScoin-Qt.
 
 ### Need Help?
 
-* See the documentation at the [DAPScoin Wiki](https://en.bitcoin.it/wiki/Main_Page) ***TODO***
+* See the documentation at the [DAPS Wiki](https://en.bitcoin.it/wiki/Main_Page) ***TODO***
 for help and more information.
-* Ask for help on [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or on the [DAPScoin Forum](https://forum.officialdapscoin.com/).
-* Join one of our Slack groups [DAPScoin Slack Groups](https://officialdapscoin.com/slack-logins/).
+* Ask for help on [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or on the [DAPS Forum](https://forum.officialdapscoin.com/).
+* Join one of our Slack groups [DAPS Slack Groups](https://officialdapscoin.com/slack-logins/).
 
 Building
 ---------------------

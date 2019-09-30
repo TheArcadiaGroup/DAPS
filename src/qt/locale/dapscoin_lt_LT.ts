@@ -176,7 +176,7 @@
         <translation>Patvirtinkite piniginės užšifravimą.</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
         <translation>Dabar DAPS išsijungs, kad būtų užbaigtas šifravimo procesas. Atminkite, kad jūsų piniginės užšifravimas negali visiškai apsaugoti jūsų DAPS nuo kenkėjiškų programų, užkrėsto jūsų kompiuterio.</translation>
     </message>
     <message>
@@ -259,7 +259,7 @@
     </message>
     <message>
         <source>The DAPS address to encrypt</source>
-        <translation>DAPScoin adresas, kurį norite užšifruoti</translation>
+        <translation>DAPS adresas, kurį norite užšifruoti</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -733,8 +733,8 @@
         <translation>Rodyti DAPS žinyną, kad gautumėte sąrašą su galimomis DAPS komandinės eilutės parinktimis</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin piniginė</translation>
+        <source>DAPS client</source>
+        <translation>DAPS piniginė</translation>
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to DAPS network</source>
@@ -1286,8 +1286,8 @@ MultiSend: %1</translation>
         <translation>Kadangi programa paleista pirmą kartą, galite pasirinkti kur DAPS saugos savo duomenis.</translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin atsisiųs ir saugos DAPS blockchain'o kopiją. Šiame kataloge bus saugomas ne mažesnis kaip %1GB duomenų kiekis, kuris laikui bėgant augs. Piniginė taip pat bus saugoma šiame kataloge.</translation>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>DAPS atsisiųs ir saugos DAPS blockchain'o kopiją. Šiame kataloge bus saugomas ne mažesnis kaip %1GB duomenų kiekis, kuris laikui bėgant augs. Piniginė taip pat bus saugoma šiame kataloge.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -3159,7 +3159,7 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos tos pačio nominal
     <name>SignVerifyMessageDialog</name>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>DAPScoin adresas, kuriuo pasirašyti žinute</translation>
+        <translation>DAPS adresas, kuriuo pasirašyti žinute</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3187,7 +3187,7 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos tos pačio nominal
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin adresas, kurio buvo pasirašyta žinutė</translation>
+        <translation>DAPS adresas, kurio buvo pasirašyta žinutė</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>

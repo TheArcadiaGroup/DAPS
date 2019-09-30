@@ -176,8 +176,8 @@
         <translation>Bekræft, og tegnebogen krypteres.</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin vil lukke ned for at færdiggøre kryptograferingsprocesserne. Husk at kryptering alene ikke sikrer mod tyveri af mønterne fra malware eller virus på computeren.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS vil lukke ned for at færdiggøre kryptograferingsprocesserne. Husk at kryptering alene ikke sikrer mod tyveri af mønterne fra malware eller virus på computeren.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -599,7 +599,7 @@
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin kerne</translation>
+        <translation>DAPS kerne</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
@@ -682,8 +682,8 @@
         <translation>Vis hjelpetekster fra DAPS kernen for at få en liste med mulige DAPS kommandolinie-startparametre</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin kerneklient</translation>
+        <source>DAPS client</source>
+        <translation>DAPS kerneklient</translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -1145,7 +1145,7 @@ Adresse: %4
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin kerne</translation>
+        <translation>DAPS kerne</translation>
     </message>
     <message>
         <source>(%1-bit)</source>
@@ -1207,8 +1207,8 @@ Adresse: %4
         <translation>Da det er første gang programmet startes, kan De vælge hvor DAPS kernen skal lagre sine data</translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin kernen vil nu hente og gemme en kopi af DAPS blockchain. Der skal være mindst %1GB ledigt på lagermediet, og behovet vil stige efterhånden som tiden går. Selve tegnebogen vil også blive gemt her.</translation>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>DAPS kernen vil nu hente og gemme en kopi af DAPS blockchain. Der skal være mindst %1GB ledigt på lagermediet, og behovet vil stige efterhånden som tiden går. Selve tegnebogen vil også blive gemt her.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -1220,7 +1220,7 @@ Adresse: %4
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin kerne</translation>
+        <translation>DAPS kerne</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -2960,7 +2960,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>The DAPS address to send the payment to</source>
-        <translation>DAPScoin adressen, som betalingen skal sendes til</translation>
+        <translation>DAPS adressen, som betalingen skal sendes til</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3027,7 +3027,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     <name>ShutdownWindow</name>
     <message>
         <source>DAPS is shutting down...</source>
-        <translation>DAPScoin kernen lukker ned</translation>
+        <translation>DAPS kernen lukker ned</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -3177,7 +3177,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     <name>SplashScreen</name>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin kerne</translation>
+        <translation>DAPS kerne</translation>
     </message>
     <message>
         <source>Version %1</source>
@@ -3193,7 +3193,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>The DAPS Project developers</source>
-        <translation>DAPScoin "core" udviklerne</translation>
+        <translation>DAPS "core" udviklerne</translation>
     </message>
     <message>
         <source>[testnet]</source>
@@ -3919,7 +3919,7 @@ rpcpassword=%s
 The username and password MUST NOT be the same.
 If the file does not exist, create it with owner-readable-only file permissions.
 It is also recommended to set alertnotify so you are notified of problems;
-for example: alertnotify=echo %%s | mail -s "DAPScoin Alert" admin@foo.com
+for example: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
 </source>
         <translation>For at bruge dapscoind eller -server muligheden sammen med dapscoin-qt skal der angives et rpc kodeord i konfigurationsfilen:
 %s
@@ -3930,7 +3930,7 @@ rpcpasswrd=%s
 Brugernavn og kodeord MÅ IKKE VÆRE ENS!
 Hvis filen ikke eksisterer, opret den med sikkerhedsindstillingen - ejer kun læserettigheder tilladelsen.
 Det anbefales tillige at vælge alertnotify til for at blive orienteret om eventuelle problemer.
-For eksempel: alertnotify=Echo %% | mail - s "DAPScoin ALARM!" e-mail@administrator.dk
+For eksempel: alertnotify=Echo %% | mail - s "DAPS ALARM!" e-mail@administrator.dk
 </translation>
     </message>
     <message>

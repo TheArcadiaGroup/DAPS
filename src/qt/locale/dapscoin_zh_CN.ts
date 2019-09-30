@@ -43,11 +43,11 @@
     </message>
     <message>
         <source>Choose the address to send coins to</source>
-        <translation>选择发送DAPScoin coin的地址</translation>
+        <translation>选择发送DAPS coin的地址</translation>
     </message>
     <message>
         <source>Choose the address to receive coins with</source>
-        <translation>选择接收DAPScoin coin的地址</translation>
+        <translation>选择接收DAPS coin的地址</translation>
     </message>
     <message>
         <source>C&amp;hoose</source>
@@ -176,7 +176,7 @@
         <translation>确认钱包加密</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
         <translation>DAPScoin将关闭以完成加密过程。但是，仅仅加密您的钱包是不够的，因为它并不能阻止恶意软件从您的电脑里面偷取DAPSs。</translation>
     </message>
     <message>
@@ -631,7 +631,7 @@
     </message>
     <message>
         <source>Show information about DAPScoin</source>
-        <translation>显示DAPScoin  Core的相关信息</translation>
+        <translation>显示DAPS  Core的相关信息</translation>
     </message>
     <message>
         <source>Modify configuration options for DAPScoin</source>
@@ -690,8 +690,8 @@
         <translation>显示DAPScoin帮助信息并获取DAPScoin命令行选项列表</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin 客户端</translation>
+        <source>DAPS client</source>
+        <translation>DAPS 客户端</translation>
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to DAPS network</source>
@@ -873,10 +873,10 @@ Address: %4
     </message>
     <message>
         <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
-        <translation>由于这是该程序第一次启动，您可以选择存储DAPScoin 数据的位置。</translation>
+        <translation>由于这是该程序第一次启动，您可以选择存储DAPS 数据的位置。</translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
         <translation>DAPScoin将下载并存储DAPScoin区块链副本。 至少 %1 GB的数据将存储在此目录中，并且会随着时间的推移而增长。 钱包也将存储在此目录中。</translation>
     </message>
     <message>

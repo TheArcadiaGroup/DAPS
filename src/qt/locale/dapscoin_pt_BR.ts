@@ -172,8 +172,8 @@
         <translation>Confirmar criptografia de carteira</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin vai fechar agora para finalizar o processo de criptografia. Lembre-se que encriptar sua carteira não pode proteger totalmente suas DAPSs de serem roubadas por malwares infectando seu computador.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS vai fechar agora para finalizar o processo de criptografia. Lembre-se que encriptar sua carteira não pode proteger totalmente suas DAPSs de serem roubadas por malwares infectando seu computador.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -706,7 +706,7 @@
         <translation>Mostra a ajuda da DAPS para receber uma lista com possíveis opções de linha de comando DAPScoin</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
+        <source>DAPS client</source>
         <translation>Cliente Core DAPScoin</translation>
     </message>
     <message>
@@ -1252,8 +1252,8 @@ MultiSend: %1</translation>
         <translation>Como essa é a primeira vez que o programa é utilizado, você pode escolher onde DAPS vai armazenar os seus dados.</translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin vai baixar e armazenar uma cópia da blockchain DAPScoin. Pelo menos %1GB de informação será armazenado neste diretório e irá aumentar com o tempo. A carteira também será armazenada neste diretório.</translation>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>DAPS vai baixar e armazenar uma cópia da blockchain DAPScoin. Pelo menos %1GB de informação será armazenado neste diretório e irá aumentar com o tempo. A carteira também será armazenada neste diretório.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -2995,7 +2995,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     <name>ShutdownWindow</name>
     <message>
         <source>DAPS is shutting down...</source>
-        <translation>DAPScoin está desligando...</translation>
+        <translation>DAPS está desligando...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>

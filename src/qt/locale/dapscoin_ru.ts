@@ -172,8 +172,8 @@
         <translation>Подтверждение шифрования кошелька</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin сейчас закроется, чтобы завершить процесс шифрования. Помните, что шифрование вашего кошелька не может полностью защитить ваши DAPS от кражи с использованием вредоносного ПО.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS сейчас закроется, чтобы завершить процесс шифрования. Помните, что шифрование вашего кошелька не может полностью защитить ваши DAPS от кражи с использованием вредоносного ПО.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -682,7 +682,7 @@
         <translation>Смотрите помощь к программе, чтобы получить документацию ко всем возможным опциям комманды DAPScoin</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
+        <source>DAPS client</source>
         <translation>Клиент DAPScoin</translation>
     </message>
     <message>
@@ -1215,8 +1215,8 @@ MultiSend: %1</translation>
         <translation>Поскольку это первый запуск программы, вы можете выбрать, где будут храниться данные DAPScoin.</translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin загрузит и сохранит копию цепочки блоков DAPScoin. Каталог будет занимать около %1GB и со временем размер будет увеличиваться. Кроме того, в этом каталоге будет храниться кошелек.</translation>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>DAPS загрузит и сохранит копию цепочки блоков DAPScoin. Каталог будет занимать около %1GB и со временем размер будет увеличиваться. Кроме того, в этом каталоге будет храниться кошелек.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -2840,7 +2840,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     <name>ShutdownWindow</name>
     <message>
         <source>DAPS is shutting down...</source>
-        <translation>DAPScoin выключается...</translation>
+        <translation>DAPS выключается...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>

@@ -1,4 +1,4 @@
-DAPScoin version 3.0.6 is now available from:
+DAPS version 3.0.6 is now available from:
 
   <https://github.com/dapscoin-project/dapscoin/releases>
 
@@ -27,7 +27,7 @@ No attempt is made to prevent installing or running the software on Windows XP, 
 can still do so at your own risk but be aware that there are known instabilities and issues.
 Please do not report issues about Windows XP to the issue tracker.
 
-DAPScoin should also work on most other Unix-like systems but is not
+DAPS should also work on most other Unix-like systems but is not
 frequently tested on them.
 
 ### :exclamation::exclamation::exclamation: MacOS 10.13 High Sierra :exclamation::exclamation::exclamation:

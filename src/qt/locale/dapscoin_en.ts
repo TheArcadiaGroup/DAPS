@@ -221,7 +221,7 @@
     </message>
     <message>
         <location line="+9"/>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -921,7 +921,7 @@
     </message>
     <message>
         <location line="+214"/>
-        <source>DAPScoin client</source>
+        <source>DAPS client</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
@@ -1631,7 +1631,7 @@ Address: %4
     </message>
     <message>
         <location line="+10"/>
-        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6198,7 +6198,7 @@ rpcpassword=%s
 The username and password MUST NOT be the same.
 If the file does not exist, create it with owner-readable-only file permissions.
 It is also recommended to set alertnotify so you are notified of problems;
-for example: alertnotify=echo %%s | mail -s &quot;DAPScoin Alert&quot; admin@foo.com
+for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
 </source>
         <translation type="unfinished"></translation>
     </message>

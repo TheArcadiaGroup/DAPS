@@ -172,8 +172,8 @@
         <translation>Vahvista lompakon salaus</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin sulkeutuu salausprosessin ajaksi. Muista, että lompakon salaus ei voi täysin suojella DAPSien varkaudelta, jos tietokoneesi sisältää haittaohjelmia.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS sulkeutuu salausprosessin ajaksi. Muista, että lompakon salaus ei voi täysin suojella DAPSien varkaudelta, jos tietokoneesi sisältää haittaohjelmia.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -245,7 +245,7 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
     </message>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>DAPScoin osoite, jolla viesti allekirjoitetaan</translation>
+        <translation>DAPS osoite, jolla viesti allekirjoitetaan</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -301,7 +301,7 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin osoite, jolla viesti allekirjoitettiin</translation>
+        <translation>DAPS osoite, jolla viesti allekirjoitettiin</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
@@ -592,7 +592,7 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Ydin</translation>
+        <translation>DAPS Ydin</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
@@ -612,7 +612,7 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
     </message>
     <message>
         <source>&amp;About DAPScoin</source>
-        <translation>DAPScoin &amp;ytimestä</translation>
+        <translation>DAPS &amp;ytimestä</translation>
     </message>
     <message>
         <source>Show information about DAPScoin</source>
@@ -675,8 +675,8 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
         <translation>Näytä DAPS Ydin apuviesti saadaksesi lista mahdollisista DAPS komentolinja komennoista.</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin Ydin asiakasohjelma</translation>
+        <source>DAPS client</source>
+        <translation>DAPS Ydin asiakasohjelma</translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -935,7 +935,7 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
     <name>HelpMessageDialog</name>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Ydin</translation>
+        <translation>DAPS Ydin</translation>
     </message>
     <message>
         <source>Usage:</source>
@@ -958,7 +958,7 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Ydin</translation>
+        <translation>DAPS Ydin</translation>
     </message>
     <message>
         <source>Error</source>
@@ -2041,7 +2041,7 @@ Please check the address and try again.</source>
     </message>
     <message>
         <source>The DAPS address to send the payment to</source>
-        <translation>DAPScoin osoite johon maksu lähetetään</translation>
+        <translation>DAPS osoite johon maksu lähetetään</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -2084,7 +2084,7 @@ Please check the address and try again.</source>
     <name>ShutdownWindow</name>
     <message>
         <source>DAPS is shutting down...</source>
-        <translation>DAPScoin core sammuu...</translation>
+        <translation>DAPS core sammuu...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -2103,7 +2103,7 @@ Please check the address and try again.</source>
     </message>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>DAPScoin osoite, jolla viesti allekirjoitetaan</translation>
+        <translation>DAPS osoite, jolla viesti allekirjoitetaan</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -2139,7 +2139,7 @@ Please check the address and try again.</source>
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin osoite, jolla viesti allekirjoitettiin</translation>
+        <translation>DAPS osoite, jolla viesti allekirjoitettiin</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
@@ -2226,7 +2226,7 @@ Please check the address and try again.</source>
     <name>SplashScreen</name>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Ydin</translation>
+        <translation>DAPS Ydin</translation>
     </message>
     <message>
         <source>Version %1</source>
@@ -2242,7 +2242,7 @@ Please check the address and try again.</source>
     </message>
     <message>
         <source>The DAPS Project developers</source>
-        <translation>DAPScoin core kehittäjät</translation>
+        <translation>DAPS core kehittäjät</translation>
     </message>
     <message>
         <source>[testnet]</source>

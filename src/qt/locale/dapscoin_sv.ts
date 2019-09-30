@@ -160,8 +160,8 @@
         <translation>Bekräfta plånboks krypering</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin kommer att stängas ner nu för att färdigställa kryperingsprocessen. Kom ihåg att kryptering av din plånbok inte kan säkerställa dina DAPSs från att bli stulna av skadeprogram som infekterat din dator.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS kommer att stängas ner nu för att färdigställa kryperingsprocessen. Kom ihåg att kryptering av din plånbok inte kan säkerställa dina DAPSs från att bli stulna av skadeprogram som infekterat din dator.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -233,7 +233,7 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
     </message>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>DAPScoin adressen för signera meddelandet med</translation>
+        <translation>DAPS adressen för signera meddelandet med</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -289,7 +289,7 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin adressen meddelandet blev signerat med</translation>
+        <translation>DAPS adressen meddelandet blev signerat med</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
@@ -584,7 +584,7 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Kärna</translation>
+        <translation>DAPS Kärna</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
@@ -631,8 +631,8 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
         <translation>Kryptera och avkryptera privata nycklar genom användning av lösenfras</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin kärn klient</translation>
+        <source>DAPS client</source>
+        <translation>DAPS kärn klient</translation>
     </message>
     <message>
         <source>%1 and %2</source>
@@ -838,14 +838,14 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
     <name>HelpMessageDialog</name>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Kärna</translation>
+        <translation>DAPS Kärna</translation>
     </message>
     </context>
 <context>
     <name>Intro</name>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Kärna</translation>
+        <translation>DAPS Kärna</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1165,7 +1165,7 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
     <name>SignVerifyMessageDialog</name>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>DAPScoin adressen för signera meddelandet med</translation>
+        <translation>DAPS adressen för signera meddelandet med</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -1193,7 +1193,7 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin adressen meddelandet blev signerat med</translation>
+        <translation>DAPS adressen meddelandet blev signerat med</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
@@ -1240,7 +1240,7 @@ Ange en lösenfras i den mellersta boxen. Tryck kryptera för att beräkna den k
     <name>SplashScreen</name>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Kärna</translation>
+        <translation>DAPS Kärna</translation>
     </message>
     </context>
 <context>

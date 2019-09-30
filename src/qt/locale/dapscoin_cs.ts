@@ -176,8 +176,8 @@
         <translation>Potvrdit zašifrování peněženky</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin se teď zavře pro dokončení šifrovacího procesu. Prosím, vemte na vědomí, že zašifrování Vaší peněženky plně neochrání Vaše DAPSy před krádží, pokud je Váš počítač infikován malwarem.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS se teď zavře pro dokončení šifrovacího procesu. Prosím, vemte na vědomí, že zašifrování Vaší peněženky plně neochrání Vaše DAPSy před krádží, pokud je Váš počítač infikován malwarem.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -248,7 +248,7 @@
     </message>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>DAPScoin adresa pro podepsání zprávy</translation>
+        <translation>DAPS adresa pro podepsání zprávy</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -304,7 +304,7 @@
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin adresa zprávy byla podpsána</translation>
+        <translation>DAPS adresa zprávy byla podpsána</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
@@ -722,8 +722,8 @@
         <translation>Zobrazit DAPS pomocnou zpráv pro získání seznamu možných parametrů DAPS pro příkazy do příkazové řádky</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin klient</translation>
+        <source>DAPS client</source>
+        <translation>DAPS klient</translation>
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to DAPS network</source>
@@ -1231,8 +1231,8 @@ MultiSend: %1</translation>
         <translation>Při prvním spuštění programu si můžete vybrat, kam bude DAPS ukládat svá data.</translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin stáhne a uloží kopii DAPS blockchainu. Nejméně %1GB dat bude do této složky uloženo a v průběhu času bude ukládat další data. Peněženka bude v této složce uložena také.</translation>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>DAPS stáhne a uloží kopii DAPS blockchainu. Nejméně %1GB dat bude do této složky uloženo a v průběhu času bude ukládat další data. Peněženka bude v této složce uložena také.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -2270,7 +2270,7 @@ Prosím zkontrolujte adresu a zkuste to znovu.</translation>
     <name>SignVerifyMessageDialog</name>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>DAPScoin adresa pro podepsání zprávy</translation>
+        <translation>DAPS adresa pro podepsání zprávy</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -2302,7 +2302,7 @@ Prosím zkontrolujte adresu a zkuste to znovu.</translation>
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin adresa zprávy byla podpsána</translation>
+        <translation>DAPS adresa zprávy byla podpsána</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>

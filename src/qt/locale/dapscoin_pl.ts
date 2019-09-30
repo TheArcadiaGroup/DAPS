@@ -598,7 +598,7 @@
         <translation>Pokaż wiadomość pomocy rdzenia DAPScoin, aby dostać listę możliwych opcji DAPS command-line</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
+        <source>DAPS client</source>
         <translation>Rdzeń DAPS klient</translation>
     </message>
     <message>

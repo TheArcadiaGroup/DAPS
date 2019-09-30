@@ -16,8 +16,8 @@ BITCOIND_USER=${BITCOIND_USER:-dapscoin}
 BITCOIND_GROUP=${BITCOIND_GROUP:-dapscoin}
 BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/dapscoind}
 
-name="DAPScoin Daemon"
-description="DAPScoin crypto-currency p2p network daemon"
+name="DAPS Daemon"
+description="DAPS crypto-currency p2p network daemon"
 
 command="/usr/bin/dapscoind"
 command_args="-pid=\"${BITCOIND_PIDFILE}\" \

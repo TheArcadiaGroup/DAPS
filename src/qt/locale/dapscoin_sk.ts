@@ -176,8 +176,8 @@
         <translation>Potvrďte šifrovanie peňaženky</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin sa teraz ukončí, aby dokončil proces šifrovania. Nezabudnite, že šifrovanie peňaženky nemôže úplne ochrániť vaše DAPS pred odcudzením škodlivým softvérom, ktorý infikuje váš počítač.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS sa teraz ukončí, aby dokončil proces šifrovania. Nezabudnite, že šifrovanie peňaženky nemôže úplne ochrániť vaše DAPS pred odcudzením škodlivým softvérom, ktorý infikuje váš počítač.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -304,7 +304,7 @@
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin adresa, ktorou bola správa podpísaná</translation>
+        <translation>DAPS adresa, ktorou bola správa podpísaná</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
@@ -682,8 +682,8 @@
         <translation>Zobraziť pomocnú správu programu DAPS a získajte zoznam možností príkazového riadka DAPScoin</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin klient</translation>
+        <source>DAPS client</source>
+        <translation>DAPS klient</translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -1168,7 +1168,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin adresa, ktorou bola správa podpísaná</translation>
+        <translation>DAPS adresa, ktorou bola správa podpísaná</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>

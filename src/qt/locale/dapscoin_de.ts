@@ -176,7 +176,7 @@
         <translation>Wallet-Verschlüsselung bestätigen</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
         <translation>Die Anwendungs wird nun geschlossen um die Verschlüsselung abzuschließen. Bitte beachten Sie, dass auch Verschlüsselung nicht nicht vollständig vor Diebstahl ihrer DAPSs durch Schadsoftware schützt, die ihren Computer befällt.</translation>
     </message>
     <message>
@@ -248,7 +248,7 @@
     </message>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>DAPScoin Adresse mit welcher die Nachricht signiert werden soll</translation>
+        <translation>DAPS Adresse mit welcher die Nachricht signiert werden soll</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -686,8 +686,8 @@
         <translation>Zeige die DAPScoin-Core Hilfe, um mögliche DAPS Kommando-Zeilen-Optionen anzuzeigen</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin Client</translation>
+        <source>DAPS client</source>
+        <translation>DAPS Client</translation>
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to DAPS network</source>
@@ -1242,8 +1242,8 @@ Adresse: %4</translation>
         <translation>Da dies das erste Mal ist, dass Sie DAPS starten, legen Sie jetzt bitte fest, an welchem Ort die Daten gespeichert werden sollen.</translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin wird die Blockchain laden und lokal speichern. Dafür sind mindestens %1GB freier Speicherplatz erforderlich. Der Speicherbedarf wird mit der Zeit anwachsen. Die Wallet wird ebenfalls in diesem Verzeichnis gespeichert.</translation>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>DAPS wird die Blockchain laden und lokal speichern. Dafür sind mindestens %1GB freier Speicherplatz erforderlich. Der Speicherbedarf wird mit der Zeit anwachsen. Die Wallet wird ebenfalls in diesem Verzeichnis gespeichert.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -1677,11 +1677,11 @@ Bitte Adresse überprüfen und nochmals versuchen.</translation>
     </message>
     <message>
         <source>Automatically start DAPS after logging in to the system.</source>
-        <translation>DAPScoin automatisch nach dem Login starten.</translation>
+        <translation>DAPS automatisch nach dem Login starten.</translation>
     </message>
     <message>
         <source>&amp;Start DAPS on system login</source>
-        <translation>DAPScoin automatisch beim System Login &amp;starten.</translation>
+        <translation>DAPS automatisch beim System Login &amp;starten.</translation>
     </message>
     <message>
         <source>Whether to show coin control features or not.</source>
@@ -3456,7 +3456,7 @@ Bitte haben Sie Geduld...</translation>
     <name>ShutdownWindow</name>
     <message>
         <source>DAPS is shutting down...</source>
-        <translation>DAPScoin wird beendet...</translation>
+        <translation>DAPS wird beendet...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -3479,7 +3479,7 @@ Bitte haben Sie Geduld...</translation>
     </message>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>DAPScoin Adresse mit welcher die Nachricht signiert werden soll</translation>
+        <translation>DAPS Adresse mit welcher die Nachricht signiert werden soll</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -4411,7 +4411,7 @@ rpcpassword=%s
 The username and password MUST NOT be the same.
 If the file does not exist, create it with owner-readable-only file permissions.
 It is also recommended to set alertnotify so you are notified of problems;
-for example: alertnotify=echo %%s | mail -s "DAPScoin Alert" admin@foo.com
+for example: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
 </source>
         <translation>Um dapscoind oder die -server option in dapscoin-qt zu nutzen, muss ein RPC-Passwort mittels rpcpassword in der Konfigurationsdatei gestzt werden:
 %s
@@ -4422,7 +4422,7 @@ rpcpassword=%s
 User-Name und Passwort MÜSSEN NICHT die oben genannten sein.
 Falls die Datei bisher nicht existiert, erstellen Sie diese mit der eingeschränkten Berechtigung das nur der Besitzer diese lesen darf.
 Des weiteren wird empfohlen das Argument alertnotify zu setzen, damit Sie bei ggf. auftretenden Problemen benachrichtigt werden.
-Beispiel: alertnotify=echo %%s | mail -s "DAPScoin Alert" admin@foo.com
+Beispiel: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
 </translation>
     </message>
     <message>

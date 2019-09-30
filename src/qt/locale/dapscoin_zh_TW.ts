@@ -164,8 +164,8 @@
         <translation>錢包確認加密</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin 現在會關閉程式來處理加密流程, 請注意, 僅僅是加密你的錢包並不能完全保護你的 DAPS 幣被可疑軟體或病毒偷走的風險.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS 現在會關閉程式來處理加密流程, 請注意, 僅僅是加密你的錢包並不能完全保護你的 DAPS 幣被可疑軟體或病毒偷走的風險.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -666,8 +666,8 @@
         <translation>顯示 DAPS 幫助訊息以取得 DAPS 命令列表選項</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin 客戶端</translation>
+        <source>DAPS client</source>
+        <translation>DAPS 客戶端</translation>
     </message>
     </context>
 <context>

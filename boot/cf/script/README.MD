@@ -1,4 +1,4 @@
-DAPScoin Core Daemon Management
+DAPS Core Daemon Management
 =====================================
 
 The strucutre and approach has changed to handle the daemon kick off, exewcution, status (inquire), restart and stop.  The sole bash script is no longer deploy.sh.  Currently, the inspect.sh is repsonsible for the following commands:

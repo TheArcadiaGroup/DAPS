@@ -11,7 +11,7 @@ When a "Transaction Lock" occurs the hash of the related transaction is broadcas
 * `zmqpubrawtxlock`: publishes the raw transaction when locked via SwiftX
 * `zmqpubhashtxlock`: publishes the transaction hash when locked via SwiftX
 
-This mechanism has been integrated into Bitcore-Node-DAPScoin which allows for notification to be broadcast through Insight API in one of two ways:
+This mechanism has been integrated into Bitcore-Node-DAPS which allows for notification to be broadcast through Insight API in one of two ways:
 * WebSocket: [https://github.com/DAPScoin-Project/insight-api-dapscoin#web-socket-api](https://github.com/DAPScoin-Project/insight-api-dapscoin#web-socket-api)
 * API: [https://github.com/DAPScoin-Project/insight-api-dapscoin#swifttx-transactions](https://github.com/DAPScoin-Project/insight-api-dapscoin#swifttx-transactions)
 

@@ -1,7 +1,7 @@
 Expectations for DNS Seed operators
 ====================================
 
-DAPScoin attempts to minimize the level of trust in DNS seeds,
+DAPS attempts to minimize the level of trust in DNS seeds,
 but DNS seeds still pose a small amount of risk for the network.
 As such, DNS seeds must be run by entities which have some minimum
 level of trust within the DAPS community.
@@ -46,7 +46,7 @@ related to the DNS seed operation.
 If these expectations cannot be satisfied the operator should
 discontinue providing services and contact the active DAPScoin
 Core development team as well as posting on the
-[DAPScoin Forum](https://forum.officialdapscoin.com).
+[DAPS Forum](https://forum.officialdapscoin.com).
 
 Behavior outside of these expectations may be reasonable in some
 situations but should be discussed in public in advance.

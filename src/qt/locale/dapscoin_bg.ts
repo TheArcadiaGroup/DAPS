@@ -176,8 +176,8 @@
         <translation>Потвърдете шифрирането на портфейла</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin сега ще се затвори, за да довърши процеса по шифриране. Запомнете, че шифрирането на вашия портфейл не може напълно да защити вашия DAPS от това, да бъде откраднат чрез злонамерен софутуер, инфектирал вашия компютър.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS сега ще се затвори, за да довърши процеса по шифриране. Запомнете, че шифрирането на вашия портфейл не може напълно да защити вашия DAPS от това, да бъде откраднат чрез злонамерен софутуер, инфектирал вашия компютър.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -248,7 +248,7 @@
     </message>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>DAPScoin адреса, с който да подпишете съобщението</translation>
+        <translation>DAPS адреса, с който да подпишете съобщението</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -304,7 +304,7 @@
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin адреса, който е подписано съобщението</translation>
+        <translation>DAPS адреса, който е подписано съобщението</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
@@ -603,7 +603,7 @@
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Ядро</translation>
+        <translation>DAPS Ядро</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
@@ -690,7 +690,7 @@
         <translation>Разкрийте Помощ за DAPS Ядрото, за да видите списък с възможни писмени команди.</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
+        <source>DAPS client</source>
         <translation>Клиент DAPS Ядро</translation>
     </message>
     <message numerus="yes">
@@ -1185,7 +1185,7 @@ Address: %4
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Ядро</translation>
+        <translation>DAPS Ядро</translation>
     </message>
     <message>
         <source>(%1-bit)</source>
@@ -1247,8 +1247,8 @@ Address: %4
         <translation>Тъй като това е първия път, в който стартирате програмата, имате възможността да изберете къде DAPS Ядрото ще съхранява своите данни.</translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin Ядрото ще изтегли и запише копие на целия DAPS блокчейн. Поне %1 гигабайта ще бъдат съхранявани в тази папка, като тенденцията е файла да расте. Портфейла също ще бъде запазен в тази папка.</translation>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>DAPS Ядрото ще изтегли и запише копие на целия DAPS блокчейн. Поне %1 гигабайта ще бъдат съхранявани в тази папка, като тенденцията е файла да расте. Портфейла също ще бъде запазен в тази папка.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -1260,7 +1260,7 @@ Address: %4
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Ядро</translation>
+        <translation>DAPS Ядро</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -3390,7 +3390,7 @@ Please be patient...</source>
     </message>
     <message>
         <source>The DAPS address to send the payment to</source>
-        <translation>DAPScoin адреса - получател на плащането</translation>
+        <translation>DAPS адреса - получател на плащането</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3480,7 +3480,7 @@ Please be patient...</source>
     </message>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>DAPScoin адреса, с който да подпишете съобщението</translation>
+        <translation>DAPS адреса, с който да подпишете съобщението</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3516,7 +3516,7 @@ Please be patient...</source>
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin адреса, който е подписано съобщението</translation>
+        <translation>DAPS адреса, който е подписано съобщението</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
@@ -3607,7 +3607,7 @@ Please be patient...</source>
     <name>SplashScreen</name>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin Ядро</translation>
+        <translation>DAPS Ядро</translation>
     </message>
     <message>
         <source>Version %1</source>
@@ -3623,7 +3623,7 @@ Please be patient...</source>
     </message>
     <message>
         <source>The DAPS Project developers</source>
-        <translation>DAPScoin разработчици</translation>
+        <translation>DAPS разработчици</translation>
     </message>
     <message>
         <source>[testnet]</source>

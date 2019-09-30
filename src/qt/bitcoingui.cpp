@@ -699,7 +699,7 @@ void BitcoinGUI::createTrayIcon(const NetworkStyle* networkStyle)
 {
 #ifndef Q_OS_MAC
     trayIcon = new QSystemTrayIcon(this);
-    QString toolTip = tr("DAPScoin client") + " " + networkStyle->getTitleAddText();
+    QString toolTip = tr("DAPS client") + " " + networkStyle->getTitleAddText();
     trayIcon->setToolTip(toolTip);
     trayIcon->setIcon(networkStyle->getAppIcon());
     trayIcon->show();
@@ -1022,7 +1022,7 @@ void BitcoinGUI::message(const QString& title, const QString& message, unsigned 
             break;
         }
     }
-    // Append title to "DAPScoin - "
+    // Append title to "DAPS - "
     if (!msgType.isEmpty())
         strTitle += " - " + msgType;
 

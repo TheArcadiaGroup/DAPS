@@ -116,7 +116,7 @@
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin adresa s kojom je potpisana poruka</translation>
+        <translation>DAPS adresa s kojom je potpisana poruka</translation>
     </message>
     <message>
         <source>Allowed: 0-9,a-z,A-Z,</source>
@@ -162,8 +162,8 @@
         <translation>&amp;BIP38 alat</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin klijent</translation>
+        <source>DAPS client</source>
+        <translation>DAPS klijent</translation>
     </message>
     <message>
         <source>Error</source>
@@ -613,7 +613,7 @@
     <name>ShutdownWindow</name>
     <message>
         <source>DAPS is shutting down...</source>
-        <translation>DAPScoin se gasi...</translation>
+        <translation>DAPS se gasi...</translation>
     </message>
     </context>
 <context>
@@ -636,7 +636,7 @@
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>DAPScoin adresa s kojom je potpisana poruka</translation>
+        <translation>DAPS adresa s kojom je potpisana poruka</translation>
     </message>
     <message>
         <source>Message signed.</source>

@@ -176,8 +176,8 @@
         <translation>Konfirmi monerĉifrado</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin fermos nun por fini ĉifran procezon. Memoru ke ĉifri vian monujon ne povas plene protekti viajn DAPSs de esti ŝtelita per malware infektanta vian komputilon.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS fermos nun por fini ĉifran procezon. Memoru ke ĉifri vian monujon ne povas plene protekti viajn DAPSs de esti ŝtelita per malware infektanta vian komputilon.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -646,7 +646,7 @@
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin kerno</translation>
+        <translation>DAPS kerno</translation>
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
@@ -733,8 +733,8 @@
         <translation>Montri la DAPS Kore help-mesaĝo por havi liston de havebla DAPS komandlinion opciojn</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin Kerno kliento</translation>
+        <source>DAPS client</source>
+        <translation>DAPS Kerno kliento</translation>
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to DAPS network</source>
@@ -1224,7 +1224,7 @@ Muktisendi: %1</translation>
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin kerno</translation>
+        <translation>DAPS kerno</translation>
     </message>
     <message>
         <source>(%1-bit)</source>
@@ -1282,8 +1282,8 @@ Muktisendi: %1</translation>
         <translation>Ĉar estas la unuan fojon ke la programo estas lanĉita, vi povas elekti kie DAPS kernk storigis sian datumojn. </translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin kerno elŝutos kaj konservi kopion de la DAPS blokĉeno. Almenaŭ %1GB datumoj stokitos en ĉi tiun dosierujo, kaj ĝi kresko kun la tempo. Monujo stokitos en ĉi tiun dosierujo.</translation>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>DAPS kerno elŝutos kaj konservi kopion de la DAPS blokĉeno. Almenaŭ %1GB datumoj stokitos en ĉi tiun dosierujo, kaj ĝi kresko kun la tempo. Monujo stokitos en ĉi tiun dosierujo.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -1295,7 +1295,7 @@ Muktisendi: %1</translation>
     </message>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin kerno</translation>
+        <translation>DAPS kerno</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -1919,7 +1919,7 @@ Nematura: konfirmita, sed malpli ol 1 minto el la samo nomado post ĝin estis mi
     </message>
     <message>
         <source>The DAPS address to send the payment to. Creates local payment to yourself when empty.</source>
-        <translation>DAPScoin adreso por alsendi la pago. Kreas lokala pago al vi mem kiam malplenija.</translation>
+        <translation>DAPS adreso por alsendi la pago. Kreas lokala pago al vi mem kiam malplenija.</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -2408,7 +2408,7 @@ Nematura: konfirmita, sed malpli ol 1 minto el la samo nomado post ĝin estis mi
     <name>ShutdownWindow</name>
     <message>
         <source>DAPS is shutting down...</source>
-        <translation>DAPScoin kerno fermanta...</translation>
+        <translation>DAPS kerno fermanta...</translation>
     </message>
     </context>
 <context>
@@ -2462,7 +2462,7 @@ Nematura: konfirmita, sed malpli ol 1 minto el la samo nomado post ĝin estis mi
     <name>SplashScreen</name>
     <message>
         <source>DAPScoin</source>
-        <translation>DAPScoin kerno</translation>
+        <translation>DAPS kerno</translation>
     </message>
     <message>
         <source>The Bitcoin Core developers</source>

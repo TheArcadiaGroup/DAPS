@@ -118,7 +118,7 @@ void AskPassphraseDialog::accept()
                 if (model->setWalletEncrypted(true, newpass1)) {
                     QMessageBox::warning(this, tr("Wallet Encrypted"),
                         "<qt>" +
-                            tr("DAPScoin will close now to finish the encryption process. "
+                            tr("DAPS will close now to finish the encryption process. "
                                "Remember that encrypting your wallet cannot fully protect "
                                "your DAPSs from being stolen by malware infecting your computer.") +
                             "<br><br><b>" +
