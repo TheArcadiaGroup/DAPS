@@ -5734,7 +5734,7 @@ bool CWallet::GetDestData(const CTxDestination& dest, const std::string& key, st
     return false;
 }
 
-bool CWallet::CreateSweepingTransaction(CAmount target) {
+bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold) {
     //disable this functuonality in multisig
     return true;
 }
