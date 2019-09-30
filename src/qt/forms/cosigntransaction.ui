@@ -85,7 +85,7 @@
    <item>
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Enter long code of transaction to be signed</string>
+      <string>Enter long code of transaction to be signed:</string>
      </property>
     </widget>
    </item>
@@ -97,7 +97,11 @@
         <number>3</number>
        </property>
        <item>
-        <widget class="QTextEdit" name="hexCode"/>
+        <widget class="QTextEdit" name="hexCode">
+         <property name="acceptRichText">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -122,8 +126,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>824</width>
-        <height>34</height>
+        <width>830</width>
+        <height>27</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -183,7 +187,7 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>Confirm the send action</string>
+              <string>Co-Sign Transaction</string>
              </property>
              <property name="text">
               <string>Co-Sign Transaction</string>
@@ -223,17 +227,22 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Hex Code Of Signed Transaction</string>
+      <string>Hex Code of signed transaction:</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QTextEdit" name="signedHex"/>
+    <widget class="QTextEdit" name="signedHex">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="acceptRichText">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../dapscoin.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
