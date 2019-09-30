@@ -248,7 +248,7 @@
     </message>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>Adresa DAPScoin, ktorou chcete správu podpísať</translation>
+        <translation>Adresa DAPS, ktorou chcete správu podpísať</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -631,7 +631,7 @@
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
-        <translation>Podpíšte správy pomocou adresy DAPScoin, aby ste preukázali, že ich vlastníte</translation>
+        <translation>Podpíšte správy pomocou adresy DAPS, aby ste preukázali, že ich vlastníte</translation>
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
@@ -666,8 +666,8 @@
         <translation>Otvoriť konfiguračný súbor masternodu</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Otvorte DAPScoin: URI alebo žiadosť o platbu</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Otvorte DAPS: URI alebo žiadosť o platbu</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -1140,7 +1140,7 @@ MultiSend: %1</translation>
     <name>SignVerifyMessageDialog</name>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>Adresa DAPScoin, ktorou chcete správu podpísať</translation>
+        <translation>Adresa DAPS, ktorou chcete správu podpísať</translation>
     </message>
     <message>
         <source>Choose previously used address</source>

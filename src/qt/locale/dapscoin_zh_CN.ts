@@ -63,11 +63,11 @@
     </message>
     <message>
         <source>These are your DAPS addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>这是用于发送DAPScoin的地址。在发送DAPScoin之前，请认真核查发送金额和接收地址。</translation>
+        <translation>这是用于发送DAPS的地址。在发送DAPS之前，请认真核查发送金额和接收地址。</translation>
     </message>
     <message>
         <source>These are your DAPS addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>这是用于接收DAPScoin的钱包地址。建议每一笔交易都使用一个新的钱包地址。</translation>
+        <translation>这是用于接收DAPS的钱包地址。建议每一笔交易都使用一个新的钱包地址。</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -177,7 +177,7 @@
     </message>
     <message>
         <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin将关闭以完成加密过程。但是，仅仅加密您的钱包是不够的，因为它并不能阻止恶意软件从您的电脑里面偷取DAPSs。</translation>
+        <translation>DAPS将关闭以完成加密过程。但是，仅仅加密您的钱包是不够的，因为它并不能阻止恶意软件从您的电脑里面偷取DAPSs。</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -248,7 +248,7 @@
     </message>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>该DAPScoin地址签名的消息</translation>
+        <translation>该DAPS地址签名的消息</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -280,7 +280,7 @@
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>签署消息以证明您拥有此DAPScoin地址</translation>
+        <translation>签署消息以证明您拥有此DAPS地址</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -304,11 +304,11 @@
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>由DAPScoin地址签名的消息</translation>
+        <translation>由DAPS地址签名的消息</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
-        <translation>验证消息确保它已使用指定的DAPScoin地址进行签名</translation>
+        <translation>验证消息确保它已使用指定的DAPS地址进行签名</translation>
     </message>
     <message>
         <source>Decrypt &amp;Key</source>
@@ -607,7 +607,7 @@
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
-        <translation>发送数字货币到DAPScoin地址</translation>
+        <translation>发送数字货币到DAPS地址</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
@@ -635,15 +635,15 @@
     </message>
     <message>
         <source>Modify configuration options for DAPS</source>
-        <translation>修改DAPScoin的配置选项</translation>
+        <translation>修改DAPS的配置选项</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
-        <translation>使用您的DAPScoin地址验证消息，以证明您拥有他们</translation>
+        <translation>使用您的DAPS地址验证消息，以证明您拥有他们</translation>
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
-        <translation>验证消息确保它已使用指定的DAPScoin地址进行签名</translation>
+        <translation>验证消息确保它已使用指定的DAPS地址进行签名</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -674,8 +674,8 @@
         <translation>打开主节点配置文件</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>打开DAPScoin：URI或付款请求</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>打开DAPS：URI或付款请求</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -687,7 +687,7 @@
     </message>
     <message>
         <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
-        <translation>显示DAPScoin帮助信息并获取DAPScoin命令行选项列表</translation>
+        <translation>显示DAPS帮助信息并获取DAPS命令行选项列表</translation>
     </message>
     <message>
         <source>DAPS client</source>
@@ -695,7 +695,7 @@
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to DAPS network</source>
-        <translation><numerusform>%n 活动连接到DAPScoin网络
+        <translation><numerusform>%n 活动连接到DAPS网络
 </numerusform></translation>
     </message>
     <message>
@@ -877,7 +877,7 @@ Address: %4
     </message>
     <message>
         <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin将下载并存储DAPScoin区块链副本。 至少 %1 GB的数据将存储在此目录中，并且会随着时间的推移而增长。 钱包也将存储在此目录中。</translation>
+        <translation>DAPS将下载并存储DAPS区块链副本。 至少 %1 GB的数据将存储在此目录中，并且会随着时间的推移而增长。 钱包也将存储在此目录中。</translation>
     </message>
     <message>
         <source>DAPS</source>
@@ -967,7 +967,7 @@ Address: %4
     </message>
     <message>
         <source>Automatically open the DAPS client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>自动打开路由器上的DAPScoin钱包使用的端口。 这只有当您的路由器支持UPnP并且该享生效时才有用。</translation>
+        <translation>自动打开路由器上的DAPS钱包使用的端口。 这只有当您的路由器支持UPnP并且该享生效时才有用。</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1035,7 +1035,7 @@ Address: %4
     </message>
     <message>
         <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
-        <translation>选择显示发送DAPScoin的默认单位。</translation>
+        <translation>选择显示发送DAPS的默认单位。</translation>
     </message>
     <message>
         <source>Decimal digits</source>
@@ -1114,7 +1114,7 @@ Address: %4
     </message>
     <message>
         <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPS network after a connection is established, but this process has not completed yet.</source>
-        <translation>显示的信息可能已过期。建立连接后，您的钱包会自动与DAPScoin网络同步，但此过程尚未完成。</translation>
+        <translation>显示的信息可能已过期。建立连接后，您的钱包会自动与DAPS网络同步，但此过程尚未完成。</translation>
     </message>
     <message>
         <source>Your current total balance</source>
@@ -1135,7 +1135,7 @@ Address: %4
     <name>PrivacyDialog</name>
     <message>
         <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPS network after a connection is established, but this process has not completed yet.</source>
-        <translation>显示的信息可能已过期。建立连接后，您的钱包会自动与DAPScoin网络同步，但此过程尚未完成。</translation>
+        <translation>显示的信息可能已过期。建立连接后，您的钱包会自动与DAPS网络同步，但此过程尚未完成。</translation>
     </message>
     <message>
         <source>Pay &amp;To:</source>
@@ -1223,11 +1223,11 @@ Address: %4
     </message>
     <message>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the DAPS network.</source>
-        <translation>附加到付款请求的可选消息，将在请求打开时显示。 注意：消息不会在付款时通过DAPScoin网络发送。</translation>
+        <translation>附加到付款请求的可选消息，将在请求打开时显示。 注意：消息不会在付款时通过DAPS网络发送。</translation>
     </message>
     <message>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the DAPS network.</source>
-        <translation>附加到付款请求的可选消息，将在请求打开时显示。&lt;br&gt; 注意：消息不会在付款时通过DAPScoin网络发送。</translation>
+        <translation>附加到付款请求的可选消息，将在请求打开时显示。&lt;br&gt; 注意：消息不会在付款时通过DAPS网络发送。</translation>
     </message>
     <message>
         <source>&amp;Label:</source>
@@ -1362,8 +1362,8 @@ Address: %4
         <translation>消息:</translation>
     </message>
     <message>
-        <source>A message that was attached to the DAPScoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
-        <translation>附加到DAPScoin：URI的消息，该消息将与转账信息一起存储以供参考。 注意：此消息不会通过DAPScoin网络发送。</translation>
+        <source>A message that was attached to the DAPS: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
+        <translation>附加到DAPS：URI的消息，该消息将与转账信息一起存储以供参考。 注意：此消息不会通过DAPS网络发送。</translation>
     </message>
     <message>
         <source>Enter a label for this address to add it to your address book</source>
@@ -1389,7 +1389,7 @@ Address: %4
     </message>
     <message>
         <source>The DAPS address to sign the message with</source>
-        <translation>该DAPScoin地址签名的消息</translation>
+        <translation>该DAPS地址签名的消息</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -1417,15 +1417,15 @@ Address: %4
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>签署消息以证明您拥有此DAPScoin地址</translation>
+        <translation>签署消息以证明您拥有此DAPS地址</translation>
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>由DAPScoin地址签名的消息</translation>
+        <translation>由DAPS地址签名的消息</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
-        <translation>验证消息确保它已使用指定的DAPScoin地址进行签名</translation>
+        <translation>验证消息确保它已使用指定的DAPS地址进行签名</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -1593,7 +1593,7 @@ Address: %4
     </message>
     <message>
         <source>Warning: Please check that your computer's date and time are correct! If your clock is wrong DAPS will not work properly.</source>
-        <translation>注意：请检查您的电脑的日期和时间是否正确！ 如果您的时间设置不正确，DAPScoin将无法正常工作。</translation>
+        <translation>注意：请检查您的电脑的日期和时间是否正确！ 如果您的时间设置不正确，DAPS将无法正常工作。</translation>
     </message>
     <message>
         <source>Warning: wallet.dat corrupt, data salvaged! Original wallet.dat saved as wallet.{timestamp}.bak in %s; if your balance or transactions are incorrect you should restore from a backup.</source>

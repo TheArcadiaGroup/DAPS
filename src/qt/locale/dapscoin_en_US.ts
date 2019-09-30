@@ -670,8 +670,8 @@
         <translation>Open Masternode configuration file</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Open a DAPScoin: URI or payment request</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Open a DAPS: URI or payment request</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -1576,16 +1576,16 @@ Please check the address and try again.</translation>
         <translation>Obfuscation Configuration</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPScoin's configuration screen.</translation>
+        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPS's configuration screen.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPScoin's configuration screen.</translation>
+        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPS's configuration screen.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPScoin's configuration screen.</translation>
+        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPS's configuration screen.</translation>
     </message>
 </context>
 <context>
@@ -1714,8 +1714,8 @@ Please check the address and try again.</translation>
         <translation>&amp;Network</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
-        <translation>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
+        <translation>The user interface language can be set here. This setting will take effect after restarting DAPS.</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
@@ -3099,8 +3099,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Message:</translation>
     </message>
     <message>
-        <source>A message that was attached to the DAPScoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
-        <translation>A message that was attached to the DAPScoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</translation>
+        <source>A message that was attached to the DAPS: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
+        <translation>A message that was attached to the DAPS: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</translation>
     </message>
     <message>
         <source>This is an unverified payment request.</source>

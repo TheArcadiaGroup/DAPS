@@ -690,8 +690,8 @@
         <translation>Abrir arquivo de configuração de Masternode</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Abrir um DAPScoin: URI ou requisição de pagamento</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Abrir um DAPS: URI ou requisição de pagamento</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -1245,7 +1245,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>Welcome to DAPS.</source>
-        <translation>Bem-vindo ao DAPScoin.</translation>
+        <translation>Bem-vindo ao DAPS.</translation>
     </message>
     <message>
         <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
@@ -1253,7 +1253,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPS vai baixar e armazenar uma cópia da blockchain DAPScoin. Pelo menos %1GB de informação será armazenado neste diretório e irá aumentar com o tempo. A carteira também será armazenada neste diretório.</translation>
+        <translation>DAPS vai baixar e armazenar uma cópia da blockchain DAPS. Pelo menos %1GB de informação será armazenado neste diretório e irá aumentar com o tempo. A carteira também será armazenada neste diretório.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -1591,16 +1591,16 @@ Favor verificar o endereço e tente novamente.</translation>
         <translation>Configuração de ofuscação</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Ofuscação foi definida com sucesso para o básico (%1 e 2 rodadas) Você pode mudar isto a qualquer tempo ao abrir a configuração de tela DAPScoin's.</translation>
+        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Ofuscação foi definida com sucesso para o básico (%1 e 2 rodadas) Você pode mudar isto a qualquer tempo ao abrir a configuração de tela DAPS's.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Ofuscação foi definida com sucesso para alto (%1 e 8 rodadas). Você pode mudar isto a qualquer tempo ao abrir a configuração de tela DAPScoin's.</translation>
+        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Ofuscação foi definida com sucesso para alto (%1 e 8 rodadas). Você pode mudar isto a qualquer tempo ao abrir a configuração de tela DAPS's.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Ofuscação foi definida com sucesso para máxima (%1 e 16 rodadas). Você pode mudar isto a qualquer tempo ao abrir a configuração de tela DAPScoin's.</translation>
+        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Ofuscação foi definida com sucesso para máxima (%1 e 16 rodadas). Você pode mudar isto a qualquer tempo ao abrir a configuração de tela DAPS's.</translation>
     </message>
 </context>
 <context>
@@ -1693,8 +1693,8 @@ Favor verificar o endereço e tente novamente.</translation>
         <translation>&amp;Rede</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
-        <translation>A linguagem da interface pode ser definida aqui. Está configuração terá efeito após reinício do DAPScoin.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
+        <translation>A linguagem da interface pode ser definida aqui. Está configuração terá efeito após reinício do DAPS.</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:

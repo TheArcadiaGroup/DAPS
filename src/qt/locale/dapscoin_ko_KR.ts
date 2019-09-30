@@ -177,7 +177,7 @@
     </message>
     <message>
         <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin는 이제 암호화 프로세스를 마치기 위해 닫힐것입니다. 지갑을 암호화하더라도 맬웨어로 인한 DAPSs 의 도난당하는 것을 완벽하게 보호 할 수는 없습니다.</translation>
+        <translation>DAPS는 이제 암호화 프로세스를 마치기 위해 닫힐것입니다. 지갑을 암호화하더라도 맬웨어로 인한 DAPSs 의 도난당하는 것을 완벽하게 보호 할 수는 없습니다.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -659,11 +659,11 @@
     </message>
     <message>
         <source>Show information about DAPS</source>
-        <translation>DAPScoin에 대한 정보 표시</translation>
+        <translation>DAPS에 대한 정보 표시</translation>
     </message>
     <message>
         <source>Modify configuration options for DAPS</source>
-        <translation>DAPScoin에 대한 구성 옵션 수정</translation>
+        <translation>DAPS에 대한 구성 옵션 수정</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -702,8 +702,8 @@
         <translation>마스터노드 구성 파일 열기</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>DAPScoin: URI 또는 ​​결제 요청 열기</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>DAPS: URI 또는 ​​결제 요청 열기</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -1268,15 +1268,15 @@ Address: %4
     </message>
     <message>
         <source>Welcome to DAPS.</source>
-        <translation>DAPScoin에 오신 것을 환영합니다.</translation>
+        <translation>DAPS에 오신 것을 환영합니다.</translation>
     </message>
     <message>
         <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
-        <translation>이 프로그램이 처음 실행되었으므로 DAPScoin가 데이터를 저장할 위치를 선택할 수 있습니다.</translation>
+        <translation>이 프로그램이 처음 실행되었으므로 DAPS가 데이터를 저장할 위치를 선택할 수 있습니다.</translation>
     </message>
     <message>
         <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin는 DAPS 블록체인을 다운로드하여 저장합니다. 최소 %1GB의 데이터가 디렉토리에 저장되며 시간이 지날수록 증가합니다. 또한 지갑도 해당 디렉토리에 저장됩니다.</translation>
+        <translation>DAPS는 DAPS 블록체인을 다운로드하여 저장합니다. 최소 %1GB의 데이터가 디렉토리에 저장되며 시간이 지날수록 증가합니다. 또한 지갑도 해당 디렉토리에 저장됩니다.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -1683,16 +1683,16 @@ Please check the address and try again.</source>
         <translation>난독화 구성</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>난독화가 성공적으로 높게 설정되었습니다.(%1 및 2 rounds) DAPScoin의 설정 화면을 열어 언제든지 다시 변경할 수 있습니다.</translation>
+        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>난독화가 성공적으로 높게 설정되었습니다.(%1 및 2 rounds) DAPS의 설정 화면을 열어 언제든지 다시 변경할 수 있습니다.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>난독화가 성공적으로 높게 설정되었습니다.(%1 및 8 rounds) DAPScoin의 설정 화면을 열어 언제든지 다시 변경할 수 있습니다.</translation>
+        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>난독화가 성공적으로 높게 설정되었습니다.(%1 및 8 rounds) DAPS의 설정 화면을 열어 언제든지 다시 변경할 수 있습니다.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>난독화가 성공적으로 높게 설정되었습니다.(%1 및 16 rounds) DAPScoin의 설정 화면을 열어 언제든지 다시 변경할 수 있습니다.</translation>
+        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>난독화가 성공적으로 높게 설정되었습니다.(%1 및 16 rounds) DAPS의 설정 화면을 열어 언제든지 다시 변경할 수 있습니다.</translation>
     </message>
 </context>
 <context>
@@ -1774,7 +1774,7 @@ Please check the address and try again.</source>
     </message>
     <message>
         <source>Automatically start DAPS after logging in to the system.</source>
-        <translation>시스템 로그인 후 DAPScoin을 자동으로 시작합니다.</translation>
+        <translation>시스템 로그인 후 DAPS을 자동으로 시작합니다.</translation>
     </message>
     <message>
         <source>&amp;Start DAPS on system login</source>
@@ -1805,8 +1805,8 @@ Please check the address and try again.</source>
         <translation>&amp;네트워크</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
-        <translation>사용자 인터페이스 언어를 설정할 수 있습니다. 이 설정은 DAPScoin을 다시 시작한 후에 적용됩니다.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
+        <translation>사용자 인터페이스 언어를 설정할 수 있습니다. 이 설정은 DAPS을 다시 시작한 후에 적용됩니다.</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
@@ -2106,7 +2106,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>Cannot start dapscoin: click-to-pay handler</source>
-        <translation>DAPScoin을 시작할 수 없습니다: 결제하기 위한 클릭 처리</translation>
+        <translation>DAPS을 시작할 수 없습니다: 결제하기 위한 클릭 처리</translation>
     </message>
     <message>
         <source>URI cannot be parsed! This can be caused by an invalid DAPS address or malformed URI parameters.</source>
@@ -3613,7 +3613,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>메세지:</translation>
     </message>
     <message>
-        <source>A message that was attached to the DAPScoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
+        <source>A message that was attached to the DAPS: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
         <translation>참조용으로 트랜잭션과 함께 기록되는 DAPS : URI에 첨부된 메세지입니다. 참고: 이 메세지는 DAPS 네트워크를 통해 전송되지 않습니다.</translation>
     </message>
     <message>
@@ -3641,7 +3641,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     <name>ShutdownWindow</name>
     <message>
         <source>DAPS is shutting down...</source>
-        <translation>DAPScoin가 종료됩니다...</translation>
+        <translation>DAPS가 종료됩니다...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -4464,7 +4464,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
     <message>
         <source>Cannot obtain a lock on data directory %s. DAPS is probably already running.</source>
-        <translation>        &lt;translation&gt;잠겨진 데이터 디렉토리 %s 를 가져올 수 없습니다. DAPScoin는 이미 실행 중입니다.</translation>
+        <translation>        &lt;translation&gt;잠겨진 데이터 디렉토리 %s 를 가져올 수 없습니다. DAPS는 이미 실행 중입니다.</translation>
     </message>
     <message>
         <source>Change automatic finalized budget voting behavior. mode=auto: Vote for only exact finalized budget match to my generated budget. (string, default: auto)</source>
@@ -4618,10 +4618,10 @@ If the file does not exist, create it with owner-readable-only file permissions.
 It is also recommended to set alertnotify so you are notified of problems;
 for example: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
 </source>
-        <translation>DAPScoind 또는 DAPScoin-qt에 대한 -server 옵션 파일을 사용하려면 configuration 파일에서 rpcpassword를 설정해야 합니다:
+        <translation>DAPSd 또는 DAPS-qt에 대한 -server 옵션 파일을 사용하려면 configuration 파일에서 rpcpassword를 설정해야 합니다:
 %s
 다음 무작위 암호를 사용하는 것을 추천합니다:
-rpcuser=DAPScoinpc
+rpcuser=DAPSpc
 rpcpassword=%s
 (이 비밀번호는 기억할 필요가 없습니다)
 유저 이름과 비밀번호는 반드시 달라야 합니다.
@@ -4632,7 +4632,7 @@ rpcpassword=%s
     </message>
     <message>
         <source>Unable to bind to %s on this computer. DAPS is probably already running.</source>
-        <translation>이 컴퓨터를 %s 로 지정하는것은 불가능합니다. DAPScoin는 이미 실행 중입니다.</translation>
+        <translation>이 컴퓨터를 %s 로 지정하는것은 불가능합니다. DAPS는 이미 실행 중입니다.</translation>
     </message>
     <message>
         <source>Unable to locate enough Obfuscation denominated funds for this transaction.</source>
@@ -5008,7 +5008,7 @@ rpcpassword=%s
     </message>
     <message>
         <source>Initialization sanity check failed. DAPS is shutting down.</source>
-        <translation>초기화 정확성 검사에 실패 했습니다. DAPScoin가 종료됩니다.</translation>
+        <translation>초기화 정확성 검사에 실패 했습니다. DAPS가 종료됩니다.</translation>
     </message>
     <message>
         <source>Input is not valid.</source>

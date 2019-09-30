@@ -674,8 +674,8 @@
         <translation>Abrir Fichero de Configuración de Nodos Maestros</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Abrir un DAPScoin: URI o solicitud de pago</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Abrir un DAPS: URI o solicitud de pago</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -695,7 +695,7 @@
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to DAPS network</source>
-        <translation><numerusform>%n conexión(es) activa a la red DAPScoin</numerusform><numerusform>%n conexion(es) activas a la red DAPScoin</numerusform></translation>
+        <translation><numerusform>%n conexión(es) activa a la red DAPS</numerusform><numerusform>%n conexion(es) activas a la red DAPS</numerusform></translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -1240,7 +1240,7 @@ MultiEnvío: %1</translation>
     </message>
     <message>
         <source>Welcome to DAPS.</source>
-        <translation>Bienvenido/a a DAPScoin.</translation>
+        <translation>Bienvenido/a a DAPS.</translation>
     </message>
     <message>
         <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
@@ -1248,7 +1248,7 @@ MultiEnvío: %1</translation>
     </message>
     <message>
         <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPS descargará y guardará una copia de la cadena de bloques DAPScoin. Por lo menos %1GB de datos serán guardados en esta carpeta, y crecerá con el tiempo. El monedero también se guardará en esta carpeta.</translation>
+        <translation>DAPS descargará y guardará una copia de la cadena de bloques DAPS. Por lo menos %1GB de datos serán guardados en esta carpeta, y crecerá con el tiempo. El monedero también se guardará en esta carpeta.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -1595,16 +1595,16 @@ Por favor compruebe la dirección e inténtelo de nuevo.</translation>
         <translation>Configuración de Ofuscación</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>La Ofuscación se configuró correctamente en modo básico (%1 y 2 rondas). Puedes cambiar esto en cualquier momento accediendo a la ventana de configuración de DAPScoin.</translation>
+        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>La Ofuscación se configuró correctamente en modo básico (%1 y 2 rondas). Puedes cambiar esto en cualquier momento accediendo a la ventana de configuración de DAPS.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>La Ofuscación se activó correctamente en modo alto (%1 y 8 rondas). Usted puede cambiar esto en cualquier momento abriendo la ventana de configuración de DAPScoin.</translation>
+        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>La Ofuscación se activó correctamente en modo alto (%1 y 8 rondas). Usted puede cambiar esto en cualquier momento abriendo la ventana de configuración de DAPS.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>La Ofuscación se activó correctamente en su grado máximo (%1 y 16 rondas). Usted puede cambiar ésto en cualquier momento en la ventana de configuración de DAPScoin.</translation>
+        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>La Ofuscación se activó correctamente en su grado máximo (%1 y 16 rondas). Usted puede cambiar ésto en cualquier momento en la ventana de configuración de DAPS.</translation>
     </message>
 </context>
 <context>
@@ -1717,8 +1717,8 @@ Por favor compruebe la dirección e inténtelo de nuevo.</translation>
         <translation>&amp;Red</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
-        <translation>El idioma de interface de usuario puede seleccionarse aquí. Este ajuste tomará efecto después de reiniciar DAPScoin.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
+        <translation>El idioma de interface de usuario puede seleccionarse aquí. Este ajuste tomará efecto después de reiniciar DAPS.</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
@@ -2831,7 +2831,7 @@ Por favor tenga paciencia...</translation>
     </message>
     <message>
         <source>Welcome to the DAPS RPC console.</source>
-        <translation>Bienvenido a la consola RPC de DAPScoin.</translation>
+        <translation>Bienvenido a la consola RPC de DAPS.</translation>
     </message>
     <message>
         <source>Use up and down arrows to navigate history, and &lt;b&gt;Ctrl-L&lt;/b&gt; to clear screen.</source>
@@ -2902,11 +2902,11 @@ Por favor tenga paciencia...</translation>
     </message>
     <message>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the DAPS network.</source>
-        <translation>Un mensaje opcional a adjuntar a la solicitud de pago, que será mostrado cuando se abra la solicitud. Nota: El mensaje no se envía junto al pago por la red DAPScoin.</translation>
+        <translation>Un mensaje opcional a adjuntar a la solicitud de pago, que será mostrado cuando se abra la solicitud. Nota: El mensaje no se envía junto al pago por la red DAPS.</translation>
     </message>
     <message>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the DAPS network.</source>
-        <translation>Un mensaje opcional a adjuntar a la solicitud de pago, que será mostrado cuando se abra la solicitud. &lt;br&gt;Nota: El mensaje no se envía junto al pago por la red DAPScoin.</translation>
+        <translation>Un mensaje opcional a adjuntar a la solicitud de pago, que será mostrado cuando se abra la solicitud. &lt;br&gt;Nota: El mensaje no se envía junto al pago por la red DAPS.</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -3437,8 +3437,8 @@ Por favor tenga paciencia...</translation>
         <translation>Mensaje:</translation>
     </message>
     <message>
-        <source>A message that was attached to the DAPScoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
-        <translation>Un mensaje adjunto al DAPScoin: En recurso web especificado será guardado junto a la transacción para su referencia. Nota: Este mensaje no se enviará por la red DAPScoin.</translation>
+        <source>A message that was attached to the DAPS: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
+        <translation>Un mensaje adjunto al DAPS: En recurso web especificado será guardado junto a la transacción para su referencia. Nota: Este mensaje no se enviará por la red DAPS.</translation>
     </message>
     <message>
         <source>This is an unverified payment request.</source>

@@ -674,7 +674,7 @@
     </message>
     <message>
         <source>Show information about DAPS</source>
-        <translation>Prikaz informacija o DAPScoin-u</translation>
+        <translation>Prikaz informacija o DAPS-u</translation>
     </message>
     <message>
         <source>Modify configuration options for DAPS</source>
@@ -717,8 +717,8 @@
         <translation>Otvori Masternode konfiguracijsku datoteku</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Otvori DAPScoin: URI zahtjev za plačanje</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Otvori DAPS: URI zahtjev za plačanje</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -1287,7 +1287,7 @@ Višestruko slanje: %1</translation>
     </message>
     <message>
         <source>Welcome to DAPS.</source>
-        <translation>Dobrodošli u DAPScoin.</translation>
+        <translation>Dobrodošli u DAPS.</translation>
     </message>
     <message>
         <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
@@ -1811,16 +1811,16 @@ Budite strpljivi nakon što kliknete uvoz.</translation>
         <translation>Obfuscation Konfiguracija</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Obfuscation je uspješno postavljen na osnovne (%1 i 2 runde). To možete promijeniti u bilo kojem trenutku otvaranjem zaslona za konfiguraciju DAPScoin-a.</translation>
+        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Obfuscation je uspješno postavljen na osnovne (%1 i 2 runde). To možete promijeniti u bilo kojem trenutku otvaranjem zaslona za konfiguraciju DAPS-a.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Obfuscation je uspješno postavljen na visoku razinu (%1 i 8 krugova). To možete promijeniti u bilo kojem trenutku otvaranjem zaslona za konfiguraciju DAPScoin-a</translation>
+        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Obfuscation je uspješno postavljen na visoku razinu (%1 i 8 krugova). To možete promijeniti u bilo kojem trenutku otvaranjem zaslona za konfiguraciju DAPS-a</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Obfuscation je uspješno postavljen na maksimalnu razinu (%1 i 16 krugova). To možete promijeniti u bilo kojem trenutku otvaranjem zaslona za konfiguraciju DAPScoin-a.</translation>
+        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Obfuscation je uspješno postavljen na maksimalnu razinu (%1 i 16 krugova). To možete promijeniti u bilo kojem trenutku otvaranjem zaslona za konfiguraciju DAPS-a.</translation>
     </message>
 </context>
 <context>
@@ -1933,8 +1933,8 @@ Budite strpljivi nakon što kliknete uvoz.</translation>
         <translation>Mreža</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
-        <translation>Ovdje se može postaviti jezik korisničkog sučelja. Ova postavka će stupiti na snagu nakon ponovnog pokretanja DAPScoin-a.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
+        <translation>Ovdje se može postaviti jezik korisničkog sučelja. Ova postavka će stupiti na snagu nakon ponovnog pokretanja DAPS-a.</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
@@ -2156,7 +2156,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>Your current DAPS balance, unconfirmed and immature transactions included</source>
-        <translation>Uključena je vaša trenutna bilanca DAPScoin, nepotvrđene i nezrele transakcije</translation>
+        <translation>Uključena je vaša trenutna bilanca DAPS, nepotvrđene i nezrele transakcije</translation>
     </message>
     <message>
         <source>zDAPS Balance</source>
@@ -4052,8 +4052,8 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Poruka:</translation>
     </message>
     <message>
-        <source>A message that was attached to the DAPScoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
-        <translation>Poruka koja je bila povezana s DAPScoin: URI koji će biti pohranjen s transakcijom za vašu referencu. Napomena: ova poruka neće biti poslana preko DAPS mreže.</translation>
+        <source>A message that was attached to the DAPS: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
+        <translation>Poruka koja je bila povezana s DAPS: URI koji će biti pohranjen s transakcijom za vašu referencu. Napomena: ova poruka neće biti poslana preko DAPS mreže.</translation>
     </message>
     <message>
         <source>This is an unverified payment request.</source>

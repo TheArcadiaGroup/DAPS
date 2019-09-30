@@ -686,8 +686,8 @@
         <translation>Açık Masternode yapılandırma dosyası</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Bir DAPScoin: URI veya ödeme isteği açın</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Bir DAPS: URI veya ödeme isteği açın</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -1141,7 +1141,7 @@ Adres: %4</translation>
     </message>
     <message>
         <source>Welcome to DAPS.</source>
-        <translation>DAPScoin'a hoşgeldiniz.</translation>
+        <translation>DAPS'a hoşgeldiniz.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>

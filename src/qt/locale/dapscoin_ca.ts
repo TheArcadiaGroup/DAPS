@@ -463,7 +463,7 @@
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to DAPS network</source>
-        <translation><numerusform>%n connexió activa a la xarxa DAPScoin</numerusform><numerusform>%n connexions actives a la xarxa DAPScoin</numerusform></translation>
+        <translation><numerusform>%n connexió activa a la xarxa DAPS</numerusform><numerusform>%n connexions actives a la xarxa DAPS</numerusform></translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -920,11 +920,11 @@
     </message>
     <message>
         <source>Welcome to DAPS.</source>
-        <translation>Benvingut a DAPScoin.</translation>
+        <translation>Benvingut a DAPS.</translation>
     </message>
     <message>
         <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
-        <translation>Al ser el primer cop que s'inicia el programa, pots escollir on es desaran les dades del DAPScoin.</translation>
+        <translation>Al ser el primer cop que s'inicia el programa, pots escollir on es desaran les dades del DAPS.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>

@@ -638,8 +638,8 @@
         <translation>Impostazioni MultiSend</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Apri un DAPScoin: URI o richiesta di pagamento</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Apri un DAPS: URI o richiesta di pagamento</translation>
     </message>
     <message>
         <source>Block explorer window</source>

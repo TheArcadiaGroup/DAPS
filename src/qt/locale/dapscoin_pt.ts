@@ -280,7 +280,7 @@
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>Assinar a Mensagem para provar que você e dono desse endereço DAPScoin.</translation>
+        <translation>Assinar a Mensagem para provar que você e dono desse endereço DAPS.</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -708,7 +708,7 @@
     </message>
     <message>
         <source>Sign the message to prove you own this DAPS address</source>
-        <translation>Assinar a Mensagem para provar que você e dono desse endereço DAPScoin.</translation>
+        <translation>Assinar a Mensagem para provar que você e dono desse endereço DAPS.</translation>
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>

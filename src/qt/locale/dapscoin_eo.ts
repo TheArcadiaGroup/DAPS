@@ -717,8 +717,8 @@
         <translation>Malfermi mastro-nodo agord-dosieron</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Malfermi unu DAPScoin: URI aŭ pago peto</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Malfermi unu DAPS: URI aŭ pago peto</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -1706,8 +1706,8 @@ Bonvolu kontroku la adreson kaj riprovu</translation>
         <translation>&amp;Reto</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
-        <translation>La uzanta interfaco lingvo povas esti agordi ĉi tie. Tio agordo efektivigos post rekomenci DAPScoin.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
+        <translation>La uzanta interfaco lingvo povas esti agordi ĉi tie. Tio agordo efektivigos post rekomenci DAPS.</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:

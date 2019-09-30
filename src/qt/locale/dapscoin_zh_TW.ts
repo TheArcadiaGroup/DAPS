@@ -650,8 +650,8 @@
         <translation>打開Masternode設定檔</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>打開DAPScoin: 位址或付款請求 </translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>打開DAPS: 位址或付款請求 </translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>

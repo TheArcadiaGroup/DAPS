@@ -63,11 +63,11 @@
     </message>
     <message>
         <source>These are your DAPS addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Это ваши DAPScoin-адреса для отправки платежей. Перед отправкой монет всегда проверяйте сумму и адрес получателя.</translation>
+        <translation>Это ваши DAPS-адреса для отправки платежей. Перед отправкой монет всегда проверяйте сумму и адрес получателя.</translation>
     </message>
     <message>
         <source>These are your DAPS addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Это ваши DAPScoin-адреса для получения платежей. Для каждой транзакции рекомендуется использовать новый адрес получения.</translation>
+        <translation>Это ваши DAPS-адреса для получения платежей. Для каждой транзакции рекомендуется использовать новый адрес получения.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -300,7 +300,7 @@
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>Адрес DAPScoin, которым подписано сообщение</translation>
+        <translation>Адрес DAPS, которым подписано сообщение</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
@@ -603,7 +603,7 @@
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
-        <translation>Запросить платежи (генерирует QR-код и DAPScoin: URI)</translation>
+        <translation>Запросить платежи (генерирует QR-код и DAPS: URI)</translation>
     </message>
     <message>
         <source>&amp;Privacy</source>
@@ -666,8 +666,8 @@
         <translation>Открыть файл настроек мастернод</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Открыть DAPScoin: URI или запрос платежа</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Открыть DAPS: URI или запрос платежа</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -1208,15 +1208,15 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>Welcome to DAPS.</source>
-        <translation>Добро пожаловать в DAPScoin.</translation>
+        <translation>Добро пожаловать в DAPS.</translation>
     </message>
     <message>
         <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
-        <translation>Поскольку это первый запуск программы, вы можете выбрать, где будут храниться данные DAPScoin.</translation>
+        <translation>Поскольку это первый запуск программы, вы можете выбрать, где будут храниться данные DAPS.</translation>
     </message>
     <message>
         <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPS загрузит и сохранит копию цепочки блоков DAPScoin. Каталог будет занимать около %1GB и со временем размер будет увеличиваться. Кроме того, в этом каталоге будет храниться кошелек.</translation>
+        <translation>DAPS загрузит и сохранит копию цепочки блоков DAPS. Каталог будет занимать около %1GB и со временем размер будет увеличиваться. Кроме того, в этом каталоге будет храниться кошелек.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -1559,16 +1559,16 @@ Please check the address and try again.</source>
         <translation>Настройка Перемешивания</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Перемешивание было успешно выставлено на стандартные значения (%1 и 2 цикла). Вы в любой момент можете это изменить, открыв окно настройки DAPScoin.</translation>
+        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Перемешивание было успешно выставлено на стандартные значения (%1 и 2 цикла). Вы в любой момент можете это изменить, открыв окно настройки DAPS.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Перемешивание было успешно выбрано как высокое (%1 и 8 циклов). Вы в любой момент можете это изменить, открыв окно настройки DAPScoin.</translation>
+        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Перемешивание было успешно выбрано как высокое (%1 и 8 циклов). Вы в любой момент можете это изменить, открыв окно настройки DAPS.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Перемешивание было успешно выставлено на максимальное (%1 и 16 циклов). Вы в любой момент можете это изменить, открыв окно настройки DAPScoin.</translation>
+        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Перемешивание было успешно выставлено на максимальное (%1 и 16 циклов). Вы в любой момент можете это изменить, открыв окно настройки DAPS.</translation>
     </message>
 </context>
 <context>
@@ -1681,8 +1681,8 @@ Please check the address and try again.</source>
         <translation>&amp;Сеть</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
-        <translation>Здесь можно выставить язык интерфейса. Изменения вступят в силу после перезапуска DAPScoin.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
+        <translation>Здесь можно выставить язык интерфейса. Изменения вступят в силу после перезапуска DAPS.</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
@@ -2333,7 +2333,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>Open the DAPS debug log file from the current data directory. This can take a few seconds for large log files.</source>
-        <translation>Открыть протокол отладки DAPScoin. Это может занять некоторе время, если файл протокола очень большой.</translation>
+        <translation>Открыть протокол отладки DAPS. Это может занять некоторе время, если файл протокола очень большой.</translation>
     </message>
     <message>
         <source>Number of Masternodes</source>
@@ -2879,7 +2879,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>The DAPS address the message was signed with</source>
-        <translation>Адрес DAPScoin, которым подписано сообщение</translation>
+        <translation>Адрес DAPS, которым подписано сообщение</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>

@@ -706,8 +706,8 @@
         <translation>Otevřít Masternodový konfigurační soubor</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Otevřít DAPScoin: URI nebo platební žádost</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Otevřít DAPS: URI nebo platební žádost</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -727,7 +727,7 @@
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to DAPS network</source>
-        <translation><numerusform>Aktivních připojení do sítě DAPScoin: %n</numerusform><numerusform>Aktivních připojení do sítě DAPScoin: %n</numerusform><numerusform>Aktivních připojení do sítě DAPScoin: %n</numerusform></translation>
+        <translation><numerusform>Aktivních připojení do sítě DAPS: %n</numerusform><numerusform>Aktivních připojení do sítě DAPS: %n</numerusform><numerusform>Aktivních připojení do sítě DAPS: %n</numerusform></translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -1224,7 +1224,7 @@ MultiSend: %1</translation>
     </message>
     <message>
         <source>Welcome to DAPS.</source>
-        <translation>Vítejte v DAPScoin.</translation>
+        <translation>Vítejte v DAPS.</translation>
     </message>
     <message>
         <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>

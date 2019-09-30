@@ -63,11 +63,11 @@
     </message>
     <message>
         <source>These are your DAPS addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Dies sind ihre DAPScoin-Adressen zum Tätigen von Überweisungen. Bitte prüfen Sie den Betrag und die Empfangsadresse, bevor Sie DAPS überweisen.</translation>
+        <translation>Dies sind ihre DAPS-Adressen zum Tätigen von Überweisungen. Bitte prüfen Sie den Betrag und die Empfangsadresse, bevor Sie DAPS überweisen.</translation>
     </message>
     <message>
         <source>These are your DAPS addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Dies sind ihre DAPScoin-Adressen zum Empfangen von Zahlungen. Es wird empfohlen für jede Transaktion eine neue Empfangsadresse zu verwenden.</translation>
+        <translation>Dies sind ihre DAPS-Adressen zum Empfangen von Zahlungen. Es wird empfohlen für jede Transaktion eine neue Empfangsadresse zu verwenden.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -308,7 +308,7 @@
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
-        <translation>Überprüfen Sie die Nachricht, um sicherzustellen, dass sie mit der angegebenen DAPScoin-Adresse signiert wurde.</translation>
+        <translation>Überprüfen Sie die Nachricht, um sicherzustellen, dass sie mit der angegebenen DAPS-Adresse signiert wurde.</translation>
     </message>
     <message>
         <source>Decrypt &amp;Key</source>
@@ -607,7 +607,7 @@
     </message>
     <message>
         <source>Send coins to a DAPS address</source>
-        <translation>An eine DAPScoin-Adresse überweisen</translation>
+        <translation>An eine DAPS-Adresse überweisen</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
@@ -639,11 +639,11 @@
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
-        <translation>Unterschreibt eine Nachricht mit Ihrer DAPScoin-Adresse und beweist, dass sie Ihnen gehört</translation>
+        <translation>Unterschreibt eine Nachricht mit Ihrer DAPS-Adresse und beweist, dass sie Ihnen gehört</translation>
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
-        <translation>Überprüft eine Nachricht um zu prüfen ob diese mit einer bestimmten DAPScoin-Adresse signiert wurde</translation>
+        <translation>Überprüft eine Nachricht um zu prüfen ob diese mit einer bestimmten DAPS-Adresse signiert wurde</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -670,8 +670,8 @@
         <translation>Öffne Masternode Einstellungsdatei</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Öffne eine DAPScoin: URI or Zahlungsanfrage</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Öffne eine DAPS: URI or Zahlungsanfrage</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -683,7 +683,7 @@
     </message>
     <message>
         <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
-        <translation>Zeige die DAPScoin-Core Hilfe, um mögliche DAPS Kommando-Zeilen-Optionen anzuzeigen</translation>
+        <translation>Zeige die DAPS-Core Hilfe, um mögliche DAPS Kommando-Zeilen-Optionen anzuzeigen</translation>
     </message>
     <message>
         <source>DAPS client</source>
@@ -1134,7 +1134,7 @@ Adresse: %4</translation>
     </message>
     <message>
         <source>The entered address "%1" is not a valid DAPS address.</source>
-        <translation>Die eingegebene Adresse "%1" ist keine gültige DAPScoin-Adresse.</translation>
+        <translation>Die eingegebene Adresse "%1" ist keine gültige DAPS-Adresse.</translation>
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
@@ -1235,7 +1235,7 @@ Adresse: %4</translation>
     </message>
     <message>
         <source>Welcome to DAPS.</source>
-        <translation>Willkommen zu DAPScoin.</translation>
+        <translation>Willkommen zu DAPS.</translation>
     </message>
     <message>
         <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
@@ -1396,8 +1396,8 @@ Adresse: %4</translation>
 To Add: enter percentage to give and DAPS address to add to the MultiSend vector.
 To Delete: Enter address to delete and press delete.
 MultiSend will not be activated unless you have clicked Activate</source>
-        <translation>MultiSend ermöglicht es automatisch bis zu 100% Ihrer Stake- oder Masternode-Belohnung zu einer Liste von anderen DAPScoin-Adressen zu senden.
-Zum hinzufügen: Gebe den Prozentsätze ein, um die DAPScoin-Adressen des MultiSend-Vektor hinzuzufügen.
+        <translation>MultiSend ermöglicht es automatisch bis zu 100% Ihrer Stake- oder Masternode-Belohnung zu einer Liste von anderen DAPS-Adressen zu senden.
+Zum hinzufügen: Gebe den Prozentsätze ein, um die DAPS-Adressen des MultiSend-Vektor hinzuzufügen.
 Zum entfernen: Gebe die zu löschende Adresse ein und drücke löschen.
 MultiSend wird nicht aktiviert bis Sie auf Aktivieren geklickt haben.</translation>
     </message>
@@ -1586,16 +1586,16 @@ Bitte Adresse überprüfen und nochmals versuchen.</translation>
         <translation>Verschleierungskonfiguration</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Verschleierung erfolgreich auf normal gesetzt (%1 und 2 Runden). Sie können dies jederzeit in den DAPScoins Konfigurationen ändern.</translation>
+        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Verschleierung erfolgreich auf normal gesetzt (%1 und 2 Runden). Sie können dies jederzeit in den DAPSs Konfigurationen ändern.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Verschleierung erfolgreich auf hohen gesetzt (%1 und 8 Runden). Sie können dies jederzeit in den DAPScoins Konfigurationen ändern.</translation>
+        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Verschleierung erfolgreich auf hohen gesetzt (%1 und 8 Runden). Sie können dies jederzeit in den DAPSs Konfigurationen ändern.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Verschleierung erfolgreich auf maximal gesetzt (%1 und 16 Runden). Sie können dies jederzeit in den DAPScoins Konfigurationen ändern.</translation>
+        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Verschleierung erfolgreich auf maximal gesetzt (%1 und 16 Runden). Sie können dies jederzeit in den DAPSs Konfigurationen ändern.</translation>
     </message>
 </context>
 <context>
@@ -1657,7 +1657,7 @@ Bitte Adresse überprüfen und nochmals versuchen.</translation>
     </message>
     <message>
         <source>Automatically open the DAPS client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Automatisches öffnen des DAPScoin-Client-Port im Router. Dies funktioniert nur, wenn ihr Router UPnP unterstützt und es eingeschaltet ist.</translation>
+        <translation>Automatisches öffnen des DAPS-Client-Port im Router. Dies funktioniert nur, wenn ihr Router UPnP unterstützt und es eingeschaltet ist.</translation>
     </message>
     <message>
         <source>Accept connections from outside</source>
@@ -1708,7 +1708,7 @@ Bitte Adresse überprüfen und nochmals versuchen.</translation>
         <translation>&amp;Netzwerk</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
         <translation>Die Sprache der Benutzeroberfläche kann hier festgelegt werden. Diese Einstellung wird nach einem Neustart realisiert.</translation>
     </message>
     <message>
@@ -1898,7 +1898,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPS network after a connection is established, but this process has not completed yet.</source>
-        <translation>Die angezeigte Information ist möglicherweise nicht mehr aktuell. Ihre Wallet synchronisiert sich automatisch mit dem DAPScoin-Netzwerk, nachdem eine Verbindung hergestellt wurde. Aber dieser Vorgang ist noch nicht abgeschlossen.</translation>
+        <translation>Die angezeigte Information ist möglicherweise nicht mehr aktuell. Ihre Wallet synchronisiert sich automatisch mit dem DAPS-Netzwerk, nachdem eine Verbindung hergestellt wurde. Aber dieser Vorgang ist noch nicht abgeschlossen.</translation>
     </message>
     <message>
         <source>Unconfirmed transactions to watch-only addresses</source>
@@ -1989,7 +1989,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>URI cannot be parsed! This can be caused by an invalid DAPS address or malformed URI parameters.</source>
-        <translation>URI kann nicht analysiert werden! Dies kann durch eine ungültige DAPScoin-Adresse oder fehlerhafte URI-Parameter verursacht worden sein.</translation>
+        <translation>URI kann nicht analysiert werden! Dies kann durch eine ungültige DAPS-Adresse oder fehlerhafte URI-Parameter verursacht worden sein.</translation>
     </message>
     <message>
         <source>Payment request file cannot be read! This can be caused by an invalid payment request file.</source>
@@ -2083,7 +2083,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPS network after a connection is established, but this process has not completed yet.</source>
-        <translation>Die angezeigte Information ist möglicherweise nicht mehr aktuell. Ihre Wallet synchronisiert sich automatisch mit dem DAPScoin-Netzwerk, nachdem eine Verbindung hergestellt wurde. Aber dieser Vorgang ist noch nicht abgeschlossen.</translation>
+        <translation>Die angezeigte Information ist möglicherweise nicht mehr aktuell. Ihre Wallet synchronisiert sich automatisch mit dem DAPS-Netzwerk, nachdem eine Verbindung hergestellt wurde. Aber dieser Vorgang ist noch nicht abgeschlossen.</translation>
     </message>
     <message>
         <source>Enter an amount of Daps to convert to zDaps</source>
@@ -2187,7 +2187,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     </message>
     <message>
         <source>The DAPS address to send the payment to. Creates local payment to yourself when empty.</source>
-        <translation>Die DAPScoin-Adresse, an die die Zahlung gesendet wird. Erstellt eine lokale Zahlung an Sie selbst, wenn die Zeile leer ist.</translation>
+        <translation>Die DAPS-Adresse, an die die Zahlung gesendet wird. Erstellt eine lokale Zahlung an Sie selbst, wenn die Zeile leer ist.</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -2429,7 +2429,7 @@ Bitte haben Sie etwas Geduld...</translation>
     </message>
     <message>
         <source>Invalid Dapscoin Address</source>
-        <translation>Ungültige DAPScoin-Adresse </translation>
+        <translation>Ungültige DAPS-Adresse </translation>
     </message>
     <message>
         <source>Invalid Send Amount</source>
@@ -2516,7 +2516,7 @@ Bitte haben Sie Geduld...</translation>
     </message>
     <message>
         <source>Enter a DAPS address (e.g. %1)</source>
-        <translation>DAPScoin-Adresse eingeben (z.B. %1)</translation>
+        <translation>DAPS-Adresse eingeben (z.B. %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -2654,7 +2654,7 @@ Bitte haben Sie Geduld...</translation>
     </message>
     <message>
         <source>Open the DAPS debug log file from the current data directory. This can take a few seconds for large log files.</source>
-        <translation>Öffne DAPScoin-Debug-Protokolldatei aus dem aktuellen Datenverzeichnis. Dies kann bei großen Protokolldateien einige Sekunden dauern.</translation>
+        <translation>Öffne DAPS-Debug-Protokolldatei aus dem aktuellen Datenverzeichnis. Dies kann bei großen Protokolldateien einige Sekunden dauern.</translation>
     </message>
     <message>
         <source>Number of Masternodes</source>
@@ -2893,11 +2893,11 @@ Bitte haben Sie Geduld...</translation>
     </message>
     <message>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the DAPS network.</source>
-        <translation>Eine optionale Nachricht an die Zahlungsaufforderung anhängen, die bei der Eröffnung der Anforderung angezeigt wird. Hinweis: Die Nachricht wird nicht mit der Zahlung über das DAPScoin-Netzwerk gesendet.</translation>
+        <translation>Eine optionale Nachricht an die Zahlungsaufforderung anhängen, die bei der Eröffnung der Anforderung angezeigt wird. Hinweis: Die Nachricht wird nicht mit der Zahlung über das DAPS-Netzwerk gesendet.</translation>
     </message>
     <message>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the DAPS network.</source>
-        <translation>Eine optionale Nachricht an die Zahlungsaufforderung anhängen, die bei der Eröffnung der Anforderung angezeigt wird.&lt;br&gt;Hinweis: Die Nachricht wird nicht mit der Zahlung über das DAPScoin-Netzwerk gesendet.</translation>
+        <translation>Eine optionale Nachricht an die Zahlungsaufforderung anhängen, die bei der Eröffnung der Anforderung angezeigt wird.&lt;br&gt;Hinweis: Die Nachricht wird nicht mit der Zahlung über das DAPS-Netzwerk gesendet.</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -3182,7 +3182,7 @@ Bitte haben Sie Geduld...</translation>
     </message>
     <message>
         <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for DAPS transactions than the network can process.</source>
-        <translation>Nur die minimale Gebühr zu zahlen ist nur gut, solange es weniger Transaktionsvolumen als Platz in den Blocken gibt.&lt;br /&gt;Aber seien Sie sich bewusst, dass dies in einer niemals bestätigende Transaktion enden kann, sobald die Nachfrage nach DAPScoin-Transaktionen höher ist, als was das Netzwerk verarbeiten kann.</translation>
+        <translation>Nur die minimale Gebühr zu zahlen ist nur gut, solange es weniger Transaktionsvolumen als Platz in den Blocken gibt.&lt;br /&gt;Aber seien Sie sich bewusst, dass dies in einer niemals bestätigende Transaktion enden kann, sobald die Nachfrage nach DAPS-Transaktionen höher ist, als was das Netzwerk verarbeiten kann.</translation>
     </message>
     <message>
         <source>normal</source>
@@ -3286,7 +3286,7 @@ Bitte haben Sie Geduld...</translation>
     </message>
     <message>
         <source>Warning: Invalid DAPS address</source>
-        <translation>Warnung: Ungültige DAPScoin-Adresse</translation>
+        <translation>Warnung: Ungültige DAPS-Adresse</translation>
     </message>
     <message>
         <source>any available funds (not recommended)</source>
@@ -3389,7 +3389,7 @@ Bitte haben Sie Geduld...</translation>
     </message>
     <message>
         <source>The DAPS address to send the payment to</source>
-        <translation>DAPScoin-Adresse, an die überwiesen werden soll</translation>
+        <translation>DAPS-Adresse, an die überwiesen werden soll</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3428,8 +3428,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>Nachricht:</translation>
     </message>
     <message>
-        <source>A message that was attached to the DAPScoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
-        <translation>Eine an die DAPScoin-URI angefügte Nachricht, die zusammen mit der Transaktion gespeichert wird. Hinweis: Diese Nachricht wird nicht über das DAPScoin-Netzwerk gesendet.</translation>
+        <source>A message that was attached to the DAPS: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
+        <translation>Eine an die DAPS-URI angefügte Nachricht, die zusammen mit der Transaktion gespeichert wird. Hinweis: Diese Nachricht wird nicht über das DAPS-Netzwerk gesendet.</translation>
     </message>
     <message>
         <source>This is an unverified payment request.</source>
@@ -3519,7 +3519,7 @@ Bitte haben Sie Geduld...</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified DAPS address</source>
-        <translation>Überprüfen Sie die Nachricht, um sicherzustellen, dass sie mit der angegebenen DAPScoin-Adresse signiert wurde.</translation>
+        <translation>Überprüfen Sie die Nachricht, um sicherzustellen, dass sie mit der angegebenen DAPS-Adresse signiert wurde.</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>

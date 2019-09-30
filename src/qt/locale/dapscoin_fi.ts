@@ -620,7 +620,7 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
     </message>
     <message>
         <source>Modify configuration options for DAPS</source>
-        <translation>Muokkaa konfiguraatio vaihtoehtoja DAPScoin:lle</translation>
+        <translation>Muokkaa konfiguraatio vaihtoehtoja DAPS:lle</translation>
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
@@ -659,8 +659,8 @@ Syötä salausavain laatikon keskelle. Paina salaa tuottaaksesi salatun yksityis
         <translation>Avaa Masternode konfiguraatiotiedosto</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Avaa DAPScoin: URI tai pyydä maksua</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Avaa DAPS: URI tai pyydä maksua</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -1175,7 +1175,7 @@ Please check the address and try again.</source>
     </message>
     <message>
         <source>0.1 DAPS per 10000 DAPS you anonymize.</source>
-        <translation>0.1 per 10000 DAPScoin, jotka anonymisoit.</translation>
+        <translation>0.1 per 10000 DAPS, jotka anonymisoit.</translation>
     </message>
     <message>
         <source>Obfuscation Configuration</source>
@@ -1248,7 +1248,7 @@ Please check the address and try again.</source>
         <translation>&amp;Verkko</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
         <translation>Käyttöliittymän kielen voi säätää täällä. Tämä asetus tulee voimaan uudelleenkäynnistettyäsi lompakon.</translation>
     </message>
     <message>
@@ -2603,7 +2603,7 @@ Please check the address and try again.</source>
     </message>
     <message>
         <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
-        <translation>Virhe ladattaessa wallet.dat tiedostoa: Lompakko vaatii uudemman version DAPScoinsta</translation>
+        <translation>Virhe ladattaessa wallet.dat tiedostoa: Lompakko vaatii uudemman version DAPSsta</translation>
     </message>
     <message>
         <source>Error reading from database, shutting down.</source>

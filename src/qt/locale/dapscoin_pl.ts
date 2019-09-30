@@ -551,7 +551,7 @@
     </message>
     <message>
         <source>Sign messages with your DAPS addresses to prove you own them</source>
-        <translation>Zatwierdź wiadomość z twoimi adresami DAPScoin, by udowodnić, że jesteś w ich posiadaniu</translation>
+        <translation>Zatwierdź wiadomość z twoimi adresami DAPS, by udowodnić, że jesteś w ich posiadaniu</translation>
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
@@ -582,8 +582,8 @@
         <translation>Otwórz &amp;Plik konfiguracji Masternode</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Otwórz DAPScoin: URI i żądanie zapłaty</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Otwórz DAPS: URI i żądanie zapłaty</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -595,7 +595,7 @@
     </message>
     <message>
         <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
-        <translation>Pokaż wiadomość pomocy rdzenia DAPScoin, aby dostać listę możliwych opcji DAPS command-line</translation>
+        <translation>Pokaż wiadomość pomocy rdzenia DAPS, aby dostać listę możliwych opcji DAPS command-line</translation>
     </message>
     <message>
         <source>DAPS client</source>
@@ -1227,7 +1227,7 @@ Proszę sprawdzić adres i spróbować ponownie</translation>
         <translation>&amp;Sieć</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
         <translation>Język interfejsu użytkownika może być wybrany tutaj. Ustawienia ulegną zmianie po restarcie DAPS</translation>
     </message>
     <message>

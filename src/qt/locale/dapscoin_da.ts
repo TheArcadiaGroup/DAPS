@@ -666,7 +666,7 @@
         <translation>ÅbnMasternode konfigurationsfil</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
+        <source>Open a DAPS: URI or payment request</source>
         <translation>Åbn en DAPS URl eller betalingsanmodning</translation>
     </message>
     <message>
@@ -1551,15 +1551,15 @@ Kontroller adressen og prøv igen.</translation>
         <translation>Tilsløringskonfiguration</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
+        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
         <translation>Tilsløring blev sat til grundlæggende (%1 og 2 gennemløb) De kan ændre dette hvornår De vil ved at åbne DAPS konfigurationsbillede.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
+        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
         <translation>Tilsløring blev sat til høj (%1 og 8 gennemløb) De kan ændre dette hvornår De vil ved at åbne DAPS konfigurationsbillede.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
+        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
         <translation>Tilsløring blev sat til maksimum (%1 og 16 gennemløb) De kan ændre dette hvornår De vil ved at åbne DAPS konfigurationsbillede.</translation>
     </message>
 </context>
@@ -1673,7 +1673,7 @@ Kontroller adressen og prøv igen.</translation>
         <translation>&amp;netværk</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
         <translation>Vælg sprog her. Ændringerne træder i kraft næste gang DAPS klienten startes</translation>
     </message>
     <message>
@@ -2999,8 +2999,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Besked</translation>
     </message>
     <message>
-        <source>A message that was attached to the DAPScoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
-        <translation>En besked, der var vedhæftet til DAPScoin: URl wil blive gemt sammen med transaktionen som reference. Note: Beskeden bliver medsendt transaktionen over netværket.</translation>
+        <source>A message that was attached to the DAPS: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
+        <translation>En besked, der var vedhæftet til DAPS: URl wil blive gemt sammen med transaktionen som reference. Note: Beskeden bliver medsendt transaktionen over netværket.</translation>
     </message>
     <message>
         <source>This is an unverified payment request.</source>

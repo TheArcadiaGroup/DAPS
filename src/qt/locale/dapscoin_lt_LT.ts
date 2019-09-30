@@ -717,8 +717,8 @@
         <translation>Atidaryti Masternod'o konfigūracijos failą</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Atidaryti DAPScoin: URI arba mokėjimo prašymą</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Atidaryti DAPS: URI arba mokėjimo prašymą</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -1782,15 +1782,15 @@ Patikrinkite adresą ir bandykite dar kartą.</translation>
         <translation>Obfuscation Konfigūracija</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
+        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
         <translation>Obfuscation buvo sėkmingai nustatytas į paprastą (%1 ir 2 raundai). Bet kada galite tai pakeisti, atidarę DAPS konfigūracijos ekraną.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
+        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
         <translation>Obfuscation buvo sėkmingai nustatytas į aukštą (%1 ir 8 raundai). Bet kada galite tai pakeisti, atidarę DAPS konfigūracijos ekraną.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
+        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
         <translation>Obfuscation buvo sėkmingai nustatytas į maksimumą (%1 ir 16 raundai). Bet kada galite tai pakeisti, atidarę DAPS konfigūracijos ekraną.</translation>
     </message>
 </context>

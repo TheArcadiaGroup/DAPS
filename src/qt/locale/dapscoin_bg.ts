@@ -611,7 +611,7 @@
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
-        <translation>Поискай плащане (генерира QR кодове и  DAPScoin:URI)</translation>
+        <translation>Поискай плащане (генерира QR кодове и  DAPS:URI)</translation>
     </message>
     <message>
         <source>&amp;Privacy</source>
@@ -674,8 +674,8 @@
         <translation>Отвори Мастърноуд конфигурационния файл</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Отвори DAPScoin:URI платежно нареждане</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Отвори DAPS:URI платежно нареждане</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -1591,15 +1591,15 @@ Please check the address and try again.</source>
         <translation>Конфигурация на Обфускацията</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
+        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
         <translation>Обфускацията е успешно конфигурирана на елементарно ниво (%1 и 2 кръга). Moжете да промените тази настройка по всяко време от същото място.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
+        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
         <translation>Обфускацията е успешно конфигурирана на високо ниво (%1 и 8 кръга). Moжете да промените тази настройка по всяко време от същото място.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
+        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
         <translation>Обфускацията е успешно конфигурирана на максимално ниво (%1 и 16 кръга). Moжете да промените тази настройка по всяко време от същото място.</translation>
     </message>
 </context>
@@ -1713,7 +1713,7 @@ Please check the address and try again.</source>
         <translation>&amp;Мрежа</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
         <translation>Промяна на езика. Настройката е активна след рестарт на портфейла.</translation>
     </message>
     <message>
@@ -2823,7 +2823,7 @@ Please be patient...</source>
     </message>
     <message>
         <source>Welcome to the DAPS RPC console.</source>
-        <translation>Добре Дошли в RPC конзолата на DAPScoin.</translation>
+        <translation>Добре Дошли в RPC конзолата на DAPS.</translation>
     </message>
     <message>
         <source>Use up and down arrows to navigate history, and &lt;b&gt;Ctrl-L&lt;/b&gt; to clear screen.</source>
@@ -3429,8 +3429,8 @@ Please be patient...</source>
         <translation>Съобщение:</translation>
     </message>
     <message>
-        <source>A message that was attached to the DAPScoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
-        <translation>Съобщение, което е било прикачено към DAPScoin:URI и което ще бъде запазено заедно с превода за ваша информация. Внимание: Това съобщение е само за Вас, то няма да бъде изпратено по DAPS мрежата.</translation>
+        <source>A message that was attached to the DAPS: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
+        <translation>Съобщение, което е било прикачено към DAPS:URI и което ще бъде запазено заедно с превода за ваша информация. Внимание: Това съобщение е само за Вас, то няма да бъде изпратено по DAPS мрежата.</translation>
     </message>
     <message>
         <source>This is an unverified payment request.</source>

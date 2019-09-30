@@ -63,7 +63,7 @@
     </message>
     <message>
         <source>These are your DAPS addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Це ваші DAPScoin-адреси для надсилання платежів. Завжди перевіряйте суму та адресу одержувача перед відправленням монет.</translation>
+        <translation>Це ваші DAPS-адреси для надсилання платежів. Завжди перевіряйте суму та адресу одержувача перед відправленням монет.</translation>
     </message>
     <message>
         <source>These are your DAPS addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
