@@ -19,6 +19,7 @@
 #include "2fadialog.h"
 #include "2faconfirmdialog.h"
 #include "zxcvbn.h"
+#include "utilmoneystr.h"
 
 #include <QAction>
 #include <QCursor>

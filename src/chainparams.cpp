@@ -129,7 +129,7 @@ public:
         nLastPOWBlock = 500;
         nStartPOABlock = 560;
         nModifierUpdateBlock = 615800;
-        nPoABlockTime = 30 * 60; //a PoA block every 30 minutes
+        nPoABlockTime = 60 * 60; //a PoA block every 30 minutes
         nMinNumPoSBlocks = 59;
 
         /**
