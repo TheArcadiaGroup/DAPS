@@ -5671,7 +5671,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold)
                 }
             }
 
-            if (nReserveBalance > 0) {
+            if (nReserveBalance > 0 && stakingMode == STAKING_WITH_CONSOLIDATION) {
                 if (!isReserveUTXOExist) {
                     //create transactions that create reserve funds
                     CWalletTx wtx;
