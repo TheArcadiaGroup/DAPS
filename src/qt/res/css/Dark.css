@@ -58,6 +58,14 @@ QDialog {
   border-image: url(':/images/background') 0 0 0 0 stretch stretch;
 }
 
+#KeyImageSync {
+  border-image: url(':/images/background') 0 0 0 0 stretch stretch;
+}
+
+#CoSignTransaction {
+  border-image: url(':/images/background') 0 0 0 0 stretch stretch;
+}
+
 #line_1, #line_2, #line_3, #line_4 {
   border-bottom: 1px solid gray;
   max-height: 5px;
