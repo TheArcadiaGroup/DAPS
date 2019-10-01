@@ -453,7 +453,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
             pblock->vtx[0].vout[0].nValue += nFees;
             pblocktemplate->vTxFees[0] = nFees;
         } else {
-        	pblock->vtx[1].vout[1].nValue += nFees;
+        	pblock->vtx[1].vout[2].nValue += nFees;
         	pblocktemplate->vTxFees[0] = nFees;
         }
         

@@ -4248,8 +4248,8 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             CAmount nReward;
             const CBlockIndex* pIndex0 = chainActive.Tip();
             nReward = PoSBlockReward();
-            txNew.vout[1].nValue = nReward; //output 1 = rewards + fees for staking wihtout consolidation
-            txNew.vout[2].nValue = nCredit; //input
+            txNew.vout[1].nValue = nCredit;
+            txNew.vout[2].nValue = nReward;
             if (stakingMode == STAKING_WITH_CONSOLIDATION || STAKING_WITH_CONSOLIDATION_WITH_STAKING_NEWW_FUNDS) {
                 //the first output contains all funds (input + rewards + fee)
                 if (nCredit + nReward > (MINIMUM_STAKE_AMOUNT + 100000*COIN)*2) {
