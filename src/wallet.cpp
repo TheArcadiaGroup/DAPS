@@ -5595,7 +5595,6 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold)
     if (GetSpendableBalance() < 5 * COIN) {
         return false;
     }
-
     CAmount total = 0;
     vector<COutput> vCoins;
     COutput lowestLarger(NULL, 0, 0, false);
