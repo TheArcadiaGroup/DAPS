@@ -203,13 +203,23 @@ public:
     }
 };
 
+//in any case consolidation needed, call estimateConsolidationFees function to estimate fees
 enum StakingStatusError
 {
-	NONE,
-	DEFAULT,
-	UTXO_UNDER_THRESHOLD,
-	RESERVE_TOO_HIGH,
-	RESERVE_TOO_HIGH_AND_UTXO_UNDER_THRESHOLD
+    STAKING_OK, //use case B, C, D, no consolidation needed, 
+    UNSTAKABLE_BALANCE_TOO_LOW, //coin is not mature yet (balance > 400k)
+    UNSTAKABLE_BALANCE_TOO_LOW_CONSOLIDATION_FAILED, //coin is not mature yet (balance > 400k)
+    UNSTAKABLE_BALANCE_RESERVE_TOO_HIGH,
+    UNSTAKABLE_BALANCE_RESERVE_TOO_HIGH_CONSOLIDATION_FAILED, //even consolidation does not help
+    STAKABLE_NEED_CONSOLIDATION,   //stable and consolidation, needs to estimate fees
+    STAKABLE_NEED_CONSOLIDATION_WITH_RESERVE_BALANCE  //stable and consolidation, needs to estimate fees
+};
+
+enum StakingMode {
+	STOPPED, //staking disabled or balance < 400k
+	STAKING_WITHOUT_CONSOLIDATION,
+	STAKING_WITH_CONSOLIDATION,
+	STAKING_WITH_CONSOLIDATION_WITH_STAKING_NEWW_FUNDS
 };
 
 /**
@@ -219,7 +229,7 @@ enum StakingStatusError
 class CWallet : public CCryptoKeyStore, public CValidationInterface
 {
 private:
-    bool SelectCoins(bool needFee, int ringSize, int numOut, const CAmount& nTargetValue, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, const CCoinControl* coinControl = NULL, AvailableCoinsType coin_type = ALL_COINS, bool useIX = true) ;
+    bool SelectCoins(bool needFee, CAmount& estimatedFee, int ringSize, int numOut, const CAmount& nTargetValue, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, const CCoinControl* coinControl = NULL, AvailableCoinsType coin_type = ALL_COINS, bool useIX = true) ;
     //it was public bool SelectCoins(int64_t nTargetValue, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoinsRet, int64_t& nValueRet, const CCoinControl *coinControl = NULL, AvailableCoinsType coin_type=ALL_COINS, bool useIX = true) const;
 
     CWalletDB* pwalletdbEncryption;
@@ -251,6 +261,7 @@ public:
     static const int32_t PROBABILITY_NEW_COIN_SELECTED = 70;
     bool RescanAfterUnlock(bool fromBeginning = false);
     bool MintableCoins();
+    StakingStatusError StakingCoinStatus(CAmount& minFee, CAmount& maxFee);
     bool SelectStakeCoins(std::set<std::pair<const CWalletTx*, unsigned int> >& setCoins, CAmount nTargetAmount) ;
     bool SelectCoinsDark(CAmount nValueMin, CAmount nValueMax, std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet, int nObfuscationRoundsMin, int nObfuscationRoundsMax) ;
     bool SelectCoinsByDenominations(int nDenom, CAmount nValueMin, CAmount nValueMax, std::vector<CTxIn>& vCoinsRet, std::vector<COutput>& vCoinsRet2, CAmount& nValueRet, int nObfuscationRoundsMin, int nObfuscationRoundsMax);
@@ -263,6 +274,8 @@ public:
     bool SelectCoinsCollateral(std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet);
     static int ComputeTxSize(size_t numIn, size_t numOut, size_t ringSize);
     void resetPendingOutPoints();
+    bool estimateStakingConsolidationFees(CAmount& min, CAmount& max);
+    static int MaxTxSizePerTx();
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
@@ -303,7 +316,7 @@ public:
     //Auto Combine Inputs
     bool fCombineDust;
     CAmount nAutoCombineThreshold;
-    bool CreateSweepingTransaction(CAmount target);
+    bool CreateSweepingTransaction(CAmount target, CAmount threshold);
     bool SendAll(std::string des);
     CWallet()
     {
@@ -386,6 +399,8 @@ public:
 
     int64_t nTimeFirstKey;
 
+    StakingMode stakingMode = STOPPED;
+
     mutable std::map<std::string, CKeyImage> outpointToKeyImages;
     std::map<std::string, bool> keyImagesSpends;
     std::map<std::string, std::string> keyImageMap;//mapping from: txhashHex-n to key image str, n = index
@@ -411,7 +426,7 @@ public:
 
     void AvailableCoins(std::vector<COutput>& vCoins, bool fOnlyConfirmed = true, const CCoinControl* coinControl = NULL, bool fIncludeZeroValue = false, AvailableCoinsType nCoinType = ALL_COINS, bool fUseIX = false);
     std::map<CBitcoinAddress, std::vector<COutput> > AvailableCoinsByAddress(bool fConfirmed = true, CAmount maxCoinValue = 0);
-    bool SelectCoinsMinConf(bool needFee, int ringSize, int numOut, const CAmount& nTargetValue, int nConfMine, int nConfTheirs, std::vector<COutput> vCoins, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet);
+    bool SelectCoinsMinConf(bool needFee, CAmount& estimatedFee, int ringSize, int numOut, const CAmount& nTargetValue, int nConfMine, int nConfTheirs, std::vector<COutput> vCoins, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet);
 
     /// Get 1000DASH output and keys which can be used for the Masternode
     bool GetMasternodeVinAndKeys(CTxIn& txinRet, CPubKey& pubKeyRet, CKey& keyRet, std::string strTxHash = "", std::string strOutputIndex = "");
@@ -564,6 +579,7 @@ public:
                                       CAmount nFeePay = 0, int ringSize = 6, bool tomyself = false);
 
     int ComputeFee(size_t numIn, size_t numOut, size_t ringSize);
+    CAmount ComputeReserveUTXOAmount();
     bool CreateTransaction(CScript scriptPubKey, const CAmount &nValue, CWalletTx &wtxNew, CReserveKey &reservekey,
                            CAmount &nFeeRet, std::string &strFailReason, const CCoinControl *coinControl = NULL,
                            AvailableCoinsType coin_type = ALL_COINS, bool useIX = false, CAmount nFeePay = 0);
@@ -774,6 +790,7 @@ public:
     bool MakeShnorrSignatureTxIn(CTxIn& txin, uint256);
     bool computeSharedSec(const CTransaction& tx, const CTxOut& out, CPubKey& sharedSec) const;
     void AddComputedPrivateKey(const CTxOut& out);
+    bool IsCollateralized(const COutPoint& outpoint);
 private:
     bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth);
     bool allMyPrivateKeys(std::vector<CKey>& spends, std::vector<CKey>& views);
