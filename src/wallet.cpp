@@ -4252,8 +4252,10 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             txNew.vout[2].nValue = nCredit; //input
             if (stakingMode == STAKING_WITH_CONSOLIDATION || STAKING_WITH_CONSOLIDATION_WITH_STAKING_NEWW_FUNDS) {
                 //the first output contains all funds (input + rewards + fee)
-                txNew.vout[1].nValue = MINIMUM_STAKE_AMOUNT;
-                txNew.vout[2].nValue = nReward + nCredit - MINIMUM_STAKE_AMOUNT;
+                if (nCredit + nReward > (MINIMUM_STAKE_AMOUNT + 100000*COIN)*2) {
+                    txNew.vout[1].nValue = (nCredit + nReward)/2;
+                    txNew.vout[2].nValue = (nCredit + nReward) - txNew.vout[1].nValue;
+                }
             }
 
             // Limit size
