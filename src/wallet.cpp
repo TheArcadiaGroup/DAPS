@@ -2294,6 +2294,7 @@ static CAmount ApproximateBestSubset(int numOut, int ringSize, vector<pair<CAmou
                     numSelected++;
                     estimateTxSize = CWallet::ComputeTxSize(numSelected, numOut, ringSize);
                     nFeeNeeded = CWallet::GetMinimumFee(estimateTxSize, nTxConfirmTarget, mempool);
+                    nFeeNeeded += BASE_FEE;
                     if (nTotal >= nTargetValue + nFeeNeeded) {
                         fReachedTarget = true;
                         if (nTotal < nBest) {
