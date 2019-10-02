@@ -12,10 +12,10 @@ AC_CONFIG_HEADERS([src/config/dapscoin-config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
 
-BITCOIN_DAEMON_NAME=dapscoind
-BITCOIN_GUI_NAME=dapscoin-qt
-BITCOIN_CLI_NAME=dapscoin-cli
-BITCOIN_TX_NAME=dapscoin-tx
+BITCOIN_DAEMON_NAME=dapscoind-multisig
+BITCOIN_GUI_NAME=dapscoin-qt-multisig
+BITCOIN_CLI_NAME=dapscoin-cli-multisig
+BITCOIN_TX_NAME=dapscoin-tx-multisig
 
 AC_CANONICAL_HOST
 
@@ -958,7 +958,7 @@ if test x$bitcoin_enable_qt != xno; then
     AC_MSG_WARN("xgettext is required to update qt translations")
   fi
 
-  AC_MSG_CHECKING([whether to build test_dapscoin-qt])
+  AC_MSG_CHECKING([whether to build test_dapscoin-qt-multisig])
   if test x$use_tests$bitcoin_enable_qt_test = xyesyes; then
     AC_MSG_RESULT([yes])
     BUILD_TEST_QT="test"
@@ -969,7 +969,7 @@ fi
 
 AM_CONDITIONAL([ENABLE_ZMQ], [test "x$use_zmq" = "xyes"])
 
-AC_MSG_CHECKING([whether to build test_dapscoin])
+AC_MSG_CHECKING([whether to build test_dapscoin-multisig])
 if test x$use_tests = xyes; then
   AC_MSG_RESULT([yes])
   BUILD_TEST="test"

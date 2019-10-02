@@ -10,6 +10,7 @@
 #include "random.h"
 #include "util.h"
 #include "utilstrencodings.h"
+#include "streams.h"
 
 #include <assert.h>
 
@@ -17,6 +18,20 @@
 
 using namespace std;
 using namespace boost::assign;
+
+std::string EncodeHexTx(const CMutableTransaction& tx)
+{
+    CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
+    ssTx << tx;
+    return HexStr(ssTx.begin(), ssTx.end());
+}
+
+std::string EncodeHexBlock(const CBlock& b)
+{
+    CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
+    ssTx << b;
+    return HexStr(ssTx.begin(), ssTx.end());
+}
 
 struct SeedSpec6 {
     uint8_t addr[16];
@@ -95,7 +110,7 @@ public:
         pchMessageStart[2] = 0x79;
         pchMessageStart[3] = 0x84;
         vAlertPubKey = ParseHex("049def8e22e7f78b624dc62007c66c06066d032310b3507642306b143326a8295e03576ffab7469c552e1a68655598d78d501eb10cc27408bfd7876dbadb08b0ee");
-        nDefaultPort = 53572;
+        nDefaultPort = 53570; //default port for multisig
         bnProofOfWorkLimit = ~uint256(0) >> 1; // DAPScoin starting difficulty is 1 / 2^12
         nSubsidyHalvingInterval = 210000;
         nMaxReorganizationDepth = 100;

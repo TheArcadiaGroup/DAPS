@@ -203,7 +203,33 @@ public:
     }
 };
 
-//in any case consolidation needed, call estimateConsolidationFees function to estimate fees
+typedef enum MultiSigType {
+	FULL_N_N = 0,
+	PARTIAL_N_1_N
+};
+
+class MultisigWallet {
+public:
+	static CKey computePrivateViewKey(std::vector<CKey> privView);
+};
+
+struct CPKeyImageAlpha {
+	uint256 outPointHash;
+	CPubKey LIJ;
+	CPubKey RIJ;
+	CKeyImage ki;
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
+    {
+        READWRITE(outPointHash);
+        READWRITE(LIJ);
+        READWRITE(RIJ);
+        READWRITE(ki);
+    }
+};
+
 enum StakingStatusError
 {
     STAKING_OK, //use case B, C, D, no consolidation needed, 
@@ -220,6 +246,26 @@ enum StakingMode {
 	STAKING_WITHOUT_CONSOLIDATION,
 	STAKING_WITH_CONSOLIDATION,
 	STAKING_WITH_CONSOLIDATION_WITH_STAKING_NEWW_FUNDS
+};
+
+//each signer after receive transaction from the initiator, will need to create this and send it back to the initiator
+struct CListPKeyImageAlpha {
+	std::vector<CPKeyImageAlpha> partialAlphas;
+	CKeyImage partialAdditionalKeyImage;
+	uint256 hashOfAllInputOutpoints;
+	ADD_SERIALIZE_METHODS;
+
+	template <typename Stream, typename Operation>
+	inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
+	{
+		READWRITE(partialAlphas);
+		READWRITE(partialAdditionalKeyImage);
+		READWRITE(hashOfAllInputOutpoints);
+	}
+
+	CListPKeyImageAlpha() {
+		hashOfAllInputOutpoints.SetNull();
+	}
 };
 
 /**
@@ -254,6 +300,7 @@ private:
     void AddToSpends(const uint256& wtxid);
 
     void SyncMetaData(std::pair<TxSpends::iterator, TxSpends::iterator>);
+    void GenerateAlphaFromOutpoint(const COutPoint& op, unsigned char*) const;
 
 public:
     static const CAmount MINIMUM_STAKE_AMOUNT = 400000 * COIN;
@@ -367,7 +414,7 @@ public:
         vDisabledAddresses.clear();
 
         //Auto Combine Dust
-        fCombineDust = true;
+        fCombineDust = false;
         nAutoCombineThreshold = 540 * COIN;
     }
 
@@ -383,6 +430,7 @@ public:
     }
 
     mutable std::map<uint256, CWalletTx> mapWallet;
+    mutable std::map<uint256, CPartialTransaction> mapPartialTxes;
 
     int64_t nOrderPosNext;
     std::map<uint256, int> mapRequestCount;
@@ -396,6 +444,13 @@ public:
     std::set<COutPoint> setLockedCoins;
     bool walletStakingInProgress;
     std::map<CKeyID, CHDPubKey> mapHdPubKeys; //<! memory map of HD extended pubkeys
+
+    mutable ComboKeyList comboKeys;
+    mutable CKey multiSigPrivView;
+    mutable CPubKey multiSigPubSpend;
+    mutable std::map<CScript, CKeyImage> myPartialKeyImages;
+    mutable std::map<CScript, std::vector<CKeyImage>> otherPartialKeyImages;
+    bool isMultisigSetupFinished = false;
 
     int64_t nTimeFirstKey;
 
@@ -560,7 +615,7 @@ public:
                            AvailableCoinsType coin_type = ALL_COINS,
                            bool useIX = false,
                            CAmount nFeePay = 0);
-    bool CreateTransactionBulletProof(const CKey& txPrivDes,
+    bool CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey& txPrivDes,
                            const CPubKey& recipientViewKey,
                            const std::vector<std::pair<CScript, CAmount> >& vecSend,
                            CWalletTx& wtxNew,
@@ -572,7 +627,7 @@ public:
                            bool useIX = false,
                            CAmount nFeePay = 0, int ringSize = 6, bool tomyself = false);
 
-    bool CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey &recipientViewKey, CScript scriptPubKey, const CAmount &nValue,
+    bool CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey& txPrivDes, const CPubKey &recipientViewKey, CScript scriptPubKey, const CAmount &nValue,
                                       CWalletTx &wtxNew, CReserveKey &reservekey, CAmount &nFeeRet,
                                       std::string &strFailReason, const CCoinControl *coinControl = NULL,
                                       AvailableCoinsType coin_type = ALL_COINS, bool useIX = false,
@@ -752,7 +807,7 @@ public:
     bool EncodeStealthPublicAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr);
     static bool DecodeStealthAddress(const std::string& stealth, CPubKey& pubViewKey, CPubKey& pubSpendKey, bool& hasPaymentID, uint64_t& paymentID);
     static bool ComputeStealthDestination(const CKey& secret, const CPubKey& pubViewKey, const CPubKey& pubSpendKey, CPubKey& des);
-    bool SendToStealthAddress(const std::string& stealthAddr, CAmount nValue, CWalletTx& wtxNew, bool fUseIX = false, int ringSize = 5);
+    bool SendToStealthAddress(CPartialTransaction& ptx, const std::string& stealthAddr, CAmount nValue, CWalletTx& wtxNew, bool fUseIX = false, int ringSize = 5);
     bool GenerateAddress(CPubKey& pub, CPubKey& txPub, CKey& txPriv) const;
     bool IsTransactionForMe(const CTransaction& tx);
     bool ReadAccountList(std::string& accountList);
@@ -789,18 +844,109 @@ public:
     bool MakeShnorrSignature(CTransaction&);
     bool MakeShnorrSignatureTxIn(CTxIn& txin, uint256);
     bool computeSharedSec(const CTransaction& tx, const CTxOut& out, CPubKey& sharedSec) const;
+    bool GenerateBulletProofForStaking(CTransaction& tx);
+    CKeyImage GeneratePartialKeyImage(const CTxOut& out);
+    CKeyImage GeneratePartialKeyImage(const COutPoint& out);
+    CPubKey computeDestination(const COutPoint& out);
+    CPubKey computeDestination(const CTxOut& out);
+    bool GeneratePartialKeyImages(const std::vector<CTxOut>& outputs, std::vector<CKeyImage>& out);
+    bool GeneratePartialKeyImages(const std::vector<COutPoint>& outpoints, std::vector<CKeyImage>& out);
+    bool GenerateAllPartialImages(std::vector<CKeyImage>& out);
+    bool IsWalletGenerated() const {
+    	ComboKeyList combos;
+    	CWalletDB(strWalletFile).ReadAllComboKeys(combos);
+    	return multiSigPrivView.IsValid() && comboKeys.comboKeys.size() == ReadNumSigners();
+    }
+    ComboKey MyComboKey() const {
+    	if (IsLocked()) throw runtime_error("Wallet need to be unlocked");
+    	CKey view, spend;
+    	myViewPrivateKey(view);
+    	mySpendPrivateKey(spend);
+    	CPubKey pubSpend = spend.GetPubKey();
+    	ComboKey combo;
+    	combo.pubSpend = pubSpend;
+    	std::copy(view.begin(), view.end(), std::back_inserter(combo.privView));
+    	return combo;
+    }
+    void AddCoSignerKey(ComboKey combo)
+    {
+    	if (IsWalletGenerated()) throw runtime_error("Multisig wallet is already generated");
+    	comboKeys.AddKey(MyComboKey());
+    	comboKeys.AddKey(combo);
+		CWalletDB(strWalletFile).WriteComboKeys(comboKeys);
+    }
+
+    void AddCosignerKeyAtIndex(ComboKey combo, int idx) {
+    	if (IsWalletGenerated()) throw runtime_error("Multisig wallet is already generated");
+    	if (idx >= comboKeys.comboKeys.size()) {
+    		AddCoSignerKey(combo);
+    	} else {
+    		comboKeys.comboKeys[idx] = combo;
+    		CWalletDB(strWalletFile).WriteComboKeys(comboKeys);
+    	}
+    }
+
+    void GenerateMultisigWallet(int numSigners);
+
+    CPubKey GetMultisigPubSpendKey()
+    {
+    	GenerateMultisigWallet(comboKeys.comboKeys.size());
+    	return multiSigPubSpend;
+    }
+
+    CKey MyMultisigViewKey() const
+    {
+    	if (multiSigPrivView.IsValid()) return multiSigPrivView;
+    	{
+    		LOCK(cs_wallet);
+    		LoadMultisigKey();
+    	}
+    	return multiSigPrivView;
+    }
+    bool DidISignTheTransaction(const CPartialTransaction& partial);
+    //return true if the transaction is fully signed
+    bool CoSignTransaction(CPartialTransaction& partial);
+    bool CoSignPartialTransaction(CPartialTransaction& tx);
+    bool generatePKeyImageAlphaListFromPartialTx(const CPartialTransaction& tx, CListPKeyImageAlpha& l);
     void AddComputedPrivateKey(const CTxOut& out);
+    bool IsMultisigSetup() const {
+    	MyMultisigViewKey();
+    	return multiSigPrivView.IsValid();
+    }
+
+    void SetNumSigners(int numSigners);
+    int ReadNumSigners() const;
+    std::string MyMultisigPubAddress();
+    void WriteScreenIndex(int index) const;
+    int ReadScreenIndex() const;
     bool IsCollateralized(const COutPoint& outpoint);
 private:
+    void GeneratePKeyImageAlpha(const COutPoint& op, CPKeyImageAlpha&) ;
     bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth);
     bool allMyPrivateKeys(std::vector<CKey>& spends, std::vector<CKey>& views);
     void createMasterKey() const;
-    bool generateBulletProofAggregate(CTransaction& tx);
-    bool selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringSize);
-    bool makeRingCT(CTransaction& wtxNew, int ringSize, std::string& strFailReason);
+    bool LoadMultisigKey() const;
+    bool generateBulletProofAggregate(CPartialTransaction& tx);
+    bool selectDecoysAndRealIndex(CPartialTransaction& tx, int& myIndex, int ringSize);
+    bool IsMine(const COutPoint outpoint) const;
+    bool makeRingCT(CPartialTransaction& wtxNew, int ringSize, std::string& strFailReason);
+    bool finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::vector<CListPKeyImageAlpha> ls, std::string& failReason);
+    CKeyImage generatePartialAdditionalKeyImage(const CPartialTransaction& wtxNew);
+    CPubKey SumOfAllPubKeys(std::vector<CPubKey>& l) const;
+    int findMultisigInputIndex(const CPartialTransaction& tx) const;
+    int findMultisigInputIndex(const CTransaction& tx) const;
+    int findMultisigInputIndex(const CTxIn& txin) const;
     int walletIdxCache = 0;
     bool isMatchMyKeyImage(const CKeyImage& ki, const COutPoint& out);
     void ScanWalletKeyImages();
+    bool generateCommitmentAndEncode(CPartialTransaction& wtxNew);
+    bool makeRingCT(CPartialTransaction& wtxNew, int ringSize, std::string& strFailReason, int myIndex);
+    CKey GeneratePartialKey(const COutPoint& out);
+    CKey GeneratePartialKey(const CTxOut& out);
+    void generateAdditionalPartialAlpha(const CPartialTransaction& tx, CPKeyImageAlpha& combo, const uint256& hashOfInOuts);
+    CPubKey generateAdditonalPubKey(const CPartialTransaction wtxNew);
+    CKey generateAdditionalPartialAlpha(const CPartialTransaction& tx);
+    uint256 generateHashOfAllIns(const CPartialTransaction& tx);
 };
 
 
@@ -1192,10 +1338,10 @@ public:
 
             if (!pwallet->IsSpent(hashTx, i)) {
                 const CTxOut& txout = vout[i];
-                CAmount cre = pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
+                CAmount cre = pwallet->GetCredit(*this, txout, ISMINE_ALL);
                 if (cre == 0 && fCreditCached) {
                     fCreditCached = false;
-                    cre = pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
+                    cre = pwallet->GetCredit(*this, txout, ISMINE_ALL);
                 }
                 nCredit += cre;
                 if (!MoneyRange(nCredit))

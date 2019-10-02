@@ -58,6 +58,14 @@ QDialog {
   border-image: url(':/images/background') 0 0 0 0 stretch stretch;
 }
 
+#KeyImageSync {
+  border-image: url(':/images/background') 0 0 0 0 stretch stretch;
+}
+
+#CoSignTransaction {
+  border-image: url(':/images/background') 0 0 0 0 stretch stretch;
+}
+
 #line_1, #line_2, #line_3, #line_4 {
   border-bottom: 1px solid gray;
   max-height: 5px;
@@ -491,4 +499,30 @@ QWidget::right-arrow {
 }
 QWidget::right-arrow:disabled {
   image: url(":/images/rightArrow_small_dark");
+}
+
+QLineEdit#textComboKey{
+  color: white;
+}
+
+QSlider::groove:horizontal { 
+	background-color: gray;
+	border: 0px solid #424242; 
+	height: 10px; 
+	border-radius: 4px;
+}
+
+QSlider::handle:horizontal { 
+	background-color: lightblue; 
+	border: 2px solid lightblue; 
+	width: 16px; 
+	height: 20px; 
+	line-height: 20px; 
+	margin-top: -5px; 
+	margin-bottom: -5px; 
+	border-radius: 10px; 
+}
+
+QSlider::handle:horizontal:hover { 
+	border-radius: 10px;
 }

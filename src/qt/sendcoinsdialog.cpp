@@ -159,11 +159,12 @@ void SendCoinsDialog::on_sendButton_clicked(){
     }
 }
 
-void SendCoinsDialog::sendTx() {
+CPartialTransaction SendCoinsDialog::sendTx() {
     CWalletTx resultTx; 
+    CPartialTransaction ptx;
     bool success = false;
     try {
-        success = pwalletMain->SendToStealthAddress(
+        success = pwalletMain->SendToStealthAddress(ptx,
             send_address.toStdString(),
             send_amount,
             resultTx,
@@ -176,27 +177,23 @@ void SendCoinsDialog::sendTx() {
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
         msgBox.setIcon(QMessageBox::Critical);
         msgBox.exec();
-        return;
+        return ptx;
     }
 
     if (success){
-        WalletUtil::getTx(pwalletMain, resultTx.GetHash());
-        QString txhash = resultTx.GetHash().GetHex().c_str();
+        CDataStream ssData(SER_NETWORK, PROTOCOL_VERSION);
+        ssData << ptx;
+        std::string hex = HexStr(ssData.begin(), ssData.end());
+        ui->hexCode->setText(QString::fromStdString(hex));
+
         QMessageBox msgBox;
-        QPushButton *copyButton = msgBox.addButton(tr("Copy"), QMessageBox::ActionRole);
-        copyButton->setStyleSheet("background:transparent;");
-        copyButton->setIcon(QIcon(":/icons/editcopy"));
         msgBox.setWindowTitle("Transaction Initialized");
-        msgBox.setText("Transaction initialized.\n\n" + txhash);
+        msgBox.setText("Multisignature transaction initialized. You can copy the hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
         msgBox.setIcon(QMessageBox::Information);
         msgBox.exec();
-
-        if (msgBox.clickedButton() == copyButton) {
-        //Copy txhash to clipboard
-        GUIUtil::setClipboard(txhash);
-        }
     }
+    return ptx;
 }
 
 void SendCoinsDialog::dialogIsFinished(int result) {

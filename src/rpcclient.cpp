@@ -86,6 +86,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"getblockheader", 1},
         {"gettransaction", 1},
         {"getrawtransaction", 1},
+        {"addtowallet", 1},
         {"createrawtransaction", 0},
         {"createrawtransaction", 1},
         {"signrawtransaction", 1},
