@@ -2264,7 +2264,7 @@ StakingStatusError CWallet::StakingCoinStatus(CAmount& minFee, CAmount& maxFee)
                 numUTXOs -= (MAX_TX_INPUTS - 1);
                 numConsolidationTxs++;
                 minFee += ComputeFee(MAX_TX_INPUTS, 1, MIN_RING_SIZE);
-                maxFee = ComputeFee(MAX_TX_INPUTS, 1, MAX_RING_SIZE);
+                maxFee += ComputeFee(MAX_TX_INPUTS, 1, MAX_RING_SIZE);
             }
 
             if (nReserveBalance == 0) {
