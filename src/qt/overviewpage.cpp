@@ -164,6 +164,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
                               const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance)
 {
     int walletStatus = walletModel->getEncryptionStatus();
+    bool stkStatus = pwalletMain->ReadStakingStatus();
 
     currentBalance = balance;
     currentUnconfirmedBalance = unconfirmedBalance;
@@ -193,7 +194,11 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
         ui->labelBalance->setText("Locked; Hidden");
         ui->labelUnconfirmed->setText("Locked; Hidden");
     } else {
-        ui->labelBalance_2->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance, false, BitcoinUnits::separatorAlways));
+        if (stkStatus && !nLastCoinStakeSearchInterval) {
+            ui->labelBalance_2->setText("Enabling Staking");
+        } else {
+            ui->labelBalance_2->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance, false, BitcoinUnits::separatorAlways));
+        }
         ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nSpendableDisplayed, false, BitcoinUnits::separatorAlways));
         ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
     }

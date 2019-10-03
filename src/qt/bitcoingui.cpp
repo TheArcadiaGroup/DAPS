@@ -1104,13 +1104,20 @@ void BitcoinGUI::setStakingStatus()
         stkStatus = pwalletMain->ReadStakingStatus();
     }
 
-    if (nLastCoinStakeSearchInterval || stkStatus) {
-        stakingState->setText(tr("Staking Enabled"));
-        stakingAction->setIcon(QIcon(":/icons/staking_active"));
-    } else {
+    if (!stkStatus) {
         stakingState->setText(tr("Staking Disabled"));
         stakingAction->setIcon(QIcon(":/icons/staking_inactive"));
+        return;
     }
+
+    if (stakingState->text().contains("Enabling")) {
+        if (!nLastCoinStakeSearchInterval) return;
+    }
+
+    if (nLastCoinStakeSearchInterval) {
+        stakingState->setText(tr("Staking Enabled"));
+        stakingAction->setIcon(QIcon(":/icons/staking_active"));
+    } 
 }
 void BitcoinGUI::setStakingInProgress(bool inProgress)
 {
