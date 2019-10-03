@@ -1106,6 +1106,7 @@ void BitcoinGUI::setStakingStatus()
 
     if (!stkStatus) {
         stakingState->setText(tr("Staking Disabled"));
+        stakingState->setToolTip("Staking Disabled");
         stakingAction->setIcon(QIcon(":/icons/staking_inactive"));
         return;
     }
@@ -1116,9 +1117,11 @@ void BitcoinGUI::setStakingStatus()
 
     if (nLastCoinStakeSearchInterval) {
         stakingState->setText(tr("Staking Enabled"));
+        stakingState->setToolTip("Staking Enabled");
         stakingAction->setIcon(QIcon(":/icons/staking_active"));
     } else {
         stakingState->setText(tr("Enabling Staking..."));
+        stakingState->setToolTip("Enabling Staking... Please wait up to 1.5 hours for it to be properly enabled after consolidation.");
         stakingAction->setIcon(QIcon(":/icons/staking_active"));
     } 
 }
@@ -1126,9 +1129,11 @@ void BitcoinGUI::setStakingInProgress(bool inProgress)
 {
 	if (inProgress) {
         stakingState->setText(tr("Enabling Staking..."));
+        stakingState->setToolTip("Enabling Staking... Please wait up to 1.5 hours for it to be properly enabled after consolidation.");
         stakingAction->setIcon(QIcon(":/icons/staking_active"));
 	} else {
         stakingState->setText(tr("Disabling Staking..."));
+        stakingState->setToolTip("Disabling Staking...");
         stakingAction->setIcon(QIcon(":/icons/staking_inactive"));
 	}
 }

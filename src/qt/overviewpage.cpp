@@ -195,8 +195,10 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     } else {
         if (stkStatus && !nLastCoinStakeSearchInterval) {
             ui->labelBalance_2->setText("Enabling Staking");
+            ui->labelBalance_2->setToolTip("Enabling Staking... Please wait up to 1.5 hours for it to be properly enabled after consolidation.");
         } else {
             ui->labelBalance_2->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance, false, BitcoinUnits::separatorAlways));
+            ui->labelBalance_2->setToolTip("Your current balance");
         }
         ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nSpendableDisplayed, false, BitcoinUnits::separatorAlways));
         ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
