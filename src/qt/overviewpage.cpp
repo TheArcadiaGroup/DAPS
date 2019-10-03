@@ -173,6 +173,12 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     currentWatchImmatureBalance = watchImmatureBalance;
     CAmount nSpendableBalance = balance - immatureBalance;
     if (nSpendableBalance < 0) {
+        TRY_LOCK(cs_main, lockMain);
+        if (!lockMain)
+            return;
+        TRY_LOCK(pwalletMain->cs_wallet, lockWallet);
+        if (!lockWallet)
+            return;
     	nSpendableBalance = pwalletMain->GetSpendableBalance();
     }
     CAmount nSpendableDisplayed = nSpendableBalance; //if it is not staking
@@ -312,6 +318,7 @@ void OverviewPage::showBlockSync(bool fShow)
 
 void OverviewPage::showBlockCurrentHeight()
 {
+    LOCK(cs_main);
 	ui->labelBlockCurrent->setText(QString::number(chainActive.Height()));
 }
 
