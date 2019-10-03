@@ -3795,14 +3795,17 @@ bool CWallet::makeRingCT(CTransaction& wtxNew, int ringSize, std::string& strFai
 
 bool CWallet::MakeShnorrSignature(CTransaction& wtxNew)
 {
-    if (wtxNew.IsCoinAudit() || wtxNew.IsCoinBase()) return true;
-    //this only generates shnorr signature if either wtxNew is a staking transaction or wtxNew only spends collateralized
-    if (!wtxNew.IsCoinStake()) return true;
+    LOCK(cs_wallet);
+    {   
+        if (wtxNew.IsCoinAudit() || wtxNew.IsCoinBase()) return true;
+        //this only generates shnorr signature if either wtxNew is a staking transaction or wtxNew only spends collateralized
+        if (!wtxNew.IsCoinStake()) return true;
 
-    //generate shnorr per input
-    uint256 ctsHash = GetTxInSignatureHash(wtxNew.vin[0]);
+        //generate shnorr per input
+        uint256 ctsHash = GetTxInSignatureHash(wtxNew.vin[0]);
 
-    return MakeShnorrSignatureTxIn(wtxNew.vin[0], ctsHash);
+        return MakeShnorrSignatureTxIn(wtxNew.vin[0], ctsHash);
+    }
 }
 
 bool CWallet::MakeShnorrSignatureTxIn(CTxIn& txin, uint256 cts)
@@ -5715,7 +5718,9 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold)
                             vCoins.push_back(lowestLarger);
                             total += currentLowestLargerAmount;
                         } else {
-                            return false;
+                            if (vCoins.size() < MIN_TX_INPUTS_FOR_SWEEPING) {
+                                return false;
+                            }
                         }
                     }
                 }
@@ -6444,16 +6449,19 @@ bool CWallet::ComputeStealthDestination(const CKey& secret, const CPubKey& pubVi
 
 bool CWallet::GenerateAddress(CPubKey& pub, CPubKey& txPub, CKey& txPriv) const
 {
-    CKey view, spend;
-    if (IsLocked()) {
-        LogPrintf("\n%s:Wallet is locked\n", __func__);
-        return false;
+    LOCK(cs_wallet);
+    {
+        CKey view, spend;
+        if (IsLocked()) {
+            LogPrintf("\n%s:Wallet is locked\n", __func__);
+            return false;
+        }
+        myViewPrivateKey(view);
+        mySpendPrivateKey(spend);
+        txPriv.MakeNewKey(true);
+        txPub = txPriv.GetPubKey();
+        return computeStealthDestination(txPriv, view.GetPubKey(), spend.GetPubKey(), pub);
     }
-    myViewPrivateKey(view);
-    mySpendPrivateKey(spend);
-    txPriv.MakeNewKey(true);
-    txPub = txPriv.GetPubKey();
-    return computeStealthDestination(txPriv, view.GetPubKey(), spend.GetPubKey(), pub);
 }
 
 bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount nValue, CWalletTx& wtxNew, bool fUseIX, int ringSize)
@@ -6525,72 +6533,75 @@ bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount
 
 bool CWallet::IsTransactionForMe(const CTransaction& tx)
 {
-    std::vector<CKey> spends, views;
-    if (!allMyPrivateKeys(spends, views) || spends.size() != views.size()) {
-        spends.clear();
-        views.clear();
-        CKey spend, view;
-        if (!mySpendPrivateKey(spend) || !myViewPrivateKey(view)) {
-            LogPrintf("\nFailed to find private keys");
-            return false;
-        }
-        spends.push_back(spend);
-        views.push_back(view);
-    }
-    for (const CTxOut& out : tx.vout) {
-        if (out.IsEmpty()) {
-            continue;
-        }
-        CPubKey txPub(out.txPub);
-        for (size_t i = 0; i < spends.size(); i++) {
-            CKey& spend = spends[i];
-            CKey& view = views[i];
-            const CPubKey& pubSpendKey = spend.GetPubKey();
-            bool ret = false;
-
-            //compute the tx destination
-            //P' = Hs(aR)G+B, a = view private, B = spend pub, R = tx public key
-            unsigned char aR[65];
-            //copy R into a
-            memcpy(aR, txPub.begin(), txPub.size());
-            if (!secp256k1_ec_pubkey_tweak_mul(aR, txPub.size(), view.begin())) {
+    LOCK(cs_wallet);
+    {
+        std::vector<CKey> spends, views;
+        if (!allMyPrivateKeys(spends, views) || spends.size() != views.size()) {
+            spends.clear();
+            views.clear();
+            CKey spend, view;
+            if (!mySpendPrivateKey(spend) || !myViewPrivateKey(view)) {
+                LogPrintf("\nFailed to find private keys");
                 return false;
             }
-            uint256 HS = Hash(aR, aR + txPub.size());
-            unsigned char* pHS = HS.begin();
-            unsigned char expectedDestination[65];
-            memcpy(expectedDestination, pubSpendKey.begin(), pubSpendKey.size());
-            if (!secp256k1_ec_pubkey_tweak_add(expectedDestination, pubSpendKey.size(), pHS)) {
+            spends.push_back(spend);
+            views.push_back(view);
+        }
+        for (const CTxOut& out : tx.vout) {
+            if (out.IsEmpty()) {
                 continue;
             }
-            CPubKey expectedDes(expectedDestination, expectedDestination + 33);
-            CScript scriptPubKey = GetScriptForDestination(expectedDes);
+            CPubKey txPub(out.txPub);
+            for (size_t i = 0; i < spends.size(); i++) {
+                CKey& spend = spends[i];
+                CKey& view = views[i];
+                const CPubKey& pubSpendKey = spend.GetPubKey();
+                bool ret = false;
 
-            if (scriptPubKey == out.scriptPubKey) {
-                ret = true;
-            }
+                //compute the tx destination
+                //P' = Hs(aR)G+B, a = view private, B = spend pub, R = tx public key
+                unsigned char aR[65];
+                //copy R into a
+                memcpy(aR, txPub.begin(), txPub.size());
+                if (!secp256k1_ec_pubkey_tweak_mul(aR, txPub.size(), view.begin())) {
+                    return false;
+                }
+                uint256 HS = Hash(aR, aR + txPub.size());
+                unsigned char* pHS = HS.begin();
+                unsigned char expectedDestination[65];
+                memcpy(expectedDestination, pubSpendKey.begin(), pubSpendKey.size());
+                if (!secp256k1_ec_pubkey_tweak_add(expectedDestination, pubSpendKey.size(), pHS)) {
+                    continue;
+                }
+                CPubKey expectedDes(expectedDestination, expectedDestination + 33);
+                CScript scriptPubKey = GetScriptForDestination(expectedDes);
 
-            if (ret) {
-                LOCK(cs_wallet);
-                //Compute private key to spend
-                //x = Hs(aR) + b, b = spend private key
-                unsigned char HStemp[32];
-                unsigned char spendTemp[32];
-                memcpy(HStemp, HS.begin(), 32);
-                memcpy(spendTemp, spend.begin(), 32);
-                if (!secp256k1_ec_privkey_tweak_add(HStemp, spendTemp))
-                    throw runtime_error("Failed to do secp256k1_ec_privkey_tweak_add");
-                CKey privKey;
-                privKey.Set(HStemp, HStemp + 32, true);
-                CPubKey computed = privKey.GetPubKey();
+                if (scriptPubKey == out.scriptPubKey) {
+                    ret = true;
+                }
 
-                //put in map from address to txHash used for qt wallet
-                CKeyID tempKeyID = computed.GetID();
-                addrToTxHashMap[CBitcoinAddress(tempKeyID).ToString()] = tx.GetHash().GetHex();
-                AddKey(privKey);
-                CAmount c;
-                CKey blind;
-                RevealTxOutAmount(tx, out, c, blind);
+                if (ret) {
+                    LOCK(cs_wallet);
+                    //Compute private key to spend
+                    //x = Hs(aR) + b, b = spend private key
+                    unsigned char HStemp[32];
+                    unsigned char spendTemp[32];
+                    memcpy(HStemp, HS.begin(), 32);
+                    memcpy(spendTemp, spend.begin(), 32);
+                    if (!secp256k1_ec_privkey_tweak_add(HStemp, spendTemp))
+                        throw runtime_error("Failed to do secp256k1_ec_privkey_tweak_add");
+                    CKey privKey;
+                    privKey.Set(HStemp, HStemp + 32, true);
+                    CPubKey computed = privKey.GetPubKey();
+
+                    //put in map from address to txHash used for qt wallet
+                    CKeyID tempKeyID = computed.GetID();
+                    addrToTxHashMap[CBitcoinAddress(tempKeyID).ToString()] = tx.GetHash().GetHex();
+                    AddKey(privKey);
+                    CAmount c;
+                    CKey blind;
+                    RevealTxOutAmount(tx, out, c, blind);
+                }
             }
         }
     }
