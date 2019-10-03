@@ -316,7 +316,7 @@ void OptionsPage::on_pushButtonBackup_clicked(){
         ui->pushButtonBackup->setStyleSheet("border: 2px solid green");
         QMessageBox msgBox;
         msgBox.setWindowTitle("Wallet Backup Successful");
-        msgBox.setText("Wallet has been successfully backed up to BackupWallet.dat in the current directory.");
+        msgBox.setText("Wallet has been successfully backed up to BackupWallet.dat in " + qApp->applicationDirPath());
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
         msgBox.setIcon(QMessageBox::Information);
         msgBox.exec();
