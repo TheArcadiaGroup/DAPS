@@ -85,24 +85,27 @@ void MasternodeList::resizeEvent(QResizeEvent* event)
 
 void MasternodeList::StartAlias(std::string strAlias)
 {
-    std::string strStatusHtml;
-    strStatusHtml += "<center>Alias: " + strAlias;
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+    {
+        std::string strStatusHtml;
+        strStatusHtml += "<center>Alias: " + strAlias;
 
-    BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
-        if (mne.getAlias() == strAlias) {
-            std::string strError;
-            CMasternodeBroadcast mnb;
+        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+            if (mne.getAlias() == strAlias) {
+                std::string strError;
+                CMasternodeBroadcast mnb;
 
-            bool fSuccess = activeMasternode.CreateBroadcast(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strError, mnb);
+                bool fSuccess = activeMasternode.CreateBroadcast(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strError, mnb);
 
-            if (fSuccess) {
-                strStatusHtml += "<br>Successfully started masternode.";
-                mnodeman.UpdateMasternodeList(mnb);
-                mnb.Relay();
-            } else {
-                strStatusHtml += "<br>Failed to start masternode.<br>Error: " + strError;
+                if (fSuccess) {
+                    strStatusHtml += "<br>Successfully started masternode.";
+                    mnodeman.UpdateMasternodeList(mnb);
+                    mnb.Relay();
+                } else {
+                    strStatusHtml += "<br>Failed to start masternode.<br>Error: " + strError;
+                }
+                break;
             }
-            break;
         }
     }
     strStatusHtml += "</center>";
