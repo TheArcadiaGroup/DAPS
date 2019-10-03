@@ -107,11 +107,10 @@ void MasternodeList::StartAlias(std::string strAlias)
                 break;
             }
         }
+        strStatusHtml += "</center>";
+
+        GUIUtil::prompt(strStatusHtml.c_str());
     }
-    strStatusHtml += "</center>";
-
-    GUIUtil::prompt(strStatusHtml.c_str());
-
     updateMyNodeList(true);
 }
 
