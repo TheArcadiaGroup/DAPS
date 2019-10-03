@@ -1110,7 +1110,7 @@ void BitcoinGUI::setStakingStatus()
         return;
     }
 
-    if (stakingState->text().toStdString.contains("Enabling")) {
+    if (stakingState->text().contains("Enabling")) {
         if (!nLastCoinStakeSearchInterval) return;
     }
 
