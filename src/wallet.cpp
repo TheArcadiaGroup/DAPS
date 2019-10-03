@@ -5704,7 +5704,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold)
                     }
                 }
             }
-
+            std::cout << "Vcoins.size() = " << vCoins.size() << std::endl;
             int ringSize = MIN_RING_SIZE + secp256k1_rand32() % (MAX_RING_SIZE - MIN_RING_SIZE + 1);
             if (vCoins.size() == 0) return false;
             CAmount estimatedFee = ComputeFee(vCoins.size(), 1, ringSize);

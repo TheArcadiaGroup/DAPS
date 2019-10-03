@@ -1117,6 +1117,9 @@ void BitcoinGUI::setStakingStatus()
     if (nLastCoinStakeSearchInterval) {
         stakingState->setText(tr("Staking Enabled"));
         stakingAction->setIcon(QIcon(":/icons/staking_active"));
+    } else {
+        stakingState->setText(tr("Enabling Staking..."));
+        stakingAction->setIcon(QIcon(":/icons/staking_active"));
     } 
 }
 void BitcoinGUI::setStakingInProgress(bool inProgress)
