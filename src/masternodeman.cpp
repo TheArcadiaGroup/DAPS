@@ -844,6 +844,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
     // Light version for OLD MASSTERNODES - fake pings, no self-activation
     else if (strCommand == "dsee") { //ObfuScation Election Entry
+        if (!masternodeSync.IsBlockchainSynced()) return;
         LogPrintf("\n%s:Parsing masternode broadcast\n", __func__);
         CTxIn vin;
         CService addr;
