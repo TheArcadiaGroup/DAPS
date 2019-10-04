@@ -1572,7 +1572,7 @@ int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate, i
                 LogPrintf("Still rescanning. At block %d. Progress=%f\n", pindex->nHeight, Checkpoints::GuessVerificationProgress(pindex));
             }
         }
-        ShowProgress(_("Rescanning..."), 100); // hide progress dialog in GUI
+        ShowProgress(_("Rescanning... Please do not interrupt this process as it could lead to a corrupt wallet."), 100); // hide progress dialog in GUI
     }
     return ret;
 }

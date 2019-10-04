@@ -1442,7 +1442,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
             pwalletMain = NULL;
         }
 
-        uiInterface.InitMessage(_("Loading wallet..."));
+        uiInterface.InitMessage(_("Loading wallet...Please do not interrupt this process as it could lead to a corrupt wallet."));
         fVerifyingBlocks = true;
 
         nStart = GetTimeMillis();
