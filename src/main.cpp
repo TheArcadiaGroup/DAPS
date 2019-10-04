@@ -2584,7 +2584,7 @@ void UpdateCoins(const CTransaction& tx, CValidationState& state, CCoinsViewCach
             const CTxIn& txin, tx.vin) {
             txundo.vprevout.push_back(CTxInUndo());
             bool ret = inputs.ModifyCoins(txin.prevout.hash)->Spend(txin.prevout, txundo.vprevout.back());
-            assert(ret);
+            //assert(ret);
         }
     }
 
