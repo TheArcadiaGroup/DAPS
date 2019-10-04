@@ -2452,9 +2452,9 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
 
 void CWallet::resetPendingOutPoints()
 {
+    LOCK2(cs_main, cs_wallet);
     if (chainActive.Height() % 20 != 0 && !inSpendQueueOutpoints.empty()) return;
     {
-        LOCK2(cs_main, cs_wallet);
         {
             LOCK(mempool.cs);
             {
