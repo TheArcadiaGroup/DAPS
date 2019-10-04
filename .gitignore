@@ -135,3 +135,6 @@ CMakeLists.txt
 cmake-build-debug
 .vscode/*
 BackupWallet*
+
+#ChainParams
+src/chainparams.cpp
