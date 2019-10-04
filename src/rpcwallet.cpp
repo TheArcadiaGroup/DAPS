@@ -1381,7 +1381,7 @@ UniValue listtransactions(const UniValue& params, bool fHelp)
     std::advance(first, nFrom);
 
     vector<UniValue>::iterator last = arrTmp.begin();
-    std::advance(last, nFrom + nCount);	    std::advance(last, nFrom+nCount);
+    std::advance(last, nFrom + nCount);	   
 
     if (last != arrTmp.end()) arrTmp.erase(last, arrTmp.end());
     if (first != arrTmp.begin()) arrTmp.erase(arrTmp.begin(), first);
