@@ -2280,6 +2280,7 @@ CAmount TeamRewards(const CBlockIndex* ptip)
 
 int64_t GetBlockValue(const CBlockIndex* ptip)
 {
+    LOCK(cs_main);
     int64_t nSubsidy = 0;
     const CBlockIndex* pForkTip = ptip;
     if (!ptip) {
