@@ -1690,9 +1690,6 @@ CAmount CWallet::GetBalance()
             }
         }
     }
-
-    LogPrintf("\n%s: Balance: %d\n", __func__, nTotal);
-
     return nTotal;
 }
 

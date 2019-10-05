@@ -630,84 +630,87 @@ bool IsKeyImageSpend2(const std::string& kiHex, const uint256& bh)
 
 bool ReVerifyPoSBlock(CBlockIndex* pindex)
 {
-    if (!pindex) return false;
-    CBlock block;
-    if (!ReadBlockFromDisk(block, pindex)) return false;
-    if (!pindex->IsProofOfStake()) return false;
-    CAmount nFees = 0;
-    CAmount nValueIn = 0;
-    CAmount nValueOut = 0;
-    for (unsigned int i = 0; i < block.vtx.size(); i++) {
-        const CTransaction& tx = block.vtx[i];
-        if (!tx.IsCoinStake()) {
-            if (!tx.IsCoinAudit()) {
-                if (!VerifyRingSignatureWithTxFee(tx, pindex))
-                    return false;
-                if (!VerifyBulletProofAggregate(tx))
-                    return false;
+    LOCK(cs_main);
+    {
+        if (!pindex) return false;
+        CBlock block;
+        if (!ReadBlockFromDisk(block, pindex)) return false;
+        if (!pindex->IsProofOfStake()) return false;
+        CAmount nFees = 0;
+        CAmount nValueIn = 0;
+        CAmount nValueOut = 0;
+        for (unsigned int i = 0; i < block.vtx.size(); i++) {
+            const CTransaction& tx = block.vtx[i];
+            if (!tx.IsCoinStake()) {
+                if (!tx.IsCoinAudit()) {
+                    if (!VerifyRingSignatureWithTxFee(tx, pindex))
+                        return false;
+                    if (!VerifyBulletProofAggregate(tx))
+                        return false;
+                }
+                nFees += tx.nTxFee;
             }
-            nFees += tx.nTxFee;
         }
-    }
 
-    const CTransaction coinstake = block.vtx[1];
-    CCoinsViewCache view(pcoinsTip);
-    nValueIn = GetValueIn(view, coinstake);
-    nValueOut = coinstake.GetValueOut();
+        const CTransaction coinstake = block.vtx[1];
+        CCoinsViewCache view(pcoinsTip);
+        nValueIn = GetValueIn(view, coinstake);
+        nValueOut = coinstake.GetValueOut();
 
-    size_t numUTXO = coinstake.vout.size();
-    CAmount posBlockReward = PoSBlockReward();
-    if (mapBlockIndex.count(block.hashPrevBlock) < 1) {
-        LogPrintf("ReVerifyPoSBlock() : Previous block not found, received block %s, previous %s, current tip %s", block.GetHash().GetHex(), block.hashPrevBlock.GetHex(), chainActive.Tip()->GetBlockHash().GetHex());
-        return false;
-    }
-    int thisBlockHeight = mapBlockIndex[block.hashPrevBlock]->nHeight + 1; //avoid potential block disorder during download
-    CAmount blockValue = GetBlockValue(mapBlockIndex[block.hashPrevBlock]);
-    if (blockValue > posBlockReward) {
-        //numUTXO - 1 is team rewards, numUTXO - 2 is masternode reward
-        const CTxOut& mnOut = coinstake.vout[numUTXO - 2];
-        std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
-        if (!VerifyDerivedAddress(mnOut, mnsa)) {
-            LogPrintf("ReVerifyPoSBlock() : Incorrect derived address for masternode rewards");
+        size_t numUTXO = coinstake.vout.size();
+        CAmount posBlockReward = PoSBlockReward();
+        if (mapBlockIndex.count(block.hashPrevBlock) < 1) {
+            LogPrintf("ReVerifyPoSBlock() : Previous block not found, received block %s, previous %s, current tip %s", block.GetHash().GetHex(), block.hashPrevBlock.GetHex(), chainActive.Tip()->GetBlockHash().GetHex());
             return false;
         }
+        int thisBlockHeight = mapBlockIndex[block.hashPrevBlock]->nHeight + 1; //avoid potential block disorder during download
+        CAmount blockValue = GetBlockValue(mapBlockIndex[block.hashPrevBlock]);
+        if (blockValue > posBlockReward) {
+            //numUTXO - 1 is team rewards, numUTXO - 2 is masternode reward
+            const CTxOut& mnOut = coinstake.vout[numUTXO - 2];
+            std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
+            if (!VerifyDerivedAddress(mnOut, mnsa)) {
+                LogPrintf("ReVerifyPoSBlock() : Incorrect derived address for masternode rewards");
+                return false;
+            }
 
-        CAmount teamReward = blockValue - posBlockReward;
-        const CTxOut& foundationOut = coinstake.vout[numUTXO - 1];
-        if (foundationOut.nValue != teamReward) {
-            LogPrintf("ReVerifyPoSBlock() : Incorrect amount PoS rewards for foundation, reward = %d while the correct reward = %d", foundationOut.nValue, teamReward);
-            return false;
+            CAmount teamReward = blockValue - posBlockReward;
+            const CTxOut& foundationOut = coinstake.vout[numUTXO - 1];
+            if (foundationOut.nValue != teamReward) {
+                LogPrintf("ReVerifyPoSBlock() : Incorrect amount PoS rewards for foundation, reward = %d while the correct reward = %d", foundationOut.nValue, teamReward);
+                return false;
+            }
+
+            if (!VerifyDerivedAddress(foundationOut, FOUNDATION_WALLET)) {
+                LogPrintf("ReVerifyPoSBlock() : Incorrect derived address PoS rewards for foundation");
+                return false;
+            }
+        } else {
+            //there is no team rewards in this block
+            const CTxOut& mnOut = coinstake.vout[numUTXO - 1];
+            std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
+            if (!VerifyDerivedAddress(mnOut, mnsa)) {
+                LogPrintf("ReVerifyPoSBlock() : Incorrect derived address for masternode rewards");
+                return false;
+            }
         }
 
-        if (!VerifyDerivedAddress(foundationOut, FOUNDATION_WALLET)) {
-            LogPrintf("ReVerifyPoSBlock() : Incorrect derived address PoS rewards for foundation");
+        // track money supply and mint amount info
+        CAmount nMoneySupplyPrev = pindex->pprev ? pindex->pprev->nMoneySupply : 0;
+        pindex->nMoneySupply = nMoneySupplyPrev + nValueOut - nValueIn - nFees;
+        LogPrintf("%s: nMoneySupplyPrev=%d, pindex->nMoneySupply=%d, nFees = %d", __func__, nMoneySupplyPrev, pindex->nMoneySupply, nFees);
+        pindex->nMint = pindex->nMoneySupply - nMoneySupplyPrev + nFees;
+
+        //PoW phase redistributed fees to miner. PoS stage destroys fees.
+        CAmount nExpectedMint = GetBlockValue(pindex->pprev);
+        nExpectedMint += nFees;
+
+        if (!IsBlockValueValid(block, nExpectedMint, pindex->nMint)) {
+            LogPrintf("ReVerifyPoSBlock() : reward pays too much (actual=%s vs limit=%s)", FormatMoney(pindex->nMint), FormatMoney(nExpectedMint));
             return false;
         }
-    } else {
-        //there is no team rewards in this block
-        const CTxOut& mnOut = coinstake.vout[numUTXO - 1];
-        std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
-        if (!VerifyDerivedAddress(mnOut, mnsa)) {
-            LogPrintf("ReVerifyPoSBlock() : Incorrect derived address for masternode rewards");
-            return false;
-        }
+        return true;
     }
-
-    // track money supply and mint amount info
-    CAmount nMoneySupplyPrev = pindex->pprev ? pindex->pprev->nMoneySupply : 0;
-    pindex->nMoneySupply = nMoneySupplyPrev + nValueOut - nValueIn - nFees;
-    LogPrintf("%s: nMoneySupplyPrev=%d, pindex->nMoneySupply=%d, nFees = %d", __func__, nMoneySupplyPrev, pindex->nMoneySupply, nFees);
-    pindex->nMint = pindex->nMoneySupply - nMoneySupplyPrev + nFees;
-
-    //PoW phase redistributed fees to miner. PoS stage destroys fees.
-    CAmount nExpectedMint = GetBlockValue(pindex->pprev);
-    nExpectedMint += nFees;
-
-    if (!IsBlockValueValid(block, nExpectedMint, pindex->nMint)) {
-        LogPrintf("ReVerifyPoSBlock() : reward pays too much (actual=%s vs limit=%s)", FormatMoney(pindex->nMint), FormatMoney(nExpectedMint));
-        return false;
-    }
-    return true;
 }
 
 uint256 GetTxSignatureHash(const CTransaction& tx)
