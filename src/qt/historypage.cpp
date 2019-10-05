@@ -52,9 +52,9 @@ HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent),
     connectWidgets();
     updateTableData(pwalletMain);
     updateAddressBookData(pwalletMain);
-    updateHistoryTimer = new QTimer();
+    /*updateHistoryTimer = new QTimer();
     connect(updateHistoryTimer, SIGNAL(timeout()), this, SLOT(updateTableData()));
-    updateHistoryTimer->start(30000);
+    updateHistoryTimer->start(90000);*/
 }
 
 
@@ -387,5 +387,5 @@ void HistoryPage::txalert(QString a, int b, CAmount c, QString d, QString e, QSt
     // ui->tableView->setVisible(ui->tableView->rowCount());
     // ui->tableView->update();
     // ui->tableView->viewport()->update();
-    updateTableData(pwalletMain);
+    //updateTableData(pwalletMain);
 }

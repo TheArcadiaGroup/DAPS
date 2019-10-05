@@ -71,7 +71,7 @@ private:
     void updateAddressBookData(CWallet *wallet);
     QTimer* updateHistoryTimer;
 
-private slots:
+public slots:
     void on_cellClicked(int row, int column);
     void updateTableData();
 };
