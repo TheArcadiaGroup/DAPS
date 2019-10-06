@@ -831,7 +831,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
         if (vin == CTxIn()) {
             pfrom->PushMessage("ssc", MASTERNODE_SYNC_LIST, nInvCount);
-            LogPrintf("\ndseg - Sent %d Masternode entries to peer %i\n", nInvCount, pfrom->GetId());
+            LogPrint("masternode", "\ndseg - Sent %d Masternode entries to peer %i\n", nInvCount, pfrom->GetId());
         }
     }
     /*

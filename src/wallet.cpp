@@ -569,10 +569,8 @@ bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool anonymizeOnly
     }
 
     if (rescanNeeded) {
-        LogPrintf("\nStart rescanning wallet transactions");
         pwalletMain->RescanAfterUnlock();
         walletUnlockCountStatus++;
-        LogPrintf("\nFinish rescanning wallet transactions");
         return true;
     }
 
@@ -2396,7 +2394,6 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
             }
             return true;
         }
-        LogPrintf("\n nValueRet=%d, target value = %d\n", nValueRet, nTotalLower);
         if (nTotalLower < nTargetValue + feeNeeded) {
             if (coinLowestLarger.second.first == NULL) // there is no input larger than nTargetValue
             {

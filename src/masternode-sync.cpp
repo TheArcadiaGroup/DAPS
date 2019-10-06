@@ -158,7 +158,6 @@ void CMasternodeSync::GetNextAsset()
         RequestedMasternodeAssets = MASTERNODE_SYNC_BUDGET;
         break;
     case (MASTERNODE_SYNC_BUDGET):
-        LogPrintf("CMasternodeSync::GetNextAsset - Sync has finished\n");
         RequestedMasternodeAssets = MASTERNODE_SYNC_FINISHED;
         break;
     }
