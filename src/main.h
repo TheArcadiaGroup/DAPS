@@ -297,7 +297,6 @@ bool VerifyShnorrKeyImageTxIn(const CTxIn& txin, uint256 sigHash);
 
 int GetInputAge(CTxIn& vin);
 int GetInputAgeIX(uint256 nTXHash, CTxIn& vin);
-bool GetCoinAge(const CTransaction& tx, unsigned int nTxTime, uint64_t& nCoinAge);
 int GetIXConfirmations(uint256 nTXHash);
 
 struct CNodeStateStats {
