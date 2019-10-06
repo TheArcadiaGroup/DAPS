@@ -180,6 +180,7 @@ bool WalletModel::checkBalanceChanged()
     CAmount newUnconfirmedBalance = getUnconfirmedBalance();
     CAmount newImmatureBalance = getImmatureBalance();
     CAmount newSpendableBalance = newBalance - newImmatureBalance;
+    static bool stkEnabled = false;
     CAmount newWatchOnlyBalance = 0;
     CAmount newWatchUnconfBalance = 0;
     CAmount newWatchImmatureBalance = 0;
@@ -189,8 +190,14 @@ bool WalletModel::checkBalanceChanged()
         newWatchImmatureBalance = getWatchImmatureBalance();
     }
 
-    if (newSpendableBalance != spendableBalance || cachedBalance != newBalance || cachedUnconfirmedBalance != newUnconfirmedBalance || cachedImmatureBalance != newImmatureBalance ||
-        cachedWatchOnlyBalance != newWatchOnlyBalance || cachedWatchUnconfBalance != newWatchUnconfBalance || cachedWatchImmatureBalance != newWatchImmatureBalance ||
+    if ((stkEnabled != (nLastCoinStakeSearchInterval > 0)) || 
+        newSpendableBalance != spendableBalance || 
+        cachedBalance != newBalance || 
+        cachedUnconfirmedBalance != newUnconfirmedBalance || 
+        cachedImmatureBalance != newImmatureBalance ||
+        cachedWatchOnlyBalance != newWatchOnlyBalance || 
+        cachedWatchUnconfBalance != newWatchUnconfBalance || 
+        cachedWatchImmatureBalance != newWatchImmatureBalance ||
         cachedTxLocks != nCompleteTXLocks) {
         cachedBalance = newBalance;
         cachedUnconfirmedBalance = newUnconfirmedBalance;
@@ -200,6 +207,7 @@ bool WalletModel::checkBalanceChanged()
         cachedWatchOnlyBalance = newWatchOnlyBalance;
         cachedWatchUnconfBalance = newWatchUnconfBalance;
         cachedWatchImmatureBalance = newWatchImmatureBalance;
+        stkEnabled = (nLastCoinStakeSearchInterval > 0);
         emit balanceChanged(newBalance, newUnconfirmedBalance, newImmatureBalance,
             newWatchOnlyBalance, newWatchUnconfBalance, newWatchImmatureBalance);
         return true;
