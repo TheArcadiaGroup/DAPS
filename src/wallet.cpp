@@ -1412,6 +1412,7 @@ int64_t CWalletTx::GetTxTime() const
 
 int64_t CWalletTx::GetComputedTxTime() const
 {
+    LOCK(cs_main);
     int64_t nTime = GetTxTime();
     return nTime;
 }
@@ -1606,6 +1607,7 @@ bool CWalletTx::InMempool() const
 
 void CWalletTx::RelayWalletTransaction(std::string strCommand)
 {
+    LOCK(cs_main);
     if (!IsCoinBase()) {
         if (GetDepthInMainChain() == 0) {
             uint256 hash = GetHash();
@@ -2119,6 +2121,7 @@ bool less_then_denom(const COutput& out1, const COutput& out2)
 
 bool CWallet::SelectStakeCoins(std::set<std::pair<const CWalletTx*, unsigned int> >& setCoins, CAmount nTargetAmount)
 {
+    LOCK(cs_main);
     vector<COutput> vCoins;
     AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS);
     CAmount nAmountSelected = 0;
@@ -2148,6 +2151,7 @@ bool CWallet::SelectStakeCoins(std::set<std::pair<const CWalletTx*, unsigned int
 
 bool CWallet::MintableCoins()
 {
+    LOCK(cs_main);
     vector<COutput> vCoins;
 
     {
@@ -5844,7 +5848,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold)
 void CWallet::AutoCombineDust()
 {
     if (IsInitialBlockDownload()) return;
-    //if (IsInitialBlockDownload()) return;
+    LOCK2(cs_main, cs_wallet);
     if (chainActive.Tip()->nTime < (GetAdjustedTime() - 1800) || IsLocked()) {
         LogPrintf("Time elapsed for autocombine transaction too short\n");
         return;
@@ -5940,7 +5944,7 @@ bool CWallet::MultiSend()
     if (IsInitialBlockDownload() || IsLocked()) {
         return false;
     }
-
+    LOCK2(cs_main, cs_wallet);
     if (chainActive.Tip()->nHeight <= nLastMultiSendHeight) {
         LogPrintf("Multisend: lastmultisendheight is higher than current best height\n");
         return false;
@@ -6146,6 +6150,7 @@ int CMerkleTx::GetDepthInMainChain(const CBlockIndex*& pindexRet, bool enableIX)
 
 int CMerkleTx::GetBlocksToMaturity() const
 {
+    LOCK(cs_main);
     if (!(IsCoinBase() || IsCoinStake()))
         return 0;
     return max(0, (Params().COINBASE_MATURITY() + 1) - GetDepthInMainChain());
