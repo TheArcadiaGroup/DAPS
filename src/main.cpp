@@ -2973,22 +2973,18 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
      * @todo Audit checkblock
      */
     if (block.IsProofOfAudit()) {
-        LogPrintf("\nchecking CheckPoAContainRecentHash");
         //Check PoA consensus rules
         if (!CheckPoAContainRecentHash(block)) {
             return state.DoS(100, error("CheckBlock() : PoA block should contain only non-audited recent PoS blocks"));
         }
-        LogPrintf("\nchecking CheckNumberOfAuditedPoSBlocks");
 
         if (!CheckNumberOfAuditedPoSBlocks(block)) {
             return state.DoS(100, error("CheckBlock() : A PoA block should audit at least 59 PoS blocks"));
         }
-        LogPrintf("\nchecking CheckPoABlockNotContainingPoABlockInfo");
 
         if (!CheckPoABlockNotContainingPoABlockInfo(block)) {
             return state.DoS(100, error("CheckBlock() : A PoA block should not audit any existing PoA blocks"));
         }
-        LogPrintf("\nchecking CheckPoABlockNotContainingPoABlockInfo");
     }
 
     // verify that the view's current state corresponds to the previous block
@@ -4166,10 +4162,8 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
         }
     }
 
-    //LogPrintf("CheckBlock() : skipping transaction locking checks\n");
     // masternode payments / budgets
     CBlockIndex* pindexPrev = chainActive.Tip();
-    LogPrintf("%s: chain height = %d, new hash=%s\n", __func__, chainActive.Height(), block.GetHash().GetHex());
     int nHeight = 0;
     if (pindexPrev != NULL) {
         if (pindexPrev->GetBlockHash() == block.hashPrevBlock) {
@@ -4349,7 +4343,6 @@ bool AcceptBlockHeader(const CBlock& block, CValidationState& state, CBlockIndex
     uint256 hash = block.GetHash();
     BlockMap::iterator miSelf = mapBlockIndex.find(hash);
     CBlockIndex* pindex = NULL;
-    LogPrintf("\n%s: Block cache", __func__);
     // TODO : ENABLE BLOCK CACHE IN SPECIFIC CASES
     if (miSelf != mapBlockIndex.end()) {
         // Block header is already known.
@@ -4364,12 +4357,10 @@ bool AcceptBlockHeader(const CBlock& block, CValidationState& state, CBlockIndex
             return state.Invalid(error("%s : block is marked invalid", __func__), 0, "duplicate");
         return true;
     }
-    LogPrintf("\n%s: Block header", __func__);
     if (!CheckBlockHeader(block, state, false)) {
         LogPrintf("AcceptBlockHeader(): CheckBlockHeader failed \n");
         return false;
     }
-    LogPrintf("\n%s: get previous block", __func__);
     // Get prev block index
     CBlockIndex* pindexPrev = NULL;
     if (hash != Params().HashGenesisBlock()) {
@@ -4401,7 +4392,6 @@ bool AcceptBlockHeader(const CBlock& block, CValidationState& state, CBlockIndex
     if (!pindexPrev)
         return state.DoS(0, error("%s : prev block %s not found", __func__, block.hashPrevBlock.ToString().c_str()),
             0, "bad-prevblk");
-    LogPrintf("\n%s: contextual", __func__);
     if (!ContextualCheckBlockHeader(block, state, pindexPrev))
         return false;
 
@@ -4417,7 +4407,6 @@ bool AcceptBlockHeader(const CBlock& block, CValidationState& state, CBlockIndex
 bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, CDiskBlockPos* dbp, bool fAlreadyCheckedBlock)
 {
     AssertLockHeld(cs_main);
-    LogPrintf("\nAccepting block");
     CBlockIndex*& pindex = *ppindex;
     // Get prev block index
     CBlockIndex* pindexPrev = NULL;
@@ -4446,7 +4435,6 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
     if (block.GetHash() != Params().HashGenesisBlock() && !CheckWork(block, pindexPrev)) {
         return false;
     }
-    LogPrintf("\nAcceptingHeader block");
     if (!AcceptBlockHeader(block, state, &pindex))
         return false;
 
@@ -4698,8 +4686,8 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
     }
 
 
-    LogPrintf("%s : ACCEPTED in %ld milliseconds with size=%d\n", __func__, GetTimeMillis() - nStartTime,
-        pblock->GetSerializeSize(SER_DISK, CLIENT_VERSION));
+    LogPrintf("%s : ACCEPTED in %ld milliseconds with size=%d, height=%d\n", __func__, GetTimeMillis() - nStartTime,
+        pblock->GetSerializeSize(SER_DISK, CLIENT_VERSION), chainActive.Height());
 
     return true;
 }
