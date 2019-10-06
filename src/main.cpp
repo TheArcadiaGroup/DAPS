@@ -372,6 +372,7 @@ void DestroyContext()
 
 bool VerifyBulletProofAggregate(const CTransaction& tx)
 {
+    if (IsInitialBlockDownload()) return true;
     size_t len = tx.bulletproofs.size();
     if (tx.vout.size() >= 5) return false;
 
@@ -388,6 +389,7 @@ bool VerifyBulletProofAggregate(const CTransaction& tx)
 
 bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
 {
+    if (IsInitialBlockDownload()) return true;
     const size_t MAX_VIN = MAX_TX_INPUTS;
     const size_t MAX_DECOYS = MAX_RING_SIZE; //padding 1 for safety reasons
     const size_t MAX_VOUT = 5;

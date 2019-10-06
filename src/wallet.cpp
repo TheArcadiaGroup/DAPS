@@ -513,6 +513,26 @@ bool CWallet::RescanAfterUnlock(bool fromBeginning)
     } else {
         pindex = chainActive[scannedHeight];
     }
+
+    {
+        LOCK2(cs_main, cs_wallet);
+        if (mapWallet.size() > 0) {
+            //looking for highest blocks
+            for (map<uint256, CWalletTx>::iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
+                CWalletTx* wtx = &((*it).second);
+                uint256 wtxid = (*it).first;
+                if (mapBlockIndex.count(wtx->hashBlock) == 1) {
+                    CBlockIndex* pForTx = mapBlockIndex[wtx->hashBlock];
+                    if (pForTx != NULL && pForTx->nHeight > pindex->nHeight) {
+                        if (chainActive.Contains(pForTx)) {
+                            pindex = pForTx;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     ScanForWalletTransactions(pindex, true);
     return true;
 }
