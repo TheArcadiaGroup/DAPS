@@ -179,7 +179,7 @@ void AskPassphraseDialog::accept()
             if (model->changePassphrase(oldpass, newpass1)) {
                 QMessageBox msgBox;
                 msgBox.setWindowTitle("Passphrase Change Successful");
-                msgBox.setText("Wallet passphrase was successfully changed. Please remember your passphrase as there is no way to recover it.");
+                msgBox.setText("Wallet passphrase was successfully changed.\nPlease remember your passphrase as there is no way to recover it.");
                 msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
                 msgBox.setIcon(QMessageBox::Information);
                 msgBox.exec();
