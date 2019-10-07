@@ -327,7 +327,8 @@ void OptionsPage::on_pushButtonBackup_clicked(){
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
         msgBox.setIcon(QMessageBox::Information);
         msgBox.exec();
-    } else { ui->pushButtonBackup->setStyleSheet("border: 2px solid red");
+    } else {
+        ui->pushButtonBackup->setStyleSheet("border: 2px solid red");
         QMessageBox msgBox;
         msgBox.setWindowTitle("Wallet Backup Failed");
         msgBox.setText("Wallet backup failed. Please try again.");
