@@ -181,6 +181,7 @@ bool WalletModel::checkBalanceChanged()
     CAmount newImmatureBalance = getImmatureBalance();
     CAmount newSpendableBalance = newBalance - newImmatureBalance;
     static bool stkEnabled = false;
+    static bool walletLocked = pwalletMain->IsLocked();
     CAmount newWatchOnlyBalance = 0;
     CAmount newWatchUnconfBalance = 0;
     CAmount newWatchImmatureBalance = 0;
@@ -190,7 +191,8 @@ bool WalletModel::checkBalanceChanged()
         newWatchImmatureBalance = getWatchImmatureBalance();
     }
 
-    if ((stkEnabled != (nLastCoinStakeSearchInterval > 0)) || 
+    if (walletLocked != pwalletMain->IsLocked() || 
+        (stkEnabled != (nLastCoinStakeSearchInterval > 0)) || 
         newSpendableBalance != spendableBalance || 
         cachedBalance != newBalance || 
         cachedUnconfirmedBalance != newUnconfirmedBalance || 
@@ -208,6 +210,7 @@ bool WalletModel::checkBalanceChanged()
         cachedWatchUnconfBalance = newWatchUnconfBalance;
         cachedWatchImmatureBalance = newWatchImmatureBalance;
         stkEnabled = (nLastCoinStakeSearchInterval > 0);
+        walletLocked = pwalletMain->IsLocked();
         emit balanceChanged(newBalance, newUnconfirmedBalance, newImmatureBalance,
             newWatchOnlyBalance, newWatchUnconfBalance, newWatchImmatureBalance);
         return true;
