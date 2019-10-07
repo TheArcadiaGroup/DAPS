@@ -4124,7 +4124,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 int64_t nTxTime = out.tx->GetTxTime();
 
                 //check for min age
-                if (GetAdjustedTime() - nTxTime < nStakeMinAge)
+                if (GetAdjustedTime() < nStakeMinAge + nTxTime)
                     continue;
 
                 //check that it is matured
