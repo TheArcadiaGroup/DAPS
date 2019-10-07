@@ -513,7 +513,7 @@ bool CMasternodePayments::AddWinningMasternode(CMasternodePaymentWinner& winnerI
 
 bool CMasternodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
 {
-    LOCK(cs_vecPayments);
+    LOCK2(cs_main, cs_vecPayments);
 
     int nMaxSignatures = 0;
     int nMasternode_Drift_Count = 0;

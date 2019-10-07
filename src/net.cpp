@@ -1490,7 +1490,6 @@ void ThreadMessageHandler() {
             pnodeTrickle = vNodesCopy[GetRand(vNodesCopy.size())];
 
         bool fSleep = true;
-
         BOOST_FOREACH(CNode * pnode, vNodesCopy)
         {   
             if (!pnode) continue;
@@ -1514,9 +1513,12 @@ void ThreadMessageHandler() {
             boost::this_thread::interruption_point();
             // Send messages
             {
-                TRY_LOCK(pnode->cs_vSend, lockSend);
-                if (lockSend)
-                    g_signals.SendMessages(pnode, pnode == pnodeTrickle || pnode->fWhitelisted);
+                TRY_LOCK(cs_main, lockMain);
+                    if (lockMain) {
+                    TRY_LOCK(pnode->cs_vSend, lockSend);
+                    if (lockSend)
+                        g_signals.SendMessages(pnode, pnode == pnodeTrickle || pnode->fWhitelisted);
+                }
             }
             boost::this_thread::interruption_point();
         }
