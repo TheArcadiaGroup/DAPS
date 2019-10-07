@@ -6441,7 +6441,7 @@ bool CWallet::ComputeStealthDestination(const CKey& secret, const CPubKey& pubVi
 
 bool CWallet::GenerateAddress(CPubKey& pub, CPubKey& txPub, CKey& txPriv) const
 {
-    LOCK(cs_wallet);
+    LOCK2(cs_main, cs_wallet);
     {
         CKey view, spend;
         if (IsLocked()) {
