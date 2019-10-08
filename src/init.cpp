@@ -196,6 +196,7 @@ void PrepareShutdown()
     if (pwalletMain)
         bitdb.Flush(false);
     GenerateDapscoins(false, NULL, 0);
+    pwalletMain->WriteStakingStatus(false);
 #endif
     StopNode();
     DumpMasternodes();
