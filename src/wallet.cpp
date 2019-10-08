@@ -514,7 +514,7 @@ bool CWallet::RescanAfterUnlock(bool fromBeginning)
         pindex = chainActive[scannedHeight];
     }
 
-    {
+    if (!fromBeginning) {
         LOCK2(cs_main, cs_wallet);
         if (mapWallet.size() > 0) {
             //looking for highest blocks
