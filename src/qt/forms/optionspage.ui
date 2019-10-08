@@ -72,17 +72,40 @@
              <property name="layoutDirection">
               <enum>Qt::LeftToRight</enum>
              </property>
-             <property name="OptionA">
+             <property name="OptionA" stdset="0">
               <string>On</string>
              </property>
-             <property name="OptionB">
+             <property name="OptionB" stdset="0">
               <string>Off</string>
              </property>
-             <property name="fixedSize">
+             <property name="fixedSize" stdset="0">
               <size>
                <width>100</width>
                <height>55</height>
               </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item alignment="Qt::AlignHCenter">
+            <widget class="QPushButton" name="pushButtonBackup">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Backup wallet to directory of choice</string>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+             <property name="text">
+              <string>Backup Wallet</string>
              </property>
             </widget>
            </item>
@@ -123,13 +146,13 @@
              <property name="layoutDirection">
               <enum>Qt::LeftToRight</enum>
              </property>
-             <property name="OptionA">
+             <property name="OptionA" stdset="0">
               <string>Dark</string>
              </property>
-             <property name="OptionB">
+             <property name="OptionB" stdset="0">
               <string>Light</string>
              </property>
-             <property name="fixedSize">
+             <property name="fixedSize" stdset="0">
               <size>
                <width>100</width>
                <height>55</height>
@@ -441,13 +464,13 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="OptionA">
+         <property name="OptionA" stdset="0">
           <string>On</string>
          </property>
-         <property name="OptionB">
+         <property name="OptionB" stdset="0">
           <string>Off</string>
          </property>
-         <property name="fixedSize">
+         <property name="fixedSize" stdset="0">
           <size>
            <width>100</width>
            <height>55</height>
@@ -570,25 +593,6 @@
           </widget>
          </item>
         </layout>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButtonBackup">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Backup wallet to BackupWallet.dat in current directory</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::RightToLeft</enum>
-         </property>
-         <property name="text">
-          <string>Backup Wallet</string>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>
