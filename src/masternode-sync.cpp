@@ -262,7 +262,8 @@ void CMasternodeSync::Process()
 
     if (Params().NetworkID() != CBaseChainParams::REGTEST &&
         !IsBlockchainSynced()) return;
-
+    TRY_LOCK(cs_main, lockMain);    //check for potential deadlock avoidance
+    if (!lockMain) return;
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
