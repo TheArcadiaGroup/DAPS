@@ -803,7 +803,6 @@ void OptionsPage::setAutoCombine() {
     }
     if (ui->addNewFunds->isChecked()) {
         pwalletMain->fCombineDust = true;//pSettings.first;
-        pwalletMain->nAutoCombineThreshold = 540*COIN;
     } else {
         pwalletMain->fCombineDust = false;
     }
