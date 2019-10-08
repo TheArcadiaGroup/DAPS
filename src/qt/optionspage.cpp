@@ -802,9 +802,8 @@ void OptionsPage::setAutoCombine() {
         return;
     }
     if (ui->addNewFunds->isChecked()) {
-        pwalletMain->fCombineDust = true;//pSettings.first;
+        pwalletMain->fCombineDust = true;
     } else {
         pwalletMain->fCombineDust = false;
     }
-
 }
