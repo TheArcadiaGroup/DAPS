@@ -199,22 +199,23 @@ void MasternodeList::updateMyNodeList(bool fForce)
     {
         static int64_t nTimeMyListUpdated = 0;
 
-    // automatically update my masternode list only once in MY_MASTERNODELIST_UPDATE_SECONDS seconds,
-    // this update still can be triggered manually at any time via button click
-    int64_t nSecondsTillUpdate = nTimeMyListUpdated + MY_MASTERNODELIST_UPDATE_SECONDS - GetTime();
+        // automatically update my masternode list only once in MY_MASTERNODELIST_UPDATE_SECONDS seconds,
+        // this update still can be triggered manually at any time via button click
+        int64_t nSecondsTillUpdate = nTimeMyListUpdated + MY_MASTERNODELIST_UPDATE_SECONDS - GetTime();
 
-    if (nSecondsTillUpdate > 0 && !fForce) return;
-    nTimeMyListUpdated = GetTime();
+        if (nSecondsTillUpdate > 0 && !fForce) return;
+        nTimeMyListUpdated = GetTime();
 
-    ui->tableWidgetMyMasternodes->setSortingEnabled(false);
-    BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
-        int nIndex;
-        if(!mne.castOutputIndex(nIndex))
-            continue;
+        ui->tableWidgetMyMasternodes->setSortingEnabled(false);
+        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+            int nIndex;
+            if(!mne.castOutputIndex(nIndex))
+                continue;
 
-        CTxIn txin = CTxIn(uint256S(mne.getTxHash()), uint32_t(nIndex));
-        CMasternode* pmn = mnodeman.Find(txin);
-        updateMyMasternodeInfo(QString::fromStdString(mne.getAlias()), QString::fromStdString(mne.getIp()), pmn);
+            CTxIn txin = CTxIn(uint256S(mne.getTxHash()), uint32_t(nIndex));
+            CMasternode* pmn = mnodeman.Find(txin);
+            updateMyMasternodeInfo(QString::fromStdString(mne.getAlias()), QString::fromStdString(mne.getIp()), pmn);
+        }
     }
     ui->tableWidgetMyMasternodes->setSortingEnabled(true);
 }
