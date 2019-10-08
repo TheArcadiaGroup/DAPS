@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: daps-staker-26
+  name: daps-master-7
 spec:
   ports:
     - port: 53575
@@ -11,13 +11,13 @@ spec:
     - port: 53572
       name: mainnet
   selector:
-    app: daps-staker-26
+    app: daps-master-7
   sessionAffinity: None
   type: LoadBalancer
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: staker-26-pv-volume
+  name: master-7-pv-volume
   labels:
     type: local
 spec:
@@ -28,16 +28,16 @@ spec:
     - ReadWriteOnce
   claimRef:
     namespace: default
-    name: staker-26-pv-claim
+    name: master-7-pv-claim
   gcePersistentDisk:
     fsType: ext4
-    pdName: stakingnode-26-service
+    pdName: masternode-7-service
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: staker-26-pv-claim
+  name: master-7-pv-claim
   labels:
-    app: daps-staker-26
+    app: daps-master-7
 spec:
   accessModes:
     - ReadWriteOnce
@@ -47,24 +47,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: daps-staker-26
+  name: daps-master-7
   labels:
-    app: daps-staker-26
+    app: daps-master-7
 spec:
   selector:
     matchLabels:
-      app: daps-staker-26
+      app: daps-master-7
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: daps-staker-26
+        app: daps-master-7
     spec:
       hostAliases:
-      - ip: "10.10.10.76"
+      - ip: "10.10.10.64"
         hostnames:
-        - "staker.26"
+        - "master.7"
       terminationGracePeriodSeconds: 3
       containers:
       - image: r.cfcr.io/hysmagus/daps_min:develop
@@ -83,12 +83,12 @@ spec:
         - containerPort: 53572
           name: mainnet
         volumeMounts:
-        - name: staker26data
+        - name: master7data
           mountPath: /root/.dapscoin/
       volumes:
-      - name: staker26data
+      - name: master7data
         persistentVolumeClaim:
-          claimName: staker-26-pv-claim
+          claimName: master-7-pv-claim
       dnsPolicy: ClusterFirst
       imagePullSecrets:
       - name: codefresh-generated-r.cfcr.io-cfcr-default
