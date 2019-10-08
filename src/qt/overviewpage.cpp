@@ -427,6 +427,7 @@ int OverviewPage::tryNetworkBlockCount(){
 void OverviewPage::updateRecentTransactions(){
 	if (!pwalletMain || pwalletMain->IsLocked()) return;
     {
+        LOCK2(cs_main, pwalletMain->cs_wallet);
         QLayoutItem* item;
         QSettings settings;
         QVariant theme = settings.value("theme");
