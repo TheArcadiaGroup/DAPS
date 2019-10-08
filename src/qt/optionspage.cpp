@@ -281,7 +281,7 @@ void OptionsPage::on_pushButtonPassword_clicked()
     	else if (model->changePassphrase(oldPass, newPass)) {
             QMessageBox msgBox;
             msgBox.setWindowTitle("Passphrase Change Successful");
-            msgBox.setText("Wallet passphrase was successfully changed. Please remember your passphrase as there is no way to recover it.");
+            msgBox.setText("Wallet passphrase was successfully changed.\nPlease remember your passphrase as there is no way to recover it.");
             msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
             msgBox.setIcon(QMessageBox::Information);
             msgBox.exec();

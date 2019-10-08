@@ -205,7 +205,11 @@ void WalletView::gotoOverviewPage()
 
 void WalletView::gotoHistoryPage()
 {
+    int lastTime = GetAdjustedTime();
     setCurrentWidget(historyPage);
+    if (GetAdjustedTime() - lastTime < 90) {
+        historyPage->updateTableData();
+    }
 }
 
 

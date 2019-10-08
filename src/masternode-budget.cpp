@@ -518,7 +518,6 @@ bool CBudgetManager::FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, b
 
     if (fProofOfStake) {
         if (nHighestCount > 0) {
-            LogPrintf("\n%s: fill paying highest masternode count\n", __func__);
             unsigned int i = txNew.vout.size();
             txNew.vout.resize(i + 1);
             txNew.vout[i].scriptPubKey = payee;
