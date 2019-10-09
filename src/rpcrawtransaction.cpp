@@ -156,7 +156,7 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
             out.push_back(Pair("decoded_amount", ValueFromAmount(decodedAmount)));
             out.push_back(Pair("isMine", true));
         } else {
-            out.push_back(Pair("isMine", true));
+            out.push_back(Pair("isMine", false));
         }
 #endif
         vout.push_back(out);
