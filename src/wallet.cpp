@@ -2488,7 +2488,7 @@ void CWallet::resetPendingOutPoints()
                     for (size_t i = 0; i < tx.vin.size(); i++) {
                         COutPoint prevout = findMyOutPoint(tx.vin[i]);
                         if (prevout.hash.IsNull()) {
-                            break;
+                            continue;
                         } else {
                             inSpendQueueOutpoints[prevout] = true;
                         }
