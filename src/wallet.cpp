@@ -1706,6 +1706,7 @@ CAmount CWallet::GetBalance()
             const CWalletTx* pcoin = &(*it).second;
             if (pcoin->IsTrusted()) {
                 CAmount ac = pcoin->GetAvailableCredit();
+                LogPrintf("Checking balance in transaction %s, amount = %d", pcoin->GetHash().GetHex(), ac);
                 nTotal += ac;
             }
         }
@@ -2497,7 +2498,9 @@ void CWallet::resetPendingOutPoints()
 
                 for (size_t i = 0; i < tobeRemoveds.size(); i++) {
                     LogPrintf("\nRemoving tx %s from mempool\n", tobeRemoveds[i].GetHex());
-                    mempool.mapTx.erase(tobeRemoveds[i]);
+                    const CTransaction& tx = mempool.mapTx[tobeRemoveds[i]].GetTx();
+                    std::list<CTransaction> l;
+                    mempool.remove(tx, l, false);
                 }
             }
         }
