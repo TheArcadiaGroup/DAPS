@@ -1706,7 +1706,7 @@ CAmount CWallet::GetBalance()
             const CWalletTx* pcoin = &(*it).second;
             if (pcoin->IsTrusted()) {
                 CAmount ac = pcoin->GetAvailableCredit();
-                LogPrintf("Checking balance in transaction %s, amount = %d", pcoin->GetHash().GetHex(), ac);
+                LogPrintf("\nChecking balance in transaction %s, amount = %d\n", pcoin->GetHash().GetHex(), ac);
                 nTotal += ac;
             }
         }
