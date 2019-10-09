@@ -194,11 +194,7 @@ void MasternodeList::updateMyMasternodeInfo(QString strAlias, QString strAddr, C
 
 void MasternodeList::updateMyNodeList(bool fForce)
 {
-    TRY_LOCK(cs_main, lockMain);
-    if (!lockMain)
-        return;
-    TRY_LOCK(pwalletMain->cs_wallet, lockWallet);
-    if (!lockWallet)
+    LOCK2(cs_main, pwalletMain->cs_wallet);
     {
         static int64_t nTimeMyListUpdated = 0;
 
