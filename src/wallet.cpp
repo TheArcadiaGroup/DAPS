@@ -2479,13 +2479,6 @@ void CWallet::resetPendingOutPoints()
                 std::vector<uint256> tobeRemoveds;
                 for (std::map<uint256, CTxMemPoolEntry>::const_iterator it = mempool.mapTx.begin(); it != mempool.mapTx.end(); ++it) {
                     const CTransaction& tx = it->second.GetTx();
-                    if (mapWallet.count(it->first) == 1) {
-                        CWalletTx wtx = mapWallet[it->first];
-                        if (!wtx.AcceptToMemoryPool(false)) {
-                            tobeRemoveds.push_back(it->first);
-                            continue;
-                        }
-                    }
                     for (size_t i = 0; i < tx.vin.size(); i++) {
                         COutPoint prevout = findMyOutPoint(tx.vin[i]);
                         if (prevout.hash.IsNull()) {
@@ -2494,13 +2487,6 @@ void CWallet::resetPendingOutPoints()
                             inSpendQueueOutpoints[prevout] = true;
                         }
                     }
-                }
-
-                for (size_t i = 0; i < tobeRemoveds.size(); i++) {
-                    LogPrintf("\nRemoving tx %s from mempool\n", tobeRemoveds[i].GetHex());
-                    const CTransaction& tx = mempool.mapTx[tobeRemoveds[i]].GetTx();
-                    std::list<CTransaction> l;
-                    mempool.remove(tx, l, false);
                 }
             }
         }
