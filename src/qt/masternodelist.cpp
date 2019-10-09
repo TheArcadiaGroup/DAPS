@@ -109,7 +109,10 @@ void MasternodeList::StartAlias(std::string strAlias)
         }
         strStatusHtml += "</center>";
 
-        GUIUtil::prompt(strStatusHtml.c_str());
+        QMessageBox msg;
+        msg.setText(strStatusHtml.c_str());
+        msg.setStyleSheet(GUIUtil::loadStyleSheet());
+        msg.exec();
     }
     updateMyNodeList(true);
 }
@@ -155,6 +158,7 @@ void MasternodeList::StartAll(std::string strCommand)
 
         QMessageBox msg;
         msg.setText(QString::fromStdString(returnObj));
+        msg.setStyleSheet(GUIUtil::loadStyleSheet());
         msg.exec();
     }
     updateMyNodeList(true);
