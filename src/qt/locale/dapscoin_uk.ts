@@ -259,9 +259,6 @@
     <name>PeerTableModel</name>
     </context>
 <context>
-    <name>PrivacyDialog</name>
-    </context>
-<context>
     <name>QObject</name>
     </context>
 <context>
@@ -368,9 +365,6 @@
         <source>Export the data in the current tab to a file</source>
         <translation>Експортуйтувати дані поточної вкладки у файл</translation>
     </message>
-    </context>
-<context>
-    <name>ZDapsControlDialog</name>
     </context>
 <context>
     <name>dapscoin-core</name>

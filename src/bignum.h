@@ -59,7 +59,7 @@ public:
         BN_init(this);
     }
 
-    // Initialize from a Hex String (for zerocoin modulus)
+    // Initialize from a Hex String
     CBigNum(const std::string& str) {
         BN_init(this);
         SetHexBool(str);

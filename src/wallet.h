@@ -203,13 +203,23 @@ public:
     }
 };
 
+//in any case consolidation needed, call estimateConsolidationFees function to estimate fees
 enum StakingStatusError
 {
-	NONE,
-	DEFAULT,
-	UTXO_UNDER_THRESHOLD,
-	RESERVE_TOO_HIGH,
-	RESERVE_TOO_HIGH_AND_UTXO_UNDER_THRESHOLD
+    STAKING_OK, //use case B, C, D, no consolidation needed, 
+    UNSTAKABLE_BALANCE_TOO_LOW, //coin is not mature yet (balance > 400k)
+    UNSTAKABLE_BALANCE_TOO_LOW_CONSOLIDATION_FAILED, //coin is not mature yet (balance > 400k)
+    UNSTAKABLE_BALANCE_RESERVE_TOO_HIGH,
+    UNSTAKABLE_BALANCE_RESERVE_TOO_HIGH_CONSOLIDATION_FAILED, //even consolidation does not help
+    STAKABLE_NEED_CONSOLIDATION,   //stable and consolidation, needs to estimate fees
+    STAKABLE_NEED_CONSOLIDATION_WITH_RESERVE_BALANCE  //stable and consolidation, needs to estimate fees
+};
+
+enum StakingMode {
+	STOPPED, //staking disabled or balance < 400k
+	STAKING_WITHOUT_CONSOLIDATION,
+	STAKING_WITH_CONSOLIDATION,
+	STAKING_WITH_CONSOLIDATION_WITH_STAKING_NEWW_FUNDS
 };
 
 /**
@@ -219,7 +229,7 @@ enum StakingStatusError
 class CWallet : public CCryptoKeyStore, public CValidationInterface
 {
 private:
-    bool SelectCoins(bool needFee, int ringSize, int numOut, const CAmount& nTargetValue, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, const CCoinControl* coinControl = NULL, AvailableCoinsType coin_type = ALL_COINS, bool useIX = true) ;
+    bool SelectCoins(bool needFee, CAmount& estimatedFee, int ringSize, int numOut, const CAmount& nTargetValue, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, const CCoinControl* coinControl = NULL, AvailableCoinsType coin_type = ALL_COINS, bool useIX = true) ;
     //it was public bool SelectCoins(int64_t nTargetValue, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoinsRet, int64_t& nValueRet, const CCoinControl *coinControl = NULL, AvailableCoinsType coin_type=ALL_COINS, bool useIX = true) const;
 
     CWalletDB* pwalletdbEncryption;
@@ -251,6 +261,7 @@ public:
     static const int32_t PROBABILITY_NEW_COIN_SELECTED = 70;
     bool RescanAfterUnlock(bool fromBeginning = false);
     bool MintableCoins();
+    StakingStatusError StakingCoinStatus(CAmount& minFee, CAmount& maxFee);
     bool SelectStakeCoins(std::set<std::pair<const CWalletTx*, unsigned int> >& setCoins, CAmount nTargetAmount) ;
     bool SelectCoinsDark(CAmount nValueMin, CAmount nValueMax, std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet, int nObfuscationRoundsMin, int nObfuscationRoundsMax) ;
     bool SelectCoinsByDenominations(int nDenom, CAmount nValueMin, CAmount nValueMax, std::vector<CTxIn>& vCoinsRet, std::vector<COutput>& vCoinsRet2, CAmount& nValueRet, int nObfuscationRoundsMin, int nObfuscationRoundsMax);
@@ -263,6 +274,9 @@ public:
     bool SelectCoinsCollateral(std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet);
     static int ComputeTxSize(size_t numIn, size_t numOut, size_t ringSize);
     void resetPendingOutPoints();
+    bool estimateStakingConsolidationFees(CAmount& min, CAmount& max);
+    static int MaxTxSizePerTx();
+    std::string GetTransactionType(const CTransaction& tx);
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
@@ -303,7 +317,7 @@ public:
     //Auto Combine Inputs
     bool fCombineDust;
     CAmount nAutoCombineThreshold;
-    bool CreateSweepingTransaction(CAmount target);
+    bool CreateSweepingTransaction(CAmount target, CAmount threshold);
     bool SendAll(std::string des);
     CWallet()
     {
@@ -354,13 +368,8 @@ public:
         vDisabledAddresses.clear();
 
         //Auto Combine Dust
-        fCombineDust = true;
+        fCombineDust = false;
         nAutoCombineThreshold = 540 * COIN;
-    }
-
-    void setZDapsAutoBackups(bool fEnabled)
-    {
-        fBackupMints = fEnabled;
     }
 
     bool isMultiSendEnabled()
@@ -391,6 +400,8 @@ public:
 
     int64_t nTimeFirstKey;
 
+    StakingMode stakingMode = STOPPED;
+
     mutable std::map<std::string, CKeyImage> outpointToKeyImages;
     std::map<std::string, bool> keyImagesSpends;
     std::map<std::string, std::string> keyImageMap;//mapping from: txhashHex-n to key image str, n = index
@@ -416,7 +427,7 @@ public:
 
     void AvailableCoins(std::vector<COutput>& vCoins, bool fOnlyConfirmed = true, const CCoinControl* coinControl = NULL, bool fIncludeZeroValue = false, AvailableCoinsType nCoinType = ALL_COINS, bool fUseIX = false);
     std::map<CBitcoinAddress, std::vector<COutput> > AvailableCoinsByAddress(bool fConfirmed = true, CAmount maxCoinValue = 0);
-    bool SelectCoinsMinConf(bool needFee, int ringSize, int numOut, const CAmount& nTargetValue, int nConfMine, int nConfTheirs, std::vector<COutput> vCoins, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet);
+    bool SelectCoinsMinConf(bool needFee, CAmount& estimatedFee, int ringSize, int numOut, const CAmount& nTargetValue, int nConfMine, int nConfTheirs, std::vector<COutput> vCoins, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet);
 
     /// Get 1000DASH output and keys which can be used for the Masternode
     bool GetMasternodeVinAndKeys(CTxIn& txinRet, CPubKey& pubKeyRet, CKey& keyRet, std::string strTxHash = "", std::string strOutputIndex = "");
@@ -569,6 +580,7 @@ public:
                                       CAmount nFeePay = 0, int ringSize = 6, bool tomyself = false);
 
     int ComputeFee(size_t numIn, size_t numOut, size_t ringSize);
+    CAmount ComputeReserveUTXOAmount();
     bool CreateTransaction(CScript scriptPubKey, const CAmount &nValue, CWalletTx &wtxNew, CReserveKey &reservekey,
                            CAmount &nFeeRet, std::string &strFailReason, const CCoinControl *coinControl = NULL,
                            AvailableCoinsType coin_type = ALL_COINS, bool useIX = false, CAmount nFeePay = 0);
@@ -644,8 +656,6 @@ public:
         CAmount nDebit = 0;
         BOOST_FOREACH (const CTxIn& txin, tx.vin) {
             nDebit += GetDebit(txin, filter);
-            /*if (!MoneyRange(nDebit))
-                throw std::runtime_error("CWallet::GetDebit() : value out of range");*/
         }
         return nDebit;
     }
@@ -654,8 +664,6 @@ public:
         CAmount nCredit = 0;
         BOOST_FOREACH (const CTxOut& txout, tx.vout) {
             nCredit += GetCredit(tx, txout, filter);
-            if (!MoneyRange(nCredit))
-                throw std::runtime_error("CWallet::GetCredit() : value out of range");
         }
         return nCredit;
     }
@@ -664,8 +672,6 @@ public:
         CAmount nChange = 0;
         BOOST_FOREACH (const CTxOut& txout, tx.vout) {
             nChange += GetChange(tx, txout);
-            if (!MoneyRange(nChange))
-                throw std::runtime_error("CWallet::GetChange() : value out of range");
         }
         return nChange;
     }
@@ -749,6 +755,8 @@ public:
     bool EncodeIntegratedAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, uint64_t paymentID, std::string& pubAddr);
     bool EncodeIntegratedAddress(const std::vector<unsigned char>& pubViewKey, const std::vector<unsigned char>& pubSpendKey, uint64_t paymentID, std::string& pubAddrb58);
     bool GenerateIntegratedAddress(const std::string& accountName, std::string& pubAddr);
+    std::string GenerateIntegratedAddressWithRandomPaymentID(std::string accountName, uint64_t& paymentID);
+    std::string GenerateIntegratedAddressWithProvidedPaymentID(std::string accountName, uint64_t paymentID);
     bool GenerateIntegratedAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr);
     bool AllMyPublicAddresses(std::vector<std::string>& addresses, std::vector<std::string>& accountNames);
     bool RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmount &amount, CKey&) const;
@@ -777,6 +785,7 @@ public:
     bool MakeShnorrSignatureTxIn(CTxIn& txin, uint256);
     bool computeSharedSec(const CTransaction& tx, const CTxOut& out, CPubKey& sharedSec) const;
     void AddComputedPrivateKey(const CTxOut& out);
+    bool IsCollateralized(const COutPoint& outpoint);
 private:
     bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth);
     bool allMyPrivateKeys(std::vector<CKey>& spends, std::vector<CKey>& views);
@@ -1144,6 +1153,7 @@ public:
 
     CAmount GetImmatureCredit(bool fUseCache = true) const
     {
+        LOCK(cs_main);
         if ((IsCoinBase() || IsCoinStake()) && GetBlocksToMaturity() > 0 && IsInMainChain()) {
             if (fUseCache && fImmatureCreditCached)
                 return nImmatureCreditCached;
@@ -1184,8 +1194,6 @@ public:
                     cre = pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
                 }
                 nCredit += cre;
-                if (!MoneyRange(nCredit))
-                    throw std::runtime_error("CWalletTx::GetAvailableCredit() : value out of range");
             }
         }
 
@@ -1263,8 +1271,6 @@ public:
             if (fMasterNode && pwallet->getCTxOutValue(*this, vout[i]) == 1000000 * COIN) continue; // do not count MN-like outputs
 
             nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
-            if (!MoneyRange(nCredit))
-                throw std::runtime_error("CWalletTx::GetUnlockedCredit() : value out of range");
         }
 
         return nCredit;
@@ -1298,8 +1304,6 @@ public:
                 nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
             }
 
-            if (!MoneyRange(nCredit))
-                throw std::runtime_error("CWalletTx::GetLockedCredit() : value out of range");
         }
 
         return nCredit;
@@ -1335,8 +1339,6 @@ public:
             if (pwallet->IsSpent(hashTx, i) || !pwallet->IsDenominatedAmount(pwallet->getCTxOutValue(*this, txout))) continue;
 
             nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
-            if (!MoneyRange(nCredit))
-                throw std::runtime_error("CWalletTx::GetDenominatedCredit() : value out of range");
         }
 
         if (unconfirmed) {
@@ -1351,6 +1353,7 @@ public:
 
     CAmount GetImmatureWatchOnlyCredit(const bool& fUseCache = true) const
     {
+        LOCK(cs_main);
         if (IsCoinBase() && GetBlocksToMaturity() > 0 && IsInMainChain()) {
             if (fUseCache && fImmatureWatchCreditCached)
                 return nImmatureWatchCreditCached;
@@ -1379,8 +1382,6 @@ public:
             if (!pwallet->IsSpent(GetHash(), i)) {
                 const CTxOut& txout = vout[i];
                 nCredit += pwallet->GetCredit(*this, txout, ISMINE_WATCH_ONLY);
-                if (!MoneyRange(nCredit))
-                    throw std::runtime_error("CWalletTx::GetAvailableCredit() : value out of range");
             }
         }
 

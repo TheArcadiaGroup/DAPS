@@ -41,7 +41,7 @@ using namespace std;
 WalletModel::WalletModel(CWallet* wallet, OptionsModel* optionsModel, QObject* parent) : QObject(parent), wallet(wallet), optionsModel(optionsModel), addressTableModel(0),
                                                                                          transactionTableModel(0),
                                                                                          recentRequestsTableModel(0),
-                                                                                         cachedBalance(0), cachedUnconfirmedBalance(0), cachedImmatureBalance(0), cachedWatchOnlyBalance(0),
+                                                                                         cachedBalance(0), cachedUnconfirmedBalance(0), spendableBalance(0), cachedImmatureBalance(0), cachedWatchOnlyBalance(0),
                                                                                          cachedWatchUnconfBalance(0), cachedWatchImmatureBalance(0),
                                                                                          cachedEncryptionStatus(Unencrypted),
                                                                                          cachedNumBlocks(0), cachedTxLocks(0),
@@ -58,7 +58,6 @@ WalletModel::WalletModel(CWallet* wallet, OptionsModel* optionsModel, QObject* p
 
     // This timer will be fired repeatedly to update the balance
     pollTimer = new QTimer(this);
-    pollTimer->setInterval(10);
     connect(pollTimer, SIGNAL(timeout()), this, SLOT(pollBalanceChanged()));
     pollTimer->start(MODEL_UPDATE_DELAY);
 
@@ -168,18 +167,21 @@ void WalletModel::emitBalanceChanged()
         return;
     
     emit balanceChanged(cachedBalance, cachedUnconfirmedBalance, cachedImmatureBalance,
-        0, 0, 0,
         cachedWatchOnlyBalance, cachedWatchUnconfBalance, cachedWatchImmatureBalance);
 }
 
 bool WalletModel::checkBalanceChanged()
 {
     TRY_LOCK(cs_main, lockMain);
-    if (!lockMain) return true;
-    LogPrintf("\n%s:Checking balance changed\n", __func__);
+    if (!lockMain) return false;
+    TRY_LOCK(pwalletMain->cs_wallet, lockWallet);
+    if (!lockWallet) return false;
     CAmount newBalance = getBalance();
     CAmount newUnconfirmedBalance = getUnconfirmedBalance();
     CAmount newImmatureBalance = getImmatureBalance();
+    CAmount newSpendableBalance = newBalance - newImmatureBalance;
+    static bool stkEnabled = false;
+    static bool walletLocked = pwalletMain->IsLocked();
     CAmount newWatchOnlyBalance = 0;
     CAmount newWatchUnconfBalance = 0;
     CAmount newWatchImmatureBalance = 0;
@@ -189,23 +191,32 @@ bool WalletModel::checkBalanceChanged()
         newWatchImmatureBalance = getWatchImmatureBalance();
     }
 
-    if (cachedBalance != newBalance || cachedUnconfirmedBalance != newUnconfirmedBalance || cachedImmatureBalance != newImmatureBalance ||
-        cachedWatchOnlyBalance != newWatchOnlyBalance || cachedWatchUnconfBalance != newWatchUnconfBalance || cachedWatchImmatureBalance != newWatchImmatureBalance ||
+    if (walletLocked != pwalletMain->IsLocked() || 
+        (stkEnabled != (nLastCoinStakeSearchInterval > 0)) || 
+        newSpendableBalance != spendableBalance || 
+        cachedBalance != newBalance || 
+        cachedUnconfirmedBalance != newUnconfirmedBalance || 
+        cachedImmatureBalance != newImmatureBalance ||
+        cachedWatchOnlyBalance != newWatchOnlyBalance || 
+        cachedWatchUnconfBalance != newWatchUnconfBalance || 
+        cachedWatchImmatureBalance != newWatchImmatureBalance ||
         cachedTxLocks != nCompleteTXLocks) {
         cachedBalance = newBalance;
         cachedUnconfirmedBalance = newUnconfirmedBalance;
         cachedImmatureBalance = newImmatureBalance;
+        spendableBalance = newSpendableBalance;
         cachedTxLocks = nCompleteTXLocks;
         cachedWatchOnlyBalance = newWatchOnlyBalance;
         cachedWatchUnconfBalance = newWatchUnconfBalance;
         cachedWatchImmatureBalance = newWatchImmatureBalance;
+        stkEnabled = (nLastCoinStakeSearchInterval > 0);
+        walletLocked = pwalletMain->IsLocked();
         emit balanceChanged(newBalance, newUnconfirmedBalance, newImmatureBalance,
-            0, 0, 0,
             newWatchOnlyBalance, newWatchUnconfBalance, newWatchImmatureBalance);
-        return false;
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 void WalletModel::updateTransaction()
@@ -662,20 +673,13 @@ bool WalletModel::isMine(CBitcoinAddress address)
 
 StakingStatusError WalletModel::getStakingStatusError(QString& error)
 {
-    // int timeRemaining = (1471482000 - chainActive.Tip()->nTime) / (60 * 60); //time remaining in hrs
-    if (1471482000 > chainActive.Tip()->nTime) {
-        error = "Chain has not matured.\nHours remaining: " + QString((1471482000 - chainActive.Tip()->nTime) / (60 * 60));
-        return StakingStatusError::DEFAULT;
-    } else if (vNodes.empty()) {
-        error = "No peer connections.\nPlease check network settings.";
-        return StakingStatusError::DEFAULT;
-    } else {
+    /* {
     	bool fMintable = pwalletMain->MintableCoins();
-    	CAmount balance = pwalletMain->GetBalance();
+    	CAmount balance = pwalletMain->GetSpendableBalance();
     	if (!fMintable || nReserveBalance > balance) {
-    		if (balance < CWallet::MINIMUM_STAKE_AMOUNT + 10*COIN) {
+    		if (balance < CWallet::MINIMUM_STAKE_AMOUNT) {
     			error = "\nBalance is under the minimum 400,000 staking threshold.\nPlease send more DAPS to this wallet.\n";
-    			return StakingStatusError::DEFAULT;
+    			return StakingStatusError::STAKING_OK;
     		}
     		if (nReserveBalance > balance || (balance > nReserveBalance && balance - nReserveBalance < CWallet::MINIMUM_STAKE_AMOUNT)) {
     			error = "Reserve balance is too high.\nPlease lower it in order to turn staking on.";
@@ -691,8 +695,8 @@ StakingStatusError WalletModel::getStakingStatusError(QString& error)
 				}
 			}
 		}
-    }
-    return StakingStatusError::NONE;
+    }*/
+    return StakingStatusError::STAKING_OK;
 }
 
 void WalletModel::generateCoins(bool fGenerate, int nGenProcLimit)

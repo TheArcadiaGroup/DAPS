@@ -490,11 +490,10 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
         return false;
     }
     std::string mstl(vin.masternodeStealthAddress.begin(), vin.masternodeStealthAddress.end());
-    LogPrintf("\nCMasternodeBroadcast::CheckAndUpdate: pubKeyCollateralAddress=%s\n", mstl);
 
     CScript pubkeyScript;
     pubkeyScript = GetScriptForDestination(pubKeyCollateralAddress);
-    LogPrintf("\nCMasternodeBroadcast::CheckAndUpdate: pubKeyCollateralAddress=%s\n", pubkeyScript.ToString());
+    LogPrint("masternode", "\nCMasternodeBroadcast::CheckAndUpdate: pubKeyCollateralAddress=%s\n", pubkeyScript.ToString());
     if ((pubkeyScript.size() != 35) && (pubkeyScript.size() != 67)) {
         LogPrint("masternode","mnb - pubkey the wrong size\n");
         nDos = 100;
@@ -503,29 +502,25 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
 
     CScript pubkeyScript2;
     pubkeyScript2 = GetScriptForDestination(pubKeyMasternode);
-    LogPrintf("\nCMasternodeBroadcast::CheckAndUpdate: pubKeyMasternode=%s, size = %d\n", pubkeyScript2.ToString(), pubkeyScript2.size());
     if ((pubkeyScript2.size() != 35) && (pubkeyScript2.size() != 67)) {
         LogPrint("masternode","mnb - pubkey2 the wrong size\n");
         nDos = 100;
         return false;
     }
 
-    LogPrintf("\nCMasternodeBroadcast::Checking scriptSig empty\n");
     if (!vin.scriptSig.empty()) {
         LogPrint("masternode","mnb - Ignore Not Empty ScriptSig %s\n", vin.prevout.hash.ToString());
         return false;
     }
 
-    LogPrintf("\nCMasternodeBroadcast::Verifying message signature\n");
     std::string errorMessage = "";
     //only need to verify shnorr signature
     if (!VerifyShnorrKeyImageTxIn(vin, GetTxInSignatureHash(vin))) {
         LogPrint("masternode","mnb - Got bad Masternode address signature\n");
-        LogPrintf("mnb - Got bad Masternode address signature\n");
-        nDos = 100;
+        if (masternodeSync.IsBlockchainSynced())
+            nDos = 100;
         return false;
     }
-    LogPrintf("\nCMasternodeBroadcast::checking network ID\n");
     if (Params().NetworkID() == CBaseChainParams::MAIN) {
         if (addr.GetPort() != 53572) return false;
     } else if (addr.GetPort() == 53572)

@@ -426,10 +426,6 @@
         <translation>Procházet historii transakcí</translation>
     </message>
     <message>
-        <source>Privacy Actions for zDAPS</source>
-        <translation>Řešení soukromí pro zDAPS</translation>
-    </message>
-    <message>
         <source>E&amp;xit</source>
         <translation>E&amp;xit</translation>
     </message>
@@ -1725,85 +1721,6 @@ Prosím zkontrolujte adresu a zkuste to znovu.</translation>
     </message>
 </context>
 <context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Reset</translation>
-    </message>
-    <message>
-        <source>Quantity:</source>
-        <translation>Množství:</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Hodnota:</translation>
-    </message>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>Vyberte již dříve použitou adresu</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Paste address from clipboard</source>
-        <translation>Vložit adresu z mezipamětí</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Alt+P</translation>
-    </message>
-    <message>
-        <source>&amp;Label:</source>
-        <translation>&amp;Popis</translation>
-    </message>
-    <message>
-        <source>A&amp;mount:</source>
-        <translation>H&amp;odnota:</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation>Priorita:</translation>
-    </message>
-    <message>
-        <source>Fee:</source>
-        <translation>Poplatek:</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>ne</translation>
-    </message>
-    <message>
-        <source>Bytes:</source>
-        <translation>Byty:</translation>
-    </message>
-    <message>
-        <source>Insufficient funds!</source>
-        <translation>Nedostatek prostředků!</translation>
-    </message>
-    <message>
-        <source>medium</source>
-        <translation>střední</translation>
-    </message>
-    <message>
-        <source>Change:</source>
-        <translation>Změna:</translation>
-    </message>
-    <message>
-        <source>Copy quantity</source>
-        <translation>Kopíroat množstí</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Kopírovat hodnotu</translation>
-    </message>
-    </context>
-<context>
     <name>QObject</name>
     <message>
         <source>Amount</source>
@@ -2449,13 +2366,6 @@ Prosím zkontrolujte adresu a zkuste to znovu.</translation>
     <message>
         <source>Export the data in the current tab to a file</source>
         <translation>Exportovat data z aktulní záložky do souboru</translation>
-    </message>
-    </context>
-<context>
-    <name>ZDapsControlDialog</name>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
     </message>
     </context>
 <context>

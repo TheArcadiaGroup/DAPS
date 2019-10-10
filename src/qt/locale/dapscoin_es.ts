@@ -1731,22 +1731,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Mapear un puerto utilizando &amp;UPnP</translation>
     </message>
     <message>
-        <source>Percentage of incoming DAPS which get automatically converted to zDAPS via Zerocoin Protocol (min: 10%)</source>
-        <translation>Porcentaje de DAPSs entrantes que serán automáticamente convertidos a zDAPS a través del Protocolo Zerocoin (mín: 10%)</translation>
-    </message>
-    <message>
-        <source>Percentage of autominted zDAPS</source>
-        <translation>Porcentaje de zDAPS autogenerados</translation>
-    </message>
-    <message>
-        <source>Wait with automatic conversion to Zerocoin until enough DAPS for this denomination is available</source>
-        <translation>Retrasar la conversión automática a Zerocoin hasta que hayan suficientes DAPS disponibles para este tamaño de billete</translation>
-    </message>
-    <message>
-        <source>Preferred Automint zDAPS Denomination</source>
-        <translation>Tamaño de billete zDAPS preferido en la creación automática de dinero</translation>
-    </message>
-    <message>
         <source>Connect to the DAPS network through a SOCKS5 proxy.</source>
         <translation>Conectar a la red DAPS mediante un proxy SOCKS5.</translation>
     </message>
@@ -1946,20 +1930,12 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>DAPS:</translation>
     </message>
     <message>
-        <source>zDAPS:</source>
-        <translation>zDAPS:</translation>
-    </message>
-    <message>
         <source>0 %</source>
         <translation>0 %</translation>
     </message>
     <message>
         <source>0.000 000 00 DAPS</source>
         <translation>0.000 000 00 DAPS</translation>
-    </message>
-    <message>
-        <source>Zerocoin Balance</source>
-        <translation>Balance Zerocoin</translation>
     </message>
     <message>
         <source>Recent transactions</source>
@@ -2074,447 +2050,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
     <message>
         <source>Ping Time</source>
         <translation>Intervalo de Ping</translation>
-    </message>
-</context>
-<context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>DAPS which were anonymized via Zerocin Protocol</source>
-        <translation>DAPS que fueron anonimizados mediante Protocolo Zerocoin</translation>
-    </message>
-    <message>
-        <source>Zerocoin DAPS (zDAPS)</source>
-        <translation>Zerocoin DAPS (zDAPS)</translation>
-    </message>
-    <message>
-        <source>Zerocoin Actions:</source>
-        <translation>Acciones Zerocoin:</translation>
-    </message>
-    <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPS network after a connection is established, but this process has not completed yet.</source>
-        <translation>La información mostrada puede estar desactualizada. Su monedero se sincroniza automáticamente con la red DAPS después de establecer una conexión, pero este proceso aún no se ha completado.</translation>
-    </message>
-    <message>
-        <source>Enter an amount of Daps to convert to zDaps</source>
-        <translation>Introduzca la cantidad de Daps que desea convertir a zDaps</translation>
-    </message>
-    <message>
-        <source>Mint Zerocoin</source>
-        <translation>Creación de moneda Zerocoin</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>zDAPS</source>
-        <translation>zDAPS</translation>
-    </message>
-    <message>
-        <source>Available for Minting:</source>
-        <translation>Disponible para Creación de moneda:</translation>
-    </message>
-    <message>
-        <source>0.000 000 00 DAPS</source>
-        <translation>0.000 000 00 DAPS</translation>
-    </message>
-    <message>
-        <source>Reset Zerocoin Wallet DB. Deletes transactions that did not make it into the blockchain.</source>
-        <translation>Resetear la base de datos del monedero Zerocoin. Esta opción borra transacciones que no consiguieron salir publicadas en la cadena de bloques.</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Reiniciar</translation>
-    </message>
-    <message>
-        <source>Coin Control...</source>
-        <translation>Control de Monedas...</translation>
-    </message>
-    <message>
-        <source>Quantity:</source>
-        <translation>Cantidad:</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Cantidad:</translation>
-    </message>
-    <message>
-        <source>Rescan the complete blockchain for  Zerocoin mints and their meta-data.</source>
-        <translation>Reescanear la cadena de bloques entera buscando creación de moneda Zerocoin y otros meta-datos.</translation>
-    </message>
-    <message>
-        <source>ReScan</source>
-        <translation>ReeScanear</translation>
-    </message>
-    <message>
-        <source>Status and/or Mesages from the last Mint Action.</source>
-        <translation>Estado y/o Mensajes de la última Acción de Creación de moneda.</translation>
-    </message>
-    <message>
-        <source>zDaps Control</source>
-        <translation>Control zDaps</translation>
-    </message>
-    <message>
-        <source>zDaps Selected:</source>
-        <translation>zDaps Seleccionados:</translation>
-    </message>
-    <message>
-        <source>Quantity Selected:</source>
-        <translation>Cantidad Seleccionada:</translation>
-    </message>
-    <message>
-        <source>Spend Zerocoin. Without 'Pay To:' address creates payments to yourself.</source>
-        <translation>Gastar Zerocoin. Sin direcciones "Pagar a:", esto creará pagos a usted mismo.</translation>
-    </message>
-    <message>
-        <source>Spend Zerocoin</source>
-        <translation>Gastar Zerocoin</translation>
-    </message>
-    <message>
-        <source>Available Balance:</source>
-        <translation>Balance disponible:</translation>
-    </message>
-    <message>
-        <source>0 zDAPS</source>
-        <translation>0 zDAPS</translation>
-    </message>
-    <message>
-        <source>Security Level for Zerocoin Transactions. More is better, but needs more time and resources.</source>
-        <translation>Nivel de Seguridad para Transacciones Zerocoin. Cuanto más mejor, pero necesitará más tiempo y recursos.</translation>
-    </message>
-    <message>
-        <source>Security Level:</source>
-        <translation>Nivel de Seguridad:</translation>
-    </message>
-    <message>
-        <source>Security Level 1 - 100 (default: 42)</source>
-        <translation>Nivel de Seguridad 1 - 100 (por defecto: 42)</translation>
-    </message>
-    <message>
-        <source>Pay &amp;To:</source>
-        <translation>Pagar &amp;A:</translation>
-    </message>
-    <message>
-        <source>The DAPS address to send the payment to. Creates local payment to yourself when empty.</source>
-        <translation>La dirección DAPS a la que enviar el pago. Si se deja en blanco, crea un pago a usted mismo.</translation>
-    </message>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>Escoja una dirección usada previamente</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Alt + A</translation>
-    </message>
-    <message>
-        <source>Paste address from clipboard</source>
-        <translation>Pegar dirección desde el portapapeles</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Alt + P</translation>
-    </message>
-    <message>
-        <source>&amp;Label:</source>
-        <translation>&amp;Etiqueta:</translation>
-    </message>
-    <message>
-        <source>Enter a label for this address to add it to the list of used addresses</source>
-        <translation>Introduzca una etiqueta para esta dirección para añadirla a la lista de direcciones utilizadas</translation>
-    </message>
-    <message>
-        <source>A&amp;mount:</source>
-        <translation>Ca&amp;ntidad:</translation>
-    </message>
-    <message>
-        <source>Convert Change to Zerocoin (might cost additional fees)</source>
-        <translation>Convertir el Cambio a Zerocoin (puede costar alguna tasa adicional)</translation>
-    </message>
-    <message>
-        <source>If checked, the wallet tries to minimize the returning change instead of minimizing the number of spent denominations.</source>
-        <translation>Si está marcado, el monedero intenta minimizar el cambio de vuelta en lugar de minimizar el número de billetes necesarios.</translation>
-    </message>
-    <message>
-        <source>Minimize Change</source>
-        <translation>Minimizar Cambio</translation>
-    </message>
-    <message>
-        <source>Information about the available Zerocoin funds.</source>
-        <translation>Información sobre los fondos Zerocoin disponibles.</translation>
-    </message>
-    <message>
-        <source>Zerocoin Stats:</source>
-        <translation>Estadísticas Zerocoin:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 1:</source>
-        <translation>Billetes con valor 1:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 1:</source>
-        <translation>Billetes con valor 1:</translation>
-    </message>
-    <message>
-        <source>0 x</source>
-        <translation>0 x</translation>
-    </message>
-    <message>
-        <source>Denominations with value 5:</source>
-        <translation>Billetes con valor 5:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 5:</source>
-        <translation>Billetes con valor 5:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 10:</source>
-        <translation>Billetes con valor 10:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 10:</source>
-        <translation>Billetes con valor 10:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 50:</source>
-        <translation>Billetes con valor 50:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 50:</source>
-        <translation>Billetes con valor 50:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 100:</source>
-        <translation>Billetes con valor 100:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 100:</source>
-        <translation>Billetes con valor 100:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 500:</source>
-        <translation>Billetes con valor 500:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 500:</source>
-        <translation>Billetes con valor 500:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 1000:</source>
-        <translation>Billetes con valor 1000:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 1000:</source>
-        <translation>Billetes con valor 1000:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 5000:</source>
-        <translation>Billetes con valor 5000:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 5000:</source>
-        <translation>Billetes con valor 5000:</translation>
-    </message>
-    <message>
-        <source>Note: This hidden objects are used for communication between the 'Coin Control' dialog and its parent objects. We don't want to change/reimplement the existing Coin Control, so this objects must be here, even when we don't use them. No, we don't like this approach, either.</source>
-        <translation>Nota: Estos objetos ocultos se usan para comunicación entre el diálogo "Control de Monedas' y sus objetos ascendientes. No queremos cambiar/reimplementar el Control de Moneda existente, así que dejamos aquí estos objetos, aunque no los utilicemos. Mejoraremos este planteamiento en el futuro.</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation>Prioridad:</translation>
-    </message>
-    <message>
-        <source>Fee:</source>
-        <translation>Comisión:</translation>
-    </message>
-    <message>
-        <source>Dust:</source>
-        <translation>Calderilla:</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>no</translation>
-    </message>
-    <message>
-        <source>Bytes:</source>
-        <translation>Octetos:</translation>
-    </message>
-    <message>
-        <source>Insufficient funds!</source>
-        <translation>¡Fondos insuficientes!</translation>
-    </message>
-    <message>
-        <source>Coins automatically selected</source>
-        <translation>Monedas seleccionadas automáticamente</translation>
-    </message>
-    <message>
-        <source>medium</source>
-        <translation>media</translation>
-    </message>
-    <message>
-        <source>Coin Control Features</source>
-        <translation>Funciones de Control de Monedas</translation>
-    </message>
-    <message>
-        <source>If this is activated, but the change address is empty or invalid, change will be sent to a newly generated address.</source>
-        <translation>Si esto está activado, pero la dirección de cambio está vacía o es inválida, el cambio será mandado a una nueva dirección generada.</translation>
-    </message>
-    <message>
-        <source>Custom change address</source>
-        <translation>Dirección de cambio personalizada</translation>
-    </message>
-    <message>
-        <source>Amount After Fee:</source>
-        <translation>Cantidad Después de Tasas:</translation>
-    </message>
-    <message>
-        <source>Change:</source>
-        <translation>Cambio:</translation>
-    </message>
-    <message>
-        <source>out of sync</source>
-        <translation>desincronizado</translation>
-    </message>
-    <message>
-        <source>Mint Status: Okay</source>
-        <translation>Estado de Creación de Moneda: Ok</translation>
-    </message>
-    <message>
-        <source>Copy quantity</source>
-        <translation>Copiar cantidad</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Copiar cantidad</translation>
-    </message>
-    <message>
-        <source>Error: Your wallet is locked. Please enter the wallet passphrase first.</source>
-        <translation>Error: Tu monedero está bloqueado. Por favor, primero introduzca la clave de desbloqueo.</translation>
-    </message>
-    <message>
-        <source>Message: Enter an amount &gt; 0.</source>
-        <translation>Mensaje: Introduzca una cantidad &gt; 0.</translation>
-    </message>
-    <message>
-        <source>Minting </source>
-        <translation>Creando moneda</translation>
-    </message>
-    <message>
-        <source>Successfully minted </source>
-        <translation>Monedas creadas correctamente</translation>
-    </message>
-    <message>
-        <source> zDAPS in </source>
-        <translation>zDAPS en</translation>
-    </message>
-    <message>
-        <source> sec. Used denominations:
-</source>
-        <translation>seg. Billetes usados:
-</translation>
-    </message>
-    <message>
-        <source>Starting ResetMintZerocoin: rescanning complete blockchain, this will need up to 30 minutes depending on your hardware. 
-Please be patient...</source>
-        <translation>Ejecutando ResetMintZerocoin: reescaneando la cadena de bloques entera, esto necesitará hasta media hora dependiendo de su hardware.
-Por favor espere...</translation>
-    </message>
-    <message>
-        <source>Duration: </source>
-        <translation>Duración:</translation>
-    </message>
-    <message>
-        <source> sec.
-</source>
-        <translation>seg.
-</translation>
-    </message>
-    <message>
-        <source>Starting ResetSpentZerocoin: </source>
-        <translation>Iniciando ResetSpentZerocoin:</translation>
-    </message>
-    <message>
-        <source>No 'Pay To' address provided, creating local payment</source>
-        <translation>No se especificó drección 'Pagar A', por lo que asumimos un pago local</translation>
-    </message>
-    <message>
-        <source>Invalid Dapscoin Address</source>
-        <translation>Dirección Dapscoin Inválida</translation>
-    </message>
-    <message>
-        <source>Invalid Send Amount</source>
-        <translation>Cantidad a Enviar Inválida</translation>
-    </message>
-    <message>
-        <source>Confirm additional Fees</source>
-        <translation>Confirmar Tasas adicionales</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to send?&lt;br /&gt;&lt;br /&gt;</source>
-        <translation>¿Está seguro que desea enviar?&lt;br /&gt;&lt;br /&gt;</translation>
-    </message>
-    <message>
-        <source> to address </source>
-        <translation>a la dirección</translation>
-    </message>
-    <message>
-        <source>with Security Level </source>
-        <translation>con Nivel de Seguridad</translation>
-    </message>
-    <message>
-        <source>Confirm send coins</source>
-        <translation>Confirmar enviar monedas</translation>
-    </message>
-    <message>
-        <source>Spending Zerocoin.
-Computationally expensive, might need several minutes depending on the selected Security Level and your hardware. 
-Please be patient...</source>
-        <translation>Gastando Zerocoin.
-Esto es computacionalmente intensivo, puede necesitar varios minutos dependiendo del Nivel de Seguridad elegido y el hardware de su máquina.
-Por favor tenga paciencia...</translation>
-    </message>
-    <message>
-        <source>Spend Zerocoin failed with status = </source>
-        <translation>Gastar Zerocoin falló con estado =</translation>
-    </message>
-    <message>
-        <source>zDaps Spend #: </source>
-        <translation>Gastar zDaps #:</translation>
-    </message>
-    <message>
-        <source>denomination: </source>
-        <translation>billete:</translation>
-    </message>
-    <message>
-        <source>serial: </source>
-        <translation>serial:</translation>
-    </message>
-    <message>
-        <source>Spend is 1 of : </source>
-        <translation>Gasto 1 de :</translation>
-    </message>
-    <message>
-        <source>value out: </source>
-        <translation>valor salida:</translation>
-    </message>
-    <message>
-        <source>address: </source>
-        <translation>dirección:</translation>
-    </message>
-    <message>
-        <source>zDaps Mint</source>
-        <translation>Creación de zDaps</translation>
-    </message>
-    <message>
-        <source>Sending successful, return code: </source>
-        <translation>Envío correcto, código devuelto: </translation>
-    </message>
-    <message>
-        <source>txid: </source>
-        <translation>txid:</translation>
-    </message>
-    <message>
-        <source>fee: </source>
-        <translation>tasa:</translation>
     </message>
 </context>
 <context>
@@ -3918,32 +3453,8 @@ Por favor tenga paciencia...</translation>
         <translation>Ofuscado</translation>
     </message>
     <message>
-        <source>Converted Daps to zDaps</source>
-        <translation>Daps convertidos a zDaps</translation>
-    </message>
-    <message>
-        <source>Spent zDaps</source>
-        <translation>zDaps Gastados</translation>
-    </message>
-    <message>
-        <source>Received Daps from zDaps</source>
-        <translation>Daps recibidos desde zDaps</translation>
-    </message>
-    <message>
-        <source>Minted Change as zDaps from zDaps Spend</source>
-        <translation>Cambio Creado en zDaps por un Gasto zDaps</translation>
-    </message>
-    <message>
-        <source>Converted zDaps to Daps</source>
-        <translation>zDaps convertidos en Daps</translation>
-    </message>
-    <message>
         <source>watch-only</source>
         <translation>sólo-lectura</translation>
-    </message>
-    <message>
-        <source>zDaps Accumulator</source>
-        <translation>Acumulador zDaps</translation>
     </message>
     <message>
         <source>(n/a)</source>
@@ -4051,26 +3562,6 @@ Por favor tenga paciencia...</translation>
     <message>
         <source>Masternode Reward</source>
         <translation>Recompensa de Nodo Maestro</translation>
-    </message>
-    <message>
-        <source>Received Daps from zDaps</source>
-        <translation>Daps recibidos desde zDaps</translation>
-    </message>
-    <message>
-        <source>Zerocoin Mint</source>
-        <translation>Creación de moneda Zerocoin</translation>
-    </message>
-    <message>
-        <source>Zerocoin Spend</source>
-        <translation>Gasto de Zerocoin</translation>
-    </message>
-    <message>
-        <source>Zerocoin Spend, Change in zDaps</source>
-        <translation>Gasto de Zerocoin, Cambio en zDaps</translation>
-    </message>
-    <message>
-        <source>Zerocoin Spend to Self</source>
-        <translation>Pago Zerocoin a tí mismo</translation>
     </message>
     <message>
         <source>Other</source>
@@ -4227,33 +3718,6 @@ Por favor tenga paciencia...</translation>
     <message>
         <source>The wallet data was successfully saved to %1.</source>
         <translation>Los datos del monedero se guardaron correctamente a %1.</translation>
-    </message>
-</context>
-<context>
-    <name>ZDapsControlDialog</name>
-    <message>
-        <source>Select zDaps to Spend</source>
-        <translation>Seleccione zDaps a Gastar</translation>
-    </message>
-    <message>
-        <source>Quantity</source>
-        <translation>Cantidad</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>zDaps</source>
-        <translation>zDaps</translation>
-    </message>
-    <message>
-        <source>Select/Deselect All</source>
-        <translation>Seleccionar/Deseleccionar Todos</translation>
-    </message>
-    <message>
-        <source>Is Spendable</source>
-        <translation>Es Gastable</translation>
     </message>
 </context>
 <context>
@@ -4687,10 +4151,6 @@ por ejemplo: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
         <translation>Realizando carga</translation>
     </message>
     <message>
-        <source>Enable automatic Zerocoin minting (0-1, default: %u)</source>
-        <translation>Habilitar creación automática de Zerocoin (0-1, por defecto: %u)</translation>
-    </message>
-    <message>
         <source>Enable the client to act as a masternode (0-1, default: %u)</source>
         <translation>Habilitar al cliente para actuar como un nodo maestro (0-1. predeterminado: %u)</translation>
     </message>
@@ -4939,10 +4399,6 @@ por ejemplo: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
         <translation>Error: Se ha especificado un argumento no soportado -checklevel. El Checklevel debe ser siempre 4. </translation>
     </message>
     <message>
-        <source>Preferred Denomination for automatically minted Zerocoin  (1/5/10/50/100/500/1000/5000), 0 for no preference. default: %u)</source>
-        <translation>Tamaño de Billete Zerocoin Preferido para los Zerocoin creados automáticamente (1/5/10/50/100/500/1000/5000), poner 0 si no tiene preferencias. Por defecto: %u) </translation>
-    </message>
-    <message>
         <source>&lt;category&gt; can be:</source>
         <translation>&lt;category&gt;puede ser: </translation>
     </message>
@@ -5147,10 +4603,6 @@ por ejemplo: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
         <translation>Contraseña para conexiones JSON-RPC</translation>
     </message>
     <message>
-        <source>Percentage of automatically minted Zerocoin  (10-100, default: %u)</source>
-        <translation>Porcentaje de Zerocoin creadas automáticamente (10-100, por defecto: %u)</translation>
-    </message>
-    <message>
         <source>Prepend debug output with timestamp (default: %u)</source>
         <translation>Agregar timestamp a la salida de depuración (predeterminado: %u)</translation>
     </message>
@@ -5201,14 +4653,6 @@ por ejemplo: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
     <message>
         <source>Rescanning...</source>
         <translation>Reescaneado...</translation>
-    </message>
-    <message>
-        <source>ResetMintZerocoin finished: </source>
-        <translation>ResetMintZerocoin finalizado:</translation>
-    </message>
-    <message>
-        <source>ResetSpentZerocoin finished: </source>
-        <translation>ResetSpentZerocoin finalizado:</translation>
     </message>
     <message>
         <source>Run a thread to flush wallet periodically (default: %u)</source>
@@ -5533,14 +4977,6 @@ por ejemplo: alertnotify=echo %%s | mail -s "DAPS Alert" admin@foo.com
     <message>
         <source>ZeroMQ notification options:</source>
         <translation>Opciones de notificación ZeroMQ:</translation>
-    </message>
-    <message>
-        <source>Zerocoin options:</source>
-        <translation>Opciones Zerocoin:</translation>
-    </message>
-    <message>
-        <source>failed to validate zerocoin</source>
-        <translation>fallo al validar zerocoin</translation>
     </message>
     <message>
         <source>on startup</source>

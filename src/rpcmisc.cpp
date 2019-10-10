@@ -72,7 +72,7 @@ UniValue getinfo(const UniValue &params, bool fHelp) {
             "}\n"
             "\nExamples:\n" +
             HelpExampleCli("getinfo", "") + HelpExampleRpc("getinfo", ""));
-
+    LOCK(cs_main);
     proxyType proxy;
     GetProxy(NET_IPV4, proxy);
 
@@ -96,7 +96,6 @@ UniValue getinfo(const UniValue &params, bool fHelp) {
 #ifdef ENABLE_WALLET
     if (pwalletMain) {
         obj.push_back(Pair("keypoololdest", pwalletMain->GetOldestKeyPoolTime()));
-        obj.push_back(Pair("keypoolsize", (int)pwalletMain->GetKeyPoolSize()));
     }
     if (pwalletMain && pwalletMain->IsCrypted())
         obj.push_back(Pair("unlocked_until", nWalletUnlockTime));

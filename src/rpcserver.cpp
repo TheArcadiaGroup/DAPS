@@ -112,8 +112,6 @@ CAmount AmountFromValue(const UniValue& value) {
     if (dAmount <= 0.0 || dAmount > Params().MAX_MONEY)
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount");
     CAmount nAmount = roundint64(dAmount * COIN);
-    if (!MoneyRange(nAmount))
-        throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount");
     return nAmount;
 }
 
@@ -365,7 +363,7 @@ static const CRPCCommand vRPCCommands[] =
 
         /* Wallet */
         // {"wallet", "addmultisigaddress", &addmultisigaddress, true, false, true},
-        {"wallet", "autocombinerewards", &autocombinerewards, false, false, true},
+        //{"wallet", "autocombinerewards", &autocombinerewards, false, false, true},
         {"wallet", "backupwallet", &backupwallet, true, false, true},
         // {"wallet", "dumpprivkey", &dumpprivkey, true, false, true},
         // {"wallet", "dumpwallet", &dumpwallet, true, false, true},
@@ -374,6 +372,9 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "encryptwallet", &encryptwallet, true, false, true},
         // {"wallet", "createprivacywallet", &createprivacywallet, true, false, true},
         {"wallet", "createprivacyaccount", &createprivacyaccount, true, false, true},
+        {"wallet", "showstealthaddress", &showstealthaddress, true, false, true},
+        {"wallet", "getaccountaddress", &showstealthaddress, true, false, true},
+        {"wallet", "getstealthaddress", &showstealthaddress, true, false, true},
         {"wallet", "importkeys", &importkeys, true, false, true},
         {"wallet", "revealviewprivatekey", &revealviewprivatekey, true, false, true},
         {"wallet", "revealspendprivatekey", &revealspendprivatekey, true, false, true},
@@ -383,6 +384,7 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "sendtostealthaddress", &sendtostealthaddress, false, false, true},
         {"wallet", "getbalance", &getbalance, false, false, true},
         {"wallet", "getbalances", &getbalances, false, false, true},
+        {"wallet", "generateintegratedaddress", &generateintegratedaddress, true, false, false},
         // {"wallet", "getnewaddress", &getnewaddress, true, false, true},
         // {"wallet", "getrawchangeaddress", &getrawchangeaddress, true, false, true},
         // {"wallet", "getreceivedbyaccount", &getreceivedbyaccount, false, false, true},
@@ -401,7 +403,7 @@ static const CRPCCommand vRPCCommands[] =
         // {"wallet", "listlockunspent", &listlockunspent, false, false, true},
         // {"wallet", "listreceivedbyaccount", &listreceivedbyaccount, false, false, true},
         // {"wallet", "listreceivedbyaddress", &listreceivedbyaddress, false, false, true},
-        // {"wallet", "listsinceblock", &listsinceblock, false, false, true},
+        {"wallet", "listsinceblock", &listsinceblock, false, false, true},
         {"wallet", "listtransactions", &listtransactions, false, false, true},
         {"wallet", "listunspent", &listunspent, false, false, true},
         // {"wallet", "lockunspent", &lockunspent, true, false, true},
@@ -417,7 +419,8 @@ static const CRPCCommand vRPCCommands[] =
         // {"wallet", "signmessage", &signmessage, true, false, true},
         // {"wallet", "walletlock", &walletlock, true, false, true},
         {"wallet", "walletpassphrasechange", &walletpassphrasechange, true, false, true},
-        {"wallet", "unlockwallet", &unlockwallet, true, false, true}
+        {"wallet", "unlockwallet", &unlockwallet, true, false, true},
+        {"wallet", "revealmnemonicphrase", &revealmnemonicphrase, true, false, true}
 
 #endif // ENABLE_WALLET
         };

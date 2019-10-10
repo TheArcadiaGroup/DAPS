@@ -1407,69 +1407,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations </trans
     </message>
 </context>
 <context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Resetuj</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Liczba:</translation>
-    </message>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>Wybierz poprzednio używany adres</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Paste address from clipboard</source>
-        <translation>Wklej adres ze schowka</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Alt+P</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation>Priorytet:</translation>
-    </message>
-    <message>
-        <source>Fee:</source>
-        <translation>Opłata:</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>nie</translation>
-    </message>
-    <message>
-        <source>medium</source>
-        <translation>średni</translation>
-    </message>
-    <message>
-        <source>Change:</source>
-        <translation>Zmiana:</translation>
-    </message>
-    <message>
-        <source>out of sync</source>
-        <translation>Brak synchronizacji</translation>
-    </message>
-    <message>
-        <source>Copy quantity</source>
-        <translation>Kopiuj ilość</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Kopiuj liczbę</translation>
-    </message>
-    </context>
-<context>
     <name>QObject</name>
     <message>
         <source>Amount</source>
@@ -2039,13 +1976,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations </trans
     <message>
         <source>&amp;Export</source>
         <translation>Eksportuj</translation>
-    </message>
-    </context>
-<context>
-    <name>ZDapsControlDialog</name>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
     </message>
     </context>
 <context>

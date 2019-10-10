@@ -205,7 +205,11 @@ void WalletView::gotoOverviewPage()
 
 void WalletView::gotoHistoryPage()
 {
+    int lastTime = GetAdjustedTime();
     setCurrentWidget(historyPage);
+    if (GetAdjustedTime() - lastTime < 90) {
+        historyPage->updateTableData();
+    }
 }
 
 
@@ -235,38 +239,6 @@ void WalletView::gotoOptionsPage()
 void WalletView::gotoSendCoinsPage(QString addr)
 {
     setCurrentWidget(sendCoinsPage);
-}
-
-void WalletView::gotoSignMessageTab(QString addr)
-{
-    // calls show() in showTab_SM()
-    SignVerifyMessageDialog* signVerifyMessageDialog = new SignVerifyMessageDialog(this);
-    signVerifyMessageDialog->setAttribute(Qt::WA_DeleteOnClose);
-    signVerifyMessageDialog->setModel(walletModel);
-    signVerifyMessageDialog->showTab_SM(true);
-
-    if (!addr.isEmpty())
-        signVerifyMessageDialog->setAddress_SM(addr);
-}
-
-void WalletView::gotoVerifyMessageTab(QString addr)
-{
-    // calls show() in showTab_VM()
-    SignVerifyMessageDialog* signVerifyMessageDialog = new SignVerifyMessageDialog(this);
-    signVerifyMessageDialog->setAttribute(Qt::WA_DeleteOnClose);
-    signVerifyMessageDialog->setModel(walletModel);
-    signVerifyMessageDialog->showTab_VM(true);
-
-    if (!addr.isEmpty())
-        signVerifyMessageDialog->setAddress_VM(addr);
-}
-
-void WalletView::gotoBip38Tool()
-{
-    Bip38ToolDialog* bip38ToolDialog = new Bip38ToolDialog(this);
-    //bip38ToolDialog->setAttribute(Qt::WA_DeleteOnClose);
-    bip38ToolDialog->setModel(walletModel);
-    bip38ToolDialog->showTab_ENC(true);
 }
 
 void WalletView::gotoMultiSendDialog()

@@ -1265,78 +1265,6 @@ Adres: %4</translation>
     <name>PeerTableModel</name>
     </context>
 <context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>Quantity:</source>
-        <translation>Miktar</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Tutar:</translation>
-    </message>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>Daha önce kullanılan adresi seçin
-</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Alt+A
-</translation>
-    </message>
-    <message>
-        <source>Paste address from clipboard</source>
-        <translation>Adresini panodan yapıştırın
-</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Alt+P
-</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation>Öncelik</translation>
-    </message>
-    <message>
-        <source>Fee:</source>
-        <translation>Ücret:</translation>
-    </message>
-    <message>
-        <source>Dust:</source>
-        <translation>Dust</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>hayır</translation>
-    </message>
-    <message>
-        <source>Bytes:</source>
-        <translation>Bytes:
-</translation>
-    </message>
-    <message>
-        <source>medium</source>
-        <translation>orta</translation>
-    </message>
-    <message>
-        <source>Change:</source>
-        <translation>Fark:</translation>
-    </message>
-    <message>
-        <source>Copy quantity</source>
-        <translation>Miktarı kopyala</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Miktarı kopyala</translation>
-    </message>
-    </context>
-<context>
     <name>QObject</name>
     <message>
         <source>Amount</source>
@@ -1691,13 +1619,6 @@ Adres: %4</translation>
     <message>
         <source>Export the data in the current tab to a file</source>
         <translation>Güncel sekmedeki verileri bir dosyaya aktar</translation>
-    </message>
-    </context>
-<context>
-    <name>ZDapsControlDialog</name>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
     </message>
     </context>
 <context>

@@ -1490,7 +1490,6 @@ void ThreadMessageHandler() {
             pnodeTrickle = vNodesCopy[GetRand(vNodesCopy.size())];
 
         bool fSleep = true;
-
         BOOST_FOREACH(CNode * pnode, vNodesCopy)
         {   
             if (!pnode) continue;
@@ -1514,9 +1513,12 @@ void ThreadMessageHandler() {
             boost::this_thread::interruption_point();
             // Send messages
             {
-                TRY_LOCK(pnode->cs_vSend, lockSend);
-                if (lockSend)
-                    g_signals.SendMessages(pnode, pnode == pnodeTrickle || pnode->fWhitelisted);
+                TRY_LOCK(cs_main, lockMain);
+                    if (lockMain) {
+                    TRY_LOCK(pnode->cs_vSend, lockSend);
+                    if (lockSend)
+                        g_signals.SendMessages(pnode, pnode == pnodeTrickle || pnode->fWhitelisted);
+                }
             }
             boost::this_thread::interruption_point();
         }
@@ -2076,8 +2078,8 @@ void CNode::AskFor(const CInv &inv, bool fImmediateRetry) {
         nRequestTime = 0;
     LogPrint("net", "askfor %s  %d (%s) peer=%d\n", inv.ToString(), nRequestTime,
              DateTimeStrFormat("%H:%M:%S", nRequestTime / 1000000), id);
-    LogPrintf("askfor %s  %d (%s) peer=%d\n", inv.ToString(), nRequestTime,
-             DateTimeStrFormat("%H:%M:%S", nRequestTime / 1000000), id);
+    //LogPrintf("askfor %s  %d (%s) peer=%d\n", inv.ToString(), nRequestTime,
+             //DateTimeStrFormat("%H:%M:%S", nRequestTime / 1000000), id);
     // Make sure not to reuse time indexes to keep things in the same order
     int64_t nNow = GetTimeMicros() - 1000000;
     static int64_t nLastTime;

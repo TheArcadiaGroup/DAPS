@@ -67,12 +67,12 @@ QDialog {
 #stakingState {
   font-size: 11px;
   font-style: italic;
-  padding-left: 40px;
+  padding-left: 60px;
 }
 #connectionCount {
   font-size: 11px;
   font-style: italic;
-  padding-left: 32px;
+  padding-left: 52px;
 }
 
 QDialog .QTabWidget QTabBar::tab {

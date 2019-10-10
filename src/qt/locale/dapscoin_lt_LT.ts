@@ -136,7 +136,7 @@
         <translation>Pašalina nereikšmingą sendmoney, kai OS sąskaita pažeista. Nesuteikia jokio realaus saugumo.</translation>
     </message>
     <message>
-        <source>For anonymization, automint, and staking only</source>
+        <source>For anonymization and staking only</source>
         <translation>Tik dėl anonimizacijos ir "kasimo"</translation>
     </message>
     <message>
@@ -431,10 +431,6 @@
     <message>
         <source>Browse transaction history</source>
         <translation>Naršyti pavedimų istoriją</translation>
-    </message>
-    <message>
-        <source>Privacy Actions for zDAPS</source>
-        <translation>zDAPS Saugumo Veiksmai </translation>
     </message>
     <message>
         <source>E&amp;xit</source>
@@ -847,14 +843,6 @@ MultiSend: %1</translation>
  MultiSend: %1</source>
         <translation>Stake'inimas neaktyvuotas
 MultiSend: %1</translation>
-    </message>
-    <message>
-        <source>AutoMint is currently enabled and set to </source>
-        <translation>AutoMint šiuo metu įgalintas ir nustatytas</translation>
-    </message>
-    <message>
-        <source>AutoMint is disabled</source>
-        <translation>AutoMint išjungtas</translation>
     </message>
     <message>
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt;</source>
@@ -1536,7 +1524,7 @@ MultiSend nebus aktyvuotas, nebent paspausite "Įjungti"</translation>
     <message>
         <source>The entered address:
 </source>
-        <translation>Įvestas adresas: 
+        <translation>Įvestas adresas:
 </translation>
     </message>
     <message>
@@ -1882,32 +1870,12 @@ Patikrinkite adresą ir bandykite dar kartą.</translation>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
 https://www.transifex.com/dapscoin-project/dapscoin-project-translations</source>
-        <translation>Trūksta kalbos arba vertimas nebaigtas? Padėkite prisidėdami prie vertimų čia: 
+        <translation>Trūksta kalbos arba vertimas nebaigtas? Padėkite prisidėdami prie vertimų čia:
 https://www.transifex.com/dapscoin-project/dapscoin-project-translations</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
         <translation>Įrašyti prievadą naudojant &amp;UPnP</translation>
-    </message>
-    <message>
-        <source>Enable automatic minting of DAPS units to zDAPS</source>
-        <translation>Įgalinti automatinį konvertavimą iš DAPS į zDAPS</translation>
-    </message>
-    <message>
-        <source>Enable zDAPS Automint</source>
-        <translation>Įgalinti zDAPS Automatinį nukaldinima</translation>
-    </message>
-    <message>
-        <source>Percentage of incoming DAPS which get automatically converted to zDAPS via Zerocoin Protocol (min: 10%)</source>
-        <translation>Procentas gauto DAPS, kuris automatiškai bus konvertuotas į zDAPS naudojant Zerocoin Protokolą (min: 10%)</translation>
-    </message>
-    <message>
-        <source>Percentage of autominted zDAPS</source>
-        <translation>Automatiškai sukurtų zDAPS procentas</translation>
-    </message>
-    <message>
-        <source>Preferred Automint zDAPS Denomination</source>
-        <translation>Pageidautinas zDAPS Automatinio Nukaldinimo Nominalas</translation>
     </message>
     <message>
         <source>Connect to the DAPS network through a SOCKS5 proxy.</source>
@@ -2057,16 +2025,6 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Jūsų dabartinis DAPS balansas, įskaitant nepatvirtintus ir nesubrendusius sandorius</translation>
     </message>
     <message>
-        <source>zDAPS Balance</source>
-        <translation>zDAPS Balansas</translation>
-    </message>
-    <message>
-        <source>Mature: more than 20 confirmation and more than 1 mint of the same denomination after it was minted.
-These zDAPS are spendable.</source>
-        <translation>Subrendę: daugiau nei 20 patvirtinimų ir daugiau nei 1 konvertacija to pačio nominalo, kai jis jau buvo konvertuotas.
-Šiuos zDAPS galima išleisti.</translation>
-    </message>
-    <message>
         <source>Unconfirmed: less than 20 confirmations
 Immature: confirmed, but less than 1 mint of the same denomination after it was minted</source>
         <translation>Nepatvirtinta: mažiau nei 20 patvirtinimų
@@ -2117,8 +2075,8 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos to pačio nominalo
         <translation>Prienamas išleidimui:</translation>
     </message>
     <message>
-        <source>Locked DAPS or Masternode collaterals. These are excluded from zDAPS minting.</source>
-        <translation>Užrakinti DAPS arba Masternode užstatai. Jie yra neįtraukti į zDAPS kalimą.</translation>
+        <source>Locked DAPS or Masternode collaterals.</source>
+        <translation>Užrakinti DAPS arba Masternode užstatai.</translation>
     </message>
     <message>
         <source>Locked:</source>
@@ -2135,14 +2093,6 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos to pačio nominalo
     <message>
         <source>out of sync</source>
         <translation>nesinchronizuotas</translation>
-    </message>
-    <message>
-        <source>AutoMint is currently enabled and set to </source>
-        <translation>AutoMint šiuo metu įgalintas ir nustatytas</translation>
-    </message>
-    <message>
-        <source>To disable AutoMint add 'enablezeromint=0' in dapscoin.conf.</source>
-        <translation>Norėdami išjungti Automatinį Kalimą pridėkite 'enablezeromint=0' dapscoin.conf faile.</translation>
     </message>
     </context>
 <context>
@@ -2201,447 +2151,6 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos to pačio nominalo
     <message>
         <source>Ping Time</source>
         <translation>Ping'o laikas</translation>
-    </message>
-</context>
-<context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>Zerocoin Actions:</source>
-        <translation>Zerocoin Veiksmai:</translation>
-    </message>
-    <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPS network after a connection is established, but this process has not completed yet.</source>
-        <translation>Rodoma informacija gali būti pasenusi. Jūsų piniginė automatiškai sinchronizuojasi su DAPS tinklu po ryšio aktyvavimo, tačiau šis procesas dar nebaigtas.</translation>
-    </message>
-    <message>
-        <source>Mint Zerocoin</source>
-        <translation>Konvertuoti į Zerocoin</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>zDAPS</source>
-        <translation>zDAPS</translation>
-    </message>
-    <message>
-        <source>Available for minting are coins which are confirmed and not locked or Masternode collaterals.</source>
-        <translation>Galimos konvertavimui monetos, kurios yra patvirtintos ir neužrakintos, arba Masternod'ų užstatai.</translation>
-    </message>
-    <message>
-        <source>Available for Minting:</source>
-        <translation>Prieinama Konvertavimui:</translation>
-    </message>
-    <message>
-        <source>0.000 000 00 DAPS</source>
-        <translation>0.000 000 00 DAPS</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Atitaisyti</translation>
-    </message>
-    <message>
-        <source>Coin Control...</source>
-        <translation>Monetų Kontrolė...</translation>
-    </message>
-    <message>
-        <source>Quantity:</source>
-        <translation>Kiekis:</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Suma:</translation>
-    </message>
-    <message>
-        <source>Rescan the complete blockchain for  Zerocoin mints and their meta-data.</source>
-        <translation>Iš naujo nuskenuokite blockchain'ą Zerocoin konvertacijoms ir jų metaduomenims.</translation>
-    </message>
-    <message>
-        <source>ReScan</source>
-        <translation>Nuskenuoti iš naujo</translation>
-    </message>
-    <message>
-        <source>PRIVACY</source>
-        <translation>PRIVATUMAS</translation>
-    </message>
-    <message>
-        <source>zDAPS Control</source>
-        <translation>zDaps Kontrolė</translation>
-    </message>
-    <message>
-        <source>zDAPS Selected:</source>
-        <translation>Pasirinkta zDAPS:</translation>
-    </message>
-    <message>
-        <source>Quantity Selected:</source>
-        <translation>Pasirinktas Kiekis:</translation>
-    </message>
-    <message>
-        <source>Spend Zerocoin. Without 'Pay To:' address creates payments to yourself.</source>
-        <translation>Išleisti Zerocoin. Be "Mokėti:" adreso sukuria mokėjimus sau.</translation>
-    </message>
-    <message>
-        <source>Spend Zerocoin</source>
-        <translation>Išleisti Zerocoin</translation>
-    </message>
-    <message>
-        <source>Available Balance:</source>
-        <translation>Prieinamas Balansas: </translation>
-    </message>
-    <message>
-        <source>0 zDAPS</source>
-        <translation>0 zDAPS</translation>
-    </message>
-    <message>
-        <source>Security Level:</source>
-        <translation>Saugumo Lygmuo:</translation>
-    </message>
-    <message>
-        <source>Security Level 1 - 100 (default: 42)</source>
-        <translation>Saugumo Lygmuo 1 - 100 (numatytas: 42)</translation>
-    </message>
-    <message>
-        <source>Pay &amp;To:</source>
-        <translation>&amp;Mokėti:</translation>
-    </message>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>Pasirinkti prieš tai naudotą adresą</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Paste address from clipboard</source>
-        <translation>Įklijuoti adresą</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Alt+P</translation>
-    </message>
-    <message>
-        <source>&amp;Label:</source>
-        <translation>&amp;Etiketė:</translation>
-    </message>
-    <message>
-        <source>A&amp;mount:</source>
-        <translation>S&amp;uma:</translation>
-    </message>
-    <message>
-        <source>Minimize Change</source>
-        <translation>Sumažinti Grąžą</translation>
-    </message>
-    <message>
-        <source>Zerocoin Stats:</source>
-        <translation>Zerocoin Statistika:</translation>
-    </message>
-    <message>
-        <source>Total Balance including unconfirmed and immature zDAPS</source>
-        <translation>Bendras balansas, įskaitant nepatvirtintą ir nesubrendusį zDAPS</translation>
-    </message>
-    <message>
-        <source>Total Zerocoin  Balance:</source>
-        <translation>Visas Zerocoin Balansas:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 1:</source>
-        <translation>Nominalai su verte 1:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 1:</source>
-        <translation>Nomin. su verte 1:</translation>
-    </message>
-    <message>
-        <source>Unconfirmed: less than 20 confirmations
-Immature: confirmed, but less than 1 mint of the same denomination after it was minted</source>
-        <translation>Nepatvirtinta: mažiau nei 20 patvirtinimų
-Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos tos pačio nominalo po to, kai buvo konvertuota.</translation>
-    </message>
-    <message>
-        <source>Denom. 1:</source>
-        <translation>Nomin.  1:</translation>
-    </message>
-    <message>
-        <source>Denom. 5:</source>
-        <translation>Nomin. 5:</translation>
-    </message>
-    <message>
-        <source>Denom. 10:</source>
-        <translation>Nomin.  10:</translation>
-    </message>
-    <message>
-        <source>Denom. 50:</source>
-        <translation>Nomin. 50:</translation>
-    </message>
-    <message>
-        <source>Denom. 100:</source>
-        <translation>Nomin.  100:</translation>
-    </message>
-    <message>
-        <source>Denom. 500:</source>
-        <translation>Nomin. 500:</translation>
-    </message>
-    <message>
-        <source>Denom. 1000:</source>
-        <translation>Nomin.  1000:</translation>
-    </message>
-    <message>
-        <source>Denom. 5000:</source>
-        <translation>Nomin. 5000:</translation>
-    </message>
-    <message>
-        <source>0 x</source>
-        <translation>0 x</translation>
-    </message>
-    <message>
-        <source>Denominations with value 5:</source>
-        <translation>Nominalai su verte 5:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 5:</source>
-        <translation>Nomin. su verte 5:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 10:</source>
-        <translation>Nominalai su verte 10:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 10:</source>
-        <translation>Nomin. su verte 10:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 50:</source>
-        <translation>Nominalai su verte 50:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 50:</source>
-        <translation>Nomin. su verte 50:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 100:</source>
-        <translation>Nominalai su verte 100:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 100:</source>
-        <translation>Nomin. su verte 100:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 500:</source>
-        <translation>Nominalai su verte 500:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 500:</source>
-        <translation>Nomin. su verte 500:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 1000:</source>
-        <translation>Nominalai su verte 1000:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 1000:</source>
-        <translation>Nomin. su verte 1000:</translation>
-    </message>
-    <message>
-        <source>Denominations with value 5000:</source>
-        <translation>Nominalai su verte 5000:</translation>
-    </message>
-    <message>
-        <source>Denom. with value 5000:</source>
-        <translation>Nomin. su verte 5000:</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation>Prioritetas:</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation>Teksto etiketė</translation>
-    </message>
-    <message>
-        <source>Fee:</source>
-        <translation>Mokestis: </translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>ne</translation>
-    </message>
-    <message>
-        <source>Bytes:</source>
-        <translation>Baitai: </translation>
-    </message>
-    <message>
-        <source>Insufficient funds!</source>
-        <translation>Nepakankamai lėšų!</translation>
-    </message>
-    <message>
-        <source>Coins automatically selected</source>
-        <translation>Monetos pasirinktos automatiškai </translation>
-    </message>
-    <message>
-        <source>medium</source>
-        <translation>vidutinis</translation>
-    </message>
-    <message>
-        <source>Coin Control Features</source>
-        <translation>Monetų Valdymo Funkcijos</translation>
-    </message>
-    <message>
-        <source>Custom change address</source>
-        <translation>Pasirinktinio pakeitimo adresas</translation>
-    </message>
-    <message>
-        <source>Amount After Fee:</source>
-        <translation>Suma Po Mokesčių:</translation>
-    </message>
-    <message>
-        <source>Change:</source>
-        <translation>Grąža: </translation>
-    </message>
-    <message>
-        <source>out of sync</source>
-        <translation>ne sinchronizuotas</translation>
-    </message>
-    <message>
-        <source>Mint Status: Okay</source>
-        <translation>Konvertavimo Statusas: Geras</translation>
-    </message>
-    <message>
-        <source>Copy quantity</source>
-        <translation>Kopijuoti kiekį</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Kopijuoti sumą</translation>
-    </message>
-    <message>
-        <source>zDAPS Spend #: </source>
-        <translation>zDAPS Išleidimas #:</translation>
-    </message>
-    <message>
-        <source>zDAPS Mint</source>
-        <translation>zDAPS Konvertavimas</translation>
-    </message>
-    <message>
-        <source> &lt;b&gt;enabled&lt;/b&gt;.</source>
-        <translation>&lt;b&gt;įjungta&lt;/b&gt;.</translation>
-    </message>
-    <message>
-        <source> &lt;b&gt;disabled&lt;/b&gt;.</source>
-        <translation>&lt;b&gt;išjungta&lt;/b&gt;.</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;1&lt;/b&gt;:</source>
-        <translation>Nomin. su verte &lt;b&gt;1&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;5&lt;/b&gt;:</source>
-        <translation>Nomin. su verte &lt;b&gt;5&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;10&lt;/b&gt;:</source>
-        <translation>Nomin. su verte &lt;b&gt;10&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;50&lt;/b&gt;:</source>
-        <translation>Nomin. su verte &lt;b&gt;50&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;100&lt;/b&gt;:</source>
-        <translation>Nomin. su verte &lt;b&gt;100&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;500&lt;/b&gt;:</source>
-        <translation>Nomin. su verte &lt;b&gt;500&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;1000&lt;/b&gt;:</source>
-        <translation>Nomin. su verte &lt;b&gt;1000&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. with value &lt;b&gt;5000&lt;/b&gt;:</source>
-        <translation>Nomin. su verte &lt;b&gt;5000&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>AutoMint Status:</source>
-        <translation>Auto-Konvertavimo Statusas:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;1&lt;/b&gt;:</source>
-        <translation>Nomin.  &lt;b&gt;1&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;5&lt;/b&gt;:</source>
-        <translation>Nomin. &lt;b&gt;5&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;10&lt;/b&gt;:</source>
-        <translation>Nomin.  &lt;b&gt;10&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;50&lt;/b&gt;:</source>
-        <translation>Nomin. &lt;b&gt;50&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;100&lt;/b&gt;:</source>
-        <translation>Nomin.  &lt;b&gt;100&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;500&lt;/b&gt;:</source>
-        <translation>Nomin. &lt;b&gt;500&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;1000&lt;/b&gt;:</source>
-        <translation>Nomin.  &lt;b&gt;1000&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Denom. &lt;b&gt;5000&lt;/b&gt;:</source>
-        <translation>Nomin. &lt;b&gt;5000&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>Error: Your wallet is locked. Please enter the wallet passphrase first.</source>
-        <translation>Klaida: jūsų piniginė užrakinta. Pirmiausia įveskite piniginės slaptažodį.</translation>
-    </message>
-    <message>
-        <source>Invalid Dapscoin Address</source>
-        <translation>Netinkamas Dapscoin Adresas</translation>
-    </message>
-    <message>
-        <source>Invalid Send Amount</source>
-        <translation>Netinkama Siuntimo Suma</translation>
-    </message>
-    <message>
-        <source>Confirm additional Fees</source>
-        <translation>Patvirtinkite papildomus mokesčius</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to send?&lt;br /&gt;&lt;br /&gt;</source>
-        <translation>Ar tikrai norite siųsti?&lt;br /&gt;&lt;br /&gt;</translation>
-    </message>
-    <message>
-        <source> to address </source>
-        <translation>į adresą</translation>
-    </message>
-    <message>
-        <source>with Security Level </source>
-        <translation>su Saugumo Lygmeniu</translation>
-    </message>
-    <message>
-        <source>Failed to spend zDAPS</source>
-        <translation>Nepavyko išleisti zDAPS</translation>
-    </message>
-    <message>
-        <source>serial: </source>
-        <translation>serija:</translation>
-    </message>
-    <message>
-        <source>address: </source>
-        <translation>adresas:</translation>
-    </message>
-    <message>
-        <source>fee: </source>
-        <translation>mokestis: </translation>
     </message>
 </context>
 <context>
@@ -3449,17 +2958,6 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos tos pačio nominal
     </message>
     </context>
 <context>
-    <name>ZDapsControlDialog</name>
-    <message>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <source>zDAPS</source>
-        <translation>zDAPS</translation>
-    </message>
-    </context>
-<context>
     <name>dapscoin-core</name>
     <message>
         <source>(default: %s)</source>
@@ -3572,10 +3070,6 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos tos pačio nominal
     <message>
         <source>Failed to deserialize</source>
         <translation>Nepavyko deserializuoti</translation>
-    </message>
-    <message>
-        <source>Failed to select a zerocoin</source>
-        <translation>Nepavyko pasirinkti zerocoin</translation>
     </message>
     <message>
         <source>Loading addresses...</source>
@@ -3750,10 +3244,6 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos tos pačio nominal
         <translation>Įspėjimas: nepalaikomas argumentas -debugnet ignored naudokite -debug=net.</translation>
     </message>
     <message>
-        <source>You don't have enough Zerocoins in your wallet</source>
-        <translation>Neturite pakankamai Zerocoin monetų savo piniginėje</translation>
-    </message>
-    <message>
         <source>Your entries added successfully.</source>
         <translation>Jūsų įrašai sėkmingai pridėti.</translation>
     </message>
@@ -3768,10 +3258,6 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos tos pačio nominal
     <message>
         <source>ZeroMQ notification options:</source>
         <translation>ZeroMQ pranešimų nustatymai:</translation>
-    </message>
-    <message>
-        <source>Zerocoin options:</source>
-        <translation>Zerocoin nustatymai:</translation>
     </message>
     <message>
         <source>on startup</source>

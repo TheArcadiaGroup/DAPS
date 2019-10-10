@@ -41,7 +41,7 @@ SendCoinsEntry::SendCoinsEntry(QWidget* parent) : QStackedWidget(parent),
     // #HIDE multisend
     ui->deleteButton->setVisible(false);
 
-    //Cam: Hide address book button
+    //TODO-NOTE: Hide address book button
     ui->addressBookButton->setVisible(false);
 
     QLocale lo(QLocale::C);
@@ -75,14 +75,14 @@ void SendCoinsEntry::on_addressBookButton_clicked()
     }
 }
 
-void SendCoinsEntry::on_clearAllButton_clicked()
+/*void SendCoinsEntry::on_clearAllButton_clicked()
 {
     ui->payTo->clear();
     ui->addAsLabel->clear();
     ui->payAmount->clear();
     ui->payTo->setStyleSheet(GUIUtil::loadStyleSheet());
     ui->payAmount->setStyleSheet(GUIUtil::loadStyleSheet());
-}
+}*/
 
 void SendCoinsEntry::on_payTo_textChanged(const QString& address)
 {

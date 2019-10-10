@@ -19,6 +19,7 @@
 #include "2fadialog.h"
 #include "2faconfirmdialog.h"
 #include "zxcvbn.h"
+#include "utilmoneystr.h"
 
 #include <QAction>
 #include <QCursor>
@@ -62,6 +63,24 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
         ui->lineEditWithhold->setText(BitcoinUnits::format(0, nReserveBalance).toUtf8());
 
     bool stkStatus = pwalletMain->ReadStakingStatus();
+    if (stkStatus){
+        if (chainActive.Height() < Params().LAST_POW_BLOCK()) {
+            stkStatus = false;
+            pwalletMain->walletStakingInProgress = false;
+            pwalletMain->WriteStakingStatus(false);
+            emit model->stakingStatusChanged(false);
+        } else {
+            QString error;
+            StakingStatusError stt = model->getStakingStatusError(error);
+            if (error.length()) {
+                stkStatus = false;
+                pwalletMain->walletStakingInProgress = false;
+                pwalletMain->WriteStakingStatus(false);
+                emit model->stakingStatusChanged(false);
+            }
+        }
+    }
+
     ui->toggleStaking->setState(nLastCoinStakeSearchInterval | stkStatus);
     connect(ui->toggleStaking, SIGNAL(stateChanged(ToggleButton*)), this, SLOT(on_EnableStaking(ToggleButton*)));
 
@@ -261,7 +280,7 @@ void OptionsPage::on_pushButtonPassword_clicked()
     	else if (model->changePassphrase(oldPass, newPass)) {
             QMessageBox msgBox;
             msgBox.setWindowTitle("Passphrase Change Successful");
-            msgBox.setText("Wallet passphrase was successfully changed. Please remember your passphrase as there is no way to recover it.");
+            msgBox.setText("Wallet passphrase was successfully changed.\nPlease remember your passphrase as there is no way to recover it.");
             msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
             msgBox.setIcon(QMessageBox::Information);
             msgBox.exec();
@@ -297,7 +316,7 @@ void OptionsPage::on_pushButtonBackup_clicked(){
         ui->pushButtonBackup->setStyleSheet("border: 2px solid green");
         QMessageBox msgBox;
         msgBox.setWindowTitle("Wallet Backup Successful");
-        msgBox.setText("Wallet has been successfully backed up to BackupWallet.dat in the current directory.");
+        msgBox.setText("Wallet has been successfully backed up to BackupWallet.dat in " + qApp->applicationDirPath());
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
         msgBox.setIcon(QMessageBox::Information);
         msgBox.exec();
@@ -370,7 +389,7 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
     if (chainActive.Height() < Params().LAST_POW_BLOCK()) {
     	if (widget->getState()) {
             QString msg;
-            msg.sprintf("PoW blocks are still being mined.\nPlease wait until Block #%d", Params().LAST_POW_BLOCK());
+            msg.sprintf("PoW blocks are still being mined.\nPlease wait until Block %d.", Params().LAST_POW_BLOCK());
             QMessageBox msgBox;
             msgBox.setWindowTitle("Information");
             msgBox.setIcon(QMessageBox::Information);
@@ -385,8 +404,84 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
     }
 	if (widget->getState()){
         QString error;
-        StakingStatusError stt = model->getStakingStatusError(error);
-        if (!error.length()) {
+        CAmount minFee, maxFee;
+        StakingStatusError stt = pwalletMain->StakingCoinStatus(minFee, maxFee);
+        std::string errorMessage;
+        if (stt == StakingStatusError::UNSTAKABLE_BALANCE_TOO_LOW || 
+            stt == UNSTAKABLE_BALANCE_RESERVE_TOO_HIGH ||
+            stt == UNSTAKABLE_BALANCE_RESERVE_TOO_HIGH_CONSOLIDATION_FAILED ||
+            stt == UNSTAKABLE_BALANCE_TOO_LOW_CONSOLIDATION_FAILED) {
+            QMessageBox msgBox;
+            if (stt == StakingStatusError::UNSTAKABLE_BALANCE_TOO_LOW) {
+                errorMessage = "Your balance is under staking threshold 400,000 DAPS, please consider to deposit more DAPS to this wallet in order to enable staking.";
+            } else if (stt == UNSTAKABLE_BALANCE_TOO_LOW_CONSOLIDATION_FAILED) {
+                errorMessage = "Your balance requires a consolidation transaction which incurs a fee of between  " + FormatMoney(minFee) + " to " + FormatMoney(maxFee) + " DAPS. However after that transaction fee, your balance will be below the staking threshold of 400 000 DAPS. Please deposit more DAPS into your account or reduce your reserved amount in order to enable staking.";
+            } else if (stt == UNSTAKABLE_BALANCE_RESERVE_TOO_HIGH) {
+                errorMessage = "Your stakeable balance is under the threshold of 400 000 DAPS. This is due to your reserve balance being too high. Please deposit more DAPS into your account or reduce your reserved amount in order to enable staking.";
+            } else {
+                CAmount totalFee = maxFee + pwalletMain->ComputeFee(1, 2, MAX_RING_SIZE);
+                errorMessage = "Your stakeable balance is under staking threshold 400,000 DAPS. This is due to your reserve balance " + FormatMoney(nReserveBalance) + " DAPS is too high. The wallet software has tried to consolidate your funds with the reserve balance but without success because of a consolidation fee of " + FormatMoney(totalFee) + " DAPS. Please wait around 10 minutes for the wallet to resolve the reserve to enable staking.";
+            }
+        	QString msg = QString::fromStdString(errorMessage);
+        	msgBox.setWindowTitle("Warning: Staking Issue");
+    		msgBox.setIcon(QMessageBox::Warning);
+    		msgBox.setText(msg);
+            msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        	msgBox.exec();
+        	widget->setState(false);
+        	nLastCoinStakeSearchInterval = 0;
+        	emit model->stakingStatusChanged(false);
+        	pwalletMain->WriteStakingStatus(false);   
+            return; 
+        } 
+        if (stt == StakingStatusError::STAKING_OK) {
+            pwalletMain->WriteStakingStatus(true);
+            emit model->stakingStatusChanged(true);
+            model->generateCoins(true, 1);
+            return;
+        }
+
+        QMessageBox::StandardButton reply;
+        if (stt == StakingStatusError::STAKABLE_NEED_CONSOLIDATION) {
+            errorMessage = "In order to enable staking with 100% of your balance, your previous DAPS deposits must be automatically consolidated and reorganized. This will incur a fee of between " + FormatMoney(minFee) + " to " + FormatMoney(maxFee) + " DAPS.\n\nWould you like to do this?";
+        } else {
+            errorMessage = "In order to enable staking with 100% of your balance except the reserve balance, your previous DAPS deposits must be automatically consolidated and reorganized. This will incur a fee of between " + FormatMoney(minFee) + " to " + FormatMoney(maxFee) + " DAPS.\n\nWould you like to do this?";
+        }
+        reply = QMessageBox::question(this, "Staking Needs Consolidation", QString::fromStdString(errorMessage), QMessageBox::Yes|QMessageBox::No);
+		if (reply == QMessageBox::Yes) { 
+            pwalletMain->WriteStakingStatus(true);
+            emit model->stakingStatusChanged(true);
+            model->generateCoins(true, 1);
+            pwalletMain->fCombineDust = false;
+            pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
+            bool success = false;
+        	try {
+        		success = model->getCWallet()->CreateSweepingTransaction(
+								CWallet::MINIMUM_STAKE_AMOUNT,
+								CWallet::MINIMUM_STAKE_AMOUNT);
+                if (success) {
+                    QString msg = "Consolidation transaction created!";
+                    QMessageBox msgBox;
+                    msgBox.setWindowTitle("Information");
+                    msgBox.setIcon(QMessageBox::Information);
+                    msgBox.setText(msg);
+                    msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+                    msgBox.exec();
+                }
+            } catch (const std::exception& err) {
+                LogPrintf("Sweeping failed, will be done automatically when coins become mature");
+        	}            
+            return;
+        } else {
+            pwalletMain->stakingMode = StakingMode::STOPPED;
+            nLastCoinStakeSearchInterval = 0;
+            model->generateCoins(false, 0);
+            emit model->stakingStatusChanged(false);
+            pwalletMain->walletStakingInProgress = false;
+            pwalletMain->WriteStakingStatus(false);
+            return;
+        }
+        /* if (!error.length()) {
             pwalletMain->WriteStakingStatus(true);
             emit model->stakingStatusChanged(true);
             model->generateCoins(true, 1);
@@ -456,8 +551,9 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
         			pwalletMain->WriteStakingStatus(false);
         		}
         	}
-        }
+        }*/
     } else {
+        pwalletMain->stakingMode = StakingMode::STOPPED;
         nLastCoinStakeSearchInterval = 0;
         model->generateCoins(false, 0);
         emit model->stakingStatusChanged(false);
@@ -491,8 +587,8 @@ void OptionsPage::on_Enable2FA(ToggleButton* widget)
     } else {
         typeOf2FA = DISABLE;
 
-        TwoFAConfirmDialog codedlg;
-        codedlg.setWindowTitle("2FACode Verification");
+        TwoFADialog codedlg;
+        codedlg.setWindowTitle("2FA Code Verification");
         codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
         connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
         codedlg.exec();
@@ -502,7 +598,7 @@ void OptionsPage::on_Enable2FA(ToggleButton* widget)
 void OptionsPage::qrDialogIsFinished(int result) {
     if(result == QDialog::Accepted){
         TwoFADialog codedlg;
-        codedlg.setWindowTitle("2FACode Verification");
+        codedlg.setWindowTitle("2FA Code Verification");
         codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
         connect(&codedlg, SIGNAL(finished (int)), this, SLOT(dialogIsFinished(int)));
         codedlg.exec();
@@ -637,8 +733,8 @@ void OptionsPage::confirmDialogIsFinished(int result) {
 void OptionsPage::on_day() {
     typeOf2FA = DAY;
 
-    TwoFAConfirmDialog codedlg;
-    codedlg.setWindowTitle("2FACode Verification");
+    TwoFADialog codedlg;
+    codedlg.setWindowTitle("2FA Code Verification");
     codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
     connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
     codedlg.exec();
@@ -647,8 +743,8 @@ void OptionsPage::on_day() {
 void OptionsPage::on_week() {
     typeOf2FA = WEEK;
 
-    TwoFAConfirmDialog codedlg;
-    codedlg.setWindowTitle("2FACode Verification");
+    TwoFADialog codedlg;
+    codedlg.setWindowTitle("2FA Code Verification");
     codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
     connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
     codedlg.exec();   
@@ -657,8 +753,8 @@ void OptionsPage::on_week() {
 void OptionsPage::on_month() {
     typeOf2FA = MONTH;
 
-    TwoFAConfirmDialog codedlg;
-    codedlg.setWindowTitle("2FACode Verification");
+    TwoFADialog codedlg;
+    codedlg.setWindowTitle("2FA Code Verification");
     codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
     connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
     codedlg.exec();

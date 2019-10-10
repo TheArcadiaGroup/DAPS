@@ -136,8 +136,8 @@
         <translation>Sirve simplemente para deshabilitar el envío de dinero cuando la cuenta del SO ha sido comprometida. No suministra seguridad real.</translation>
     </message>
     <message>
-        <source>For anonymization, automint, and staking only</source>
-        <translation>Para solo anonimizar, automint y staking</translation>
+        <source>For anonymization and staking only</source>
+        <translation>Para solo anonimizar y staking</translation>
     </message>
     <message>
         <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
@@ -442,25 +442,6 @@
     <name>PeerTableModel</name>
     </context>
 <context>
-    <name>PrivacyDialog</name>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>Escoja una dirección usada previamente</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Paste address from clipboard</source>
-        <translation>Pegar dirección del portapapeles</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation>Alt+P</translation>
-    </message>
-    </context>
-<context>
     <name>QObject</name>
     </context>
 <context>
@@ -645,9 +626,6 @@
     </message>
     </context>
 <context>
-    <name>ZDapsControlDialog</name>
-    </context>
-<context>
     <name>dapscoin-core</name>
     <message>
         <source>Zapping all transactions from wallet...</source>
@@ -656,10 +634,6 @@
     <message>
         <source>ZeroMQ notification options:</source>
         <translation>Opciones de notificación ZeroMQ:</translation>
-    </message>
-    <message>
-        <source>Zerocoin options:</source>
-        <translation>Opciones Zerocoin:</translation>
     </message>
     <message>
         <source>on startup</source>

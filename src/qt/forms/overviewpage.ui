@@ -239,7 +239,7 @@
             <cursorShape>IBeamCursor</cursorShape>
            </property>
            <property name="toolTip">
-            <string>Your current spendable balance</string>
+            <string>Your current balance</string>
            </property>
            <property name="text">
             <string notr="true">0.000 000 00 DAPS</string>
@@ -557,7 +557,7 @@
      <item>
       <widget class="QLabel" name="lblHelp">
        <property name="text">
-        <string>It is advised not to send or receive tokens until your current sync is complete.</string>
+        <string>It is advised not to send or receive coins until your current sync is complete.</string>
        </property>
       </widget>
      </item>

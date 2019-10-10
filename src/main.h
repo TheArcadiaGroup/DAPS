@@ -122,7 +122,7 @@ static const unsigned char REJECT_DUST = 0x41;
 static const unsigned char REJECT_INSUFFICIENTFEE = 0x42;
 static const unsigned char REJECT_CHECKPOINT = 0x43;
 
-static const std::string FOUNDATION_WALLET = "41iA4tAZ6oJUHJuHQJwEQVKLKbkKK9cRw7HNn2DqaFUsVbEVAmY31vyUHkyGoHJ3FEYkb8fjMNLekZuo6wqEfcTd18x9kq6x2zL";
+static const std::string FOUNDATION_WALLET = "41j8RFFApM3aK2ogCT597mej8hqjiis2eAee7biv2SBVQft1BrWE4mC59ZBviNjQ26Xq1iuprqceD2UaYvewo9i715epPikKZQv";
 
 struct BlockHasher {
     size_t operator()(const uint256& hash) const { return hash.GetLow64(); }
@@ -337,7 +337,6 @@ struct CDiskTxPos : public CDiskBlockPos {
 
 
 CAmount GetMinRelayFee(const CTransaction& tx, unsigned int nBytes, bool fAllowFree);
-bool MoneyRange(CAmount nValueOut);
 
 /**
  * Check transaction inputs, and make sure any

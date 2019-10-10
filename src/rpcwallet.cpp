@@ -1381,7 +1381,7 @@ UniValue listtransactions(const UniValue& params, bool fHelp)
     std::advance(first, nFrom);
 
     vector<UniValue>::iterator last = arrTmp.begin();
-    std::advance(last, nFrom + nCount);	    std::advance(last, nFrom+nCount);
+    std::advance(last, nFrom + nCount);	   
 
     if (last != arrTmp.end()) arrTmp.erase(last, arrTmp.end());
     if (first != arrTmp.begin()) arrTmp.erase(arrTmp.begin(), first);
@@ -2444,7 +2444,7 @@ UniValue createprivacyaccount(const UniValue& params, bool fHelp)
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
@@ -2482,6 +2482,87 @@ UniValue createprivacyaccount(const UniValue& params, bool fHelp)
     return ret;
 }
 
+UniValue showstealthaddress(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+                "showstealthaddress \n"
+                "\nShow stealth address.\n"
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"account address\"    (string) the address of the created account\n"
+                "\nExamples:\n" +
+                HelpExampleCli("showstealthaddress", "") + HelpExampleCli("showstealthaddress", "\"\"") + HelpExampleCli("showstealthaddress", "") + HelpExampleRpc("showstealthaddress", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
+    }
+
+    CWalletDB walletdb(pwalletMain->strWalletFile);
+    UniValue ret(UniValue::VOBJ);
+    int i = 0;
+    while (i < 10) {
+        std::string viewAccountLabel = "viewaccount";
+        std::string spendAccountLabel = "spendaccount";
+
+        CAccount viewAccount;
+        walletdb.ReadAccount(viewAccountLabel, viewAccount);
+        if (!viewAccount.vchPubKey.IsValid()) {
+            std::string viewAccountAddress = GetHDAccountAddress(viewAccountLabel, 0).ToString();
+        }
+
+        CAccount spendAccount;
+        walletdb.ReadAccount(spendAccountLabel, spendAccount);
+        if (!spendAccount.vchPubKey.IsValid()) {
+            std::string spendAccountAddress = GetHDAccountAddress(spendAccountLabel, 1).ToString();
+        }
+        if (viewAccount.vchPubKey.GetHex() == "" || spendAccount.vchPubKey.GetHex() == "") {
+            i++;
+            continue;
+        }
+        std::string stealthAddr;
+        if (pwalletMain->EncodeStealthPublicAddress(viewAccount.vchPubKey, spendAccount.vchPubKey, stealthAddr)) {
+            ret.push_back(Pair("stealthaddress", stealthAddr));
+        }
+        break;
+    }
+    return ret;
+}
+
+UniValue generateintegratedaddress(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() > 1)
+        throw runtime_error(
+                "generateintegratedaddress <paymentID>\n"
+                "\nGenerate integrated addresses for this wallet with a random payment ID.\n"
+                "\nArguments:\n"
+                "optional: paymentID"
+                "\nResult:\n"
+                "\nExamples:\n" +
+                HelpExampleCli("generateintegratedaddress", "1234") + HelpExampleCli("generateintegratedaddress", "\"\"") + HelpExampleCli("generateintegratedaddress", "") + HelpExampleRpc("generateintegratedaddress", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
+    }
+
+    UniValue ret(UniValue::VOBJ);
+    uint64_t paymentID = 0;
+    std::string address;
+    if (params.size() == 1) {
+        paymentID = params[0].get_int64();
+        address = pwalletMain->GenerateIntegratedAddressWithProvidedPaymentID("masteraccount", paymentID);
+    } else {
+        address = pwalletMain->GenerateIntegratedAddressWithRandomPaymentID("masteraccount", paymentID);
+    }
+    ret.push_back(Pair("integratedaddress", address));
+    ret.push_back(Pair("paymentid", paymentID));
+    return ret;
+}
+
 UniValue importkeys(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 2)
@@ -2497,7 +2578,7 @@ UniValue importkeys(const UniValue& params, bool fHelp)
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
@@ -2548,7 +2629,7 @@ UniValue createprivacysubaddress(const UniValue& params, bool fHelp)
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     EnsureWalletIsUnlocked();
@@ -2614,7 +2695,7 @@ UniValue decodestealthaddress(const UniValue& params, bool fHelp)
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
     std::string addr = params[0].get_str();
 
@@ -2690,7 +2771,7 @@ UniValue revealviewprivatekey(const UniValue& params, bool fHelp) {
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     EnsureWalletIsUnlocked();
@@ -2715,7 +2796,7 @@ UniValue revealspendprivatekey(const UniValue& params, bool fHelp) {
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     EnsureWalletIsUnlocked();
@@ -2740,7 +2821,7 @@ UniValue showtxprivatekeys(const UniValue& params, bool fHelp) {
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     EnsureWalletIsUnlocked();
@@ -2772,7 +2853,7 @@ UniValue rescanwallettransactions(const UniValue& params, bool fHelp) {
     if (!pwalletMain) {
         //privacy wallet is already created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
-                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
 
     EnsureWalletIsUnlocked();
@@ -2791,4 +2872,35 @@ UniValue rescanwallettransactions(const UniValue& params, bool fHelp) {
     	return "Wait for wallet to finish reimport/reindex";
     }
     return "Started rescanning from block " + std::to_string(nHeight);
+}
+
+UniValue revealmnemonicphrase(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+                "revealmnemonicphrase \n"
+                "\nReveal Mnemonic Phrase.\n"
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"Mnemonic Phrase\"    (string) mnemonic phrase\n"
+                "\nExamples:\n" +
+                HelpExampleCli("revealmnemonicphrase", "") + HelpExampleCli("revealmnemonicphrase", "\"\"") +
+                HelpExampleCli("revealmnemonicphrase", "") + HelpExampleRpc("revealmnemonicphrase", ""));
+
+    EnsureWalletIsUnlocked();
+    
+    CHDChain hdChainCurrent;
+    if (!pwalletMain->GetDecryptedHDChain(hdChainCurrent))
+        throw JSONRPCError(RPC_WALLET_ERROR,
+                           "Error: There was a problem while getting mnemonic phrase.");
+
+    SecureString mnemonic;
+    SecureString mnemonicPass;
+    if (!hdChainCurrent.GetMnemonic(mnemonic, mnemonicPass))
+        throw JSONRPCError(RPC_WALLET_ERROR,
+                           "Error: There was a problem while getting mnemonic phrase.");
+
+    string mPhrase = std::string(mnemonic.begin(), mnemonic.end()).c_str();
+
+    return mPhrase;
 }

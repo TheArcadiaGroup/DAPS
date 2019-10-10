@@ -75,7 +75,10 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
         entry.push_back(Pair("paymentid", tx.paymentID));
     }
     entry.push_back(Pair("txType", (int64_t)tx.txType));
-
+#ifdef ENABLE_WALLET
+    LOCK(pwalletMain->cs_wallet);
+    entry.push_back(Pair("direction", pwalletMain->GetTransactionType(tx)));
+#endif
     UniValue vin(UniValue::VARR);
     BOOST_FOREACH (const CTxIn& txin, tx.vin) {
         UniValue in(UniValue::VOBJ);
@@ -103,6 +106,9 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
                                 CKey blind;
                                 pwalletMain->RevealTxOutAmount(prev, prev.vout[allDecoys[i].n], decodedAmount, blind);
                                 decoy.push_back(Pair("decoded_amount", ValueFromAmount(decodedAmount)));
+                                decoy.push_back(Pair("isMine", true));
+                            } else {
+                                decoy.push_back(Pair("isMine", false));
                             }
                         }
                     }
@@ -151,6 +157,9 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
             	pBlind = blind.begin();
             }
             out.push_back(Pair("decoded_amount", ValueFromAmount(decodedAmount)));
+            out.push_back(Pair("isMine", true));
+        } else {
+            out.push_back(Pair("isMine", false));
         }
 #endif
         vout.push_back(out);

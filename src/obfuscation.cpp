@@ -1826,8 +1826,6 @@ bool CObfuScationSigner::IsVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey)
     CScript payee2;
     payee2 = GetScriptForDestination(pubkey);
 
-    LogPrintf("IsVinAssociatedWithPubkey:%s\n", payee2.ToString());
-
     CTransaction txVin;
     uint256 hash;
     if (GetTransaction(vin.prevout.hash, txVin, hash, true)) {
@@ -1840,7 +1838,6 @@ bool CObfuScationSigner::IsVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey)
         std::vector<unsigned char> commitment;
     	CWallet::CreateCommitment(decodedMask.begin(), amount, commitment);
     	if (commitment != out.commitment) {
-    	    LogPrintf("\nIsVinAssociatedWithPubkey: Failed to detect masternode: decoded commitment not match\n");
     		return false;
     	}
 

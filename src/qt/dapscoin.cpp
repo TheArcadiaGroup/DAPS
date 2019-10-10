@@ -49,6 +49,10 @@
 #include <stdint.h>
 #include <unistd.h>
 
+#ifndef Q_OS_WIN
+#include <execinfo.h>
+#endif
+
 #include <boost/filesystem/operations.hpp>
 #include <boost/thread.hpp>
 
@@ -88,6 +92,8 @@ Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin);
 #if QT_VERSION < 0x050000
 #include <QTextCodec>
 #endif
+
+#define DEBUG_BACKTRACE 1
 
 static bool needShowRecoveryDialog = false;
 
@@ -568,7 +574,7 @@ WId BitcoinApplication::getMainWinId() const
 
     return window->winId();
 }
-
+#ifndef Q_OS_WIN
 #ifdef DEBUG_BACKTRACE
 void handler(int sig)
 {
@@ -584,12 +590,15 @@ void handler(int sig)
     exit(1);
 }
 #endif
+#endif
 
 #ifndef BITCOIN_QT_TEST
 int main(int argc, char* argv[])
 {
+#ifndef Q_OS_WIN
 #ifdef DEBUG_BACKTRACE
     signal(SIGSEGV, handler); // install our handler
+#endif
 #endif
     SetupEnvironment();
 
@@ -640,18 +649,6 @@ int main(int argc, char* argv[])
     QTranslator qtTranslatorBase, qtTranslator, translatorBase, translator;
     initTranslations(qtTranslatorBase, qtTranslator, translatorBase, translator);
     uiInterface.Translate.connect(Translate);
-
-#ifdef Q_OS_MAC
-#if __clang_major__ < 4
-    QString s = QSysInfo::kernelVersion();
-    std::string ver_info = s.toStdString();
-    // ver_info will be like 17.2.0 for High Sierra. Check if true and exit if build via cross-compile
-    if (ver_info[0] == '1' && ver_info[1] == '7') {
-        QMessageBox::critical(0, "Unsupported", BitcoinGUI::tr("High Sierra not supported with this build") + QString("\n\n"));
-        ::exit(1);
-    }
-#endif
-#endif
 
     // Show help message immediately after parsing command-line options (for "-lang") and setting locale,
     // but before showing splash screen.

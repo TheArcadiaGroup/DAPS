@@ -43,8 +43,6 @@ public:
         ThreadsScriptVerif,  // int
         DatabaseCache,       // int
         SpendZeroConfChange, // bool
-        ZeromintPercentage,  // int
-        ZeromintPrefDenom,   // int
         AnonymizeDapscoinAmount, //int
         ShowMasternodesTab,  // bool
         Listen,              // bool
@@ -92,7 +90,6 @@ signals:
     void displayUnitChanged(int unit);
     void zeromintPercentageChanged(int);
     void preferredDenomChanged(int);
-    void anonymizeDapscoinAmountChanged(int);
     void coinControlFeaturesChanged(bool);
 };
 

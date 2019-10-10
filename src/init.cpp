@@ -364,7 +364,7 @@ std::string HelpMessage(HelpMessageMode mode)
 #endif
     strUsage += HelpMessageOpt("-reindex", _("Rebuild block chain index from current blk000??.dat files") + " " + _("on startup"));
     strUsage += HelpMessageOpt("-reindexaccumulators", _("Reindex the accumulator database") + " " + _("on startup"));
-    strUsage += HelpMessageOpt("-reindexmoneysupply", _("Reindex the DAPS and zDAPS money supply statistics") + " " + _("on startup"));
+    strUsage += HelpMessageOpt("-reindexmoneysupply", _("Reindex the DAPS money supply statistics") + " " + _("on startup"));
     strUsage += HelpMessageOpt("-resync", _("Delete blockchain folders and resync from scratch") + " " + _("on startup"));
 #if !defined(WIN32)
     strUsage += HelpMessageOpt("-sysperms", _("Create new files with system default permissions, instead of umask 077 (only effective with disabled wallet functionality)"));
@@ -1442,7 +1442,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
             pwalletMain = NULL;
         }
 
-        uiInterface.InitMessage(_("Loading wallet..."));
+        uiInterface.InitMessage(_("Loading... Please do not interrupt this process as it could lead to a corrupt wallet."));
         fVerifyingBlocks = true;
 
         nStart = GetTimeMillis();
@@ -1560,8 +1560,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
         }
         fVerifyingBlocks = false;
 
-        bool fEnableZDapsBackups = GetBoolArg("-backupzdaps", true);
-        pwalletMain->setZDapsAutoBackups(fEnableZDapsBackups);
     }  // (!fDisableWallet)
 #else  // ENABLE_WALLET
     LogPrintf("No wallet compiled in!\n");
@@ -1775,7 +1773,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
         threadGroup.create_thread(boost::bind(&ThreadFlushWalletDB, boost::ref(pwalletMain->strWalletFile)));
 		
         storedStakingStatus = pwalletMain->ReadStakingStatus();
-        if (GetBoolArg("-staking", true) || storedStakingStatus) {
+        if (GetBoolArg("-staking", false) || storedStakingStatus) {
             fGenerateDapscoins = true;
             LogPrintf("Starting staking\n");
             threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "stakemint", &ThreadStakeMinter));

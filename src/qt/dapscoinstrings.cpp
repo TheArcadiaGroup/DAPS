@@ -58,9 +58,6 @@ QT_TRANSLATE_NOOP("dapscoin-core", ""
 QT_TRANSLATE_NOOP("dapscoin-core", ""
 "Enable SwiftX, show confirmations for locked transactions (bool, default: %s)"),
 QT_TRANSLATE_NOOP("dapscoin-core", ""
-"Enable automatic wallet backups triggered after each zDaps minting (0-1, "
-"default: %u)"),
-QT_TRANSLATE_NOOP("dapscoin-core", ""
 "Enter regression test mode, which uses a special chain in which blocks can "
 "be solved instantly."),
 QT_TRANSLATE_NOOP("dapscoin-core", ""
