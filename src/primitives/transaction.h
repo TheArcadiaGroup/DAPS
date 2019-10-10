@@ -371,15 +371,6 @@ public:
         return (vin.size() > 0 && (!vin[0].prevout.IsNull() && vin[0].decoys.empty()) && vout.size() >= 2 && vout[0].IsEmpty());
     }
 
-    friend bool operator==(const CTransaction& a, const CTransaction& b)
-    {
-        return a.hash == b.hash;
-    }
-
-    friend bool operator!=(const CTransaction& a, const CTransaction& b)
-    {
-        return a.hash != b.hash;
-    }
     std::string ToString() const;
 
     bool GetCoinAge(uint64_t& nCoinAge) const;  // ppcoin: get transaction coin age
