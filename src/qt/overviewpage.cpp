@@ -265,6 +265,7 @@ void OverviewPage::setWalletModel(WalletModel* model)
                                          SLOT(updateLockStatus(int)));
         
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+        connect(model->getOptionsModel(), SIGNAL(hideOrphansChanged(bool)), this, SLOT(hideOrphans(bool)));
 
         updateWatchOnlyLabels(model->haveWatchOnly());
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
@@ -272,6 +273,10 @@ void OverviewPage::setWalletModel(WalletModel* model)
     }
     // update the display unit, to not use the default ("DAPS")
     updateDisplayUnit();
+
+    // Hide orphans
+    QSettings settings;
+    hideOrphans(settings.value("fHideOrphans", false).toBool());
 }
 
 void OverviewPage::updateBalance()
@@ -292,6 +297,11 @@ void OverviewPage::updateDisplayUnit()
         // Update txdelegate->unit with the current unit
         txdelegate->unit = nDisplayUnit;
     }
+}
+
+void OverviewPage::hideOrphans(bool fHide)
+{
+    filter->setHideOrphans(fHide);
 }
 
 void OverviewPage::updateAlerts(const QString& warnings)
