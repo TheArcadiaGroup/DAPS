@@ -75,7 +75,10 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
         entry.push_back(Pair("paymentid", tx.paymentID));
     }
     entry.push_back(Pair("txType", (int64_t)tx.txType));
-
+#ifdef ENABLE_WALLET
+    LOCK(pwalletMain->cs_wallet);
+    entry.push_back(Pair("direction", pwalletMain->GetTransactionType(tx)));
+#endif
     UniValue vin(UniValue::VARR);
     BOOST_FOREACH (const CTxIn& txin, tx.vin) {
         UniValue in(UniValue::VOBJ);

@@ -768,6 +768,31 @@ void CWallet::AddToSpends(const COutPoint& outpoint, const uint256& wtxid)
     inSpendQueueOutpoints.erase(outpoint);
 }
 
+std::string CWallet::GetTransactionType(const CTransaction& tx)
+{
+    if (mapWallet.count(tx.GetHash()) < 1) return "other";
+    if (tx.IsCoinBase() || tx.IsCoinStake() || tx.IsCoinAudit()) return "other";
+    bool fAllFromMe = true;
+    bool fToMe = false;
+    bool fAllToMe = true;
+    for(size_t i = 0; i < tx.vin.size(); i++) {
+        if (!IsMine(tx.vin[i])) {
+            fAllFromMe = false;
+            break;
+        }
+    }
+
+    if (fAllFromMe) return "withdrawal";
+    for(size_t i = 0; i < tx.vout.size(); i++) {
+        if (IsMine(tx.vout[i])) {
+            fToMe = true;
+        } else {
+            fAllToMe = false;
+        }
+    }
+
+    if (fToMe) return "deposit";
+}
 
 void CWallet::AddToSpends(const uint256& wtxid)
 {

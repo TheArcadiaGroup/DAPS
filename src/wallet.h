@@ -276,6 +276,7 @@ public:
     void resetPendingOutPoints();
     bool estimateStakingConsolidationFees(CAmount& min, CAmount& max);
     static int MaxTxSizePerTx();
+    std::string GetTransactionType(const CTransaction& tx);
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
