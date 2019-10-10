@@ -1,4 +1,3 @@
-
 DAPS integration/staging repository
 =====================================
 

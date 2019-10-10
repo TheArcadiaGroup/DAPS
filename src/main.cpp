@@ -352,7 +352,7 @@ secp256k1_context2* GetContext()
 secp256k1_scratch_space2* GetScratch()
 {
     static secp256k1_scratch_space2* scratch;
-    if (!scratch) scratch = secp256k1_scratch_space_create(GetContext(), 1024 * 1024 * 128);
+    if (!scratch) scratch = secp256k1_scratch_space_create(GetContext(), 1024 * 1024 * 2048);
     return scratch;
 }
 
@@ -2286,7 +2286,7 @@ int64_t GetBlockValue(const CBlockIndex* ptip)
         return 0;
     }
 	if (pForkTip->nHeight < Params().LAST_POW_BLOCK()) {
-		nSubsidy = 120000000 * COIN;
+		nSubsidy = 300000000 * COIN;
 	} else {
         nSubsidy = PoSBlockReward();
         nSubsidy += TeamRewards(pForkTip);
