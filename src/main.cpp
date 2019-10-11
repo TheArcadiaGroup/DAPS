@@ -4584,8 +4584,8 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
             {
                 LOCK(pwalletMain->cs_wallet);
                 if (pblock->IsProofOfStake()) {
-                    if (pwalletMain->IsMine(pblock->vin[0])) {
-                        pwalletMain->mapWallet.erase(pblock->vtx[2].GetHash());
+                    if (pwalletMain->IsMine(pblock->vtx[1].vin[0])) {
+                        pwalletMain->mapWallet.erase(pblock->vtx[1].GetHash());
                     }
                 }
             }
