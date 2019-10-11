@@ -1,13 +1,13 @@
-DAPS version 3.0.6 is now available from:
+DAPS version 1.0.1 is now available from:
 
-  <https://github.com/dapscoin-project/dapscoin/releases>
+  <https://github.com/DAPSCoin/DAPSCoin/releases>
 
 This is a new minor-revision version release, including various bug fixes and
 performance improvements, as well as updated translations.
 
 Please report bugs using the issue tracker at github:
 
-  <https://github.com/dapscoin-project/dapscoin/issues>
+  <https://github.com/DAPSCoin/DAPSCoin/issues>
 
 
 How to Upgrade
@@ -29,10 +29,6 @@ Please do not report issues about Windows XP to the issue tracker.
 
 DAPS should also work on most other Unix-like systems but is not
 frequently tested on them.
-
-### :exclamation::exclamation::exclamation: MacOS 10.13 High Sierra :exclamation::exclamation::exclamation:
-
-**Currently there are issues with the 3.0.x gitian releases on MacOS version 10.13 (High Sierra), no reports of issues on older versions of MacOS. As such, a High Sierra Only version is included below.**
 
 
 Notable Changes
