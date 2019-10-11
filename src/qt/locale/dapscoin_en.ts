@@ -127,7 +127,7 @@
 <context>
     <name>AddressTableModel</name>
     <message>
-        <location filename="../addresstablemodel.cpp" line="+198"/>
+        <location filename="../addresstablemodel.cpp" line="+166"/>
         <source>Label</source>
         <translation>Label</translation>
     </message>
@@ -175,52 +175,27 @@
         <translation>For anonymization and staking only</translation>
     </message>
     <message>
-        <location filename="../askpassphrasedialog.cpp" line="+44"/>
+        <location filename="../askpassphrasedialog.cpp" line="+45"/>
         <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
         <translation>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Encrypt wallet</source>
-        <translation>Encrypt wallet</translation>
-    </message>
-    <message>
-        <location line="+6"/>
+        <location line="+9"/>
         <source>This operation needs your wallet passphrase to unlock the wallet.</source>
         <translation>This operation needs your wallet passphrase to unlock the wallet.</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>Unlock wallet</source>
-        <translation>Unlock wallet</translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="+8"/>
         <source>This operation needs your wallet passphrase to decrypt the wallet.</source>
         <translation>This operation needs your wallet passphrase to decrypt the wallet.</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>Decrypt wallet</source>
-        <translation>Decrypt wallet</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Change passphrase</source>
-        <translation>Change passphrase</translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="+9"/>
         <source>Enter the old and new passphrase to the wallet.</source>
         <translation>Enter the old and new passphrase to the wallet.</translation>
     </message>
     <message>
-        <location line="+41"/>
-        <source>Confirm wallet encryption</source>
-        <translation>Confirm wallet encryption</translation>
-    </message>
-    <message>
-        <location line="+9"/>
+        <location line="+50"/>
         <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -230,67 +205,63 @@
         <translation>Are you sure you wish to encrypt your wallet?</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-65"/>
+        <source>Encrypt Wallet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Unlock Wallet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Decrypt Wallet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Change Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+42"/>
+        <source>Confirm Wallet Encryption</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DAPS&lt;/b&gt;!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
-        <location line="+45"/>
-        <source>Wallet encrypted</source>
-        <translation>Wallet encrypted</translation>
+        <source>Wallet Encrypted</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-39"/>
+        <location line="+6"/>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
         <translation>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</translation>
     </message>
     <message>
-        <location line="+7"/>
-        <location line="+5"/>
-        <location line="+31"/>
-        <location line="+4"/>
-        <source>Wallet encryption failed</source>
-        <translation>Wallet encryption failed</translation>
-    </message>
-    <message>
-        <location line="-39"/>
-        <source>Wallet encryption failed due to an internal error. Your wallet was not encrypted.</source>
-        <translation>Wallet encryption failed due to an internal error. Your wallet was not encrypted.</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <location line="+35"/>
-        <source>The supplied passphrases do not match.</source>
-        <translation>The supplied passphrases do not match.</translation>
-    </message>
-    <message>
-        <location line="-26"/>
-        <source>Wallet unlock failed</source>
-        <translation>Wallet unlock failed</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <location line="+8"/>
-        <location line="+13"/>
-        <source>The passphrase entered for the wallet decryption was incorrect.</source>
-        <translation>The passphrase entered for the wallet decryption was incorrect.</translation>
-    </message>
-    <message>
-        <location line="-14"/>
-        <source>Wallet decryption failed</source>
-        <translation>Wallet decryption failed</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Wallet passphrase was successfully changed.</source>
-        <translation>Wallet passphrase was successfully changed.</translation>
-    </message>
-    <message>
-        <location line="+43"/>
+        <location line="+111"/>
         <location line="+24"/>
         <source>Warning: The Caps Lock key is on!</source>
         <translation>Warning: The Caps Lock key is on!</translation>
+    </message>
+</context>
+<context>
+    <name>BanTableModel</name>
+    <message>
+        <location filename="../bantablemodel.cpp" line="+88"/>
+        <source>IP/Netmask</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Banned Until</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -420,7 +391,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../bip38tooldialog.cpp" line="+31"/>
+        <location filename="../bip38tooldialog.cpp" line="+32"/>
         <source>Click &quot;Decrypt Key&quot; to compute key</source>
         <translation type="unfinished"></translation>
     </message>
@@ -505,27 +476,17 @@
 <context>
     <name>BitcoinGUI</name>
     <message>
-        <location filename="../bitcoingui.cpp" line="+127"/>
-        <source>Wallet</source>
-        <translation>Wallet</translation>
-    </message>
-    <message>
-        <location line="+2"/>
+        <location filename="../bitcoingui.cpp" line="+130"/>
         <source>Node</source>
         <translation>Node</translation>
     </message>
     <message>
-        <location line="+161"/>
+        <location line="+144"/>
         <source>&amp;Overview</source>
         <translation>&amp;Overview</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Show general overview of wallet</source>
-        <translation>Show general overview of wallet</translation>
-    </message>
-    <message>
-        <location line="+10"/>
+        <location line="+12"/>
         <source>&amp;Send</source>
         <translation>&amp;Send</translation>
     </message>
@@ -535,17 +496,7 @@
         <translation>&amp;Receive</translation>
     </message>
     <message>
-        <location line="+11"/>
-        <source>&amp;Transactions</source>
-        <translation>&amp;Transactions</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Browse transaction history</source>
-        <translation>Browse transaction history</translation>
-    </message>
-     <message>
-        <location line="+42"/>
+        <location line="+53"/>
         <source>E&amp;xit</source>
         <translation>E&amp;xit</translation>
     </message>
@@ -566,12 +517,7 @@
         <translation>Show information about Qt</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source>&amp;Options...</source>
-        <translation>&amp;Options...</translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="+23"/>
         <source>&amp;Show / Hide</source>
         <translation>&amp;Show / Hide</translation>
     </message>
@@ -626,17 +572,7 @@
         <translation>&amp;Lock Wallet</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Sign &amp;message...</source>
-        <translation>Sign &amp;message...</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>&amp;Verify message...</source>
-        <translation>&amp;Verify message...</translation>
-    </message>
-    <message>
-        <location line="+8"/>
+        <location line="+5"/>
         <source>&amp;Information</source>
         <translation>&amp;Information</translation>
     </message>
@@ -656,7 +592,7 @@
         <translation>Open debugging console</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>&amp;Network Monitor</source>
         <translation>&amp;Network Monitor</translation>
     </message>
@@ -761,7 +697,15 @@
         <translation>&amp;Command-line options</translation>
     </message>
     <message numerus="yes">
-        <location line="+463"/>
+        <location line="+445"/>
+        <source>%n Active Connections</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location line="+18"/>
         <source>Processed %n blocks of transaction history.</source>
         <translation>
             <numerusform>Processed %n block of transaction history.</numerusform>
@@ -769,27 +713,89 @@
         </translation>
     </message>
     <message>
-        <location line="+32"/>
-        <source>Synchronizing additional data: %p%</source>
-        <translation>Synchronizing additional data: %p%</translation>
-    </message>
-    <message>
-        <location line="+27"/>
-        <source>%1 behind. Scanning block %2</source>
+        <location line="+160"/>
+        <source>Date: %1
+Amount: %2
+Type: %3
+Address: %4
+Confirmations: %5
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-480"/>
+        <location line="+48"/>
+        <source>Staking Disabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Staking Enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <location line="+8"/>
+        <source>Enabling Staking...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Disabling Staking...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-659"/>
         <source>&amp;File</source>
         <translation>&amp;File</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="-112"/>
+        <location line="+127"/>
         <source>&amp;Settings</source>
         <translation>&amp;Settings</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="-371"/>
+        <source>DAPS Coin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Keychain Wallet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+180"/>
+        <source>&amp;History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Masternodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+41"/>
+        <source>Modify settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>&amp;Staking</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Staking Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Network</source>
+        <translation type="unfinished">&amp;Network</translation>
+    </message>
+    <message>
+        <location line="+125"/>
         <source>&amp;Tools</source>
         <translation>&amp;Tools</translation>
     </message>
@@ -799,39 +805,13 @@
         <translation>&amp;Help</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>Tabs toolbar</source>
-        <translation>Tabs toolbar</translation>
-    </message>
-    <message>
-        <location line="-427"/>
-        <location line="+890"/>
+        <location line="+455"/>
         <source>DAPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-707"/>
-        <source>Send coins to a DAPS address</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+11"/>
-        <source>Request payments (generates QR codes and dapscoin: URIs)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+21"/>
-        <source>&amp;Privacy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+15"/>
+        <location line="-648"/>
         <source>&amp;Masternodes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Browse masternodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -845,32 +825,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>Modify configuration options for DAPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>Sign messages with your DAPS addresses to prove you own them</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&amp;BIP38 tool</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Encrypt and decrypt private keys using a passphrase</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="+43"/>
         <source>&amp;MultiSend</source>
         <translation type="unfinished"></translation>
     </message>
@@ -880,7 +835,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+14"/>
         <source>Open Wallet &amp;Configuration File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -915,45 +870,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+214"/>
+        <location line="+253"/>
         <source>DAPS client</source>
         <translation type="unfinished"></translation>
     </message>
-    <message numerus="yes">
-        <location line="+212"/>
-        <source>%n active connection(s) to DAPS network</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
     <message>
-        <location line="+15"/>
-        <source>Synchronizing with network...</source>
-        <translation>Synchronizing with network...</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Importing blocks from disk...</source>
-        <translation>Importing blocks from disk...</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Reindexing blocks on disk...</source>
-        <translation>Reindexing blocks on disk...</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>No block source available...</source>
-        <translation>No block source available...</translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+214"/>
         <source>Up to date</source>
         <translation>Up to date</translation>
     </message>
     <message numerus="yes">
-        <location line="+41"/>
+        <location line="+30"/>
         <source>%n hour(s)</source>
         <translation>
             <numerusform>%n hour</numerusform>
@@ -991,7 +918,7 @@
         </translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+3"/>
         <source>Catching up...</source>
         <translation>Catching up...</translation>
     </message>
@@ -1006,7 +933,7 @@
         <translation>Transactions after this will not yet be visible.</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+19"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
@@ -1036,44 +963,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Date: %1
-Amount: %2
-Type: %3
-Address: %4
-</source>
-        <translation>Date: %1
-Amount: %2
-Type: %3
-Address: %4
-</translation>
-    </message>
-    <message>
-        <location line="+51"/>
-        <source>Staking is active
- MultiSend: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <location line="+4"/>
-        <source>Active</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-4"/>
-        <location line="+4"/>
-        <source>Not Active</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Staking is not active
- MultiSend: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+30"/>
+        <location line="+98"/>
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt;</source>
         <translation>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt;</translation>
     </message>
@@ -1121,7 +1011,7 @@ Address: %4
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../blockexplorer.cpp" line="+476"/>
+        <location filename="../blockexplorer.cpp" line="+421"/>
         <source>Not all transactions will be shown. To view all transactions you need to set txindex=1 in the configuration file (dapscoin.conf).</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1129,12 +1019,12 @@ Address: %4
 <context>
     <name>ClientModel</name>
     <message>
-        <location filename="../clientmodel.cpp" line="+77"/>
+        <location filename="../clientmodel.cpp" line="+80"/>
         <source>Total: %1 (IPv4: %2 / IPv6: %3 / Tor: %4 / Unknown: %5)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+101"/>
+        <location line="+110"/>
         <source>Network Alert</source>
         <translation>Network Alert</translation>
     </message>
@@ -1252,7 +1142,7 @@ Address: %4
         <translation>Priority</translation>
     </message>
     <message>
-        <location filename="../coincontroldialog.cpp" line="+52"/>
+        <location filename="../coincontroldialog.cpp" line="+53"/>
         <source>Copy address</source>
         <translation>Copy address</translation>
     </message>
@@ -1318,7 +1208,7 @@ Address: %4
         <translation>Copy change</translation>
     </message>
     <message>
-        <location line="+163"/>
+        <location line="+167"/>
         <source>Please switch to &quot;List mode&quot; to use this function.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1470,7 +1360,7 @@ Address: %4
         <translation>The address associated with this address list entry. This can only be modified for sending addresses.</translation>
     </message>
     <message>
-        <location filename="../editaddressdialog.cpp" line="+28"/>
+        <location filename="../editaddressdialog.cpp" line="+29"/>
         <source>New receiving address</source>
         <translation>New receiving address</translation>
     </message>
@@ -1511,9 +1401,77 @@ Address: %4
     </message>
 </context>
 <context>
+    <name>EncryptDialog</name>
+    <message>
+        <location filename="../forms/encryptdialog.ui" line="+20"/>
+        <source>Transaction Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Encrypt Wallet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Please enter a passphrase to encrypt your wallet. This is required.
+(You must use a minimum passphrase length of 10 characters and use uppercase letters, 
+lowercase letters, numbers, symbols) </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>New passphrase</source>
+        <translation type="unfinished">New passphrase</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Repeat new passphrase</source>
+        <translation type="unfinished">Repeat new passphrase</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Confirm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Return</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Esc</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>EnterMnemonics</name>
+    <message>
+        <location filename="../forms/entermnemonics.ui" line="+20"/>
+        <source>DAPS Wallet Recovery Wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Enter your mnemonics recovery phrase to recover your wallet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FreespaceChecker</name>
     <message>
-        <location filename="../intro.cpp" line="+70"/>
+        <location filename="../intro.cpp" line="+71"/>
         <source>A new data directory will be created.</source>
         <translation>A new data directory will be created.</translation>
     </message>
@@ -1541,7 +1499,7 @@ Address: %4
 <context>
     <name>HelpMessageDialog</name>
     <message>
-        <location filename="../utilitydialog.cpp" line="+37"/>
+        <location filename="../utilitydialog.cpp" line="+38"/>
         <source>version</source>
         <translation>version</translation>
     </message>
@@ -1608,6 +1566,115 @@ Address: %4
     </message>
 </context>
 <context>
+    <name>HistoryPage</name>
+    <message>
+        <location filename="../forms/historypage.ui" line="+57"/>
+        <source>to</source>
+        <translation type="unfinished">to</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <location filename="../historypage.cpp" line="+312"/>
+        <source>All Types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Sent</source>
+        <translation type="unfinished">Sent</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location filename="../historypage.cpp" line="+1"/>
+        <location line="+1"/>
+        <source>Received</source>
+        <translation type="unfinished">Received</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Mined</source>
+        <translation type="unfinished">Mined</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Minted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Masternode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <source>Min Amount</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+54"/>
+        <source>Date</source>
+        <translation type="unfinished">Date</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Type</source>
+        <translation type="unfinished">Type</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Address/Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Amount (DAPS)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Confirmations</source>
+        <translation type="unfinished">Confirmations</translation>
+    </message>
+    <message>
+        <location filename="../historypage.cpp" line="+0"/>
+        <source>Masternode Reward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Staking Reward</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ImportOrCreate</name>
+    <message>
+        <location filename="../forms/importorcreate.ui" line="+20"/>
+        <source>Welcome to DAPS Wallet Wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Do you want to create a new wallet or recover from your mnemonics?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Create a new wallet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Recover from a mnemonic phrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Intro</name>
     <message>
         <location filename="../forms/intro.ui" line="+14"/>
@@ -1616,17 +1683,17 @@ Address: %4
     </message>
     <message>
         <location line="+9"/>
-        <source>Welcome to DAPS.</source>
+        <source>Welcome to the DAPS Wallet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+26"/>
-        <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
+        <source>As this is the first time the program is launched, you can choose where the DAPS Wallet will store its data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+10"/>
-        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <source>The DAPS Wallet will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1666,6 +1733,31 @@ Address: %4
     </message>
 </context>
 <context>
+    <name>LockDialog</name>
+    <message>
+        <location filename="../forms/lockdialog.ui" line="+20"/>
+        <source>Transaction Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Would you like to lock your keychain wallet now?
+
+(Staking will also be stopped)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>Lock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MasternodeList</name>
     <message>
         <location filename="../forms/masternodelist.ui" line="+14"/>
@@ -1673,17 +1765,7 @@ Address: %4
         <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location line="+18"/>
-        <source>My Masternodes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>Note: Status of your masternodes in local wallet can potentially be slightly incorrect.&lt;br /&gt;Always wait for wallet to sync additional data and then double check from another node&lt;br /&gt;if your node should be running but you still see &quot;MISSING&quot; in &quot;Status&quot; field.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+74"/>
+        <location line="+103"/>
         <source>Alias</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1691,11 +1773,6 @@ Address: %4
         <location line="+5"/>
         <source>Address</source>
         <translation type="unfinished">Address</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Protocol</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1738,22 +1815,12 @@ Address: %4
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>Status will be updated automatically in (sec):</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../masternodelist.cpp" line="+45"/>
         <source>Start alias</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+189"/>
+        <location line="+191"/>
         <source>Confirm masternode start</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1914,7 +1981,7 @@ MultiSend will not be activated unless you have clicked Activate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multisenddialog.cpp" line="+92"/>
+        <location filename="../multisenddialog.cpp" line="+93"/>
         <source>The entered address:
 </source>
         <translation type="unfinished"></translation>
@@ -2146,7 +2213,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../multisigdialog.cpp" line="+250"/>
+        <location filename="../multisigdialog.cpp" line="+251"/>
         <source>Invalid Tx Hash.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2177,91 +2244,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>ObfuscationConfig</name>
-    <message>
-        <location filename="../forms/obfuscationconfig.ui" line="+14"/>
-        <source>Configure Obfuscation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+12"/>
-        <source>Basic Privacy</source>
-        <translation type="unfinished">Basic Privacy</translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>High Privacy</source>
-        <translation type="unfinished">High Privacy</translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>Maximum Privacy</source>
-        <translation type="unfinished">Maximum Privacy</translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>Please select a privacy level.</source>
-        <translation type="unfinished">Please select a privacy level.</translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>Use 2 separate masternodes to mix funds up to 1000000 DAPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>Use 8 separate masternodes to mix funds up to 1000000 DAPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>Use 16 separate masternodes</source>
-        <translation type="unfinished">Use 16 separate masternodes</translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>This option is the quickest and will cost about ~0.025 DAPS to anonymize 10000 DAPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>This option is moderately fast and will cost about 0.05 DAPS to anonymize 10000 DAPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>This is the slowest and most secure option. Using maximum anonymity will cost</source>
-        <translation type="unfinished">This is the slowest and most secure option. Using maximum anonymity will cost</translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>0.1 DAPS per 10000 DAPS you anonymize.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../obfuscationconfig.cpp" line="+42"/>
-        <location line="+14"/>
-        <location line="+14"/>
-        <source>Obfuscation Configuration</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-27"/>
-        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPS&apos;s configuration screen.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+14"/>
-        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPS&apos;s configuration screen.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+14"/>
-        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPS&apos;s configuration screen.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>OpenURIDialog</name>
     <message>
         <location filename="../forms/openuridialog.ui" line="+14"/>
@@ -2284,7 +2266,7 @@ p, li { white-space: pre-wrap; }
         <translation>Select payment request file</translation>
     </message>
     <message>
-        <location filename="../openuridialog.cpp" line="+47"/>
+        <location filename="../openuridialog.cpp" line="+48"/>
         <source>Select payment request file to open</source>
         <translation>Select payment request file to open</translation>
     </message>
@@ -2322,7 +2304,7 @@ p, li { white-space: pre-wrap; }
         <translation>(0 = auto, &lt;0 = leave that many cores free)</translation>
     </message>
     <message>
-        <location line="+102"/>
+        <location line="+36"/>
         <source>W&amp;allet</source>
         <translation>W&amp;allet</translation>
     </message>
@@ -2357,7 +2339,7 @@ p, li { white-space: pre-wrap; }
         <translation>Expert</translation>
     </message>
     <message>
-        <location line="-176"/>
+        <location line="-110"/>
         <source>Automatically start DAPS after logging in to the system.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2367,7 +2349,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+179"/>
+        <location line="+113"/>
         <source>Whether to show coin control features or not.</source>
         <translation>Whether to show coin control features or not.</translation>
     </message>
@@ -2397,12 +2379,7 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Network</translation>
     </message>
     <message>
-        <location line="+192"/>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+21"/>
+        <location line="+213"/>
         <source>Language missing or translation incomplete? Help contributing translations here:
 https://www.transifex.com/dapscoin-project/dapscoin-project-translations</source>
         <translation type="unfinished"></translation>
@@ -2413,7 +2390,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</source
         <translation>Map port using &amp;UPnP</translation>
     </message>
     <message>
-        <location line="+114"/>
+        <location line="+17"/>
         <source>Connect to the DAPS network through a SOCKS5 proxy.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2473,12 +2450,27 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</source
         <translation>User Interface &amp;language:</translation>
     </message>
     <message>
-        <location line="+53"/>
-        <source>User Interface Theme:</source>
-        <translation>User Interface Theme:</translation>
+        <location line="+13"/>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+40"/>
+        <source>Interface Mode:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+21"/>
+        <source>Light</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+62"/>
+        <source>Dark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+26"/>
         <source>&amp;Unit to show amounts in:</source>
         <translation>&amp;Unit to show amounts in:</translation>
     </message>
@@ -2529,12 +2521,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</source
         <translation>&amp;Cancel</translation>
     </message>
     <message>
-        <location filename="../optionsdialog.cpp" line="+87"/>
-        <source>I don&apos;t care</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+23"/>
+        <location filename="../optionsdialog.cpp" line="+85"/>
         <source>default</source>
         <translation>default</translation>
     </message>
@@ -2544,7 +2531,7 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</source
         <translation>none</translation>
     </message>
     <message>
-        <location line="+88"/>
+        <location line="+83"/>
         <source>Confirm options reset</source>
         <translation>Confirm options reset</translation>
     </message>
@@ -2571,6 +2558,151 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</source
     </message>
 </context>
 <context>
+    <name>OptionsPage</name>
+    <message>
+        <location filename="../forms/optionspage.ui" line="+57"/>
+        <source>Staking Status:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Turn staking on or off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <location line="+392"/>
+        <source>On</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-389"/>
+        <location line="+392"/>
+        <source>Off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-369"/>
+        <source>Backup wallet to directory of choice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Backup Wallet</source>
+        <translation type="unfinished">Backup Wallet</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Theme Selection:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Switch between Dark and Light theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Dark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Light</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+42"/>
+        <source>Change current passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Old passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>New passphrase</source>
+        <translation type="unfinished">New passphrase</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Repeat new passphrase</source>
+        <translation type="unfinished">Repeat new passphrase</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Submit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Clear All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+37"/>
+        <source>Quantity of DAPS to keep as spendable (not staking)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Disable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+53"/>
+        <source>Mnemonic Recovery Phrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>We strongly recommend you only view your mnemonic phrase in a secure environment safe from video cameras or any wandering eyes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Show Phrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+35"/>
+        <source>Two Factor Authentication</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>Remember my authentication code for</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>1 Day</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>1 Week</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>1 Month</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Current Authentication Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>OverviewPage</name>
     <message>
         <location filename="../forms/overviewpage.ui" line="+20"/>
@@ -2578,187 +2710,79 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</source
         <translation>Form</translation>
     </message>
     <message>
-        <location line="+43"/>
-        <source>DAPS Balances</source>
+        <location line="+71"/>
+        <source>Blocks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+259"/>
-        <source>Available:</source>
-        <translation>Available:</translation>
+        <location line="+21"/>
+        <location line="+35"/>
+        <source>???</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+16"/>
-        <location line="+702"/>
+        <location line="-19"/>
+        <source> of </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+91"/>
+        <source>Balance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Your current balance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+123"/>
         <source>Your current spendable balance</source>
         <translation>Your current spendable balance</translation>
     </message>
     <message>
-        <location line="-661"/>
+        <location line="+22"/>
         <source>Pending:</source>
         <translation>Pending:</translation>
     </message>
     <message>
-        <location line="-236"/>
-        <location line="+820"/>
+        <location line="+19"/>
         <source>Total of transactions that have yet to be confirmed, and do not yet count toward the spendable balance</source>
         <translation>Total of transactions that have yet to be confirmed, and do not yet count toward the spendable balance</translation>
     </message>
     <message>
-        <location line="-708"/>
-        <location line="+1118"/>
-        <source>Immature:</source>
-        <translation>Immature:</translation>
+        <location line="+91"/>
+        <location line="+3"/>
+        <source>Recent Transactions</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1147"/>
-        <source>Staked or masternode rewards that has not yet matured</source>
-        <translation>Staked or masternode rewards that has not yet matured</translation>
+        <location line="+60"/>
+        <source>It is advised not to send or receive coins until your current sync is complete.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-153"/>
-        <location line="+1393"/>
+        <location line="-398"/>
+        <location line="+266"/>
         <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPS network after a connection is established, but this process has not completed yet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1348"/>
-        <source>Unconfirmed transactions to watch-only addresses</source>
-        <translation>Unconfirmed transactions to watch-only addresses</translation>
-    </message>
-    <message>
-        <location line="+50"/>
-        <source>Staked or masternode rewards in watch-only addresses that has not yet matured</source>
-        <translation>Staked or masternode rewards in watch-only addresses that has not yet matured</translation>
-    </message>
-    <message>
-        <location line="+42"/>
-        <location line="+807"/>
-        <location line="+255"/>
-        <source>Total:</source>
-        <translation>Total:</translation>
-    </message>
-    <message>
-        <location line="-1001"/>
-        <source>Your current total balance</source>
-        <translation>Your current total balance</translation>
-    </message>
-    <message>
-        <location line="+25"/>
-        <source>Current total balance in watch-only addresses</source>
-        <translation>Current total balance in watch-only addresses</translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>Watch-only:</source>
-        <translation>Watch-only:</translation>
-    </message>
-    <message>
-        <location line="+51"/>
-        <source>Your current balance in watch-only addresses</source>
-        <translation>Your current balance in watch-only addresses</translation>
-    </message>
-    <message>
-        <location line="+23"/>
+        <location line="-88"/>
         <source>Spendable:</source>
         <translation>Spendable:</translation>
     </message>
     <message>
-        <location line="+525"/>
-        <source>Combined Balances (including unconfirmed and immature coins)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Combined Balances&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+74"/>
-        <source>Total Balance, including unconfirmed and immature coins.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+36"/>
-        <source>DAPS:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <location line="+66"/>
-        <source>0 %</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-46"/>
-        <location line="+13"/>
-        <source>Locked DAPS or Masternode collaterals.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-10"/>
-        <location line="+33"/>
-        <location line="+189"/>
-        <location line="+31"/>
-        <location line="+44"/>
-        <source>0.000 000 00 DAPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-284"/>
-        <source>Locked:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <location line="+10"/>
-        <source>Unlocked DAPSs.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-7"/>
-        <source>Unlocked:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-100"/>
-        <source>Mature:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+56"/>
-        <location line="+17"/>
-        <location line="+27"/>
-        <location line="+17"/>
-        <source>Unconfirmed: less than 20 confirmations
-Immature: confirmed, but less than 3 mints of the same denomination after it was minted</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-57"/>
-        <source>Unconfirmed:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+127"/>
-        <source>Recent transactions</source>
-        <translation>Recent transactions</translation>
-    </message>
-    <message>
-        <location filename="../overviewpage.cpp" line="+135"/>
-        <location line="+1"/>
-        <source>out of sync</source>
-        <translation>out of sync</translation>
-    </message>
-    <message>
-        <location line="+93"/>
+        <location filename="../overviewpage.cpp" line="+229"/>
+        <source></source>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>PaymentServer</name>
     <message>
-        <location filename="../paymentserver.cpp" line="+297"/>
-        <location line="+209"/>
+        <location filename="../paymentserver.cpp" line="+298"/>
+        <location line="+188"/>
         <location line="+33"/>
         <location line="+104"/>
         <location line="+12"/>
@@ -2767,39 +2791,33 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Payment request error</translation>
     </message>
     <message>
-        <location line="-275"/>
-        <location line="+12"/>
+        <location line="-262"/>
         <location line="+5"/>
         <source>URI handling</source>
         <translation>URI handling</translation>
     </message>
     <message>
-        <location line="-16"/>
-        <source>Payment request fetch URL is invalid: %1</source>
-        <translation>Payment request fetch URL is invalid: %1</translation>
-    </message>
-    <message>
-        <location line="+29"/>
+        <location line="+12"/>
         <source>Payment request file handling</source>
         <translation>Payment request file handling</translation>
     </message>
     <message>
-        <location line="-18"/>
+        <location line="-17"/>
         <source>Invalid payment address %1</source>
         <translation>Invalid payment address %1</translation>
     </message>
     <message>
-        <location line="-108"/>
+        <location line="-88"/>
         <source>Cannot start dapscoin: click-to-pay handler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+114"/>
-        <source>URI cannot be parsed! This can be caused by an invalid DAPScoin address or malformed URI parameters.</source>
+        <location line="+94"/>
+        <source>URI cannot be parsed! This can be caused by an invalid DAPS address or malformed URI parameters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+12"/>
         <source>Payment request file cannot be read! This can be caused by an invalid payment request file.</source>
         <translation>Payment request file cannot be read! This can be caused by an invalid payment request file.</translation>
     </message>
@@ -2897,17 +2915,12 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../bitcoinunits.cpp" line="+252"/>
+        <location filename="../bitcoinunits.cpp" line="+253"/>
         <source>Amount</source>
         <translation>Amount</translation>
     </message>
     <message>
-        <location filename="../guiutil.cpp" line="+113"/>
-        <source>Enter a DAPS address (e.g. %1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+776"/>
+        <location filename="../guiutil.cpp" line="+935"/>
         <source>%1 d</source>
         <translation>%1 d</translation>
     </message>
@@ -2923,11 +2936,12 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
     </message>
     <message>
         <location line="+2"/>
+        <location line="+40"/>
         <source>%1 s</source>
         <translation>%1 s</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="-25"/>
         <source>NETWORK</source>
         <translation>NETWORK</translation>
     </message>
@@ -2960,7 +2974,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
 <context>
     <name>QRImageWidget</name>
     <message>
-        <location filename="../receiverequestdialog.cpp" line="+35"/>
+        <location filename="../receiverequestdialog.cpp" line="+38"/>
         <source>&amp;Save Image...</source>
         <translation>&amp;Save Image...</translation>
     </message>
@@ -3019,7 +3033,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <location line="+23"/>
         <location line="+36"/>
         <location line="+23"/>
-        <location line="+454"/>
+        <location line="+522"/>
         <location line="+23"/>
         <location line="+23"/>
         <location line="+23"/>
@@ -3031,13 +3045,17 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <location line="+23"/>
         <location line="+23"/>
         <location line="+23"/>
+        <location line="+23"/>
+        <location line="+23"/>
+        <location line="+23"/>
+        <location line="+26"/>
         <location line="+23"/>
         <location line="+91"/>
         <source>N/A</source>
         <translation>N/A</translation>
     </message>
     <message>
-        <location line="-913"/>
+        <location line="-1076"/>
         <source>Number of connections</source>
         <translation>Number of connections</translation>
     </message>
@@ -3092,12 +3110,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Using BerkeleyDB version</translation>
     </message>
     <message>
-        <location line="+160"/>
-        <source>Block chain</source>
-        <translation>Block chain</translation>
-    </message>
-    <message>
-        <location line="+79"/>
+        <location line="+239"/>
         <source>Open the DAPS debug log file from the current data directory. This can take a few seconds for large log files.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3107,7 +3120,12 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Number of Masternodes</translation>
     </message>
     <message>
-        <location line="+122"/>
+        <location line="+29"/>
+        <source>Blockchain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+93"/>
         <source>&amp;Console</source>
         <translation>&amp;Console</translation>
     </message>
@@ -3147,14 +3165,24 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>&amp;Peers</translation>
     </message>
     <message>
-        <location line="+41"/>
-        <location filename="../rpcconsole.cpp" line="+263"/>
-        <location line="+481"/>
+        <location line="+50"/>
+        <source>Banned peers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+59"/>
+        <location filename="../rpcconsole.cpp" line="+306"/>
+        <location line="+717"/>
         <source>Select a peer to view detailed information.</source>
         <translation>Select a peer to view detailed information.</translation>
     </message>
     <message>
         <location line="+25"/>
+        <source>Whitelisted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+23"/>
         <source>Direction</source>
         <translation>Direction</translation>
     </message>
@@ -3174,17 +3202,12 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Services</translation>
     </message>
     <message>
-        <location line="+23"/>
-        <source>Starting Height</source>
-        <translation>Starting Height</translation>
+        <location line="+576"/>
+        <source>Rebuild blockchain index from current blk000??.dat files.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+23"/>
-        <source>Sync Height</source>
-        <translation>Sync Height</translation>
-    </message>
-    <message>
-        <location line="+23"/>
+        <location line="-484"/>
         <source>Ban Score</source>
         <translation>Ban Score</translation>
     </message>
@@ -3219,17 +3242,27 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Ping Time</translation>
     </message>
     <message>
+        <location line="+23"/>
+        <source>The duration of a currently outstanding ping.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Ping Wait</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Time Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+40"/>
         <source>&amp;Wallet Repair</source>
         <translation>&amp;Wallet Repair</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <source>Delete local Blockchain Folders</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+36"/>
+        <location line="+51"/>
         <source>Wallet In Use:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3249,12 +3282,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Rescan blockchain files</translation>
     </message>
     <message>
-        <location line="+14"/>
-        <source>Rescan the block chain for missing wallet transactions.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+30"/>
         <source>Recover transactions 1</source>
         <translation>Recover transactions 1</translation>
     </message>
@@ -3279,12 +3307,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Upgrade wallet format</translation>
     </message>
     <message>
-        <location line="+44"/>
-        <source>Rebuild block chain index from current blk000??.dat files.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+23"/>
+        <location line="+67"/>
         <source>-resync:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3299,12 +3322,37 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockhain files or missing/obsolete transactions.</translation>
     </message>
     <message>
-        <location line="-13"/>
+        <location line="-337"/>
+        <source>Starting Block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Synced Headers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Synced Blocks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+265"/>
+        <source>Delete local blockchain Folders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Wallet repair options.</source>
         <translation>Wallet repair options.</translation>
     </message>
     <message>
-        <location line="+199"/>
+        <location line="+109"/>
+        <source>Rescan the blockchain for missing wallet transactions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+90"/>
         <source>Upgrade wallet to latest format on startup. (Note: this is NOT an update of the wallet itself!)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3314,7 +3362,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Rebuild index</translation>
     </message>
     <message>
-        <location filename="../rpcconsole.cpp" line="-206"/>
+        <location filename="../rpcconsole.cpp" line="-372"/>
         <source>In:</source>
         <translation>In:</translation>
     </message>
@@ -3329,7 +3377,45 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-66"/>
+        <location line="-213"/>
+        <source>&amp;Disconnect Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Ban Node for</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-3"/>
+        <source>1 &amp;hour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>1 &amp;day</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>1 &amp;week</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>1 &amp;year</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+47"/>
+        <source>&amp;Unban Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+96"/>
         <source>This will delete your local blockchain folders and the wallet will synchronize the complete Blockchain from scratch.&lt;br /&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3364,7 +3450,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Type &lt;b&gt;help&lt;/b&gt; for an overview of available commands.</translation>
     </message>
     <message>
-        <location line="+138"/>
+        <location line="+140"/>
         <source>%1 B</source>
         <translation>%1 B</translation>
     </message>
@@ -3384,7 +3470,12 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>%1 GB</translation>
     </message>
     <message>
-        <location line="+128"/>
+        <location line="+124"/>
+        <source>(node id: %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
         <source>via %1</source>
         <translation>via %1</translation>
     </message>
@@ -3395,7 +3486,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>never</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+9"/>
         <source>Inbound</source>
         <translation>Inbound</translation>
     </message>
@@ -3405,113 +3496,89 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Outbound</translation>
     </message>
     <message>
-        <location line="+13"/>
-        <source>Unknown</source>
-        <translation>Unknown</translation>
+        <location line="+2"/>
+        <source>Yes</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+2"/>
-        <location line="+1"/>
-        <source>Fetching...</source>
-        <translation>Fetching...</translation>
+        <location line="+0"/>
+        <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <location line="+6"/>
+        <source>Unknown</source>
+        <translation>Unknown</translation>
     </message>
 </context>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <location filename="../forms/receivecoinsdialog.ui" line="+34"/>
-        <source>Reuse one of the previously used receiving addresses.&lt;br&gt;Reusing addresses has security and privacy issues.&lt;br&gt;Do not use this unless re-generating a payment request made before.</source>
-        <translation>Reuse one of the previously used receiving addresses.&lt;br&gt;Reusing addresses has security and privacy issues.&lt;br&gt;Do not use this unless re-generating a payment request made before.</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>R&amp;euse an existing receiving address (not recommended)</source>
-        <translation>R&amp;euse an existing receiving address (not recommended)</translation>
-    </message>
-    <message>
-        <location line="+17"/>
-        <source>&amp;Message:</source>
-        <translation>&amp;Message:</translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <location line="+21"/>
-        <source>An optional label to associate with the new receiving address.</source>
-        <translation>An optional label to associate with the new receiving address.</translation>
-    </message>
-    <message>
-        <location line="-37"/>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the DAPS network.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+23"/>
+        <location filename="../forms/receivecoinsdialog.ui" line="+69"/>
+        <location line="+10"/>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the DAPS network.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
-        <translation>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</translation>
+        <location line="-7"/>
+        <source>Description (optional)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+10"/>
-        <source>&amp;Label:</source>
-        <translation>&amp;Label:</translation>
+        <source>Description:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+13"/>
-        <location line="+22"/>
+        <location line="+16"/>
+        <source>Amount:</source>
+        <translation type="unfinished">Amount:</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <location line="+7"/>
+        <source>List of addresses to receive with</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Address:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Submit payment request for address selected above</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;Submit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+38"/>
+        <source>DAPS Amount (optional)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+50"/>
+        <source>Copy Master Account address to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Master Account address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-142"/>
+        <location line="+79"/>
         <source>An optional amount to request. Leave this empty or zero to not request a specific amount.</source>
         <translation>An optional amount to request. Leave this empty or zero to not request a specific amount.</translation>
     </message>
     <message>
-        <location line="-19"/>
-        <source>&amp;Amount:</source>
-        <translation>&amp;Amount:</translation>
-    </message>
-    <message>
-        <location line="+34"/>
-        <source>&amp;Request payment</source>
-        <translation>&amp;Request payment</translation>
-    </message>
-    <message>
-        <location line="+17"/>
-        <source>Clear all fields of the form.</source>
-        <translation>Clear all fields of the form.</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Clear</source>
-        <translation>Clear</translation>
-    </message>
-    <message>
-        <location line="+75"/>
-        <source>Requested payments history</source>
-        <translation>Requested payments history</translation>
-    </message>
-    <message>
-        <location line="+62"/>
-        <source>Show the selected request (does the same as double clicking an entry)</source>
-        <translation>Show the selected request (does the same as double clicking an entry)</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Show</source>
-        <translation>Show</translation>
-    </message>
-    <message>
-        <location line="+17"/>
-        <source>Remove the selected entries from the list</source>
-        <translation>Remove the selected entries from the list</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Remove</source>
-        <translation>Remove</translation>
-    </message>
-    <message>
-        <location filename="../receivecoinsdialog.cpp" line="+38"/>
+        <location filename="../receivecoinsdialog.cpp" line="+35"/>
         <source>Copy label</source>
         <translation>Copy label</translation>
     </message>
@@ -3633,213 +3700,68 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
     </message>
 </context>
 <context>
+    <name>RevealTxDialog</name>
+    <message>
+        <location filename="../forms/revealtxdialog.ui" line="+14"/>
+        <source>Transaction Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Copy transaction ID to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>TxId</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Copy address to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Address</source>
+        <translation type="unfinished">Address</translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Copy transaction private key to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>PrivKey</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Copy Transaction Fee to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Fee</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SendCoinsDialog</name>
     <message>
         <location filename="../forms/sendcoinsdialog.ui" line="+14"/>
-        <location filename="../sendcoinsdialog.cpp" line="+231"/>
-        <location line="+25"/>
-        <location line="+397"/>
         <source>Send Coins</source>
         <translation>Send Coins</translation>
     </message>
     <message>
-        <location line="+76"/>
-        <source>Coin Control Features</source>
-        <translation>Coin Control Features</translation>
-    </message>
-    <message>
-        <location line="+49"/>
-        <source>Insufficient funds!</source>
-        <translation>Insufficient funds!</translation>
-    </message>
-    <message>
-        <location line="+89"/>
-        <source>Quantity:</source>
-        <translation>Quantity:</translation>
-    </message>
-    <message>
-        <location line="+35"/>
-        <source>Bytes:</source>
-        <translation>Bytes:</translation>
-    </message>
-    <message>
-        <location line="+48"/>
-        <source>Amount:</source>
-        <translation>Amount:</translation>
-    </message>
-    <message>
         <location line="+32"/>
-        <source>Priority:</source>
-        <translation>Priority:</translation>
+        <location line="+19"/>
+        <source>Your current spendable balance</source>
+        <translation type="unfinished">Your current spendable balance</translation>
     </message>
     <message>
-        <location line="+13"/>
-        <source>medium</source>
-        <translation>medium</translation>
-    </message>
-    <message>
-        <location line="+35"/>
-        <source>Fee:</source>
-        <translation>Fee:</translation>
-    </message>
-    <message>
-        <location line="+32"/>
-        <source>Dust:</source>
-        <translation>Dust:</translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>no</source>
-        <translation>no</translation>
-    </message>
-    <message>
-        <location line="+35"/>
-        <source>After Fee:</source>
-        <translation>After Fee:</translation>
-    </message>
-    <message>
-        <location line="+32"/>
-        <source>Change:</source>
-        <translation>Change:</translation>
-    </message>
-    <message>
-        <location line="+44"/>
-        <source>If this is activated, but the change address is empty or invalid, change will be sent to a newly generated address.</source>
-        <translation>If this is activated, but the change address is empty or invalid, change will be sent to a newly generated address.</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Custom change address</source>
-        <translation>Custom change address</translation>
-    </message>
-    <message>
-        <location line="+20"/>
-        <source>Split UTXO</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source># of outputs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>UTXO Size:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>0 DAPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+193"/>
-        <source>Transaction Fee:</source>
-        <translation>Transaction Fee:</translation>
-    </message>
-    <message>
-        <location line="+14"/>
-        <source>Choose...</source>
-        <translation>Choose...</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>collapse fee-settings</source>
-        <translation>collapse fee-settings</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Minimize</source>
-        <translation>Minimize</translation>
-    </message>
-    <message>
-        <location line="+81"/>
-        <source>per kilobyte</source>
-        <translation>per kilobyte</translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>total at least</source>
-        <translation>total at least</translation>
-    </message>
-    <message>
-        <location line="+46"/>
-        <source>(read the tooltip)</source>
-        <translation>(read the tooltip)</translation>
-    </message>
-    <message>
-        <location line="+228"/>
-        <source>Custom:</source>
-        <translation>Custom:</translation>
-    </message>
-    <message>
-        <location line="+27"/>
-        <source>(Smart fee not initialized yet. This usually takes a few blocks...)</source>
-        <translation>(Smart fee not initialized yet. This usually takes a few blocks...)</translation>
-    </message>
-    <message>
-        <location line="+197"/>
-        <source>SwiftX</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-352"/>
-        <source>Confirmation time:</source>
-        <translation>Confirmation time:</translation>
-    </message>
-    <message>
-        <location line="-947"/>
-        <source>Open Coin Control...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Coins automatically selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+772"/>
-        <source>If the custom fee is set to 1000 uDAPSs and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 uDAPSs in fee,&lt;br /&gt;while &quot;at least&quot; pays 1000 uDAPSs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>If the custom fee is set to 1000 uDAPSs and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 uDAPSs in fee,&lt;br /&gt;while &quot;total at least&quot; pays 1000 uDAPSs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+33"/>
-        <location line="+13"/>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for DAPS transactions than the network can process.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+163"/>
-        <source>normal</source>
-        <translation>normal</translation>
-    </message>
-    <message>
-        <location line="+20"/>
-        <source>fast</source>
-        <translation>fast</translation>
-    </message>
-    <message>
-        <location line="+28"/>
-        <source>Recommended</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+73"/>
-        <source>Send as zero-fee transaction if possible</source>
-        <translation>Send as zero-fee transaction if possible</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>(confirmation may take longer)</source>
-        <translation>(confirmation may take longer)</translation>
-    </message>
-    <message>
-        <location line="+67"/>
+        <location line="+146"/>
         <source>Confirm the send action</source>
         <translation>Confirm the send action</translation>
     </message>
@@ -3849,17 +3771,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>S&amp;end</translation>
     </message>
     <message>
-        <location line="+23"/>
-        <source>Clear all fields of the form.</source>
-        <translation>Clear all fields of the form.</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Clear &amp;All</source>
-        <translation>Clear &amp;All</translation>
-    </message>
-    <message>
-        <location line="+14"/>
+        <location line="-80"/>
         <source>Send to multiple recipients at once</source>
         <translation>Send to multiple recipients at once</translation>
     </message>
@@ -3869,300 +3781,72 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Add &amp;Recipient</translation>
     </message>
     <message>
-        <location line="+35"/>
-        <source>Anonymized DAPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+23"/>
+        <location line="-88"/>
         <source>Balance:</source>
         <translation>Balance:</translation>
     </message>
     <message>
-        <location filename="../sendcoinsdialog.cpp" line="-571"/>
-        <source>Copy quantity</source>
-        <translation>Copy quantity</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Copy amount</source>
-        <translation>Copy amount</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Copy fee</source>
-        <translation>Copy fee</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Copy after fee</source>
-        <translation>Copy after fee</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Copy bytes</source>
-        <translation>Copy bytes</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Copy priority</source>
-        <translation>Copy priority</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Copy dust</source>
-        <translation>Copy dust</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Copy change</source>
-        <translation>Copy change</translation>
-    </message>
-    <message>
-        <location line="+143"/>
-        <source>The split block tool does not work when sending to outside addresses. Try again.</source>
+        <location filename="../sendcoinsdialog.cpp" line="+186"/>
+        <source>Copy</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+25"/>
-        <source>The split block tool does not work with multiple addresses. Try again.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <location line="+3"/>
-        <source>using</source>
-        <translation>using</translation>
-    </message>
-    <message>
-        <location line="-3"/>
-        <source>anonymous funds</source>
-        <translation>anonymous funds</translation>
-    </message>
-    <message>
-        <location line="+622"/>
-        <source>Warning: Invalid DAPS address</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-619"/>
-        <source>any available funds (not recommended)</source>
-        <translation>any available funds (not recommended)</translation>
-    </message>
-    <message>
-        <location line="+28"/>
-        <location line="+4"/>
-        <location line="+4"/>
-        <location line="+3"/>
-        <source>%1 to %2</source>
-        <translation>%1 to %2</translation>
-    </message>
-    <message>
-        <location line="+51"/>
-        <source>Are you sure you want to send?</source>
-        <translation>Are you sure you want to send?</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>are added as transaction fee</source>
-        <translation>are added as transaction fee</translation>
-    </message>
-    <message>
-        <location line="+18"/>
-        <source>Total Amount = &lt;b&gt;%1&lt;/b&gt;&lt;br /&gt;= %2</source>
-        <translation>Total Amount = &lt;b&gt;%1&lt;/b&gt;&lt;br /&gt;= %2</translation>
-    </message>
-    <message>
-        <location line="+19"/>
-        <source>Confirm send coins</source>
-        <translation>Confirm send coins</translation>
-    </message>
-    <message>
-        <location line="+230"/>
-        <source>A fee %1 times higher than %2 per kB is considered an insanely high fee.</source>
-        <translation>A fee %1 times higher than %2 per kB is considered an insanely high fee.</translation>
-    </message>
-    <message numerus="yes">
-        <location line="+114"/>
-        <source>Estimated to begin confirmation within %n block(s).</source>
-        <translation>
-            <numerusform>Estimated to begin confirmation within %n block.</numerusform>
-            <numerusform>Estimated to begin confirmation within %n blocks.</numerusform>
-        </translation>
-    </message>
-    <message>
-        <location line="-145"/>
-        <source>The recipient address is not valid, please recheck.</source>
-        <translation>The recipient address is not valid, please recheck.</translation>
-    </message>
-    <message>
-        <location line="-329"/>
-        <source>and SwiftX</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+38"/>
-        <source> split into %1 outputs using the UTXO splitter.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+89"/>
-        <source>&lt;b&gt;(%1 of %2 entries displayed)&lt;/b&gt;</source>
-        <translation>&lt;b&gt;(%1 of %2 entries displayed)&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <location line="+205"/>
-        <source>The amount to pay must be larger than 0.</source>
-        <translation>The amount to pay must be larger than 0.</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>The amount exceeds your balance.</source>
-        <translation>The amount exceeds your balance.</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>The total exceeds your balance when the %1 transaction fee is included.</source>
-        <translation>The total exceeds your balance when the %1 transaction fee is included.</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Duplicate address found, can only send to each address once per send operation.</source>
-        <translation>Duplicate address found, can only send to each address once per send operation.</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Transaction creation failed!</source>
-        <translation>Transaction creation failed!</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
-        <translation>The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Error: The wallet was unlocked only to anonymize coins.</source>
-        <translation>Error: The wallet was unlocked only to anonymize coins.</translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>Error: The wallet was unlocked only to anonymize coins. Unlock canceled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+84"/>
-        <source>Pay only the minimum fee of %1</source>
-        <translation>Pay only the minimum fee of %1</translation>
-    </message>
-    <message>
-        <location line="+166"/>
-        <source>Warning: Unknown change address</source>
-        <translation>Warning: Unknown change address</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>(no label)</source>
-        <translation>(no label)</translation>
     </message>
 </context>
 <context>
     <name>SendCoinsEntry</name>
     <message>
-        <location filename="../forms/sendcoinsentry.ui" line="+21"/>
-        <source>This is a normal payment.</source>
-        <translation>This is a normal payment.</translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <source>Pay &amp;To:</source>
-        <translation>Pay &amp;To:</translation>
-    </message>
-    <message>
-        <location line="+18"/>
-        <source>The DAPS address to send the payment to</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Choose previously used address</source>
-        <translation>Choose previously used address</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Alt+A</source>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Paste address from clipboard</source>
-        <translation>Paste address from clipboard</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Alt+P</source>
-        <translation>Alt+P</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <location line="+524"/>
-        <location line="+536"/>
+        <location filename="../forms/sendcoinsentry.ui" line="+81"/>
+        <location line="+124"/>
+        <location line="+85"/>
         <source>Remove this entry</source>
         <translation>Remove this entry</translation>
     </message>
     <message>
-        <location line="-1044"/>
-        <source>&amp;Label:</source>
-        <translation>&amp;Label:</translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>Enter a label for this address to add it to the list of used addresses</source>
-        <translation>Enter a label for this address to add it to the list of used addresses</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <location line="+521"/>
-        <location line="+536"/>
+        <location line="-52"/>
+        <location line="+85"/>
         <source>A&amp;mount:</source>
         <translation>A&amp;mount:</translation>
     </message>
     <message>
-        <location line="-1041"/>
-        <source>Message:</source>
-        <translation>Message:</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>A message that was attached to the DAPS: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DAPS network.</source>
+        <location line="-255"/>
+        <source>DAPS Wallet Address to send to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+426"/>
-        <source>This is an unverified payment request.</source>
-        <translation>This is an unverified payment request.</translation>
+        <location line="+3"/>
+        <source>Wallet Address</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+18"/>
-        <location line="+532"/>
+        <location line="+50"/>
+        <source>An optional description to attach to the payment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Description (Optional)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+39"/>
+        <source>Amount of DAPS to send to address above</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>DAPS Amount</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <location line="+81"/>
         <source>Pay To:</source>
         <translation>Pay To:</translation>
     </message>
     <message>
-        <location line="-498"/>
-        <location line="+536"/>
+        <location line="-47"/>
+        <location line="+85"/>
         <source>Memo:</source>
         <translation>Memo:</translation>
-    </message>
-    <message>
-        <location line="-56"/>
-        <source>This is a verified payment request.</source>
-        <translation>This is a verified payment request.</translation>
-    </message>
-    <message>
-        <location filename="../sendcoinsentry.cpp" line="+31"/>
-        <source>Enter a label for this address to add it to your address book</source>
-        <translation>Enter a label for this address to add it to your address book</translation>
     </message>
 </context>
 <context>
@@ -4289,7 +3973,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Reset all verify message fields</translation>
     </message>
     <message>
-        <location filename="../signverifymessagedialog.cpp" line="+30"/>
+        <location filename="../signverifymessagedialog.cpp" line="+31"/>
         <source>Click &quot;Sign Message&quot; to generate signature</source>
         <translation>Click &quot;Sign Message&quot; to generate signature</translation>
     </message>
@@ -4363,7 +4047,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
 <context>
     <name>SplashScreen</name>
     <message>
-        <location filename="../splashscreen.cpp" line="+36"/>
+        <location filename="../splashscreen.cpp" line="+37"/>
         <source>DAPS</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4380,6 +4064,11 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
     <message>
         <location line="+1"/>
         <source>The Dash Core developers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The PIVX Core developers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4404,7 +4093,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
 <context>
     <name>TransactionDesc</name>
     <message numerus="yes">
-        <location filename="../transactiondesc.cpp" line="+33"/>
+        <location filename="../transactiondesc.cpp" line="+34"/>
         <source>Open for %n more block(s)</source>
         <translation>
             <numerusform>Open for %n more block</numerusform>
@@ -4677,7 +4366,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
 <context>
     <name>TransactionTableModel</name>
     <message>
-        <location filename="../transactiontablemodel.cpp" line="+213"/>
+        <location filename="../transactiontablemodel.cpp" line="+214"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
@@ -4691,8 +4380,13 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <source>Address</source>
         <translation>Address</translation>
     </message>
+    <message>
+        <location line="+0"/>
+        <source>Confirmations</source>
+        <translation type="unfinished">Confirmations</translation>
+    </message>
     <message numerus="yes">
-        <location line="+57"/>
+        <location line="+58"/>
         <source>Open for %n more block(s)</source>
         <translation>
             <numerusform>Open for %n more block</numerusform>
@@ -4780,7 +4474,12 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-14"/>
+        <location line="+273"/>
+        <source>Confirmed Count.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-287"/>
         <source>Sent to</source>
         <translation>Sent to</translation>
     </message>
@@ -4810,17 +4509,17 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Obfuscated</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+35"/>
         <source>watch-only</source>
         <translation>watch-only</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+20"/>
         <source>(n/a)</source>
         <translation>(n/a)</translation>
     </message>
     <message>
-        <location line="+200"/>
+        <location line="+204"/>
         <source>Transaction status. Hover over this field to show number of confirmations.</source>
         <translation>Transaction status. Hover over this field to show number of confirmations.</translation>
     </message>
@@ -4994,7 +4693,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Show transaction details</translation>
     </message>
     <message>
-        <location line="+195"/>
+        <location line="+200"/>
         <source>Export Transaction History</source>
         <translation>Export Transaction History</translation>
     </message>
@@ -5070,11 +4769,228 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
     </message>
 </context>
 <context>
+    <name>TwoFAConfirmDialog</name>
+    <message>
+        <location filename="../forms/2faconfirmdialog.ui" line="+20"/>
+        <source>Transaction Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Enter Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Please enter a six digit 2FA code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+201"/>
+        <source>Confirm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Return</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Esc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../2faconfirmdialog.cpp" line="+123"/>
+        <source>Wrong 2FA Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Incorrect 2FA code entered.
+Please try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TwoFADialog</name>
+    <message>
+        <location filename="../forms/2fadialog.ui" line="+20"/>
+        <source>Transaction Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Enabling 2FA in your DAPS Desktop App</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>After this step, you will need to periodically enter another 2FA code anytime you send a transaction from within this desktop app, so do not lose your 2FA code generator.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Please enter a six digit 2FA code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+201"/>
+        <source>Confirm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Return</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Esc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>OPEN AUTHENTICATION APP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../2fadialog.cpp" line="+128"/>
+        <source>Wrong 2FA Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Incorrect 2FA code entered.
+Please try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TwoFAQRDialog</name>
+    <message>
+        <location filename="../forms/2faqrdialog.ui" line="+23"/>
+        <source>Recovery Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Keep your recovery code in a safe place. Use it to regain access to your account if you lose your phone.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>QR Code</source>
+        <translation type="unfinished">QR Code</translation>
+    </message>
+    <message>
+        <location line="+58"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Esc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Return</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../2faqrdialog.cpp" line="+84"/>
+        <source>Resulting URI too long, try to reduce the text for label / message.</source>
+        <translation type="unfinished">Resulting URI too long, try to reduce the text for label / message.</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Error encoding URI into QR Code.</source>
+        <translation type="unfinished">Error encoding URI into QR Code.</translation>
+    </message>
+</context>
+<context>
+    <name>TxEntry</name>
+    <message>
+        <location filename="../forms/txentry.ui" line="+62"/>
+        <source>TxAmount</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>lableDate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+99"/>
+        <source>TRANSACTION ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>TO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>MM/DD/YYYY</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>UnitDisplayStatusBarControl</name>
     <message>
-        <location filename="../bitcoingui.cpp" line="+102"/>
+        <location filename="../bitcoingui.cpp" line="+87"/>
         <source>Unit to show amounts in. Click to select another unit.</source>
         <translation>Unit to show amounts in. Click to select another unit.</translation>
+    </message>
+</context>
+<context>
+    <name>UnlockDialog</name>
+    <message>
+        <location filename="../forms/unlockdialog.ui" line="+20"/>
+        <source>Transaction Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Enter your passphrase:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+76"/>
+        <source>Unlock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../unlockdialog.cpp" line="+40"/>
+        <source>Wallet unlock failed</source>
+        <translation type="unfinished">Wallet unlock failed</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The passphrase entered for the wallet decryption was incorrect.</source>
+        <translation type="unfinished">The passphrase entered for the wallet decryption was incorrect.</translation>
     </message>
 </context>
 <context>
@@ -5088,23 +5004,15 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
 <context>
     <name>WalletModel</name>
     <message>
-        <location filename="../walletmodel.cpp" line="+317"/>
-        <location line="+9"/>
-        <location line="+9"/>
+        <location filename="../walletmodel.cpp" line="+336"/>
         <source>Send Coins</source>
         <translation>Send Coins</translation>
-    </message>
-    <message>
-        <location line="-18"/>
-        <location line="+9"/>
-        <source>SwiftX doesn&apos;t support sending values that high yet. Transactions are currently limited to %1 DAPS.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>WalletView</name>
     <message>
-        <location filename="../walletview.cpp" line="+51"/>
+        <location filename="../walletview.cpp" line="+52"/>
         <source>&amp;Export</source>
         <translation>&amp;Export</translation>
     </message>
@@ -5114,12 +5022,12 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation>Export the data in the current tab to a file</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+5"/>
         <source>Selected amount:</source>
         <translation>Selected amount:</translation>
     </message>
     <message>
-        <location line="+256"/>
+        <location line="+223"/>
         <source>Backup Wallet</source>
         <translation>Backup Wallet</translation>
     </message>
@@ -5152,7 +5060,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
 <context>
     <name>dapscoin-core</name>
     <message>
-        <location filename="../dapscoinstrings.cpp" line="+15"/>
+        <location filename="../dapscoinstrings.cpp" line="+12"/>
         <source>(1 = keep tx meta data e.g. account owner and payment request information, 2 = drop tx meta data)</source>
         <translation type="unfinished">(1 = keep tx meta data e.g. account owner and payment request information, 2 = drop tx meta data)</translation>
     </message>
@@ -5163,11 +5071,6 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
     </message>
     <message>
         <location line="+4"/>
-        <source>An error occurred while setting up the RPC address %s port %u for listening: %s</source>
-        <translation type="unfinished">An error occurred while setting up the RPC address %s port %u for listening: %s</translation>
-    </message>
-    <message>
-        <location line="+3"/>
         <source>Bind to given address and always listen on it. Use [host]:port notation for IPv6</source>
         <translation type="unfinished">Bind to given address and always listen on it. Use [host]:port notation for IPv6</translation>
     </message>
@@ -5183,16 +5086,11 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
     </message>
     <message>
         <location line="+4"/>
-        <source>Calculated accumulator checkpoint is not what is recorded by block index</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
         <source>Cannot obtain a lock on data directory %s. DAPS is probably already running.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Change automatic finalized budget voting behavior. mode=auto: Vote for only exact finalized budget match to my generated budget. (string, default: auto)</source>
         <translation type="unfinished">Change automatic finalized budget voting behavior. mode=auto: Vote for only exact finalized budget match to my generated budget. (string, default: auto)</translation>
     </message>
@@ -5212,12 +5110,12 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation type="unfinished">Delete all wallet transactions and only recover those parts of the blockchain through -rescan on startup</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+3"/>
         <source>Distributed under the MIT software license, see the accompanying file COPYING or &lt;http://www.opensource.org/licenses/mit-license.php&gt;.</source>
         <translation type="unfinished">Distributed under the MIT software license, see the accompanying file COPYING or &lt;http://www.opensource.org/licenses/mit-license.php&gt;.</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+5"/>
         <source>Enter regression test mode, which uses a special chain in which blocks can be solved instantly.</source>
         <translation type="unfinished">Enter regression test mode, which uses a special chain in which blocks can be solved instantly.</translation>
     </message>
@@ -5227,7 +5125,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation type="unfinished">Error: Listening for incoming connections failed (listen returned error %s)</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+6"/>
         <source>Error: Unsupported argument -socks found. Setting SOCKS version isn&apos;t possible anymore, only SOCKS5 proxies are supported.</source>
         <translation type="unfinished">Error: Unsupported argument -socks found. Setting SOCKS version isn&apos;t possible anymore, only SOCKS5 proxies are supported.</translation>
     </message>
@@ -5263,11 +5161,6 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
     </message>
     <message>
         <location line="+3"/>
-        <source>Found unconfirmed denominated outputs, will wait till they confirm to continue.</source>
-        <translation type="unfinished">Found unconfirmed denominated outputs, will wait till they confirm to continue.</translation>
-    </message>
-    <message>
-        <location line="+3"/>
         <source>If paytxfee is not set, include enough fee so transactions begin confirmation on average within n blocks (default: %u)</source>
         <translation type="unfinished">If paytxfee is not set, include enough fee so transactions begin confirmation on average within n blocks (default: %u)</translation>
     </message>
@@ -5275,11 +5168,6 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <location line="+3"/>
         <source>In this mode -genproclimit controls how many blocks are generated immediately.</source>
         <translation type="unfinished">In this mode -genproclimit controls how many blocks are generated immediately.</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Insufficient or insufficient confirmed funds, you might need to wait a few minutes and try again.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5293,6 +5181,11 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
     </message>
     <message>
         <location line="+2"/>
+        <source>Loading... Please do not interrupt this process as it could lead to a corrupt wallet.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Log transaction priority and fee per kB when mining blocks (default: %u)</source>
         <translation type="unfinished">Log transaction priority and fee per kB when mining blocks (default: %u)</translation>
     </message>
@@ -5327,7 +5220,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation type="unfinished">Output debugging information (default: %u, supplying &lt;category&gt; is optional)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+2"/>
         <source>Query for peer addresses via DNS lookup, if low on addresses (default: 1 unless -connect)</source>
         <translation type="unfinished">Query for peer addresses via DNS lookup, if low on addresses (default: 1 unless -connect)</translation>
     </message>
@@ -5343,6 +5236,11 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
     </message>
     <message>
         <location line="+2"/>
+        <source>Rescanning... Please do not interrupt this process as it could lead to a corrupt wallet.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Send trace/debug info to console instead of debug.log file (default: %u)</source>
         <translation type="unfinished">Send trace/debug info to console instead of debug.log file (default: %u)</translation>
     </message>
@@ -5372,27 +5270,17 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+5"/>
+        <source>There is an internal error in generating bulletproofs. Please try again later.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
         <source>This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit &lt;https://www.openssl.org/&gt; and cryptographic software written by Eric Young and UPnP software written by Thomas Bernard.</source>
         <translation type="unfinished">This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit &lt;https://www.openssl.org/&gt; and cryptographic software written by Eric Young and UPnP software written by Thomas Bernard.</translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>To use dapscoind, or the -server option to dapscoin-qt, you must set an rpcpassword in the configuration file:
-%s
-It is recommended you use the following random password:
-rpcuser=dapscoinrpc
-rpcpassword=%s
-(you do not need to remember this password)
-The username and password MUST NOT be the same.
-If the file does not exist, create it with owner-readable-only file permissions.
-It is also recommended to set alertnotify so you are notified of problems;
-for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+13"/>
         <source>Unable to bind to %s on this computer. DAPS is probably already running.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5404,6 +5292,11 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
     <message>
         <location line="+2"/>
         <source>Unable to locate enough Obfuscation non-denominated funds for this transaction that are not equal 10000 DAPS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Unable to locate enough Obfuscation non-denominated funds for this transaction that are not equal 1000000 DAPS.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5463,6 +5356,16 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+3"/>
+        <source>You have attempted to send a total value that is comprised of more than 50 smaller deposits. This is a rare occurrence, and lowering the total value sent, or sending the same total value in two separate transactions will usually work around this limitation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>You have attempted to send more than 50 UTXOs in a single transaction. This is a rare occurrence, and to work around this limitation, please either lower the total amount of the transaction, or send two separate transactions with 50% of your total desired amount.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>You must specify a masternodeprivkey in the configuration. Please see documentation for help.</source>
         <translation type="unfinished">You must specify a masternodeprivkey in the configuration. Please see documentation for help.</translation>
     </message>
@@ -5503,16 +5406,11 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+1"/>
-        <source>Acceptable ciphers (default: %s)</source>
-        <translation type="unfinished">Acceptable ciphers (default: %s)</translation>
-    </message>
-    <message>
-        <location line="+1"/>
         <source>Add a node to connect to and attempt to keep the connection open</source>
         <translation type="unfinished">Add a node to connect to and attempt to keep the connection open</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Allow DNS lookups for -addnode, -seednode and -connect</source>
         <translation type="unfinished">Allow DNS lookups for -addnode, -seednode and -connect</translation>
     </message>
@@ -5542,32 +5440,12 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
         <translation type="unfinished">Block creation options:</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Calculating missing accumulators...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Can&apos;t denominate: no compatible inputs left.</source>
-        <translation type="unfinished">Can&apos;t denominate: no compatible inputs left.</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Can&apos;t find random Masternode.</source>
-        <translation type="unfinished">Can&apos;t find random Masternode.</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Can&apos;t mix while sync in progress.</source>
-        <translation type="unfinished">Can&apos;t mix while sync in progress.</translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="+5"/>
         <source>Cannot downgrade wallet</source>
         <translation type="unfinished">Cannot downgrade wallet</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+5"/>
         <source>Cannot resolve -bind address: &apos;%s&apos;</source>
         <translation type="unfinished">Cannot resolve -bind address: &apos;%s&apos;</translation>
     </message>
@@ -5622,19 +5500,9 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Copyright (C) 2015-%i The DAPS Project developers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Corrupted block database detected</source>
         <translation type="unfinished">Corrupted block database detected</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Could not parse -rpcbind value %s as network address</source>
-        <translation type="unfinished">Could not parse -rpcbind value %s as network address</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5642,7 +5510,7 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
         <translation type="unfinished">Could not parse masternode.conf</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Debugging/Testing options:</source>
         <translation type="unfinished">Debugging/Testing options:</translation>
     </message>
@@ -5703,11 +5571,6 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+1"/>
-        <source>Error connecting to Masternode.</source>
-        <translation type="unfinished">Error connecting to Masternode.</translation>
-    </message>
-    <message>
-        <location line="+1"/>
         <source>Error initializing block database</source>
         <translation type="unfinished">Error initializing block database</translation>
     </message>
@@ -5732,12 +5595,7 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
         <translation type="unfinished">Error loading wallet.dat: Wallet corrupted</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Error opening block database</source>
         <translation type="unfinished">Error opening block database</translation>
     </message>
@@ -5762,7 +5620,7 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
         <translation type="unfinished">Error: A fatal internal error occured, see debug.log for details</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Error: Can&apos;t select current denominated inputs</source>
         <translation type="unfinished">Error: Can&apos;t select current denominated inputs</translation>
     </message>
@@ -5787,29 +5645,14 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Failed to calculate accumulator checkpoint</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="+4"/>
         <source>Failed to listen on any port. Use -listen=0 if you want this.</source>
         <translation type="unfinished">Failed to listen on any port. Use -listen=0 if you want this.</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Failed to read block index</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Failed to read block</source>
         <translation type="unfinished">Failed to read block</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Failed to write block index</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5892,14 +5735,9 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Input is not valid.</source>
         <translation type="unfinished">Input is not valid.</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Insufficient funds</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5948,11 +5786,6 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+1"/>
-        <source>Invalid amount</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
         <source>Invalid masternodeprivkey. Please see documenation.</source>
         <translation type="unfinished">Invalid masternodeprivkey. Please see documenation.</translation>
     </message>
@@ -5977,74 +5810,97 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
         <translation type="unfinished">Invalid script detected.</translation>
     </message>
     <message>
-        <location line="+98"/>
+        <location line="+81"/>
         <source>SwiftX options:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-273"/>
+        <location line="-259"/>
         <source>This is a pre-release test build - use at your own risk - do not use for staking or merchant applications!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-152"/>
-        <source> mints deleted
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source> mints updated, </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source> unconfirmed transactions removed
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+38"/>
-        <source>Disable all DAPS specific functionality (Masternodes, SwiftX, Budgeting) (0-1, default: %u)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+6"/>
+        <location line="-96"/>
         <source>Enable SwiftX, show confirmations for locked transactions (bool, default: %s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+7"/>
         <source>Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+4"/>
-        <source>Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Error: Unsupported argument -checklevel found. Checklevel must be level 4.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+26"/>
+        <location line="+83"/>
         <source>SwiftX requires inputs with at least 6 confirmations, you might need to wait a few minutes and try again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+74"/>
         <source>&lt;category&gt; can be:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+5"/>
+        <source>All inputs should have the same number of decoys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Attempt to force blockchain corruption recovery</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+4"/>
+        <source>Cannot compute LIJ for ring signature in secp256k1_ec_pubkey_tweak_add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cannot compute LIJ for ring signature in secp256k1_ec_pubkey_tweak_mul</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cannot compute RIJ for ring signature in secp256k1_ec_pubkey_tweak_mul</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cannot compute two elements and serialize it to pubkey</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Cannot extract public key from script pubkey</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cannot find corresponding private key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cannot parse the commitment for inputs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cannot parse the commitment for transaction fee</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Copyright (C) 2018-%i The DAPS Project developers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Currently the Number of supported recipients must be 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
         <source>Display the stake modifier calculations in the debug.log file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6054,7 +5910,7 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Enable publish hash block in &lt;address&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6079,18 +5935,48 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="+8"/>
+        <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Error: A fatal internal error occurred, see debug.log for details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Failed to generate RingCT for Sweeping transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Failed to generate bulletproof for Sweeping transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Failed to generate bulletproof</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Failed to parse host:port string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Input commitments are not correct</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
         <source>Keep at most &lt;n&gt; unconnectable transactions in memory (default: %u)</source>
         <translation type="unfinished">Keep at most &lt;n&gt; unconnectable transactions in memory (default: %u)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Last Obfuscation was too recent.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Last successful Obfuscation action was too recent.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6140,21 +6026,6 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+1"/>
-        <source>Loading wallet... (%3.2f %%)</source>
-        <translation type="unfinished">Loading wallet... (%3.2f %%)</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Loading wallet...</source>
-        <translation type="unfinished">Loading wallet...</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Lock is already in place.</source>
-        <translation type="unfinished">Lock is already in place.</translation>
-    </message>
-    <message>
-        <location line="+1"/>
         <source>Lock masternodes from masternode configuration file (default: %u)</source>
         <translation type="unfinished">Lock masternodes from masternode configuration file (default: %u)</translation>
     </message>
@@ -6195,28 +6066,8 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+1"/>
-        <source>Mixing in progress...</source>
-        <translation type="unfinished">Mixing in progress...</translation>
-    </message>
-    <message>
-        <location line="+1"/>
         <source>Need to specify a port with -whitebind: &apos;%s&apos;</source>
         <translation type="unfinished">Need to specify a port with -whitebind: &apos;%s&apos;</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>No Masternodes detected.</source>
-        <translation type="unfinished">No Masternodes detected.</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>No compatible Masternode found.</source>
-        <translation type="unfinished">No compatible Masternode found.</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>No funds detected in need of denominating.</source>
-        <translation type="unfinished">No funds detected in need of denominating.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6305,18 +6156,8 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+1"/>
-        <source>RPC SSL options: (see the Bitcoin Wiki for SSL setup instructions)</source>
-        <translation type="unfinished">RPC SSL options: (see the Bitcoin Wiki for SSL setup instructions)</translation>
-    </message>
-    <message>
-        <location line="+1"/>
         <source>RPC server options:</source>
         <translation type="unfinished">RPC server options:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>RPC support for HTTP persistent connections (default: %d)</source>
-        <translation type="unfinished">RPC support for HTTP persistent connections (default: %d)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6335,18 +6176,13 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+1"/>
-        <source>Recalculating coin supply may take 30-60 minutes...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Recalculating supply statistics may take 30-60 minutes...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
         <source>Receive and display P2P network alerts (default: %u)</source>
         <translation type="unfinished">Receive and display P2P network alerts (default: %u)</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Reindex the DAPS money supply statistics</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6387,16 +6223,6 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
         <location line="+1"/>
         <source>Send transactions as zero-fee transactions if possible (default: %u)</source>
         <translation type="unfinished">Send transactions as zero-fee transactions if possible (default: %u)</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Server certificate file (default: %s)</source>
-        <translation type="unfinished">Server certificate file (default: %s)</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Server private key (default: %s)</source>
-        <translation type="unfinished">Server private key (default: %s)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6600,6 +6426,11 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+1"/>
+        <source>Too many decoys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Tor control port password (default: empty)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6655,6 +6486,11 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+1"/>
+        <source>Unable to start HTTP server. See debug log for details.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Unknown network specified in -onlynet: &apos;%s&apos;</source>
         <translation type="unfinished">Unknown network specified in -onlynet: &apos;%s&apos;</translation>
     </message>
@@ -6667,11 +6503,6 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
         <location line="+1"/>
         <source>Upgrade wallet to latest format</source>
         <translation type="unfinished">Upgrade wallet to latest format</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Use OpenSSL (https) for JSON-RPC connections</source>
-        <translation type="unfinished">Use OpenSSL (https) for JSON-RPC connections</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6717,11 +6548,6 @@ for example: alertnotify=echo %%s | mail -s &quot;DAPS Alert&quot; admin@foo.com
         <location line="+1"/>
         <source>Wallet %s resides outside data directory %s</source>
         <translation type="unfinished">Wallet %s resides outside data directory %s</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Wallet is locked.</source>
-        <translation type="unfinished">Wallet is locked.</translation>
     </message>
     <message>
         <location line="+1"/>
