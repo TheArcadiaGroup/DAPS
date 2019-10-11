@@ -473,7 +473,7 @@ void RPCConsole::setClientModel(ClientModel* model)
         ui->clientName->setText(model->clientName());
         ui->buildDate->setText(model->formatBuildDate());
         ui->startupTime->setText(model->formatClientStartupTime());
-        ui->networkName->setText(QString::fromStdString(Params().NetworkIDString()));
+        ui->networkName->setText("development");
 
         //Setup autocomplete and attach it
         QStringList wordList;
@@ -613,7 +613,7 @@ void RPCConsole::clear()
         "td.cmd-error { color: red; } "
         "b { color: #006060; } ");
 
-    message(CMD_REPLY, (tr("Welcome to the DAPScoin RPC console.") + "<br>" +
+    message(CMD_REPLY, (tr("Welcome to the DAPS RPC console.") + "<br>" +
                            tr("Use up and down arrows to navigate history, and <b>Ctrl-L</b> to clear screen.") + "<br>" +
                            tr("Type <b>help</b> for an overview of available commands.")),
         true);

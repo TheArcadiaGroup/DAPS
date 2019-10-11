@@ -31,7 +31,7 @@
 #include <QTextStream>
 #include <QProcess>
 
-bool TxCompare (std::map<QString, QString> i, std::map<QString, QString> j) {
+bool TxCompare (std::map<QString, QString> i, std::map<QString, QString> j) { 
     QString str_i = i.at("date");
     QString str_j = j.at("date");
     QDateTime date_i = QDateTime::fromString(str_i,"MM/dd/yy hh:mm");
@@ -106,7 +106,7 @@ void HistoryPage::connectWidgets() //add functions to widget signals
     connect(timeEditTo, SIGNAL(timeChanged(const QTime&)), this, SLOT(updateFilter()));
 }
 
-void HistoryPage::on_cellClicked(int row, int column)
+void HistoryPage::on_cellClicked(int row, int column) 
 {
     //1 is column index for type
     QTableWidgetItem* cell = ui->tableView->item(row, 1);
@@ -169,13 +169,13 @@ void HistoryPage::on_cellClicked(int row, int column)
         if (stdType == "Minted") {
             privkeyFound = false;
             txdlgMsg = "Minted transactions do not have a PrivKey";
-        }
+        }    
         if (pwalletMain->IsLocked()) {
             privkeyFound = false;
             txdlgMsg = "Wallet must be unlocked to view PrivKey";
         }
         if (!privkeyFound) txdlg.setTxPrivKey(std::string(txdlgMsg).c_str());
-
+        
         txdlg.exec();
     }
 }
