@@ -2013,7 +2013,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
                 REJECT_NONSTANDARD, "bad-txns-too-many-sigops");
 
         CAmount nValueOut = tx.GetValueOut();
-        CAmount nFees = nValueIn - nValueOut;
+        CAmount nFees = tx.nTxFee;
         double dPriority = GetPriority(tx, chainActive.Height());
 
         CTxMemPoolEntry entry(tx, nFees, GetTime(), dPriority, chainActive.Height());
