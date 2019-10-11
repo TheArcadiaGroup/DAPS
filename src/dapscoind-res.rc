@@ -16,8 +16,8 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "DAPScoin"
-            VALUE "FileDescription",    "dapscoind (OSS daemon/client for Dapscoin)"
+            VALUE "CompanyName",        "DAPS"
+            VALUE "FileDescription",    "dapscoind (OSS daemon/client for DAPS)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
             VALUE "InternalName",       "dapscoind"
             VALUE "LegalCopyright",     COPYRIGHT_STR

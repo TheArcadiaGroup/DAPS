@@ -109,7 +109,7 @@ std::string to_internal(const std::string&);
 
 using namespace std;
 
-// DAPScoin only features
+// DAPS only features
 // Masternode
 bool fMasterNode = false;
 string strMasterNodePrivKey = "";
@@ -233,7 +233,7 @@ bool LogAcceptCategory(const char* category)
             const vector<string>& categories = mapMultiArgs["-debug"];
             ptrCategory.reset(new set<string>(categories.begin(), categories.end()));
             // thread_specific_ptr automatically deletes the set when the thread ends.
-            // "dapscoin" is a composite category enabling all DAPScoin-related debug output
+            // "dapscoin" is a composite category enabling all DAP-related debug output
             if (ptrCategory->count(string("dapscoin"))) {
                 ptrCategory->insert(string("obfuscation"));
                 ptrCategory->insert(string("swiftx"));

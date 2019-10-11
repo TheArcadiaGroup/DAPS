@@ -31,7 +31,7 @@
 #include <boost/thread/exceptions.hpp>
 #include "pubkey.h"
 
-//DAPScoin only features
+//DAPS only features
 
 extern bool fMasterNode;
 extern bool fLiteMode;
