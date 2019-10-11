@@ -1,4 +1,4 @@
-DAPScoin Core Daemon Management
+DAPS Core Daemon Management
 =====================================
 
 The strucutre and approach has changed to handle the daemon kick off, exewcution, status (inquire), restart and stop.  The sole bash script is no longer deploy.sh.  Currently, the inspect.sh is repsonsible for the following commands:
@@ -15,10 +15,7 @@ The strucutre and approach has changed to handle the daemon kick off, exewcution
    * ~~prooftest.sh is a demonstration and proof~~ 
    * ~~deply.sh is the end target deployment script for daemon excution and manage~~ 
 
-
-[![Build Status](https://travis-ci.org/DAPScoin-Project/DAPScoin.svg?branch=master)](https://travis-ci.org/DAPScoin-Project/DAPScoin) [![GitHub version](https://badge.fury.io/gh/DAPScoin-Project%2FDAPScoin.svg)](https://badge.fury.io/gh/DAPScoin-Project%2FDAPScoin)
-
-DAPScoin is a cutting edge cryptocurrency, with many features not available in most other cryptocurrencies.
+DAPS is a cutting edge cryptocurrency, with many features not available in most other cryptocurrencies.
 - Anonymized transactions using coin mixing technology, we call it _Obfuscation_.
 - Fast transactions featuring guaranteed zero confirmation transactions, we call it _SwiftTX_.
 - Decentralized blockchain voting providing for consensus based advancement of the current Masternode
