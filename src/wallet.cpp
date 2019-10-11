@@ -808,6 +808,13 @@ void CWallet::AddToSpends(const uint256& wtxid)
             continue;
         }
     }
+
+    if (thisTx.IsCoinStake()) {
+        COutPoint prevout = thisTx.vin[0].prevout;
+        AddToSpends(prevout, wtxid);
+        std::string outpoint = prevout.hash.GetHex() + std::to_string(prevout.n);
+        outpointToKeyImages[outpoint] = thisTx.vin[0].keyImage;
+    }
 }
 
 bool CWallet::isMatchMyKeyImage(const CKeyImage& ki, const COutPoint& out)

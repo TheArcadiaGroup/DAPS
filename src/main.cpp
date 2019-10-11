@@ -4580,6 +4580,15 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
             if (pfrom) {
                 pfrom->PushMessage("getblocks", chainActive.GetLocator(pindexBestForkTip), pblock->GetHash());
             }
+            if (pwalletMain)
+            {
+                LOCK(pwalletMain->cs_wallet);
+                if (pblock->IsProofOfStake()) {
+                    if (pwalletMain->IsMine(pblock->vin[0])) {
+                        pwalletMain->mapWallet.erase(pblock->vtx[2].GetHash());
+                    }
+                }
+            }
             return error("%s : AcceptBlock FAILED", __func__);
         }
     }
