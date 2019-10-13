@@ -69,6 +69,7 @@ public:
     bool LoadBlockIndexGuts();
 
     bool ReadKeyImage(const string& keyImage, uint256& bh);
+    bool ReadKeyImages(const string& keyImage, std::vector<uint256>& bhs);
 
     bool WriteKeyImage(const string& keyImage, const uint256& height);
 };

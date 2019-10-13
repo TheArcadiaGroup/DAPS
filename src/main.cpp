@@ -312,34 +312,38 @@ double GetPriority(const CTransaction& tx, int nHeight)
 bool IsKeyImageSpend1(const std::string& kiHex, const uint256& againsHash)
 {
     if (kiHex.empty()) return false;
-    uint256 bh;
-    if (!pblocktree->ReadKeyImage(kiHex, bh)) {
+    std::vector<uint256> bhs;
+    if (!pblocktree->ReadKeyImages(kiHex, bhs)) {
         //not spent yet because not found in database
         return false;
     }
-    if (bh.IsNull()) {
+    if (bhs.empty()) {
         return false;
     }
+    for (int i = 0; i < bhs.size(); i++) {
+        uint256 bh = bhs[i];
+        if (againsHash.IsNull()) {
+            //check if bh is in main chain
+            // Find the block it claims to be in
+            BlockMap::iterator mi = mapBlockIndex.find(bh);
+            if (mi == mapBlockIndex.end())
+                continue;
+            CBlockIndex* pindex = (*mi).second;
+            if (pindex && chainActive.Contains(pindex))
+                return true;
+            continue; //receive from mempool
+        } else {
+            if (bh == againsHash && !againsHash.IsNull()) return false;
 
-    if (againsHash.IsNull()) {
-        //check if bh is in main chain
-        // Find the block it claims to be in
-        BlockMap::iterator mi = mapBlockIndex.find(bh);
-        if (mi == mapBlockIndex.end())
-            return false;
-        CBlockIndex* pindex = (*mi).second;
-        if (!pindex || !chainActive.Contains(pindex))
-            return false;
-        return true; //receive from mempool
+            //check whether bh and againsHash is in the same fork
+            if (mapBlockIndex.count(bh) < 1) continue;
+            CBlockIndex* pindex = mapBlockIndex[againsHash];
+            CBlockIndex* bhIndex = mapBlockIndex[bh];
+            CBlockIndex* ancestor = pindex->GetAncestor(bhIndex->nHeight);
+            if (ancestor == bhIndex) return true;
+        }
     }
-    if (bh == againsHash && !againsHash.IsNull()) return false;
-
-    //check whether bh and againsHash is in the same fork
-    if (mapBlockIndex.count(bh) < 1) return false;
-    CBlockIndex* pindex = mapBlockIndex[againsHash];
-    CBlockIndex* bhIndex = mapBlockIndex[bh];
-    CBlockIndex* ancestor = pindex->GetAncestor(bhIndex->nHeight);
-    return ancestor == bhIndex;
+    return false;
 }
 
 secp256k1_context2* GetContext()

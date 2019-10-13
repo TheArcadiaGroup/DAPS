@@ -1426,7 +1426,13 @@ public:
             return false;
         if (!bSpendZeroConfChange || !IsFromMe(ISMINE_ALL)) // using wtx's cached debit
             return false;
-
+         // Don't trust unconfirmed transactions from us unless they are in the mempool.
+        {
+            LOCK(mempool.cs);
+            if (!mempool.exists(GetHash())) {
+                return false;
+            }
+        }
         // Trusted if all inputs are from us and are in the mempool:
         BOOST_FOREACH (const CTxIn& txin, vin) {
             // Transactions not sent by us: not trusted
