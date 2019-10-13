@@ -5902,7 +5902,28 @@ void CWallet::AutoCombineDust()
     if (stakingMode == StakingMode::STAKING_WITH_CONSOLIDATION) {
         if (fGenerateDapscoins && chainActive.Tip()->nHeight >= Params().LAST_POW_BLOCK()) {
             //sweeping to create larger UTXO for staking
-            CreateSweepingTransaction(MINIMUM_STAKE_AMOUNT, MINIMUM_STAKE_AMOUNT);
+            LOCK2(cs_main, cs_wallet);
+            vector<COutput> vCoins;
+            CAmount max = 0;
+            for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
+                const uint256& wtxid = it->first;
+                const CWalletTx* pcoin = &(*it).second;
+
+                int cannotSpend = 0;
+                {
+                    AvailableCoins(wtxid, pcoin, vCoins, cannotSpend, true);
+                    if (!vCoins.empty()) {
+                        for (const COutput& out : vCoins) {
+                            int64_t nTxTime = out.tx->GetTxTime();
+                            //add in-wallet minimum staking
+                            if (getCOutPutValue(out) >= max) {
+                                max = getCOutPutValue(out);
+                            }
+                        }
+                    }
+                }
+            }
+            CreateSweepingTransaction(MINIMUM_STAKE_AMOUNT, max + COIN);
         }
         return;
     }
