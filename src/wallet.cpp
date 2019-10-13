@@ -4298,13 +4298,13 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             nReward = PoSBlockReward();
             txNew.vout[1].nValue = nCredit;
             txNew.vout[2].nValue = nReward;
-            if (stakingMode == STAKING_WITH_CONSOLIDATION || STAKING_WITH_CONSOLIDATION_WITH_STAKING_NEWW_FUNDS) {
+            /*if (stakingMode == STAKING_WITH_CONSOLIDATION || STAKING_WITH_CONSOLIDATION_WITH_STAKING_NEWW_FUNDS) {
                 //the first output contains all funds (input + rewards + fee)
                 if (nCredit + nReward > (MINIMUM_STAKE_AMOUNT + 100000*COIN)*2) {
                     txNew.vout[1].nValue = (nCredit + nReward)/2;
                     txNew.vout[2].nValue = (nCredit + nReward) - txNew.vout[1].nValue;
                 }
-            }
+            }*/
 
             // Limit size
             unsigned int nBytes = ::GetSerializeSize(txNew, SER_NETWORK, PROTOCOL_VERSION);
