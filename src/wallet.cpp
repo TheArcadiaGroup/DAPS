@@ -5900,6 +5900,7 @@ void CWallet::AutoCombineDust()
     if (GetAdjustedTime() - lastTime < 60) return;
     LogPrintf("Creating a sweeping transaction\n");
     if (stakingMode == StakingMode::STAKING_WITH_CONSOLIDATION) {
+        if (IsLocked()) return false;
         if (fGenerateDapscoins && chainActive.Tip()->nHeight >= Params().LAST_POW_BLOCK()) {
             //sweeping to create larger UTXO for staking
             LOCK2(cs_main, cs_wallet);
