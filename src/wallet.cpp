@@ -2214,7 +2214,7 @@ bool CWallet::MintableCoins()
                         int64_t nTxTime = out.tx->GetTxTime();
                         //add in-wallet minimum staking
                         CAmount nVal = getCOutPutValue(out);
-                        if (GetAdjustedTime() - nTxTime > nStakeMinAge && nVal >= MINIMUM_STAKE_AMOUNT && nVal >= ((nBalance - nReserveBalance) * 60)/100)
+                        if (GetAdjustedTime() - nTxTime > nStakeMinAge && nVal >= MINIMUM_STAKE_AMOUNT && nVal >= ((nBalance - nReserveBalance) * 99)/100)
                             return true;
                     }
                 }
