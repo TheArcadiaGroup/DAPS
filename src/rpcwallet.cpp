@@ -2132,7 +2132,7 @@ UniValue getstakesplitthreshold(const UniValue& params, bool fHelp)
     return int(pwalletMain->nStakeSplitThreshold);
 }
 
-UniValue autocombinerewards(const UniValue& params, bool fHelp)
+UniValue autocombinedust(const UniValue& params, bool fHelp)
 {
     bool fEnable;
     if (params.size() >= 1)
@@ -2140,15 +2140,15 @@ UniValue autocombinerewards(const UniValue& params, bool fHelp)
 
     if (fHelp || params.size() < 1 || (fEnable && params.size() != 2) || params.size() > 2)
         throw runtime_error(
-            "autocombinerewards true|false ( threshold )\n"
+            "autocombinedust true|false ( threshold )\n"
             "\nWallet will automatically monitor for any coins with value below the threshold amount, and combine them if they reside with the same DAPS address\n"
-            "When autocombinerewards runs it will create a transaction, and therefore will be subject to transaction fees.\n"
+            "When autocombinedust runs it will create a transaction, and therefore will be subject to transaction fees. Minimum of 25 UTXOs.\n"
 
             "\nArguments:\n"
             "1. true|false      (boolean, required) Enable auto combine (true) or disable (false)\n"
             "2. threshold       (numeric, optional) Threshold amount (default: 0)\n"
             "\nExamples:\n" +
-            HelpExampleCli("autocombinerewards", "true 540") + HelpExampleRpc("autocombinerewards", "true 540"));
+            HelpExampleCli("autocombinedust", "true 540") + HelpExampleRpc("autocombinedust", "true 540"));
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
     CAmount nThreshold = 0;
