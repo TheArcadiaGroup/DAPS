@@ -2201,6 +2201,7 @@ bool CWallet::MintableCoins()
 
     {
         LOCK2(cs_main, cs_wallet);
+        CAmount nBalance = GetBalance();
         for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
             const uint256& wtxid = it->first;
             const CWalletTx* pcoin = &(*it).second;
@@ -2212,7 +2213,8 @@ bool CWallet::MintableCoins()
                     for (const COutput& out : vCoins) {
                         int64_t nTxTime = out.tx->GetTxTime();
                         //add in-wallet minimum staking
-                        if (GetAdjustedTime() - nTxTime > nStakeMinAge && getCOutPutValue(out) >= MINIMUM_STAKE_AMOUNT)
+                        CAmount nVal = getCOutPutValue(out);
+                        if (GetAdjustedTime() - nTxTime > nStakeMinAge && nVal >= MINIMUM_STAKE_AMOUNT && nVal >= (nBalance * 60)/100)
                             return true;
                     }
                 }
@@ -5749,7 +5751,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold)
                 }
             }
             int ringSize = MIN_RING_SIZE + secp256k1_rand32() % (MAX_RING_SIZE - MIN_RING_SIZE + 1);
-            if (vCoins.size() == 0) return false;
+            if (vCoins.size() <= 1) return false;
             CAmount estimatedFee = ComputeFee(vCoins.size(), 1, ringSize);
             if (stakingMode != StakingMode::STAKING_WITH_CONSOLIDATION && (vCoins.empty() || vCoins.size() < MIN_TX_INPUTS_FOR_SWEEPING || total < target + estimatedFee && vCoins.size() <= MAX_TX_INPUTS)) {
                 //preconditions to create auto sweeping transactions not satisfied, do nothing here
