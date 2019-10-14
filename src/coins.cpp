@@ -123,7 +123,6 @@ CCoinsModifier CCoinsViewCache::ModifyCoins(const uint256& txid)
             ret.first->second.coins.Clear();
             ret.first->second.flags = CCoinsCacheEntry::FRESH;
         } else if (ret.first->second.coins.IsPruned()) {
-            //std::cout << "Coin is pruned" << std::endl;
             // The parent view only has a pruned entry for this; mark it as fresh.
             ret.first->second.flags = CCoinsCacheEntry::FRESH;
         }
