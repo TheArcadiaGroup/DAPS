@@ -1184,7 +1184,7 @@ public:
         for (unsigned int i = 0; i < vout.size(); i++) {
         	//dont count if output is in mempool
         	COutPoint outpoint(hashTx, i);
-        	//if (pwallet->inSpendQueueOutpoints.count(outpoint) == 1) continue;
+        	if (pwallet->inSpendQueueOutpoints.count(outpoint) == 1) continue;
 
             if (!pwallet->IsSpent(hashTx, i)) {
                 const CTxOut& txout = vout[i];
