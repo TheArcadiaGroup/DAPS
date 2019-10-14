@@ -2142,7 +2142,7 @@ UniValue autocombinedust(const UniValue& params, bool fHelp)
         throw runtime_error(
             "autocombinedust true|false ( threshold )\n"
             "\nWallet will automatically monitor for any coins with value below the threshold amount, and combine them if they reside with the same DAPS address\n"
-            "When autocombinedust runs it will create a transaction, and therefore will be subject to transaction fees. Minimum of 25 UTXOs.\n"
+            "When autocombinedust runs it will create a transaction, and therefore will be subject to transaction fees. Minimum of 25 dust transactions before activation.\n"
 
             "\nArguments:\n"
             "1. true|false      (boolean, required) Enable auto combine (true) or disable (false)\n"
