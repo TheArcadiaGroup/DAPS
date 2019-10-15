@@ -2286,7 +2286,8 @@ StakingStatusError CWallet::StakingCoinStatus(CAmount& minFee, CAmount& maxFee)
 
                         {
                             COutPoint outpoint(wtxid, i);
-                            if (inSpendQueueOutpoints.count(outpoint)) {
+                            CKeyImage ki = FindKeyImage(outpoint);
+                            if (IsKeyImageInMempool(ki)) {
                                 continue;
                             }
                         }
@@ -2573,7 +2574,8 @@ bool CWallet::SelectCoins(bool needFee, CAmount& estimatedFee, int ringSize, int
 
                 {
                     COutPoint outpoint(wtxid, i);
-                    if (inSpendQueueOutpoints.count(outpoint)) {
+                    CKeyImage ki = FindKeyImage(outpoint);
+                    if (IsKeyImageInMempool(ki)) {
                         continue;
                     }
                 }
@@ -2604,6 +2606,42 @@ bool CWallet::SelectCoins(bool needFee, CAmount& estimatedFee, int ringSize, int
     return (SelectCoinsMinConf(needFee, estimatedFee, ringSize, numOut, nTargetValue, 1, 6, vCoins, setCoinsRet, nValueRet) ||
             SelectCoinsMinConf(needFee, estimatedFee, ringSize, numOut, nTargetValue, 1, 1, vCoins, setCoinsRet, nValueRet) ||
             (bSpendZeroConfChange && SelectCoinsMinConf(needFee, estimatedFee, ringSize, numOut, nTargetValue, 0, 1, vCoins, setCoinsRet, nValueRet)));
+}
+bool IsKeyImageInMempool(const CKeyImage& ki)
+{
+    {
+        LOCK(mempool.cs);
+        for (std::map<uint256, CTxMemPoolEntry>::const_iterator it = mempool.mapTx.begin(); it != mempool.mapTx.end(); ++it) {
+            const CTransaction& tx = it->second.GetTx();
+            for (size_t i = 0; i < tx.vin.size(); i++) {
+                if (tx.vin[i].keyImage.GetHex() == ki.GetHex())
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+
+CKeyImage CWallet::FindKeyImage(const COutPoint& op)
+{
+    std::string outpoint = op.hash.GetHex() + std::to_string(op.n);
+    if (outpointToKeyImages.count(outpoint) == 1 && outpointToKeyImages[outpoint].IsValid()) return outpointToKeyImages[outpoint];
+        
+    CKeyImage ki;
+    CWalletDB db(strWalletFile);
+    //reading key image
+    if (db.ReadKeyImage(outpoint, ki)) {
+        if (ki.IsFullyValid()) {
+            outpointToKeyImages[outpoint] = ki;
+            return ki;
+        }
+    }
+    CWalletTx wtxIn = mapWallet[op.hash];
+    if (generateKeyImage(wtxIn.vout[op.n].scriptPubKey, ki)) {
+        outpointToKeyImages[outpoint] = ki;
+        db.WriteKeyImage(outpoint, ki);
+    }
+    return ki;
 }
 
 struct CompareByPriority {
@@ -4168,7 +4206,8 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
                 {
                     COutPoint outpoint(out.tx->GetHash(), out.i);
-                    if (inSpendQueueOutpoints.count(outpoint)) {
+                    CKeyImage ki = FindKeyImage(outpoint);
+                    if (IsKeyImageInMempool(ki)) {
                         continue;
                     }
                 }
@@ -5494,7 +5533,8 @@ bool CWallet::SendAll(std::string des)
 
                     {
                         COutPoint outpoint(wtxid, i);
-                        if (inSpendQueueOutpoints.count(outpoint)) {
+                        CKeyImage ki = FindKeyImage(outpoint);
+                        if (IsKeyImageInMempool(ki)) {
                             continue;
                         }
                     }
@@ -5692,7 +5732,8 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold)
 
                     {
                         COutPoint outpoint(wtxid, i);
-                        if (inSpendQueueOutpoints.count(outpoint)) {
+                        CKeyImage ki = FindKeyImage(outpoint);
+                        if (IsKeyImageInMempool(ki)) {
                             continue;
                         }
 
@@ -5981,9 +6022,10 @@ bool CWallet::estimateStakingConsolidationFees(CAmount& minFee, CAmount& maxFee)
 
 					{
 						COutPoint outpoint(wtxid, i);
-						if (inSpendQueueOutpoints.count(outpoint)) {
-							continue;
-						}
+						CKeyImage ki = FindKeyImage(outpoint);
+                        if (IsKeyImageInMempool(ki)) {
+                            continue;
+                        }
 					}
 					vCoins.push_back(COutput(pcoin, i, nDepth, true));
 					total += decodedAmount;
