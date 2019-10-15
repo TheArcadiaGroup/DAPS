@@ -2214,7 +2214,7 @@ bool CWallet::MintableCoins()
                         int64_t nTxTime = out.tx->GetTxTime();
                         //add in-wallet minimum staking
                         CAmount nVal = getCOutPutValue(out);
-                        if (GetAdjustedTime() - nTxTime > nStakeMinAge && nVal >= MINIMUM_STAKE_AMOUNT && nVal >= ((nBalance - nReserveBalance) * 99)/100)
+                        if (GetAdjustedTime() - nTxTime > nStakeMinAge && nVal >= MINIMUM_STAKE_AMOUNT && nVal >= ((nBalance - nReserveBalance) * 9999)/10000)
                             return true;
                     }
                 }
@@ -2503,7 +2503,7 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
 void CWallet::resetPendingOutPoints()
 {
     LOCK2(cs_main, cs_wallet);
-    if (chainActive.Height() % 3 != 0 && !inSpendQueueOutpoints.empty()) return;
+    if (chainActive.Height() > 0 && !inSpendQueueOutpoints.empty()) return;
     {
         {
             LOCK(mempool.cs);
