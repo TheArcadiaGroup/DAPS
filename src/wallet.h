@@ -277,8 +277,8 @@ public:
     bool estimateStakingConsolidationFees(CAmount& min, CAmount& max);
     static int MaxTxSizePerTx();
     std::string GetTransactionType(const CTransaction& tx);
-    CKeyImage FindKeyImage(const COutPoint& op);
-    bool IsKeyImageInMempool(const CKeyImage& ki);
+    CKeyImage FindKeyImage(const COutPoint& op) const;
+    bool IsKeyImageInMempool(const CKeyImage& ki) const;
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
@@ -1186,8 +1186,8 @@ public:
         for (unsigned int i = 0; i < vout.size(); i++) {
         	//dont count if output is in mempool
         	COutPoint outpoint(hashTx, i);
-        	CKeyImage ki = pwalletMain->FindKeyImage(outpoint);
-            if (pwalletMain->IsKeyImageInMempool(ki)) {
+        	CKeyImage ki = pwallet->FindKeyImage(outpoint);
+            if (pwallet->IsKeyImageInMempool(ki)) {
                 continue;
             }
 

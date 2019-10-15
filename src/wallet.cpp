@@ -2607,7 +2607,7 @@ bool CWallet::SelectCoins(bool needFee, CAmount& estimatedFee, int ringSize, int
             SelectCoinsMinConf(needFee, estimatedFee, ringSize, numOut, nTargetValue, 1, 1, vCoins, setCoinsRet, nValueRet) ||
             (bSpendZeroConfChange && SelectCoinsMinConf(needFee, estimatedFee, ringSize, numOut, nTargetValue, 0, 1, vCoins, setCoinsRet, nValueRet)));
 }
-bool IsKeyImageInMempool(const CKeyImage& ki)
+bool IsKeyImageInMempool(const CKeyImage& ki) const
 {
     {
         LOCK(mempool.cs);
@@ -2622,7 +2622,7 @@ bool IsKeyImageInMempool(const CKeyImage& ki)
     return false;
 }
 
-CKeyImage CWallet::FindKeyImage(const COutPoint& op)
+CKeyImage CWallet::FindKeyImage(const COutPoint& op) const
 {
     std::string outpoint = op.hash.GetHex() + std::to_string(op.n);
     if (outpointToKeyImages.count(outpoint) == 1 && outpointToKeyImages[outpoint].IsValid()) return outpointToKeyImages[outpoint];
