@@ -5918,7 +5918,7 @@ void CWallet::AutoCombineDust()
                             //add in-wallet minimum staking
                             CAmount value = getCTxOutValue(*pcoin, out);
                             if (value >= max) {
-                                max = getCOutPutValue(out);
+                                max = value;
                             }
                         }
                     }
