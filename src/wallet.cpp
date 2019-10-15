@@ -5913,10 +5913,13 @@ void CWallet::AutoCombineDust()
 
                 int cannotSpend = 0;
                 {
-                    for (const COutput& out : vCoins) {
-                        //add in-wallet minimum staking
-                        if (getCOutPutValue(out) >= max) {
-                            max = getCOutPutValue(out);
+                    for (const CTxOut& out : pcoin->vout) {
+                        if (IsMine(out)) {
+                            //add in-wallet minimum staking
+                            CAmount value = getCTxOutValue(*pcoin, out);
+                            if (value >= max) {
+                                max = getCOutPutValue(out);
+                            }
                         }
                     }
                 }
