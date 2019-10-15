@@ -2609,6 +2609,7 @@ bool CWallet::SelectCoins(bool needFee, CAmount& estimatedFee, int ringSize, int
 }
 bool CWallet::IsKeyImageInMempool(const CKeyImage& ki) const
 {
+    if (!ki.IsValid()) return false;
     {
         LOCK(mempool.cs);
         for (std::map<uint256, CTxMemPoolEntry>::const_iterator it = mempool.mapTx.begin(); it != mempool.mapTx.end(); ++it) {
@@ -2624,10 +2625,11 @@ bool CWallet::IsKeyImageInMempool(const CKeyImage& ki) const
 
 CKeyImage CWallet::FindKeyImage(const COutPoint& op) const
 {
+    CKeyImage ki;
+    if (IsLocked()) return ki;
     std::string outpoint = op.hash.GetHex() + std::to_string(op.n);
     if (outpointToKeyImages.count(outpoint) == 1 && outpointToKeyImages[outpoint].IsValid()) return outpointToKeyImages[outpoint];
         
-    CKeyImage ki;
     CWalletDB db(strWalletFile);
     //reading key image
     if (db.ReadKeyImage(outpoint, ki)) {
