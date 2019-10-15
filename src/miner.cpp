@@ -744,7 +744,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
             }
             
         }
-        MilliSleep(50000);
+        MilliSleep(30000);
         //
         // Create new block
         //
@@ -756,9 +756,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
         }
         if (!pindexPrev)
             continue;
-        if (pindexPrev->nTime + 45 > GetAdjustedTime()) {
-            continue;
-        }   
+ 
         unique_ptr<CBlockTemplate> pblocktemplate(CreateNewBlockWithKey(reservekey, pwallet, fProofOfStake));
         if (!pblocktemplate.get())
             continue;
