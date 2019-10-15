@@ -2607,7 +2607,7 @@ bool CWallet::SelectCoins(bool needFee, CAmount& estimatedFee, int ringSize, int
             SelectCoinsMinConf(needFee, estimatedFee, ringSize, numOut, nTargetValue, 1, 1, vCoins, setCoinsRet, nValueRet) ||
             (bSpendZeroConfChange && SelectCoinsMinConf(needFee, estimatedFee, ringSize, numOut, nTargetValue, 0, 1, vCoins, setCoinsRet, nValueRet)));
 }
-bool IsKeyImageInMempool(const CKeyImage& ki) const
+bool CWallet::IsKeyImageInMempool(const CKeyImage& ki) const
 {
     {
         LOCK(mempool.cs);
