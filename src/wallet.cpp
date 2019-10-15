@@ -2511,12 +2511,24 @@ void CWallet::resetPendingOutPoints()
                 inSpendQueueOutpoints.clear();
                 for (std::map<uint256, CTxMemPoolEntry>::const_iterator it = mempool.mapTx.begin(); it != mempool.mapTx.end(); ++it) {
                     const CTransaction& tx = it->second.GetTx();
-                    for (size_t i = 0; i < tx.vin.size(); i++) {
-                        COutPoint prevout = findMyOutPoint(tx.vin[i]);
-                        if (prevout.hash.IsNull()) {
-                            break;
-                        } else {
-                            inSpendQueueOutpoints[prevout] = true;
+                    if (mapWallet.count(it->first) == 1) {
+                        bool spent = false;
+                        for (size_t i = 0; i < tx.vin.size(); i++) {
+                            if (IsKeyImageSpend1(tx.vin[i].keyImage.GetHex(), uint256())) {
+                                spent = true;
+                                break;
+                            }
+                        }
+                        if (spent) {
+                            continue;
+                        }
+                        for (size_t i = 0; i < tx.vin.size(); i++) {
+                            COutPoint prevout = findMyOutPoint(tx.vin[i]);
+                            if (prevout.hash.IsNull()) {
+                                break;
+                            } else {
+                                inSpendQueueOutpoints[prevout] = true;
+                            }
                         }
                     }
                 }
