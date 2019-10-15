@@ -2503,7 +2503,7 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
 void CWallet::resetPendingOutPoints()
 {
     LOCK2(cs_main, cs_wallet);
-    if (chainActive.Height() % 3 != 0 && !inSpendQueueOutpoints.empty()) return;
+    if (chainActive.Height() > 0 && !inSpendQueueOutpoints.empty()) return;
     {
         {
             LOCK(mempool.cs);
@@ -5894,19 +5894,18 @@ void CWallet::AutoCombineDust()
 {
     if (IsInitialBlockDownload()) return;
     //if (IsInitialBlockDownload()) return;
-    if (chainActive.Tip()->nTime < (GetAdjustedTime() - 1800) || IsLocked()) {
+    if (chainActive.Tip()->nTime < (GetAdjustedTime() - 300) || IsLocked()) {
         LogPrintf("Time elapsed for autocombine transaction too short\n");
         return;
     }
     static int64_t lastTime = GetAdjustedTime();
-    if (GetAdjustedTime() - lastTime < 60) return;
+    if (GetAdjustedTime() - lastTime < 30) return;
     LogPrintf("Creating a sweeping transaction\n");
     if (stakingMode == StakingMode::STAKING_WITH_CONSOLIDATION) {
         if (IsLocked()) return;
         if (fGenerateDapscoins && chainActive.Tip()->nHeight >= Params().LAST_POW_BLOCK()) {
             //sweeping to create larger UTXO for staking
             LOCK2(cs_main, cs_wallet);
-            vector<COutput> vCoins;
             CAmount max = 0;
             for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
                 const uint256& wtxid = it->first;
@@ -5914,14 +5913,10 @@ void CWallet::AutoCombineDust()
 
                 int cannotSpend = 0;
                 {
-                    AvailableCoins(wtxid, pcoin, vCoins, cannotSpend, true);
-                    if (!vCoins.empty()) {
-                        for (const COutput& out : vCoins) {
-                            int64_t nTxTime = out.tx->GetTxTime();
-                            //add in-wallet minimum staking
-                            if (getCOutPutValue(out) >= max) {
-                                max = getCOutPutValue(out);
-                            }
+                    for (const COutput& out : vCoins) {
+                        //add in-wallet minimum staking
+                        if (getCOutPutValue(out) >= max) {
+                            max = getCOutPutValue(out);
                         }
                     }
                 }
