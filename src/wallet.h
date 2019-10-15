@@ -1186,8 +1186,8 @@ public:
         for (unsigned int i = 0; i < vout.size(); i++) {
         	//dont count if output is in mempool
         	COutPoint outpoint(hashTx, i);
-        	CKeyImage ki = FindKeyImage(outpoint);
-            if (IsKeyImageInMempool(ki)) {
+        	CKeyImage ki = pwalletMain->FindKeyImage(outpoint);
+            if (pwalletMain->IsKeyImageInMempool(ki)) {
                 continue;
             }
 
