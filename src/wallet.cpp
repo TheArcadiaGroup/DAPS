@@ -2996,14 +2996,53 @@ int CWallet::ComputeFee(size_t numIn, size_t numOut, size_t ringSize)
     return nFeeNeeded;
 }
 
-bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey& recipientViewKey, CScript scriptPubKey, const CAmount& nValue, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet, std::string& strFailReason, const CCoinControl* coinControl, AvailableCoinsType coin_type, bool useIX, CAmount nFeePay, int ringSize, bool sendtoMyself)
+bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, 
+                                            const CPubKey& recipientViewKey, 
+                                            CScript scriptPubKey, 
+                                            const CAmount& nValue, 
+                                            CWalletTx& wtxNew, 
+                                            CReserveKey& reservekey, 
+                                            CAmount& nFeeRet, 
+                                            std::string& strFailReason, 
+                                            const CCoinControl* coinControl, 
+                                            AvailableCoinsType coin_type, 
+                                            bool useIX, 
+                                            CAmount nFeePay, 
+                                            int ringSize, 
+                                            bool sendtoMyself,
+                                            bool commit)
 {
     vector<pair<CScript, CAmount> > vecSend;
     vecSend.push_back(make_pair(scriptPubKey, nValue));
-    return CreateTransactionBulletProof(txPrivDes, recipientViewKey, vecSend, wtxNew, reservekey, nFeeRet, strFailReason, coinControl, coin_type, useIX, nFeePay, ringSize, sendtoMyself);
+    return CreateTransactionBulletProof(txPrivDes, 
+                                        recipientViewKey, 
+                                        vecSend, wtxNew, 
+                                        reservekey, 
+                                        nFeeRet, 
+                                        strFailReason, 
+                                        coinControl, 
+                                        coin_type, 
+                                        useIX, 
+                                        nFeePay, 
+                                        ringSize, 
+                                        sendtoMyself,
+                                        commit);
 }
 
-bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey& recipientViewKey, const std::vector<std::pair<CScript, CAmount> >& vecSend, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet, std::string& strFailReason, const CCoinControl* coinControl, AvailableCoinsType coin_type, bool useIX, CAmount nFeePay, int ringSize, bool tomyself)
+bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, 
+                                            const CPubKey& recipientViewKey, 
+                                            const std::vector<std::pair<CScript, CAmount> >& vecSend, 
+                                            CWalletTx& wtxNew, 
+                                            CReserveKey& reservekey, 
+                                            CAmount& nFeeRet, 
+                                            std::string& strFailReason, 
+                                            const CCoinControl* coinControl, 
+                                            AvailableCoinsType coin_type, 
+                                            bool useIX, 
+                                            CAmount nFeePay, 
+                                            int ringSize, 
+                                            bool tomyself,
+                                            bool commit)
 {
     if (useIX && nFeePay < CENT) nFeePay = CENT;
 
@@ -3175,14 +3214,16 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
                     wtxNew.vout[i].nValue = 0;
                 }
 
-                if (!CommitTransaction(wtxNew, reservekey, (!useIX ? "tx" : "ix"))) {
-                    inSpendQueueOutpointsPerSession.clear();
-                    ret = false;
-                    strFailReason = _("Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.");
-                }
-                for (size_t i = 0; i < inSpendQueueOutpointsPerSession.size(); i++) {
-                    inSpendQueueOutpoints[inSpendQueueOutpointsPerSession[i]] = true;
-                }
+                if (commit) {
+                    if (!CommitTransaction(wtxNew, reservekey, (!useIX ? "tx" : "ix"))) {
+                        inSpendQueueOutpointsPerSession.clear();
+                        ret = false;
+                        strFailReason = _("Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.");
+                    }
+                    for (size_t i = 0; i < inSpendQueueOutpointsPerSession.size(); i++) {
+                        inSpendQueueOutpoints[inSpendQueueOutpointsPerSession[i]] = true;
+                    }
+                } 
                 inSpendQueueOutpointsPerSession.clear();
 
                 uint256 hash = wtxNew.GetHash();
@@ -6529,7 +6570,7 @@ bool CWallet::GenerateAddress(CPubKey& pub, CPubKey& txPub, CKey& txPriv) const
     }
 }
 
-bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount nValue, CWalletTx& wtxNew, bool fUseIX, int ringSize)
+bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount nValue, CWalletTx& wtxNew, bool fUseIX, int ringSize, bool commit)
 {
     // Check amount
     if (nValue <= 0)

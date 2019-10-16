@@ -571,13 +571,17 @@ public:
                            const CCoinControl* coinControl = NULL,
                            AvailableCoinsType coin_type = ALL_COINS,
                            bool useIX = false,
-                           CAmount nFeePay = 0, int ringSize = 6, bool tomyself = false);
+                           CAmount nFeePay = 0, 
+                           int ringSize = 6, 
+                           bool tomyself = false,
+                           bool commit = false);
 
     bool CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey &recipientViewKey, CScript scriptPubKey, const CAmount &nValue,
                                       CWalletTx &wtxNew, CReserveKey &reservekey, CAmount &nFeeRet,
                                       std::string &strFailReason, const CCoinControl *coinControl = NULL,
                                       AvailableCoinsType coin_type = ALL_COINS, bool useIX = false,
-                                      CAmount nFeePay = 0, int ringSize = 6, bool tomyself = false);
+                                      CAmount nFeePay = 0, int ringSize = 6, 
+                                      bool tomyself = false, bool commit = false);
 
     int ComputeFee(size_t numIn, size_t numOut, size_t ringSize);
     CAmount ComputeReserveUTXOAmount();
@@ -747,7 +751,7 @@ public:
     bool EncodeStealthPublicAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr);
     static bool DecodeStealthAddress(const std::string& stealth, CPubKey& pubViewKey, CPubKey& pubSpendKey, bool& hasPaymentID, uint64_t& paymentID);
     static bool ComputeStealthDestination(const CKey& secret, const CPubKey& pubViewKey, const CPubKey& pubSpendKey, CPubKey& des);
-    bool SendToStealthAddress(const std::string& stealthAddr, CAmount nValue, CWalletTx& wtxNew, bool fUseIX = false, int ringSize = 5);
+    bool SendToStealthAddress(const std::string& stealthAddr, CAmount nValue, CWalletTx& wtxNew, bool fUseIX = false, int ringSize = 5, bool commit = true);
     bool GenerateAddress(CPubKey& pub, CPubKey& txPub, CKey& txPriv) const;
     bool IsTransactionForMe(const CTransaction& tx);
     bool ReadAccountList(std::string& accountList);

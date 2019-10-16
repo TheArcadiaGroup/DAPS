@@ -2749,6 +2749,43 @@ UniValue sendtostealthaddress(const UniValue& params, bool fHelp)
     return wtx.GetHash().GetHex();
 }
 
+UniValue makerawtransaction(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 2)
+        throw runtime_error(
+                "makerawtransaction \"dapsstealthaddress\" amount\n"
+                "\nMake raw transaction sending an amount to a given daps stealth address address. The amount is a real and is rounded to the nearest 0.00000001. Transaction wont be send to the network\n" +
+                HelpRequiringPassphrase() +
+                "\nArguments:\n"
+                "1. \"dapsstealthaddress\"  (string, required) The dapscoin stealth address to send to.\n"
+                "2. \"amount\"      (numeric, required) The amount in btc to send. eg 0.1\n"
+                "\nResult:\n"
+                "\"hex\"   (string) hexcode of the created transaction"
+                "\"transactionid\"  (string) The transaction id.\n"
+                "\nExamples:\n" +
+                HelpExampleCli("makerawtransaction", "\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\" 0.1") + HelpExampleCli("makerawtransaction", "\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\" 0.1 \"donation\" \"seans outpost\"") + HelpExampleRpc("sendtostealthaddress", "\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\", 0.1, \"donation\", \"seans outpost\""));
+
+    std::string stealthAddr = params[0].get_str();
+
+    // Amount
+    CAmount nAmount = AmountFromValue(params[1]);
+
+    // Wallet comments
+    CWalletTx wtx;
+
+    EnsureWalletIsUnlocked();
+
+    if (!pwalletMain->SendToStealthAddress(stealthAddr, nAmount, wtx, false, 5, false)) {
+        throw JSONRPCError(RPC_WALLET_ERROR,
+                           "Cannot create transaction.");
+    }
+    UniValue result(UniValue::VOBJ);
+    string strHex = EncodeHexTx(wtx);
+    result.push_back(Pair("txid", wtx.GetHash().GetHex()));
+    result.push_back(Pair("hex", strHex));
+    return result;
+}
+
 std::string GetHex(const unsigned char* vch, int sz) {
     char psz[sz * 2 + 1];
     for (int i = 0; i < sz; i++)
