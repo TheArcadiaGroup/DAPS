@@ -432,3 +432,4 @@ margin-top: 2px; /* make non-selected tabs look smaller */
 }
 QTabBar::tab { color: #5E1C5A; }
 QTabBar::tab:selected { color: gray; }
+#lineEdit { color: white; }
