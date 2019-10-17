@@ -193,7 +193,7 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
     {
         mapArgs["-gen"] = (fGenerate ? "1" : "0");
         mapArgs["-genproclimit"] = itostr(nGenProcLimit);
-        pwalletMain->stakingMode != StakingMode::STAKING_WITH_CONSOLIDATION;
+        pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
         GenerateDapscoins(fGenerate, pwalletMain, nGenProcLimit);
     }
 
