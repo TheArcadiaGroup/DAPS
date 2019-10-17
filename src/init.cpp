@@ -1775,7 +1775,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
         storedStakingStatus = pwalletMain->ReadStakingStatus();
         if (GetBoolArg("-staking", false) || storedStakingStatus) {
             fGenerateDapscoins = true;
-            pwalletMain->stakingMode != StakingMode::STAKING_WITH_CONSOLIDATION;
+            pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
             LogPrintf("Starting staking\n");
             threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "stakemint", &ThreadStakeMinter));
         }
