@@ -1306,7 +1306,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
     nCoinCacheSize = nTotalCache / 300; // coins in memory require around 300 bytes
 
     bool fLoaded = false;
-    while (!fLoaded) {
+    while (!fLoaded && !ShutdownRequested()) {
         bool fReset = fReindex;
         std::string strLoadError;
 
@@ -1329,9 +1329,13 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
                 if (fReindex)
                     pblocktree->WriteReindexing(true);
 
+                // End loop if shutdown was requested
+                if (ShutdownRequested()) break;
+
                 uiInterface.InitMessage(_("Loading block index..."));
                 string strBlockIndexError = "";
                 if (!LoadBlockIndex(strBlockIndexError)) {
+                    if (ShutdownRequested()) break;
                     strLoadError = _("Error loading block database");
                     strLoadError = strprintf("%s : %s", strLoadError, strBlockIndexError);
                     break;
@@ -1384,7 +1388,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
             fLoaded = true;
         } while (false);
 
-        if (!fLoaded) {
+        if (!fLoaded && !ShutdownRequested()) {
             // first suggest a reindex
             if (!fReset) {
                 bool fRet = uiInterface.ThreadSafeMessageBox(
@@ -1406,7 +1410,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
     // As LoadBlockIndex can take several minutes, it's possible the user
     // requested to kill the GUI during the last operation. If so, exit.
     // As the program has not fully started yet, Shutdown() is possibly overkill.
-    if (fRequestShutdown) {
+    if (ShutdownRequested()) {
         LogPrintf("Shutdown requested. Exiting.\n");
         return false;
     }
@@ -1727,6 +1731,11 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
     obfuScationPool.InitCollateralAddress();
 
     threadGroup.create_thread(boost::bind(&ThreadCheckObfuScationPool));
+
+    if (ShutdownRequested()) {
+        LogPrintf("Shutdown requested. Exiting.\n");
+        return false;
+    }
 
     // ********************************************************* Step 11: start node
 
