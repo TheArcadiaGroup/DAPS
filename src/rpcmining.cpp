@@ -169,7 +169,7 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
             bool createPoSBlock = false;
             if (nHeight > Params().LAST_POW_BLOCK())
                 createPoSBlock = true;
-            unique_ptr<CBlockTemplate> pblocktemplate(CreateNewBlockWithKey(reservekey, pwalletMain, createPoSBlock));
+            unique_ptr<CBlockTemplate> pblocktemplate(CreateNewBlockWithKey(reservekey, pwalletMain));
             if (!pblocktemplate.get())
                 throw JSONRPCError(RPC_INTERNAL_ERROR, "Wallet keypool empty");
             CBlock* pblock = &pblocktemplate->block;
