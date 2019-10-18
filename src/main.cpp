@@ -393,7 +393,7 @@ bool VerifyBulletProofAggregate(const CTransaction& tx)
 
 bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
 {
-    if (tx.nTxFee < 0) return false:
+    if (tx.nTxFee < 0) return false;
     if (IsInitialBlockDownload()) return true;
     const size_t MAX_VIN = MAX_TX_INPUTS;
     const size_t MAX_DECOYS = MAX_RING_SIZE; //padding 1 for safety reasons
