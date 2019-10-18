@@ -17,9 +17,6 @@
 #include <QMimeData>
 #include <QMouseEvent>
 #include <QPixmap>
-#if QT_VERSION < 0x050000
-#include <QUrl>
-#endif
 
 // #define USE_QRCODE
 

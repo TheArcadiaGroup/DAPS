@@ -58,9 +58,8 @@ public:
                 return;
             }
             cachedNodeStats.clear();
-#if QT_VERSION >= 0x040700
+
             cachedNodeStats.reserve(vNodes.size());
-#endif
             BOOST_FOREACH (CNode* pnode, vNodes) {
                 CNodeCombinedStats stats;
                 stats.nodeStateStats.nMisbehavior = 0;
