@@ -1257,7 +1257,7 @@ COutPoint CWallet::findMyOutPoint(const CTxIn& txin) const
 
     COutPoint outpoint;
     {
-        AssertLockHeld(cs_wallet); // mapWallet
+        //AssertLockHeld(cs_wallet); // mapWallet
         bool ret = false;
         CWalletTx prev;
         if (mapWallet.count(txin.prevout.hash))
