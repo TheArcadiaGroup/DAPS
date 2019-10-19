@@ -63,7 +63,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         // ppcoin: target change every block
         // ppcoin: retarget with exponential moving toward target spacing
         uint256 bnNew;
-        if (pindexLast->nHeight < 25000) {
+        if (pindexLast->nHeight < 24900) {
             bnNew.SetCompact(pindexLast->nBits);
         } else {
             if (pindexLast->IsProofOfStake()) {
