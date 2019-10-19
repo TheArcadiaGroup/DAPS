@@ -4614,7 +4614,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
 
         // If turned on Auto Combine will scan wallet for dust to combine
         if (pwalletMain->fCombineDust && chainActive.Height() % 5 == 0)
-            pwalletMain->AutoCombineDust();
+            //pwalletMain->AutoCombineDust();
 
         pwalletMain->resetPendingOutPoints();
     }
