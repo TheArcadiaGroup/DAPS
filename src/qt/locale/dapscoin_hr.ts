@@ -115,8 +115,8 @@
         <translation>Alt+P</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
-        <translation>DAPScoin adresa s kojom je potpisana poruka</translation>
+        <source>The DAPS address the message was signed with</source>
+        <translation>DAPS adresa s kojom je potpisana poruka</translation>
     </message>
     <message>
         <source>Allowed: 0-9,a-z,A-Z,</source>
@@ -150,8 +150,8 @@
         <translation>Otvori konfiguracijsku datoteku</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>&amp;Privacy</source>
@@ -162,8 +162,8 @@
         <translation>&amp;BIP38 alat</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin klijent</translation>
+        <source>DAPS client</source>
+        <translation>DAPS klijent</translation>
     </message>
     <message>
         <source>Error</source>
@@ -260,15 +260,15 @@
 <context>
     <name>HelpMessageDialog</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     </context>
 <context>
     <name>Intro</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Error</source>
@@ -565,8 +565,8 @@
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>DAPScoin is shutting down...</source>
-        <translation>DAPScoin se gasi...</translation>
+        <source>DAPS is shutting down...</source>
+        <translation>DAPS se gasi...</translation>
     </message>
     </context>
 <context>
@@ -588,8 +588,8 @@
         <translation>Alt+P</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
-        <translation>DAPScoin adresa s kojom je potpisana poruka</translation>
+        <source>The DAPS address the message was signed with</source>
+        <translation>DAPS adresa s kojom je potpisana poruka</translation>
     </message>
     <message>
         <source>Message signed.</source>
@@ -603,8 +603,8 @@
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Version %1</source>

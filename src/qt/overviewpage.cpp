@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -136,7 +136,6 @@ OverviewPage::OverviewPage(QWidget* parent) : QDialog(parent),
     timerBlockHeightLabel->start(45000);
 
     connect(ui->btnLockUnlock, SIGNAL(clicked()), this, SLOT(on_lockUnlock()));
-    updateRecentTransactions();
 }
 
 void OverviewPage::handleTransactionClicked(const QModelIndex& index)
@@ -173,12 +172,6 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     currentWatchImmatureBalance = watchImmatureBalance;
     CAmount nSpendableBalance = balance - immatureBalance;
     if (nSpendableBalance < 0) {
-        TRY_LOCK(cs_main, lockMain);
-        if (!lockMain)
-            return;
-        TRY_LOCK(pwalletMain->cs_wallet, lockWallet);
-        if (!lockWallet)
-            return;
     	nSpendableBalance = pwalletMain->GetSpendableBalance();
     }
     CAmount nSpendableDisplayed = nSpendableBalance; //if it is not staking
@@ -207,6 +200,8 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     font.setPointSize(15);
     font.setBold(true);
     ui->labelBalance_2->setFont(font);   
+
+    refreshRecentTransactions();
 }
 
 // show/hide watch-only labels
@@ -265,8 +260,6 @@ void OverviewPage::setWalletModel(WalletModel* model)
         connect(model, SIGNAL(stakingStatusChanged(bool)), this, 
                          SLOT(setSpendableBalance(bool)));
         connect(model, SIGNAL(WalletUnlocked()), this,
-                                 SLOT(refreshRecentTransactions()));
-        connect(model, SIGNAL(WalletUnlocked()), this,
                                          SLOT(updateBalance()));
         connect(model, SIGNAL(encryptionStatusChanged(int)), this,
                                          SLOT(updateLockStatus(int)));
@@ -275,9 +268,6 @@ void OverviewPage::setWalletModel(WalletModel* model)
 
         updateWatchOnlyLabels(model->haveWatchOnly());
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
-
-        connect(walletModel, SIGNAL(RefreshRecent()), this, SLOT(refreshRecentTransactions()));
-
         updateLockStatus(walletModel->getEncryptionStatus());
     }
     // update the display unit, to not use the default ("DAPS")
@@ -416,6 +406,7 @@ void OverviewPage::updateTotalBlocksLabel(){
 
 int OverviewPage::tryNetworkBlockCount(){
     try{
+        LOCK(cs_vNodes);
         if (vNodes.size()>=1){
             int highestCount = 0;
             for (CNode* node : vNodes)
@@ -436,12 +427,7 @@ int OverviewPage::tryNetworkBlockCount(){
 void OverviewPage::updateRecentTransactions(){
 	if (!pwalletMain || pwalletMain->IsLocked()) return;
     {
-        TRY_LOCK(cs_main, lockMain);
-        if (!lockMain)
-            return;
-        TRY_LOCK(pwalletMain->cs_wallet, lockWallet);
-        if (!lockWallet)
-            return;
+        LOCK2(cs_main, pwalletMain->cs_wallet);
         QLayoutItem* item;
         QSettings settings;
         QVariant theme = settings.value("theme");

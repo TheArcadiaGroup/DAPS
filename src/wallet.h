@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -276,6 +276,7 @@ public:
     void resetPendingOutPoints();
     bool estimateStakingConsolidationFees(CAmount& min, CAmount& max);
     static int MaxTxSizePerTx();
+    std::string GetTransactionType(const CTransaction& tx);
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
@@ -655,8 +656,6 @@ public:
         CAmount nDebit = 0;
         BOOST_FOREACH (const CTxIn& txin, tx.vin) {
             nDebit += GetDebit(txin, filter);
-            /*if (!MoneyRange(nDebit))
-                throw std::runtime_error("CWallet::GetDebit() : value out of range");*/
         }
         return nDebit;
     }
@@ -665,8 +664,6 @@ public:
         CAmount nCredit = 0;
         BOOST_FOREACH (const CTxOut& txout, tx.vout) {
             nCredit += GetCredit(tx, txout, filter);
-            if (!MoneyRange(nCredit))
-                throw std::runtime_error("CWallet::GetCredit() : value out of range");
         }
         return nCredit;
     }
@@ -675,8 +672,6 @@ public:
         CAmount nChange = 0;
         BOOST_FOREACH (const CTxOut& txout, tx.vout) {
             nChange += GetChange(tx, txout);
-            if (!MoneyRange(nChange))
-                throw std::runtime_error("CWallet::GetChange() : value out of range");
         }
         return nChange;
     }
@@ -1158,6 +1153,7 @@ public:
 
     CAmount GetImmatureCredit(bool fUseCache = true) const
     {
+        LOCK(cs_main);
         if ((IsCoinBase() || IsCoinStake()) && GetBlocksToMaturity() > 0 && IsInMainChain()) {
             if (fUseCache && fImmatureCreditCached)
                 return nImmatureCreditCached;
@@ -1198,8 +1194,6 @@ public:
                     cre = pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
                 }
                 nCredit += cre;
-                if (!MoneyRange(nCredit))
-                    throw std::runtime_error("CWalletTx::GetAvailableCredit() : value out of range");
             }
         }
 
@@ -1277,8 +1271,6 @@ public:
             if (fMasterNode && pwallet->getCTxOutValue(*this, vout[i]) == 1000000 * COIN) continue; // do not count MN-like outputs
 
             nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
-            if (!MoneyRange(nCredit))
-                throw std::runtime_error("CWalletTx::GetUnlockedCredit() : value out of range");
         }
 
         return nCredit;
@@ -1312,8 +1304,6 @@ public:
                 nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
             }
 
-            if (!MoneyRange(nCredit))
-                throw std::runtime_error("CWalletTx::GetLockedCredit() : value out of range");
         }
 
         return nCredit;
@@ -1349,8 +1339,6 @@ public:
             if (pwallet->IsSpent(hashTx, i) || !pwallet->IsDenominatedAmount(pwallet->getCTxOutValue(*this, txout))) continue;
 
             nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
-            if (!MoneyRange(nCredit))
-                throw std::runtime_error("CWalletTx::GetDenominatedCredit() : value out of range");
         }
 
         if (unconfirmed) {
@@ -1365,6 +1353,7 @@ public:
 
     CAmount GetImmatureWatchOnlyCredit(const bool& fUseCache = true) const
     {
+        LOCK(cs_main);
         if (IsCoinBase() && GetBlocksToMaturity() > 0 && IsInMainChain()) {
             if (fUseCache && fImmatureWatchCreditCached)
                 return nImmatureWatchCreditCached;
@@ -1393,8 +1382,6 @@ public:
             if (!pwallet->IsSpent(GetHash(), i)) {
                 const CTxOut& txout = vout[i];
                 nCredit += pwallet->GetCredit(*this, txout, ISMINE_WATCH_ONLY);
-                if (!MoneyRange(nCredit))
-                    throw std::runtime_error("CWalletTx::GetAvailableCredit() : value out of range");
             }
         }
 
@@ -1439,7 +1426,13 @@ public:
             return false;
         if (!bSpendZeroConfChange || !IsFromMe(ISMINE_ALL)) // using wtx's cached debit
             return false;
-
+         // Don't trust unconfirmed transactions from us unless they are in the mempool.
+        {
+            LOCK(mempool.cs);
+            if (!mempool.exists(GetHash())) {
+                return false;
+            }
+        }
         // Trusted if all inputs are from us and are in the mempool:
         BOOST_FOREACH (const CTxIn& txin, vin) {
             // Transactions not sent by us: not trusted

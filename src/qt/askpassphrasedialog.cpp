@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -118,7 +118,7 @@ void AskPassphraseDialog::accept()
                 if (model->setWalletEncrypted(true, newpass1)) {
                     QMessageBox::warning(this, tr("Wallet Encrypted"),
                         "<qt>" +
-                            tr("DAPScoin will close now to finish the encryption process. "
+                            tr("DAPS will close now to finish the encryption process. "
                                "Remember that encrypting your wallet cannot fully protect "
                                "your DAPSs from being stolen by malware infecting your computer.") +
                             "<br><br><b>" +
@@ -179,7 +179,7 @@ void AskPassphraseDialog::accept()
             if (model->changePassphrase(oldpass, newpass1)) {
                 QMessageBox msgBox;
                 msgBox.setWindowTitle("Passphrase Change Successful");
-                msgBox.setText("Wallet passphrase was successfully changed. Please remember your passphrase as there is no way to recover it.");
+                msgBox.setText("Wallet passphrase was successfully changed.\nPlease remember your passphrase as there is no way to recover it.");
                 msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
                 msgBox.setIcon(QMessageBox::Information);
                 msgBox.exec();

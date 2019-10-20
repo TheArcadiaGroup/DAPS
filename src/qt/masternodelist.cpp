@@ -109,52 +109,58 @@ void MasternodeList::StartAlias(std::string strAlias)
         }
         strStatusHtml += "</center>";
 
-        GUIUtil::prompt(strStatusHtml.c_str());
+        QMessageBox msg;
+        msg.setText(strStatusHtml.c_str());
+        msg.setStyleSheet(GUIUtil::loadStyleSheet());
+        msg.exec();
     }
     updateMyNodeList(true);
 }
 
 void MasternodeList::StartAll(std::string strCommand)
 {
-    int nCountSuccessful = 0;
-    int nCountFailed = 0;
-    std::string strFailedHtml;
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+    {
+        int nCountSuccessful = 0;
+        int nCountFailed = 0;
+        std::string strFailedHtml;
 
-    BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
-        std::string strError;
-        CMasternodeBroadcast mnb;
+        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+            std::string strError;
+            CMasternodeBroadcast mnb;
 
-        int nIndex;
-        if(!mne.castOutputIndex(nIndex))
-            continue;
+            int nIndex;
+            if(!mne.castOutputIndex(nIndex))
+                continue;
 
-        CTxIn txin = CTxIn(uint256S(mne.getTxHash()), uint32_t(nIndex));
-        CMasternode* pmn = mnodeman.Find(txin);
+            CTxIn txin = CTxIn(uint256S(mne.getTxHash()), uint32_t(nIndex));
+            CMasternode* pmn = mnodeman.Find(txin);
 
-        if (strCommand == "start-missing" && pmn) continue;
+            if (strCommand == "start-missing" && pmn) continue;
 
-        bool fSuccess = activeMasternode.CreateBroadcast(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strError, mnb);
+            bool fSuccess = activeMasternode.CreateBroadcast(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strError, mnb);
 
-        if (fSuccess) {
-            nCountSuccessful++;
-            mnodeman.UpdateMasternodeList(mnb);
-            mnb.Relay();
-        } else {
-            nCountFailed++;
-            strFailedHtml += "\nFailed to start " + mne.getAlias() + ". Error: " + strError;
+            if (fSuccess) {
+                nCountSuccessful++;
+                mnodeman.UpdateMasternodeList(mnb);
+                mnb.Relay();
+            } else {
+                nCountFailed++;
+                strFailedHtml += "\nFailed to start " + mne.getAlias() + ". Error: " + strError;
+            }
         }
+
+        std::string returnObj;
+        returnObj = strprintf("Successfully started %d masternodes, failed to start %d, total %d", nCountSuccessful, nCountFailed, nCountFailed + nCountSuccessful);
+        if (nCountFailed > 0) {
+            returnObj += strFailedHtml;
+        }
+
+        QMessageBox msg;
+        msg.setText(QString::fromStdString(returnObj));
+        msg.setStyleSheet(GUIUtil::loadStyleSheet());
+        msg.exec();
     }
-
-    std::string returnObj;
-    returnObj = strprintf("Successfully started %d masternodes, failed to start %d, total %d", nCountSuccessful, nCountFailed, nCountFailed + nCountSuccessful);
-    if (nCountFailed > 0) {
-        returnObj += strFailedHtml;
-    }
-
-    QMessageBox msg;
-    msg.setText(QString::fromStdString(returnObj));
-    msg.exec();
-
     updateMyNodeList(true);
 }
 
@@ -194,26 +200,28 @@ void MasternodeList::updateMyMasternodeInfo(QString strAlias, QString strAddr, C
 
 void MasternodeList::updateMyNodeList(bool fForce)
 {
-    static int64_t nTimeMyListUpdated = 0;
+    {
+        static int64_t nTimeMyListUpdated = 0;
 
-    // automatically update my masternode list only once in MY_MASTERNODELIST_UPDATE_SECONDS seconds,
-    // this update still can be triggered manually at any time via button click
-    int64_t nSecondsTillUpdate = nTimeMyListUpdated + MY_MASTERNODELIST_UPDATE_SECONDS - GetTime();
+        // automatically update my masternode list only once in MY_MASTERNODELIST_UPDATE_SECONDS seconds,
+        // this update still can be triggered manually at any time via button click
+        int64_t nSecondsTillUpdate = nTimeMyListUpdated + MY_MASTERNODELIST_UPDATE_SECONDS - GetTime();
 
-    if (nSecondsTillUpdate > 0 && !fForce) return;
-    nTimeMyListUpdated = GetTime();
+        if (nSecondsTillUpdate > 0 && !fForce) return;
+        nTimeMyListUpdated = GetTime();
 
-    ui->tableWidgetMyMasternodes->setSortingEnabled(false);
-    BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
-        int nIndex;
-        if(!mne.castOutputIndex(nIndex))
-            continue;
+        ui->tableWidgetMyMasternodes->setSortingEnabled(false);
+        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+            int nIndex;
+            if(!mne.castOutputIndex(nIndex))
+                continue;
 
-        CTxIn txin = CTxIn(uint256S(mne.getTxHash()), uint32_t(nIndex));
-        CMasternode* pmn = mnodeman.Find(txin);
-        updateMyMasternodeInfo(QString::fromStdString(mne.getAlias()), QString::fromStdString(mne.getIp()), pmn);
+            CTxIn txin = CTxIn(uint256S(mne.getTxHash()), uint32_t(nIndex));
+            CMasternode* pmn = mnodeman.Find(txin);
+            updateMyMasternodeInfo(QString::fromStdString(mne.getAlias()), QString::fromStdString(mne.getIp()), pmn);
+        }
+        ui->tableWidgetMyMasternodes->setSortingEnabled(true);
     }
-    ui->tableWidgetMyMasternodes->setSortingEnabled(true);
 }
 
 void MasternodeList::on_startButton_clicked()

@@ -1,6 +1,6 @@
 // Copyright (c) 2014-2016 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,7 +12,7 @@
 #include "protocol.h"
 
 //
-// Bootup the Masternode, look for a 1000000 DAPScoin input and register on the network
+// Bootup the Masternode, look for a 1000000 DAPS input and register on the network
 //
 void CActiveMasternode::ManageStatus()
 {
@@ -20,12 +20,12 @@ void CActiveMasternode::ManageStatus()
 
     if (!fMasterNode) return;
 
-    if (fDebug) LogPrintf("CActiveMasternode::ManageStatus() - Begin\n");
+    if (fDebug) LogPrint("masternode", "CActiveMasternode::ManageStatus() - Begin\n");
 
     //need correct blocks to send ping
     if (Params().NetworkID() != CBaseChainParams::REGTEST && !masternodeSync.IsBlockchainSynced()) {
         status = ACTIVE_MASTERNODE_SYNC_IN_PROCESS;
-        LogPrintf("CActiveMasternode::ManageStatus() - %s\n", GetStatus());
+        LogPrint("masternode", "CActiveMasternode::ManageStatus() - %s\n", GetStatus());
         return;
     }
 
@@ -166,9 +166,7 @@ bool CActiveMasternode::SendMasternodePing(std::string& errorMessage)
         return false;
     }
 
-    LogPrintf("CActiveMasternode::SendMasternodePing() - Relay Masternode Ping vin = %s\n", vin.ToString());
     std::string stl(vin.masternodeStealthAddress.begin(), vin.masternodeStealthAddress.end());
-    LogPrintf("CActiveMasternode::SendMasternodePing() - masternodestealthaddress = %s\n", stl);
     CMasternodePing mnp(vin);
     if (!mnp.Sign(keyMasternode, pubKeyMasternode)) {
         errorMessage = "Couldn't sign Masternode Ping";
@@ -202,7 +200,6 @@ bool CActiveMasternode::SendMasternodePing(std::string& errorMessage)
         CDataStream ser(SER_NETWORK, PROTOCOL_VERSION);
         ser << ss << masterNodeSignatureTime << val;
         std::string strMessage = HexStr(ser.begin(), ser.end());
-        LogPrintf("\n%s: strMessage = %s\n", __func__, strMessage);
         if (!obfuScationSigner.SignMessage(strMessage, retErrorMessage, vchMasterNodeSignature, keyMasternode)) {
             errorMessage = "dseep sign message failed: " + retErrorMessage;
             return false;
@@ -311,9 +308,6 @@ bool CActiveMasternode::CreateBroadcast(CTxIn vin, CService service, CKey keyCol
 					pubKeyMasternode.begin(), pubKeyMasternode.end(),
 					BEGIN(PROTOCOL_VERSION), END(PROTOCOL_VERSION));*/
     std::string strMessage = HexStr(ser.begin(), ser.end());
-    LogPrintf("\nCActiveMasternode::CreateBroadcast: strMessage=%s\n", strMessage);
-    LogPrintf("\nCActiveMasternode::CreateBroadcast: sign key = %s, strMessage=%s\n", pubKeyCollateralAddress.GetHex(), strMessage);
-    LogPrintf("\nCActiveMasternode::CreateBroadcast: masternode key = %s, strMessage=%s\n", pubKeyMasternode.GetHex(), strMessage);
     if (!obfuScationSigner.SignMessage(strMessage, retErrorMessage, vchMasterNodeSignature, keyCollateralAddress)) {
         errorMessage = "dsee sign message failed: " + retErrorMessage;
         LogPrintf("CActiveMasternode::Register() - Error: %s\n", errorMessage.c_str());

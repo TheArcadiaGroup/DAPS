@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -190,9 +190,30 @@ bool CBlockTreeDB::ReadKeyImage(const string& keyImage, uint256& bh)
     return Read(std::make_pair('k', keyImage), bh);
 }
 
+bool CBlockTreeDB::ReadKeyImages(const string& keyImage, std::vector<uint256>& bhs)
+{
+    uint256 bh;
+    if (!Read(std::make_pair('k', keyImage), bh)) return false;
+    bhs.push_back(bh);
+    int i = 1;
+    while(ReadKeyImage(keyImage + std::to_string(i), bh)) {
+        bhs.push_back(bh);
+        i++;
+    }
+    return true;
+}
+
 bool CBlockTreeDB::WriteKeyImage(const string& keyImage, const uint256& bh)
 {
-    return Write(std::make_pair('k', keyImage), bh);
+    uint256 blockHash;
+    if (!ReadKeyImage(keyImage, blockHash)) {
+        return Write(std::make_pair('k', keyImage), bh);
+    }
+    int i = 1;
+    while (ReadKeyImage(keyImage + std::to_string(i), blockHash)) {
+        i++;
+    }
+    return Write(std::make_pair('k', keyImage + std::to_string(i)), bh);
 }
 
 bool CBlockTreeDB::WriteFlag(const std::string& name, bool fValue)

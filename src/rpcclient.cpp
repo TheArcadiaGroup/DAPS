@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -126,8 +126,8 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"reservebalance", 0},
         {"reservebalance", 1},
         {"setstakesplitthreshold", 0},
-        {"autocombinerewards", 0},
-        {"autocombinerewards", 1}
+        {"autocombinedust", 0},
+        {"autocombinedust", 1}
     };
 
 class CRPCConvertTable

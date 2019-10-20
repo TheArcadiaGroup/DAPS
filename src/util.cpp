@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -109,7 +109,7 @@ std::string to_internal(const std::string&);
 
 using namespace std;
 
-// DAPScoin only features
+// DAPS only features
 // Masternode
 bool fMasterNode = false;
 string strMasterNodePrivKey = "";
@@ -233,7 +233,7 @@ bool LogAcceptCategory(const char* category)
             const vector<string>& categories = mapMultiArgs["-debug"];
             ptrCategory.reset(new set<string>(categories.begin(), categories.end()));
             // thread_specific_ptr automatically deletes the set when the thread ends.
-            // "dapscoin" is a composite category enabling all DAPScoin-related debug output
+            // "dapscoin" is a composite category enabling all DAP-related debug output
             if (ptrCategory->count(string("dapscoin"))) {
                 ptrCategory->insert(string("obfuscation"));
                 ptrCategory->insert(string("swiftx"));
