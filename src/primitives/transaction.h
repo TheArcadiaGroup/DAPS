@@ -371,9 +371,17 @@ public:
         return (vin.size() > 0 && (!vin[0].prevout.IsNull() && vin[0].decoys.empty()) && vout.size() >= 2 && vout[0].IsEmpty());
     }
 
-    std::string ToString() const;
+    friend bool operator==(const CTransaction& a, const CTransaction& b)
+    {
+        return a.hash == b.hash;
+    }
 
     bool GetCoinAge(uint64_t& nCoinAge) const;  // ppcoin: get transaction coin age
+    friend bool operator!=(const CTransaction& a, const CTransaction& b)
+    {
+        return a.hash != b.hash;
+    }
+    std::string ToString() const;
 };
 
 /** A mutable version of CTransaction. */
@@ -427,16 +435,6 @@ struct CMutableTransaction
     uint256 GetHash() const;
 
     std::string ToString() const;
-
-    friend bool operator==(const CMutableTransaction& a, const CMutableTransaction& b)
-    {
-        return a.GetHash() == b.GetHash();
-    }
-
-    friend bool operator!=(const CMutableTransaction& a, const CMutableTransaction& b)
-    {
-        return !(a == b);
-    }
 };
 
 struct CTransactionSignature
