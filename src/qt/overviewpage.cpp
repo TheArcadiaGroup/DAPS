@@ -425,7 +425,7 @@ int OverviewPage::tryNetworkBlockCount(){
 }
 
 void OverviewPage::updateRecentTransactions(){
-	if (!pwalletMain || pwalletMain->IsLocked()) return;
+    if (!pwalletMain) return;
     {
         LOCK2(cs_main, pwalletMain->cs_wallet);
         QLayoutItem* item;
@@ -475,7 +475,12 @@ void OverviewPage::updateRecentTransactions(){
                     ui->verticalLayoutRecent->addWidget(entry);
                     CWalletTx wtx = pwalletMain->mapWallet[txHash];
                     int64_t txTime = wtx.GetComputedTxTime();
-                    entry->setData(txTime, txs[i]["address"] , txs[i]["amount"], txs[i]["id"], txs[i]["type"]);
+                    if (pwalletMain->IsLocked()) {
+                        entry->setData(txTime, "Locked; Hidden", "Locked; Hidden", "Locked; Hidden", "Locked; Hidden");
+                    } else {
+                        entry->setData(txTime, txs[i]["address"] , txs[i]["amount"], txs[i]["id"], txs[i]["type"]);
+                    }
+
                     if (i % 2 == 0) {
                         entry->setObjectName("secondaryTxEntry");
                     }
