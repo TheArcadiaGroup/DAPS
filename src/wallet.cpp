@@ -5017,6 +5017,7 @@ void CWallet::CreatePrivacyAccount(bool forceNew)
             CAccount viewAccount;
             if (forceNew) {
                 GetAccountAddress(this, viewAccountLabel, 0, forceNew);
+                walletdb.ReadAccount(viewAccountLabel, viewAccount);
             } else {
                 walletdb.ReadAccount(viewAccountLabel, viewAccount);
                 if (!viewAccount.vchPubKey.IsValid()) {
@@ -5026,6 +5027,7 @@ void CWallet::CreatePrivacyAccount(bool forceNew)
             CAccount spendAccount;
             if (forceNew) {
                 GetAccountAddress(this, spendAccountLabel, 1, forceNew);
+                walletdb.ReadAccount(spendAccountLabel, spendAccount);
             } else {
                 walletdb.ReadAccount(spendAccountLabel, spendAccount);
                 if (!spendAccount.vchPubKey.IsValid()) {
