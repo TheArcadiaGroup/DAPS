@@ -10,6 +10,7 @@ RUN apt-get update && \
 
 #COPY SRC
 RUN mkdir -p /DAPS/
+COPY /DAPS-Explorer/ /DAPS/
 RUN rm /DAPS/config/*
 
 #INSTALL NVM, NPM, NODE
