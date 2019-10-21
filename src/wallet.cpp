@@ -1257,7 +1257,7 @@ COutPoint CWallet::findMyOutPoint(const CTxIn& txin) const
 
     COutPoint outpoint;
     {
-        AssertLockHeld(cs_wallet); // mapWallet
+        //AssertLockHeld(cs_wallet); // mapWallet
         bool ret = false;
         CWalletTx prev;
         if (mapWallet.count(txin.prevout.hash))
@@ -4911,8 +4911,9 @@ void GetAccountAddress(CWallet* pwalletMain, string strAccount, int nAccountInde
     CWalletDB walletdb(pwalletMain->strWalletFile);
 
     CAccount account;
-    walletdb.ReadAccount(strAccount, account);
-
+    if (!bForceNew) {
+        walletdb.ReadAccount(strAccount, account);
+    }
     bool bKeyUsed = false;
 
     // Check if the current key has been used
@@ -5014,14 +5015,22 @@ void CWallet::CreatePrivacyAccount(bool forceNew)
             std::string viewAccountLabel = "viewaccount";
             std::string spendAccountLabel = "spendaccount";
             CAccount viewAccount;
-            walletdb.ReadAccount(viewAccountLabel, viewAccount);
-            if (!viewAccount.vchPubKey.IsValid()) {
+            if (forceNew) {
                 GetAccountAddress(this, viewAccountLabel, 0, forceNew);
+            } else {
+                walletdb.ReadAccount(viewAccountLabel, viewAccount);
+                if (!viewAccount.vchPubKey.IsValid()) {
+                    GetAccountAddress(this, viewAccountLabel, 0, forceNew);
+                }
             }
             CAccount spendAccount;
-            walletdb.ReadAccount(spendAccountLabel, spendAccount);
-            if (!spendAccount.vchPubKey.IsValid()) {
+            if (forceNew) {
                 GetAccountAddress(this, spendAccountLabel, 1, forceNew);
+            } else {
+                walletdb.ReadAccount(spendAccountLabel, spendAccount);
+                if (!spendAccount.vchPubKey.IsValid()) {
+                    GetAccountAddress(this, spendAccountLabel, 1, forceNew);
+                }
             }
             if (viewAccount.vchPubKey.GetHex() == "" || spendAccount.vchPubKey.GetHex() == "") {
                 i++;

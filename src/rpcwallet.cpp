@@ -2678,6 +2678,28 @@ UniValue createprivacysubaddress(const UniValue& params, bool fHelp)
     return ret;
 }
 
+UniValue readmasteraccount(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+                "readmasteraccount \n"
+                "\nRead stealth master account address.\n"
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"public address\" (string) the public address"
+                "\nExamples:\n" +
+                HelpExampleCli("readmasteraccount", "") + HelpExampleCli("readmasteraccount", "\"\"") + HelpExampleCli("readmasteraccount", "") + HelpExampleRpc("readmasteraccount", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is not yet created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
+    }
+    std::string address;
+    pwalletMain->ComputeStealthPublicAddress("masteraccount", address);
+    return address;
+}
+
 UniValue decodestealthaddress(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
