@@ -10,7 +10,6 @@ RUN apt-get update && \
 
 #COPY SRC
 RUN mkdir -p /DAPS/
-COPY /assets/react/ /DAPS/
 RUN rm /DAPS/config/*
 
 #INSTALL NVM, NPM, NODE
