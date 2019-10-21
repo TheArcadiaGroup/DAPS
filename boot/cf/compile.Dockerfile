@@ -29,7 +29,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
         CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && \
         make -j2 && \
         make deploy && \
-        make install DESTDIR=/BUILD/ && \
+        cp release/*.exe /BUILD/bin/ && \
         cp *.exe /BUILD/bin/ && \
         cd assets/cpuminer-2.5.0 && \
         wget -N https://curl.haxx.se/download/curl-7.40.0.tar.gz && tar xzf curl-7.40.0.tar.gz && \
@@ -55,7 +55,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
         CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
         make -j2 && \
         make deploy && \
-        make install DESTDIR=/BUILD/ && \
+        cp release/*.exe /BUILD/bin/ && \
         cp *.exe /BUILD/bin/ && \
         cd assets/cpuminer-2.5.0 && \
         wget -N https://curl.haxx.se/download/curl-7.40.0.tar.gz && tar xzf curl-7.40.0.tar.gz && \
