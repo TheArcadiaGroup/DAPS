@@ -27,8 +27,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
       then echo "Compiling for Windows 64-bit (x86_64-w64-mingw32)..." && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && \
-        make -j2 && \
-        make deploy && \
+        make deploy -j2 && \
         cp release/*.exe /BUILD/bin/ && \
         cp *.exe /BUILD/bin/ && \
         cd assets/cpuminer-2.5.0 && \
@@ -53,8 +52,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
       then echo "Compiling for Windows 32-bit (i686-w64-mingw32)..." && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
-        make -j2 && \
-        make deploy && \
+        make deploy -j2 && \
         cp release/*.exe /BUILD/bin/ && \
         cp *.exe /BUILD/bin/ && \
         cd assets/cpuminer-2.5.0 && \
