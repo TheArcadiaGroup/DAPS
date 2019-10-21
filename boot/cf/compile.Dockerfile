@@ -77,7 +77,6 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #
     elif [ "$BUILD_TARGET" = "linux" ]; \
        then echo "Compiling for Linux (x86_64-pc-linux-gnu)..." && \
-        apt-get remove libzmq3-dev -y && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --prefix=/ && \
         make -j2 && \
@@ -86,7 +85,6 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
         strip src/dapscoin-tx && \
         strip src/qt/dapscoin-qt && \
         make install DESTDIR=/BUILD/ && \
-        apt-get install libcurl4-openssl-dev -y && \
         if [ -f assets/cpuminer-2.5.0/build_linux.sh ]; then cd assets/cpuminer-2.5.0; fi && \
         if [ -f build_linux.sh ]; then ./build_linux.sh; fi && \
         if [ -f minerd ]; then cp minerd /BUILD/bin/dapscoin-poa-minerd; fi; \
