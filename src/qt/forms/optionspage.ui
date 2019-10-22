@@ -316,7 +316,7 @@
               <string>This may incur a small transaction consolidation fee each time you re-enable staking or restart the keychain wallet.</string>
              </property>
              <property name="text">
-              <string>Automatically add any new funds received to your staked balance</string>
+              <string>Automatically add any new deposits received to your staked balance/string>
              </property>
             </widget>
            </item>
