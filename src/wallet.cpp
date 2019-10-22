@@ -5698,6 +5698,8 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint3
                 const uint256& wtxid = it->first;
                 const CWalletTx* pcoin = &(*it).second;
 
+                if (pcoin->GetTxTime() > nTimeBefore) continue;
+
                 int nDepth = pcoin->GetDepthInMainChain(false);
                 if ((pcoin->IsCoinBase() || pcoin->IsCoinStake()) && pcoin->GetBlocksToMaturity() > 0)
                     continue;

@@ -453,6 +453,8 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
             pwalletMain->WriteStakingStatus(true);
             emit model->stakingStatusChanged(true);
             model->generateCoins(true, 1);
+            pwalletMain->fCombineDust = true;
+            pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
             return;
         }
 
