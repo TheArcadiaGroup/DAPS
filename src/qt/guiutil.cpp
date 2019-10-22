@@ -92,7 +92,8 @@ namespace GUIUtil
 {
 QString dateTimeStr(const QDateTime& date)
 {
-    return date.date().toString(Qt::SystemLocaleShortDate) + QString(" ") + date.toString("hh:mm:ss");
+     QString format = "MM/dd/yy HH:mm:ss";
+    return date.toString(format);
 }
 
 QString dateTimeStr(qint64 nTime)
