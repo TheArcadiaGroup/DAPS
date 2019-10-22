@@ -52,7 +52,6 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
     connect(ui->lineEditNewPass, SIGNAL(textChanged(const QString &)), this, SLOT(validateNewPass()));
     connect(ui->lineEditNewPassRepeat, SIGNAL(textChanged(const QString &)), this, SLOT(validateNewPassRepeat()));
     connect(ui->lineEditOldPass, SIGNAL(textChanged(const QString &)), this, SLOT(onOldPassChanged()));
-    connect(ui->addNewFunds, SIGNAL(stateChanged(int)), this, SLOT(setAutoConsolidate(int)));
 
     QLocale lo(QLocale::C);
     lo.setNumberOptions(QLocale::RejectGroupSeparator);
@@ -117,6 +116,7 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
         bool isConsolidatedOn = pwalletMain->IsAutoConsolidateOn();
         ui->addNewFunds->setChecked(isConsolidatedOn);
     }
+    connect(ui->addNewFunds, SIGNAL(stateChanged(int)), this, SLOT(setAutoConsolidate(int)));
 }
 
 void OptionsPage::setStakingToggle()
@@ -821,7 +821,6 @@ void OptionsPage::setAutoConsolidate(int state) {
     //Insert Function Here
     if (ui->addNewFunds->isChecked()) {
         pwalletMain->WriteAutoConsolidateSettingTime(0);
-
     } else {
         pwalletMain->WriteAutoConsolidateSettingTime(GetAdjustedTime());
     }
