@@ -129,7 +129,7 @@ RUN cd /BUILD/ && \
     #flatten
     tar pcvf - --transform 's/.*\///g' --files-from=/dev/stdin | \
     #compress
-    xz -9 - > $DESTDIR$daps_poa_miner_BUILD_TARGET-v1.0.tar.xz
+    xz -9 - > $DESTDIRdaps_poa_miner_$BUILD_TARGET-v1.0.tar.xz
 
 
 RUN mkdir -p /codefresh/volume/out/bin/ && \
