@@ -21,7 +21,7 @@ RUN apt-get update
 
 RUN apt-get autoremove -y
 
-RUN cd /DAPS/ && mkdir -p /BUILD/bin/ && \
+RUN cd /DAPS/ && mkdir -p /BUILD/bin/ /BUILD/poa/ && \
 #
     if [ "$BUILD_TARGET" = "windowsx64" ]; \
       then echo "Compiling for Windows 64-bit (x86_64-w64-mingw32)..." && \
@@ -46,7 +46,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/bin/ && \
         cp pthread.h semaphore.h sched.h ${DEPS}/include && \
         cd .. && ./build.sh && \
         DESTDIR=/daps/bin/ && \
-        if [ -f minerd.exe ]; then cp minerd.exe /BUILD/bin/dapscoin-poa-minerd.exe; fi; \
+        if [ -f minerd.exe ]; then cp minerd.exe /BUILD/poa/dapscoin-poa-minerd.exe; fi; \
 #
     elif [ "$BUILD_TARGET" = "windowsx86" ]; \
       then echo "Compiling for Windows 32-bit (i686-w64-mingw32)..." && \
@@ -71,7 +71,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/bin/ && \
         cp pthread.h semaphore.h sched.h ${DEPS}/include && \
         cd .. && ./buildx86.sh && \
         DESTDIR=/daps/bin/ && \
-        if [ -f minerd.exe ]; then cp minerd.exe /BUILD/bin/dapscoin-poa-minerd.exe; fi; \
+        if [ -f minerd.exe ]; then cp minerd.exe /BUILD/poa/dapscoin-poa-minerd.exe; fi; \
 #
     elif [ "$BUILD_TARGET" = "linux" ]; \
        then echo "Compiling for Linux (x86_64-pc-linux-gnu)..." && \
@@ -85,7 +85,7 @@ RUN cd /DAPS/ && mkdir -p /BUILD/bin/ && \
         make install DESTDIR=/BUILD/ && \
         if [ -f assets/cpuminer-2.5.0/build_linux.sh ]; then cd assets/cpuminer-2.5.0; fi && \
         if [ -f build_linux.sh ]; then ./build_linux.sh; fi && \
-        if [ -f minerd ]; then cp minerd /BUILD/bin/dapscoin-poa-minerd; fi; \
+        if [ -f minerd ]; then cp minerd /BUILD/poa/dapscoin-poa-minerd; fi; \
 #
     elif [ "$BUILD_TARGET" = "linuxarm64" ]; \
        then echo "Compiling for Linux ARM 64-bit (aarch64-linux-gnu)..." && \
@@ -119,11 +119,18 @@ RUN cd /DAPS/ && mkdir -p /BUILD/bin/ && \
 RUN cd /BUILD/ && \
     mkdir -p $DESTDIR && \
     #files only
-    find ./ -type f | \
+    find ./bin/* -type f | \
     #flatten
     tar pcvf - --transform 's/.*\///g' --files-from=/dev/stdin | \
     #compress
     xz -9 - > $DESTDIR$BUILD_TARGET-v$VERSION.tar.xz
+    #files only
+    find ./poa/* -type f | \
+    #flatten
+    tar pcvf - --transform 's/.*\///g' --files-from=/dev/stdin | \
+    #compress
+    xz -9 - > $DESTDIR$daps_poa_miner_BUILD_TARGET-v1.0.tar.xz
+
 
 RUN mkdir -p /codefresh/volume/out/bin/ && \
     cp -r /daps/bin/* /codefresh/volume/out/bin/ && \
