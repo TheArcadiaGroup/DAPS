@@ -1742,6 +1742,7 @@ CAmount CWallet::GetBalance()
             }
         }
     }
+    dirtyCachedBalance = nTotal;
     return nTotal;
 }
 
@@ -2202,6 +2203,7 @@ bool CWallet::MintableCoins()
     {
         LOCK2(cs_main, cs_wallet);
         CAmount nBalance = GetBalance();
+
         for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
             const uint256& wtxid = it->first;
             const CWalletTx* pcoin = &(*it).second;
@@ -2214,7 +2216,8 @@ bool CWallet::MintableCoins()
                         int64_t nTxTime = out.tx->GetTxTime();
                         //add in-wallet minimum staking
                         CAmount nVal = getCOutPutValue(out);
-                        if (GetAdjustedTime() - nTxTime > nStakeMinAge && nVal >= MINIMUM_STAKE_AMOUNT && nVal >= ((nBalance - nReserveBalance) * 60)/100)
+                        //nTxTime <= nTime: only stake with UTXOs that are received before nTime time
+                        if ((GetAdjustedTime() > nStakeMinAge + nTxTime) && (nVal >= MINIMUM_STAKE_AMOUNT))
                             return true;
                     }
                 }
@@ -2244,6 +2247,9 @@ StakingStatusError CWallet::StakingCoinStatus(CAmount& minFee, CAmount& maxFee)
     {
         LOCK2(cs_main, cs_wallet);
         {
+            uint32_t nTime = ReadAutoConsolidateSettingTime();
+            nTime = (nTime == 0)? GetAdjustedTime() : nTime;
+
             for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
                 const uint256& wtxid = it->first;
                 const CWalletTx* pcoin = &(*it).second;
@@ -2258,6 +2264,9 @@ StakingStatusError CWallet::StakingCoinStatus(CAmount& minFee, CAmount& maxFee)
                     // It's possible for these to be conflicted via ancestors which we may never be able to detect
                     if (nDepth <= 0)
                         continue;
+                    
+                    if (pcoin->GetTxTime() > nTime) continue;
+
                     for (unsigned int i = 0; i < pcoin->vout.size(); i++) {
                         if (pcoin->vout[i].IsEmpty()) {
                             continue;
@@ -3001,6 +3010,23 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
     vector<pair<CScript, CAmount> > vecSend;
     vecSend.push_back(make_pair(scriptPubKey, nValue));
     return CreateTransactionBulletProof(txPrivDes, recipientViewKey, vecSend, wtxNew, reservekey, nFeeRet, strFailReason, coinControl, coin_type, useIX, nFeePay, ringSize, sendtoMyself);
+}
+
+//settingTime = 0 => auto consolidate on
+//settingTime > 0 => only consolidate transactions came before this settingTime
+bool CWallet::WriteAutoConsolidateSettingTime(uint32_t settingTime)
+{
+    return CWalletDB(strWalletFile).WriteAutoConsolidateSettingTime(settingTime);
+}
+
+uint32_t CWallet::ReadAutoConsolidateSettingTime()
+{
+    return CWalletDB(strWalletFile).ReadAutoConsolidateSettingTime();
+}
+
+bool CWallet::IsAutoConsolidateOn()
+{
+    return ReadAutoConsolidateSettingTime() == 0;
 }
 
 bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey& recipientViewKey, const std::vector<std::pair<CScript, CAmount> >& vecSend, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet, std::string& strFailReason, const CCoinControl* coinControl, AvailableCoinsType coin_type, bool useIX, CAmount nFeePay, int ringSize, bool tomyself)
@@ -4142,6 +4168,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         if (wlIdx == (int)mapWallet.size()) {
             wlIdx = 0;
         }
+
         for (map<uint256, CWalletTx>::const_iterator it = std::next(mapWallet.begin(), wlIdx); it != mapWallet.end(); ++it) {
             wlIdx = (wlIdx + 1) % mapWallet.size();
             const uint256& wtxid = it->first;
@@ -4170,7 +4197,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                     continue;
 
                 int64_t nTxTime = out.tx->GetTxTime();
-
                 //check for min age
                 if (GetAdjustedTime() < nStakeMinAge + nTxTime)
                     continue;
@@ -5650,7 +5676,7 @@ bool CWallet::SendAll(std::string des)
     return ret;
 }
 
-bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold)
+bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint32_t nTimeBefore)
 {
     if (this->IsLocked()) {
         return true;
@@ -5673,6 +5699,8 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold)
             for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
                 const uint256& wtxid = it->first;
                 const CWalletTx* pcoin = &(*it).second;
+
+                if (pcoin->GetTxTime() > nTimeBefore) continue;
 
                 int nDepth = pcoin->GetDepthInMainChain(false);
                 if ((pcoin->IsCoinBase() || pcoin->IsCoinStake()) && pcoin->GetBlocksToMaturity() > 0)
@@ -5912,42 +5940,24 @@ void CWallet::AutoCombineDust()
         LogPrintf("Time elapsed for autocombine transaction too short\n");
         return;
     }
-    static int64_t lastTime = GetAdjustedTime();
-    if (GetAdjustedTime() - lastTime < 30) return;
+
     LogPrintf("Creating a sweeping transaction\n");
     if (stakingMode == StakingMode::STAKING_WITH_CONSOLIDATION) {
         if (IsLocked()) return;
         if (fGenerateDapscoins && chainActive.Tip()->nHeight >= Params().LAST_POW_BLOCK()) {
             //sweeping to create larger UTXO for staking
             LOCK2(cs_main, cs_wallet);
-            CAmount max = 0;
-            for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
-                const uint256& wtxid = it->first;
-                const CWalletTx* pcoin = &(*it).second;
-
-                int cannotSpend = 0;
-                {
-                    for (const CTxOut& out : pcoin->vout) {
-                        if (IsMine(out)) {
-                            //add in-wallet minimum staking
-                            CAmount value = getCTxOutValue(*pcoin, out);
-                            if (value >= max) {
-                                max = value;
-                            }
-                        }
-                    }
-                }
+            CAmount max = dirtyCachedBalance;
+            if (max == 0) {
+                max = GetBalance();
             }
-            CreateSweepingTransaction(MINIMUM_STAKE_AMOUNT, max + COIN);
+            uint32_t nTime = ReadAutoConsolidateSettingTime();
+            nTime = (nTime == 0)? GetAdjustedTime() : nTime;
+            CreateSweepingTransaction(MINIMUM_STAKE_AMOUNT, max + COIN, nTime);
         }
         return;
     }
-    if (!CreateSweepingTransaction(nAutoCombineThreshold, nAutoCombineThreshold)) {
-        if (fGenerateDapscoins && chainActive.Tip()->nHeight >= Params().LAST_POW_BLOCK()) {
-            //sweeping to create larger UTXO for staking
-            CreateSweepingTransaction(MINIMUM_STAKE_AMOUNT, nAutoCombineThreshold);
-        }
-    }
+    CreateSweepingTransaction(nAutoCombineThreshold, nAutoCombineThreshold, GetAdjustedTime());
 }
 
 bool CWallet::estimateStakingConsolidationFees(CAmount& minFee, CAmount& maxFee) {

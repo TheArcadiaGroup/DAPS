@@ -20,6 +20,7 @@
 #include "2faconfirmdialog.h"
 #include "zxcvbn.h"
 #include "utilmoneystr.h"
+#include "timedata.h"
 
 #include <QAction>
 #include <QCursor>
@@ -110,6 +111,12 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
     timerStakingToggleSync = new QTimer();
     connect(timerStakingToggleSync, SIGNAL(timeout()), this, SLOT(setStakingToggle()));
     timerStakingToggleSync->start(10000);
+
+    if (pwalletMain) {
+        bool isConsolidatedOn = pwalletMain->IsAutoConsolidateOn();
+        ui->addNewFunds->setChecked(isConsolidatedOn);
+    }
+    connect(ui->addNewFunds, SIGNAL(stateChanged(int)), this, SLOT(setAutoConsolidate(int)));
 }
 
 void OptionsPage::setStakingToggle()
@@ -446,14 +453,16 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
             pwalletMain->WriteStakingStatus(true);
             emit model->stakingStatusChanged(true);
             model->generateCoins(true, 1);
+            pwalletMain->fCombineDust = true;
+            pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
             return;
         }
 
         QMessageBox::StandardButton reply;
         if (stt == StakingStatusError::STAKABLE_NEED_CONSOLIDATION) {
-            errorMessage = "In order to enable staking with 100% of your balance, your previous DAPS deposits must be automatically consolidated and reorganized. This will incur a fee of between " + FormatMoney(minFee) + " to " + FormatMoney(maxFee) + " DAPS.\n\nWould you like to do this?";
+            errorMessage = "In order to enable staking with 100% of your current balance, your previous DAPS deposits must be consolidated and reorganized. This will incur a fee of between " + FormatMoney(minFee) + " to " + FormatMoney(maxFee) + " DAPS.\n\nWould you like to do this?";
         } else {
-            errorMessage = "In order to enable staking with 100% of your balance except the reserve balance, your previous DAPS deposits must be automatically consolidated and reorganized. This will incur a fee of between " + FormatMoney(minFee) + " to " + FormatMoney(maxFee) + " DAPS.\n\nWould you like to do this?";
+            errorMessage = "In order to enable staking with 100% of your current balance except the reserve balance, your previous DAPS deposits must be consolidated and reorganized. This will incur a fee of between " + FormatMoney(minFee) + " to " + FormatMoney(maxFee) + " DAPS.\n\nWould you like to do this?";
         }
         reply = QMessageBox::question(this, "Staking Needs Consolidation", QString::fromStdString(errorMessage), QMessageBox::Yes|QMessageBox::No);
 		if (reply == QMessageBox::Yes) { 
@@ -464,9 +473,11 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
             pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
             bool success = false;
         	try {
+                uint32_t nTime = pwalletMain->ReadAutoConsolidateSettingTime();
+                nTime = (nTime == 0)? GetAdjustedTime() : nTime;
         		success = model->getCWallet()->CreateSweepingTransaction(
 								CWallet::MINIMUM_STAKE_AMOUNT,
-								CWallet::MINIMUM_STAKE_AMOUNT);
+								CWallet::MINIMUM_STAKE_AMOUNT, nTime);
                 if (success) {
                     QString msg = "Consolidation transaction created!";
                     QMessageBox msgBox;
@@ -795,4 +806,24 @@ void OptionsPage::onShowMnemonic() {
     msgBox.setInformativeText("\n<b>" + mPhrase + "</b>");
     msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
     msgBox.exec();
+}
+
+void OptionsPage::setAutoConsolidate(int state) {
+    int status = model->getEncryptionStatus();
+    if (status == WalletModel::Locked || status == WalletModel::UnlockedForAnonymizationOnly) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Staking Settings");
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.setText("Please unlock the keychain wallet with your passphrase before attempting to change this setting.");
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.exec();
+        return;
+    }
+    LOCK(pwalletMain->cs_wallet);
+    //Insert Function Here
+    if (ui->addNewFunds->isChecked()) {
+        pwalletMain->WriteAutoConsolidateSettingTime(0);
+    } else {
+        pwalletMain->WriteAutoConsolidateSettingTime(GetAdjustedTime());
+    }
 }

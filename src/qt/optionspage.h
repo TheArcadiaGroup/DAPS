@@ -95,6 +95,7 @@ private slots:
     void on_month();
     void onShowMnemonic();
     void setStakingToggle();
+    void setAutoConsolidate(int);
 };
 
 #endif // BITCOIN_QT_OPTIONSPAGE_H
