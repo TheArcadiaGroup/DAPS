@@ -401,6 +401,7 @@ public:
     int64_t nTimeFirstKey;
 
     StakingMode stakingMode = STOPPED;
+    int64_t DecoyConfirmationMinimum = 15;
 
     mutable std::map<std::string, CKeyImage> outpointToKeyImages;
     std::map<std::string, bool> keyImagesSpends;

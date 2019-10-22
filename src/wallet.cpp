@@ -3945,6 +3945,8 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
             }
         }
 
+        if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum) continue;
+
         CKeyImage ki;
         if (!generateKeyImage(txPrev.vout[tx.vin[i].prevout.n].scriptPubKey, ki)) {
             LogPrintf("Cannot generate key image");

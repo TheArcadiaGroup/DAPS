@@ -1779,6 +1779,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
             LogPrintf("Starting staking\n");
             threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "stakemint", &ThreadStakeMinter));
         }
+        //read decoy confirmation min
+        pwalletMain->DecoyConfirmationMinimum = GetArg("-decoyconfirm", 15);
     }
 #endif
 
