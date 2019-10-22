@@ -277,6 +277,9 @@ public:
     bool estimateStakingConsolidationFees(CAmount& min, CAmount& max);
     static int MaxTxSizePerTx();
     std::string GetTransactionType(const CTransaction& tx);
+    bool WriteAutoConsolidateSettingTime(uint32_t settingTime);
+    uint32_t ReadAutoConsolidateSettingTime();
+    bool IsAutoConsolidateOn();
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet

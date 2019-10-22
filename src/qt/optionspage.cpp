@@ -20,6 +20,7 @@
 #include "2faconfirmdialog.h"
 #include "zxcvbn.h"
 #include "utilmoneystr.h"
+#include "timedata.h"
 
 #include <QAction>
 #include <QCursor>
@@ -51,7 +52,7 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
     connect(ui->lineEditNewPass, SIGNAL(textChanged(const QString &)), this, SLOT(validateNewPass()));
     connect(ui->lineEditNewPassRepeat, SIGNAL(textChanged(const QString &)), this, SLOT(validateNewPassRepeat()));
     connect(ui->lineEditOldPass, SIGNAL(textChanged(const QString &)), this, SLOT(onOldPassChanged()));
-    connect(ui->addNewFunds, SIGNAL(clicked()), this, SLOT(setAutoConsolidate()));
+    connect(ui->addNewFunds, SIGNAL(stateChanged(int)), this, SLOT(setAutoConsolidate(int)));
 
     QLocale lo(QLocale::C);
     lo.setNumberOptions(QLocale::RejectGroupSeparator);
@@ -798,7 +799,7 @@ void OptionsPage::onShowMnemonic() {
     msgBox.exec();
 }
 
-void OptionsPage::setAutoConsolidate() {
+void OptionsPage::setAutoConsolidate(int state) {
     int status = model->getEncryptionStatus();
     if (status == WalletModel::Locked || status == WalletModel::UnlockedForAnonymizationOnly) {
         QMessageBox msgBox;
@@ -809,5 +810,12 @@ void OptionsPage::setAutoConsolidate() {
         msgBox.exec();
         return;
     }
+    LOCK(pwalletMain->cs_wallet);
     //Insert Function Here
+    if (ui->addNewFunds->isChecked()) {
+        pwalletMain->WriteAutoConsolidateSettingTime(0);
+
+    } else {
+        pwalletMain->WriteAutoConsolidateSettingTime(GetAdjustedTime());
+    }
 }

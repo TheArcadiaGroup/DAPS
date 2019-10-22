@@ -3003,6 +3003,23 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
     return CreateTransactionBulletProof(txPrivDes, recipientViewKey, vecSend, wtxNew, reservekey, nFeeRet, strFailReason, coinControl, coin_type, useIX, nFeePay, ringSize, sendtoMyself);
 }
 
+//settingTime = 0 => auto consolidate on
+//settingTime > 0 => only consolidate transactions came before this settingTime
+bool CWallet::WriteAutoConsolidateSettingTime(uint32_t settingTime)
+{
+    return CWalletDB(strWalletFile).WriteAutoConsolidateSettingTime(settingTime);
+}
+
+uint32_t CWallet::ReadAutoConsolidateSettingTime()
+{
+    return CWalletDB(strWalletFile).ReadAutoConsolidateSettingTime();
+}
+
+bool CWallet::IsAutoConsolidateOn()
+{
+    return ReadAutoConsolidateSettingTime() == 0;
+}
+
 bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey& recipientViewKey, const std::vector<std::pair<CScript, CAmount> >& vecSend, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet, std::string& strFailReason, const CCoinControl* coinControl, AvailableCoinsType coin_type, bool useIX, CAmount nFeePay, int ringSize, bool tomyself)
 {
     if (useIX && nFeePay < CENT) nFeePay = CENT;
