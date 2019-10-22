@@ -123,7 +123,7 @@ RUN cd /BUILD/ && \
     #flatten
     tar pcvf - --transform 's/.*\///g' --files-from=/dev/stdin | \
     #compress
-    xz -9 - > $DESTDIR$BUILD_TARGET-v$VERSION.tar.xz
+    xz -9 - > $DESTDIR$BUILD_TARGET-v$VERSION.tar.xz  && \
     #files only
     find ./poa/* -type f | \
     #flatten
