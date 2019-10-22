@@ -249,6 +249,8 @@ extern UniValue revealviewprivatekey(const UniValue& params, bool fHelp);
 extern UniValue revealspendprivatekey(const UniValue& params, bool fHelp);
 extern UniValue showtxprivatekeys(const UniValue& params, bool fHelp);
 extern UniValue rescanwallettransactions(const UniValue& params, bool fHelp);
+extern UniValue setdecoyconfirmation(const UniValue& params, bool fHelp);
+extern UniValue getdecoyconfirmation(const UniValue& params, bool fHelp);
 extern UniValue decodestealthaddress(const UniValue& params, bool fHelp);
 extern UniValue sendtostealthaddress(const UniValue& params, bool fHelp);
 extern UniValue createprivacysubaddress(const UniValue& params, bool fHelp);

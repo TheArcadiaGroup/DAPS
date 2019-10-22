@@ -2749,6 +2749,61 @@ UniValue sendtostealthaddress(const UniValue& params, bool fHelp)
     return wtx.GetHash().GetHex();
 }
 
+UniValue setdecoyconfirmation(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+                "setdecoyconfirmation\n"
+                "\nSend the minimum confirmation for decoys in RingCT\n" +
+                HelpRequiringPassphrase() +
+                "\nArguments:\n"
+                "2. \"confirm\"      (numeric, required) The required minim confirmation for decoys\n"
+                "\nResult:\n"
+                "\"decoy_confirmation\"  (numeric) The minimum decoy confirmation.\n"
+                "\nExamples:\n" +
+                HelpExampleCli("setdecoyconfirmation", "\"20\"") + HelpExampleCli("setdecoyconfirmation", "\"20\"") + HelpExampleRpc("setdecoyconfirmation", "\"20\""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
+    }
+
+    int confirmation = params[0].get_int();
+
+    if (confirmation <= 0) {
+        throw JSONRPCError(RPC_PRIVACY_DECOY_MIN,
+                           "Error: Min decoy confirmation must be positive.");
+    }
+    pwalletMain->DecoyConfirmationMinimum = confirmation;
+    UniValue ret(UniValue::VOBJ);
+    ret.push_back(Pair("decoy_confirmation", confirmation));
+    return ret;
+}
+
+UniValue getdecoyconfirmation(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+                "getdecoyconfirmation\n"
+                "\nShow the current decoy confirmation\n" +
+                HelpRequiringPassphrase() +
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"decoy_confirmation\"  (numeric) The minimum decoy confirmation.\n"
+                "\nExamples:\n" +
+                HelpExampleCli("getdecoyconfirmation", "") + HelpExampleCli("getdecoyconfirmation", "") + HelpExampleRpc("getdecoyconfirmation", ""));
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
+    }
+
+    UniValue ret(UniValue::VOBJ);
+    ret.push_back(Pair("decoy_confirmation", pwalletMain->DecoyConfirmationMinimum));
+    return ret;
+}
+
 std::string GetHex(const unsigned char* vch, int sz) {
     char psz[sz * 2 + 1];
     for (int i = 0; i < sz; i++)
