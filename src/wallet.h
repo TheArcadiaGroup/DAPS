@@ -320,7 +320,7 @@ public:
     //Auto Combine Inputs
     bool fCombineDust;
     CAmount nAutoCombineThreshold;
-    bool CreateSweepingTransaction(CAmount target, CAmount threshold);
+    bool CreateSweepingTransaction(CAmount target, CAmount threshold, uint32_t nTimeBefore);
     bool SendAll(std::string des);
     CWallet()
     {
@@ -415,6 +415,8 @@ public:
     mutable std::map<CScript, CKey> blindMap;
     mutable std::vector<COutPoint> userDecoysPool;	//used in transaction spending user transaction
     mutable std::vector<COutPoint> coinbaseDecoysPool; //used in transction spending coinbase
+
+    CAmount dirtyCachedBalance = 0;
 
     const CWalletTx* GetWalletTx(const uint256& hash) const;
 

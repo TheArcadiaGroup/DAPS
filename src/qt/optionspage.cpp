@@ -112,6 +112,11 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
     timerStakingToggleSync = new QTimer();
     connect(timerStakingToggleSync, SIGNAL(timeout()), this, SLOT(setStakingToggle()));
     timerStakingToggleSync->start(10000);
+
+    if (pwalletMain) {
+        bool isConsolidatedOn = pwalletMain->IsAutoConsolidateOn();
+        ui->addNewFunds->setChecked(isConsolidatedOn);
+    }
 }
 
 void OptionsPage::setStakingToggle()
@@ -453,9 +458,9 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
 
         QMessageBox::StandardButton reply;
         if (stt == StakingStatusError::STAKABLE_NEED_CONSOLIDATION) {
-            errorMessage = "In order to enable staking with 100% of your balance, your previous DAPS deposits must be automatically consolidated and reorganized. This will incur a fee of between " + FormatMoney(minFee) + " to " + FormatMoney(maxFee) + " DAPS.\n\nWould you like to do this?";
+            errorMessage = "In order to enable staking with 100% of your current balance, your previous DAPS deposits must be consolidated and reorganized. This will incur a fee of between " + FormatMoney(minFee) + " to " + FormatMoney(maxFee) + " DAPS.\n\nWould you like to do this?";
         } else {
-            errorMessage = "In order to enable staking with 100% of your balance except the reserve balance, your previous DAPS deposits must be automatically consolidated and reorganized. This will incur a fee of between " + FormatMoney(minFee) + " to " + FormatMoney(maxFee) + " DAPS.\n\nWould you like to do this?";
+            errorMessage = "In order to enable staking with 100% of your current balance except the reserve balance, your previous DAPS deposits must be consolidated and reorganized. This will incur a fee of between " + FormatMoney(minFee) + " to " + FormatMoney(maxFee) + " DAPS.\n\nWould you like to do this?";
         }
         reply = QMessageBox::question(this, "Staking Needs Consolidation", QString::fromStdString(errorMessage), QMessageBox::Yes|QMessageBox::No);
 		if (reply == QMessageBox::Yes) { 
@@ -466,9 +471,11 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
             pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
             bool success = false;
         	try {
+                uint32_t nTime = pwalletMain->ReadAutoConsolidateSettingTime();
+                nTime = (nTime == 0)? GetAdjustedTime() : nTime;
         		success = model->getCWallet()->CreateSweepingTransaction(
 								CWallet::MINIMUM_STAKE_AMOUNT,
-								CWallet::MINIMUM_STAKE_AMOUNT);
+								CWallet::MINIMUM_STAKE_AMOUNT, nTime);
                 if (success) {
                     QString msg = "Consolidation transaction created!";
                     QMessageBox msgBox;
