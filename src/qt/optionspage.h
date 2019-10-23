@@ -75,6 +75,7 @@ private:
     void disable2FA();
     void enable2FA();
     QTimer* timerStakingToggleSync;
+    void saveConsolidationSettingTime(bool);
 
 private slots:
     void validateNewPass();

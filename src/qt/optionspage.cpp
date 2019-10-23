@@ -455,6 +455,7 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
             model->generateCoins(true, 1);
             pwalletMain->fCombineDust = true;
             pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
+            saveConsolidationSettingTime(ui->addNewFunds->isChecked());
             return;
         }
 
@@ -471,6 +472,7 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
             model->generateCoins(true, 1);
             pwalletMain->fCombineDust = true;
             pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
+            saveConsolidationSettingTime(ui->addNewFunds->isChecked());
             bool success = false;
         	try {
                 uint32_t nTime = pwalletMain->ReadAutoConsolidateSettingTime();
@@ -821,7 +823,12 @@ void OptionsPage::setAutoConsolidate(int state) {
     }
     LOCK(pwalletMain->cs_wallet);
     //Insert Function Here
-    if (ui->addNewFunds->isChecked()) {
+    saveConsolidationSettingTime(ui->addNewFunds->isChecked());
+}
+
+void OptionsPage::saveConsolidationSettingTime(bool autoConsolidate)
+{
+    if (autoConsolidate) {
         pwalletMain->WriteAutoConsolidateSettingTime(0);
     } else {
         pwalletMain->WriteAutoConsolidateSettingTime(GetAdjustedTime());
