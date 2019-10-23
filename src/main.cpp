@@ -4668,7 +4668,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
         if (pwalletMain->fCombineDust && chainActive.Height() % 5 == 0)
             pwalletMain->AutoCombineDust();
 
-        if (chainActive.Height() % 5 == 0) {
+        if (chainActive.Height() % 15 == 0) {
             RemoveInvalidTransactionsFromMempool();
         }
         pwalletMain->resetPendingOutPoints();
