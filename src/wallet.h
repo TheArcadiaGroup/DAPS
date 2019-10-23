@@ -268,6 +268,7 @@ public:
     bool SelectCoinsDarkDenominated(CAmount nTargetValue, std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet) ;
     bool HasCollateralInputs(bool fOnlyConfirmed = true);
     bool IsCollateralAmount(CAmount nInputAmount) const;
+    bool IsMasternodeController();
     int CountInputsWithAmount(CAmount nInputAmount);
     bool checkPassPhraseRule(const char *pass);
     COutPoint findMyOutPoint(const CTxIn& txin) const;

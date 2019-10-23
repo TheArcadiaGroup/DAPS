@@ -2737,6 +2737,11 @@ bool CWallet::IsCollateralized(const COutPoint& outpoint)
     return false;
 }
 
+bool CWallet::IsMasternodeController()
+{
+    return masternodeConfig.getEntries().size() > 0;
+}
+
 bool CWallet::SelectCoinsDark(CAmount nValueMin, CAmount nValueMax, std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet, int nObfuscationRoundsMin, int nObfuscationRoundsMax)
 {
     CCoinControl* coinControl = NULL;
