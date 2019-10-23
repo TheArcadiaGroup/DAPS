@@ -346,6 +346,34 @@ bool IsKeyImageSpend1(const std::string& kiHex, const uint256& againsHash)
     return false;
 }
 
+bool CheckKeyImageSpendInMainChain(const std::string& kiHex, int& confirmations)
+{
+    confirmations = 0;
+    if (kiHex.empty()) return false;
+    std::vector<uint256> bhs;
+    if (!pblocktree->ReadKeyImages(kiHex, bhs)) {
+        //not spent yet because not found in database
+        return false;
+    }
+    if (bhs.empty()) {
+        return false;
+    }
+    for (int i = 0; i < bhs.size(); i++) {
+        uint256 bh = bhs[i];
+        //check if bh is in main chain
+        // Find the block it claims to be in
+        BlockMap::iterator mi = mapBlockIndex.find(bh);
+        if (mi == mapBlockIndex.end())
+            continue;
+        CBlockIndex* pindex = (*mi).second;
+        if (pindex && chainActive.Contains(pindex)) {
+            confirmations = 1 + chainActive.Height() - pindex->nHeight;
+            return true;
+        }
+    }
+    return false;
+}
+
 secp256k1_context2* GetContext()
 {
     static secp256k1_context2* both;
@@ -3358,7 +3386,8 @@ bool static DisconnectTip(CValidationState& state)
     // Update chainActive and related variables.
     UpdateTip(pindexDelete->pprev);
     // Let wallets know transactions went from 1-confirmed to
-    // 0-confirmed or conflicted:
+    // 0-confirmed or conflicted:void 
+
     BOOST_FOREACH (
         const CTransaction& tx, block.vtx) {
         SyncWithWallets(tx, NULL);
@@ -3468,6 +3497,29 @@ bool DisconnectBlocksAndReprocess(int blocks)
         DisconnectTip(state);
 
     return true;
+}
+
+void RemoveInvalidTransactionsFromMempool()
+{
+    LOCK(mempool.cs);
+    std::vector<CTransaction> tobeRemoveds;
+    for (std::map<uint256, CTxMemPoolEntry>::const_iterator it = mempool.mapTx.begin(); it != mempool.mapTx.end(); ++it) {
+        const CTransaction& tx = it->second.GetTx();
+        for(size_t i = 0; i < tx.vin.size(); i++) {
+            std::string kiHex = tx.vin[i].keyImage.GetHex();
+            int confirm = 0;
+            if (CheckKeyImageSpendInMainChain(kiHex, confirm)) {
+                if (confirm > Params().MaxReorganizationDepth()) {
+                    tobeRemoveds.push_back(tx);
+                    break;
+                }
+            }
+        }
+    }
+    std::list<CTransaction> removed;
+    for(size_t i = 0; i < tobeRemoveds.size(); i++) {
+        mempool.remove(tobeRemoveds[i], removed, true);
+    }
 }
 
 /*
@@ -4616,6 +4668,9 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
         if (pwalletMain->fCombineDust && chainActive.Height() % 5 == 0)
             pwalletMain->AutoCombineDust();
 
+        if (chainActive.Height() % 5 == 0) {
+            RemoveInvalidTransactionsFromMempool();
+        }
         pwalletMain->resetPendingOutPoints();
     }
 
