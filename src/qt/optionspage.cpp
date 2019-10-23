@@ -828,7 +828,7 @@ void OptionsPage::setAutoConsolidate(int state) {
 
 void OptionsPage::saveConsolidationSettingTime(bool autoConsolidate)
 {
-    if (autoConsolidate) {
+    if (!pwalletMain->IsMasternodeController() && autoConsolidate) {
         pwalletMain->WriteAutoConsolidateSettingTime(0);
     } else {
         pwalletMain->WriteAutoConsolidateSettingTime(GetAdjustedTime());
