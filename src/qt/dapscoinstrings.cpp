@@ -35,7 +35,7 @@ QT_TRANSLATE_NOOP("dapscoin-core", ""
 QT_TRANSLATE_NOOP("dapscoin-core", ""
 "Calculated accumulator checkpoint is not what is recorded by block index"),
 QT_TRANSLATE_NOOP("dapscoin-core", ""
-"Cannot obtain a lock on data directory %s. DAPScoin is probably already "
+"Cannot obtain a lock on data directory %s. DAPS is probably already "
 "running."),
 QT_TRANSLATE_NOOP("dapscoin-core", ""
 "Change automatic finalized budget voting behavior. mode=auto: Vote for only "
@@ -50,7 +50,7 @@ QT_TRANSLATE_NOOP("dapscoin-core", ""
 "Delete all wallet transactions and only recover those parts of the "
 "blockchain through -rescan on startup"),
 QT_TRANSLATE_NOOP("dapscoin-core", ""
-"Disable all DAPScoin specific functionality (Masternodes, SwiftX, "
+"Disable all DAPS specific functionality (Masternodes, SwiftX, "
 "Budgeting) (0-1, default: %u)"),
 QT_TRANSLATE_NOOP("dapscoin-core", ""
 "Distributed under the MIT software license, see the accompanying file "
@@ -175,9 +175,9 @@ QT_TRANSLATE_NOOP("dapscoin-core", ""
 "If the file does not exist, create it with owner-readable-only file "
 "permissions.\n"
 "It is also recommended to set alertnotify so you are notified of problems;\n"
-"for example: alertnotify=echo %%s | mail -s \"DAPScoin Alert\" admin@foo.com\n"),
+"for example: alertnotify=echo %%s | mail -s \"DAPS Alert\" admin@foo.com\n"),
 QT_TRANSLATE_NOOP("dapscoin-core", ""
-"Unable to bind to %s on this computer. DAPScoin is probably already running."),
+"Unable to bind to %s on this computer. DAPS is probably already running."),
 QT_TRANSLATE_NOOP("dapscoin-core", ""
 "Unable to locate enough Obfuscation denominated funds for this transaction."),
 QT_TRANSLATE_NOOP("dapscoin-core", ""
@@ -197,7 +197,7 @@ QT_TRANSLATE_NOOP("dapscoin-core", ""
 "pay if you send a transaction."),
 QT_TRANSLATE_NOOP("dapscoin-core", ""
 "Warning: Please check that your computer's date and time are correct! If "
-"your clock is wrong DAPScoin will not work properly."),
+"your clock is wrong DAPS will not work properly."),
 QT_TRANSLATE_NOOP("dapscoin-core", ""
 "Warning: The network does not appear to fully agree! Some miners appear to "
 "be experiencing issues."),
@@ -253,7 +253,7 @@ QT_TRANSLATE_NOOP("dapscoin-core", "Connect to a node to retrieve peer addresses
 QT_TRANSLATE_NOOP("dapscoin-core", "Connection options:"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Copyright (C) 2009-%i The Bitcoin Core Developers"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Copyright (C) 2014-%i The Dash Core Developers"),
-QT_TRANSLATE_NOOP("dapscoin-core", "Copyright (C) 2015-%i The DAPScoin Developers"),
+QT_TRANSLATE_NOOP("dapscoin-core", "Copyright (C) 2015-%i The DAPS Project developers"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Corrupted block database detected"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Could not parse -rpcbind value %s as network address"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Could not parse masternode.conf"),
@@ -313,7 +313,7 @@ QT_TRANSLATE_NOOP("dapscoin-core", "Incompatible mode."),
 QT_TRANSLATE_NOOP("dapscoin-core", "Incompatible version."),
 QT_TRANSLATE_NOOP("dapscoin-core", "Incorrect or no genesis block found. Wrong datadir for network?"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Information"),
-QT_TRANSLATE_NOOP("dapscoin-core", "Initialization sanity check failed. DAPScoin is shutting down."),
+QT_TRANSLATE_NOOP("dapscoin-core", "Initialization sanity check failed. DAPS is shutting down."),
 QT_TRANSLATE_NOOP("dapscoin-core", "Input is not valid."),
 QT_TRANSLATE_NOOP("dapscoin-core", "Insufficient funds"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Insufficient funds."),
@@ -461,7 +461,7 @@ QT_TRANSLATE_NOOP("dapscoin-core", "Verifying blocks..."),
 QT_TRANSLATE_NOOP("dapscoin-core", "Verifying wallet..."),
 QT_TRANSLATE_NOOP("dapscoin-core", "Wallet %s resides outside data directory %s"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Wallet is locked."),
-QT_TRANSLATE_NOOP("dapscoin-core", "Wallet needed to be rewritten: restart DAPScoin to complete"),
+QT_TRANSLATE_NOOP("dapscoin-core", "Wallet needed to be rewritten: restart DAPS to complete"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Wallet options:"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Wallet window title"),
 QT_TRANSLATE_NOOP("dapscoin-core", "Warning"),

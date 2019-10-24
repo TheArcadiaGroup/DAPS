@@ -11,7 +11,7 @@ ENV BUILD_TARGET=${BUILD_TARGET}
 ARG DESTDIR=/daps/bin/
 ENV DESTDIR=$DESTDIR
 
-ARG VERSION=NONE
+ARG VERSION=UNTAGGED
 ENV VERSION=$VERSION
 
 #COPY source
@@ -21,15 +21,14 @@ RUN apt-get update
 
 RUN apt-get autoremove -y
 
-RUN cd /DAPS/ && mkdir -p /BUILD/ && \
+RUN cd /DAPS/ && mkdir -p /BUILD/bin/ && \
 #
     if [ "$BUILD_TARGET" = "windowsx64" ]; \
       then echo "Compiling for Windows 64-bit (x86_64-w64-mingw32)..." && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && \
-        make -j2 && \
-        make deploy && \
-        make install DESTDIR=/BUILD/ && \
+        make deploy -j2 && \
+        cp release/*.exe /BUILD/bin/ && \
         cp *.exe /BUILD/bin/ && \
         cd assets/cpuminer-2.5.0 && \
         wget -N https://curl.haxx.se/download/curl-7.40.0.tar.gz && tar xzf curl-7.40.0.tar.gz && \
@@ -53,9 +52,8 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
       then echo "Compiling for Windows 32-bit (i686-w64-mingw32)..." && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
-        make -j2 && \
-        make deploy && \
-        make install DESTDIR=/BUILD/ && \
+        make deploy -j2 && \
+        cp release/*.exe /BUILD/bin/ && \
         cp *.exe /BUILD/bin/ && \
         cd assets/cpuminer-2.5.0 && \
         wget -N https://curl.haxx.se/download/curl-7.40.0.tar.gz && tar xzf curl-7.40.0.tar.gz && \
@@ -77,7 +75,6 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #
     elif [ "$BUILD_TARGET" = "linux" ]; \
        then echo "Compiling for Linux (x86_64-pc-linux-gnu)..." && \
-        apt-get remove libzmq3-dev -y && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --prefix=/ && \
         make -j2 && \
@@ -86,7 +83,6 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
         strip src/dapscoin-tx && \
         strip src/qt/dapscoin-qt && \
         make install DESTDIR=/BUILD/ && \
-        apt-get install libcurl4-openssl-dev -y && \
         if [ -f assets/cpuminer-2.5.0/build_linux.sh ]; then cd assets/cpuminer-2.5.0; fi && \
         if [ -f build_linux.sh ]; then ./build_linux.sh; fi && \
         if [ -f minerd ]; then cp minerd /BUILD/bin/dapscoin-poa-minerd; fi; \

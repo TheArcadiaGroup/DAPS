@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -42,7 +42,7 @@ using namespace boost;
 using namespace std;
 
 #if defined(NDEBUG)
-#error "DAPScoin cannot be compiled without assertions."
+#error "DAPS cannot be compiled without assertions."
 #endif
 
 // 6 comes from OPCODE (1) + vch.size() (1) + BIGNUM size (4)
@@ -312,34 +312,66 @@ double GetPriority(const CTransaction& tx, int nHeight)
 bool IsKeyImageSpend1(const std::string& kiHex, const uint256& againsHash)
 {
     if (kiHex.empty()) return false;
-    uint256 bh;
-    if (!pblocktree->ReadKeyImage(kiHex, bh)) {
+    std::vector<uint256> bhs;
+    if (!pblocktree->ReadKeyImages(kiHex, bhs)) {
         //not spent yet because not found in database
         return false;
     }
-    if (bh.IsNull()) {
+    if (bhs.empty()) {
         return false;
     }
+    for (int i = 0; i < bhs.size(); i++) {
+        uint256 bh = bhs[i];
+        if (againsHash.IsNull()) {
+            //check if bh is in main chain
+            // Find the block it claims to be in
+            BlockMap::iterator mi = mapBlockIndex.find(bh);
+            if (mi == mapBlockIndex.end())
+                continue;
+            CBlockIndex* pindex = (*mi).second;
+            if (pindex && chainActive.Contains(pindex))
+                return true;
+            continue; //receive from mempool
+        } else {
+            if (bh == againsHash && !againsHash.IsNull()) return false;
 
-    if (againsHash.IsNull()) {
+            //check whether bh and againsHash is in the same fork
+            if (mapBlockIndex.count(bh) < 1) continue;
+            CBlockIndex* pindex = mapBlockIndex[againsHash];
+            CBlockIndex* bhIndex = mapBlockIndex[bh];
+            CBlockIndex* ancestor = pindex->GetAncestor(bhIndex->nHeight);
+            if (ancestor == bhIndex) return true;
+        }
+    }
+    return false;
+}
+
+bool CheckKeyImageSpendInMainChain(const std::string& kiHex, int& confirmations)
+{
+    confirmations = 0;
+    if (kiHex.empty()) return false;
+    std::vector<uint256> bhs;
+    if (!pblocktree->ReadKeyImages(kiHex, bhs)) {
+        //not spent yet because not found in database
+        return false;
+    }
+    if (bhs.empty()) {
+        return false;
+    }
+    for (int i = 0; i < bhs.size(); i++) {
+        uint256 bh = bhs[i];
         //check if bh is in main chain
         // Find the block it claims to be in
         BlockMap::iterator mi = mapBlockIndex.find(bh);
         if (mi == mapBlockIndex.end())
-            return false;
+            continue;
         CBlockIndex* pindex = (*mi).second;
-        if (!pindex || !chainActive.Contains(pindex))
-            return false;
-        return true; //receive from mempool
+        if (pindex && chainActive.Contains(pindex)) {
+            confirmations = 1 + chainActive.Height() - pindex->nHeight;
+            return true;
+        }
     }
-    if (bh == againsHash && !againsHash.IsNull()) return false;
-
-    //check whether bh and againsHash is in the same fork
-    if (mapBlockIndex.count(bh) < 1) return false;
-    CBlockIndex* pindex = mapBlockIndex[againsHash];
-    CBlockIndex* bhIndex = mapBlockIndex[bh];
-    CBlockIndex* ancestor = pindex->GetAncestor(bhIndex->nHeight);
-    return ancestor == bhIndex;
+    return false;
 }
 
 secp256k1_context2* GetContext()
@@ -389,6 +421,7 @@ bool VerifyBulletProofAggregate(const CTransaction& tx)
 
 bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
 {
+    if (tx.nTxFee < 0) return false;
     if (IsInitialBlockDownload()) return true;
     const size_t MAX_VIN = MAX_TX_INPUTS;
     const size_t MAX_DECOYS = MAX_RING_SIZE; //padding 1 for safety reasons
@@ -1834,7 +1867,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
             // Continuously rate-limit free (really, very-low-fee) transactions
             // This mitigates 'penny-flooding' -- sending thousands of free transactions just to
             // be annoying or make others' transactions take longer to confirm.
-            if (fLimitFree && nFees < ::minRelayTxFee.GetFee(nSize)) {
+            if (fLimitFree && nFees < ::minRelayTxFee.GetFee(nSize - 300)) {
                 static CCriticalSection csFreeLimiter;
                 static double dFreeCount;
                 static int64_t nLastTime;
@@ -2013,7 +2046,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
                 REJECT_NONSTANDARD, "bad-txns-too-many-sigops");
 
         CAmount nValueOut = tx.GetValueOut();
-        CAmount nFees = nValueIn - nValueOut;
+        CAmount nFees = tx.nTxFee;
         double dPriority = GetPriority(tx, chainActive.Height());
 
         CTxMemPoolEntry entry(tx, nFees, GetTime(), dPriority, chainActive.Height());
@@ -3239,24 +3272,23 @@ bool static FlushStateToDisk(CValidationState& state, FlushStateMode mode)
             // First make sure all block and undo data is flushed to disk.
             FlushBlockFile();
             // Then update all block file information (which may refer to block and undo files).
-            bool fileschanged = false;
-            for (set<int>::iterator it = setDirtyFileInfo.begin(); it != setDirtyFileInfo.end();) {
-                if (!pblocktree->WriteBlockFileInfo(*it, vinfoBlockFile[*it])) {
-                    return state.Abort("Failed to write to block index");
+            {
+                std::vector<std::pair<int, const CBlockFileInfo*> > vFiles;
+                vFiles.reserve(setDirtyFileInfo.size());
+                for (set<int>::iterator it = setDirtyFileInfo.begin(); it != setDirtyFileInfo.end(); ) {
+                    vFiles.push_back(make_pair(*it, &vinfoBlockFile[*it]));
+                    setDirtyFileInfo.erase(it++);
                 }
-                fileschanged = true;
-                setDirtyFileInfo.erase(it++);
-            }
-            if (fileschanged && !pblocktree->WriteLastBlockFile(nLastBlockFile)) {
-                return state.Abort("Failed to write to block index");
-            }
-            for (set<CBlockIndex*>::iterator it = setDirtyBlockIndex.begin(); it != setDirtyBlockIndex.end();) {
-                if (!pblocktree->WriteBlockIndex(CDiskBlockIndex(*it))) {
-                    return state.Abort("Failed to write to block index");
+                std::vector<const CBlockIndex*> vBlocks;
+                vBlocks.reserve(setDirtyBlockIndex.size());
+                for (set<CBlockIndex*>::iterator it = setDirtyBlockIndex.begin(); it != setDirtyBlockIndex.end(); ) {
+                    vBlocks.push_back(*it);
+                    setDirtyBlockIndex.erase(it++);
                 }
-                setDirtyBlockIndex.erase(it++);
+                if (!pblocktree->WriteBatchSync(vFiles, nLastBlockFile, vBlocks)) {
+                    return state.Abort("Files to write to block index database");
+                }
             }
-            pblocktree->Sync();
             // Finally flush the chainstate (which may refer to block index entries).
             if (!pcoinsTip->Flush())
                 return state.Abort("Failed to write to coin database");
@@ -3353,7 +3385,8 @@ bool static DisconnectTip(CValidationState& state)
     // Update chainActive and related variables.
     UpdateTip(pindexDelete->pprev);
     // Let wallets know transactions went from 1-confirmed to
-    // 0-confirmed or conflicted:
+    // 0-confirmed or conflicted:void 
+
     BOOST_FOREACH (
         const CTransaction& tx, block.vtx) {
         SyncWithWallets(tx, NULL);
@@ -3463,6 +3496,29 @@ bool DisconnectBlocksAndReprocess(int blocks)
         DisconnectTip(state);
 
     return true;
+}
+
+void RemoveInvalidTransactionsFromMempool()
+{
+    LOCK(mempool.cs);
+    std::vector<CTransaction> tobeRemoveds;
+    for (std::map<uint256, CTxMemPoolEntry>::const_iterator it = mempool.mapTx.begin(); it != mempool.mapTx.end(); ++it) {
+        const CTransaction& tx = it->second.GetTx();
+        for(size_t i = 0; i < tx.vin.size(); i++) {
+            std::string kiHex = tx.vin[i].keyImage.GetHex();
+            int confirm = 0;
+            if (CheckKeyImageSpendInMainChain(kiHex, confirm)) {
+                if (confirm > Params().MaxReorganizationDepth()) {
+                    tobeRemoveds.push_back(tx);
+                    break;
+                }
+            }
+        }
+    }
+    std::list<CTransaction> removed;
+    for(size_t i = 0; i < tobeRemoveds.size(); i++) {
+        mempool.remove(tobeRemoveds[i], removed, true);
+    }
 }
 
 /*
@@ -4580,6 +4636,15 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
             if (pfrom) {
                 pfrom->PushMessage("getblocks", chainActive.GetLocator(pindexBestForkTip), pblock->GetHash());
             }
+            if (pwalletMain)
+            {
+                LOCK(pwalletMain->cs_wallet);
+                if (pblock->IsProofOfStake()) {
+                    if (pwalletMain->IsMine(pblock->vtx[1].vin[0])) {
+                        pwalletMain->mapWallet.erase(pblock->vtx[1].GetHash());
+                    }
+                }
+            }
             return error("%s : AcceptBlock FAILED", __func__);
         }
     }
@@ -4599,9 +4664,12 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
             pwalletMain->MultiSend();
 
         // If turned on Auto Combine will scan wallet for dust to combine
-        if (pwalletMain->fCombineDust && chainActive.Height() % 20 == 0)
+        if (pwalletMain->fCombineDust && chainActive.Height() % 5 == 0)
             pwalletMain->AutoCombineDust();
 
+        if (chainActive.Height() % 15 == 0) {
+            RemoveInvalidTransactionsFromMempool();
+        }
         pwalletMain->resetPendingOutPoints();
     }
 
@@ -5791,6 +5859,39 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         if (!vRecv.empty()) {
             vRecv >> LIMITED_STRING(pfrom->strSubVer, 256);
             pfrom->cleanSubVer = SanitizeString(pfrom->strSubVer);
+        }
+        std::time_t time = std::time(0);  // t is an integer type
+        if (time >= 1572220800) { //Monday, Oct 28 at midnight UTC - 1572220800
+            if (pfrom->strSubVer == "/DAPScoin:0.27.5.1/") {
+                // disconnect from peers other than these sub versions
+                LogPrintf("partner %s using obsolete version %s; disconnecting\n", pfrom->addr.ToString().c_str(), pfrom->strSubVer.c_str());
+                pfrom->fDisconnect = true;
+                return false;
+            }
+        }
+        if (time >= 1572307200) { //Tuesday, Oct 29 at midnight UTC - 1572307200
+            if (pfrom->strSubVer == "/DAPScoin:0.27.5.1/" || pfrom->strSubVer == "/DAPScoin:1.0.0/") {
+                // disconnect from peers other than these sub versions
+                LogPrintf("partner %s using obsolete version %s; disconnecting\n", pfrom->addr.ToString().c_str(), pfrom->strSubVer.c_str());
+                pfrom->fDisconnect = true;
+                return false;
+            }
+        }
+        if (time >= 1572393600) { //Wed, Oct 30 at midnight UTC - 1572393600
+            if (pfrom->strSubVer == "/DAPScoin:0.27.5.1/" || pfrom->strSubVer == "/DAPScoin:1.0.0/" || pfrom->strSubVer == "/DAPScoin:1.0.1/" || pfrom->strSubVer == "/DAPS:1.0.1.3/") {
+                // disconnect from peers other than these sub versions
+                LogPrintf("partner %s using obsolete version %s; disconnecting\n", pfrom->addr.ToString().c_str(), pfrom->strSubVer.c_str());
+                pfrom->fDisconnect = true;
+                return false;
+            }
+        }
+        if (time >= 1572480000) { //Thursday, Oct 31 at midnight UTC - 1572480000
+            if (pfrom->strSubVer == "/DAPScoin:0.27.5.1/" || pfrom->strSubVer == "/DAPScoin:1.0.0/" || pfrom->strSubVer == "/DAPScoin:1.0.1/" || pfrom->strSubVer == "/DAPS:1.0.1.3/" || pfrom->strSubVer == "/DAPS:1.0.2/") {
+                // disconnect from peers other than these sub versions
+                LogPrintf("partner %s using obsolete version %s; disconnecting\n", pfrom->addr.ToString().c_str(), pfrom->strSubVer.c_str());
+                pfrom->fDisconnect = true;
+                return false;
+            }
         }
         if (!vRecv.empty())
             vRecv >> pfrom->nStartingHeight;

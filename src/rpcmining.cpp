@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -193,6 +193,7 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
     {
         mapArgs["-gen"] = (fGenerate ? "1" : "0");
         mapArgs["-genproclimit"] = itostr(nGenProcLimit);
+        pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
         GenerateDapscoins(fGenerate, pwalletMain, nGenProcLimit);
     }
 
@@ -258,7 +259,7 @@ UniValue generatepoa(const UniValue& params, bool fHelp)
 	if (!pblocktemplate.get())
 		throw JSONRPCError(RPC_INTERNAL_ERROR, "Wallet keypool empty");
 	CBlock* pblock = &pblocktemplate->block;
-	
+
 	CValidationState state;
 	if (!ProcessNewBlock(state, NULL, pblock))
 		throw JSONRPCError(RPC_INTERNAL_ERROR, "ProcessNewBlock, block not accepted");
@@ -496,10 +497,10 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
 
     if (vNodes.empty())
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DAPScoin is not connected!");
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DAPS is not connected!");
 
     if (IsInitialBlockDownload())
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DAPScoin is downloading blocks...");
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DAPS is downloading blocks...");
 
     static unsigned int nTransactionsUpdatedLast;
 
@@ -702,7 +703,7 @@ UniValue getpoablocktemplate(const UniValue& params, bool fHelp)
                 "\nExamples:\n" +
                 HelpExampleCli("getpoablocktemplate", "") + HelpExampleRpc("getpoablocktemplate", ""));
     LOCK(cs_main);
-    
+
     {
         std::string strMode = "template";
         UniValue lpval = NullUniValue;
@@ -711,10 +712,10 @@ UniValue getpoablocktemplate(const UniValue& params, bool fHelp)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
 
         if (vNodes.empty())
-            throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DAPScoin is not connected!");
+            throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DAPS is not connected!");
 
         if (IsInitialBlockDownload())
-            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DAPScoin is downloading blocks...");
+            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DAPS is downloading blocks...");
 
         // Update block
         static CBlockIndex* pindexPrev;

@@ -15,6 +15,7 @@
 #include "transactionrecord.h"
 #include "walletmodel.h"
 #include "revealtxdialog.h"
+#include "custom/dapstablewidgetitem.h"
 
 #include <algorithm>
 
@@ -108,6 +109,7 @@ void HistoryPage::connectWidgets() //add functions to widget signals
 
 void HistoryPage::on_cellClicked(int row, int column) 
 {
+    if (pwalletMain->IsLocked()) return;
     //1 is column index for type
     QTableWidgetItem* cell = ui->tableView->item(row, 1);
     QString type = cell->data(0).toString();
@@ -249,7 +251,7 @@ void HistoryPage::updateTableData(CWallet* wallet)
             for (QString dataName : {"date", "type", "address", "amount", "confirmations"}) {
                 QString data = txs[row].at(dataName);
                 QString date = data;
-                QTableWidgetItem* cell = new QTableWidgetItem();
+                DAPSTableWidgetItem* cell = new DAPSTableWidgetItem();
                 switch (col) {
                 case 0: /*date*/
                     cell->setData(0, date);

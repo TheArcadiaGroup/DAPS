@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -156,8 +156,8 @@ bool Intro::pickDataDirectory()
         return true;
     /* 1) Default data directory for operating system */
     QString dataDir = getDefaultDataDirectory();
-    //dont allow to overwrite default dir to not mix chain data folders between standard and multisig binaries
-    //dataDir = settings.value("strDataDir", dataDir).toString();
+    /* 2) Allow QSettings to override default dir */
+    dataDir = settings.value("strDataDir", dataDir).toString();
 
     if (!fs::exists(GUIUtil::qstringToBoostPath(dataDir)) || GetBoolArg("-choosedatadir", false)) {
         /* If current default data directory does not exist, let the user choose one */
@@ -175,7 +175,7 @@ bool Intro::pickDataDirectory()
                 TryCreateDirectory(GUIUtil::qstringToBoostPath(dataDir));
                 break;
             } catch (fs::filesystem_error& e) {
-                QMessageBox::critical(0, tr("DAPScoin"),
+                QMessageBox::critical(0, tr("DAPS"),
                     tr("Error: Specified data directory \"%1\" cannot be created.").arg(dataDir));
                 /* fall through, back to choosing screen */
             }

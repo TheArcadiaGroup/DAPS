@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -742,19 +742,21 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
             		continue;
             	}
             }
-
-            MilliSleep(30000);
-
+            
         }
-
+        MilliSleep(30000);
         //
         // Create new block
         //
         unsigned int nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
-        CBlockIndex* pindexPrev = chainActive.Tip();
+        CBlockIndex* pindexPrev; 
+        {
+            LOCK(cs_main);
+            pindexPrev = chainActive.Tip();
+        }
         if (!pindexPrev)
             continue;
-
+ 
         unique_ptr<CBlockTemplate> pblocktemplate(CreateNewBlockWithKey(reservekey, pwallet, fProofOfStake));
         if (!pblocktemplate.get())
             continue;

@@ -1,6 +1,6 @@
 UNIX BUILD NOTES
 ====================
-Some notes on how to build DAPScoin in Unix.
+Some notes on how to build DAPS in Unix.
 
 Note
 ---------------------
@@ -152,7 +152,7 @@ cd db-4.8.30.NC/build_unix/
 ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
 make install
 
-# Configure DAPScoin to use our own-built instance of BDB
+# Configure DAPS to use our own-built instance of BDB
 cd $DAPScoin_ROOT
 ./configure (other args...) LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include/"
 ```
@@ -170,7 +170,7 @@ If you need to build Boost yourself:
 
 Security
 --------
-To help make your DAPScoin installation more secure by making certain attacks impossible to
+To help make your DAPS installation more secure by making certain attacks impossible to
 exploit even if a vulnerability is found, binaries are hardened by default.
 This can be disabled with:
 

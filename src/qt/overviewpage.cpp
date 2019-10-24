@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -425,8 +425,9 @@ int OverviewPage::tryNetworkBlockCount(){
 }
 
 void OverviewPage::updateRecentTransactions(){
-	if (!pwalletMain || pwalletMain->IsLocked()) return;
+    if (!pwalletMain) return;
     {
+        LOCK2(cs_main, pwalletMain->cs_wallet);
         QLayoutItem* item;
         QSettings settings;
         QVariant theme = settings.value("theme");
@@ -474,7 +475,12 @@ void OverviewPage::updateRecentTransactions(){
                     ui->verticalLayoutRecent->addWidget(entry);
                     CWalletTx wtx = pwalletMain->mapWallet[txHash];
                     int64_t txTime = wtx.GetComputedTxTime();
-                    entry->setData(txTime, txs[i]["address"] , txs[i]["amount"], txs[i]["id"], txs[i]["type"]);
+                    if (pwalletMain->IsLocked()) {
+                        entry->setData(txTime, "Locked; Hidden", "Locked; Hidden", "Locked; Hidden", "Locked; Hidden");
+                    } else {
+                        entry->setData(txTime, txs[i]["address"] , txs[i]["amount"], txs[i]["id"], txs[i]["type"]);
+                    }
+
                     if (i % 2 == 0) {
                         entry->setObjectName("secondaryTxEntry");
                     }

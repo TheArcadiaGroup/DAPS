@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -82,7 +82,7 @@ UniValue getnewaddress(const UniValue& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "getnewaddress ( \"account\" )\n"
-            "\nReturns a new DAPScoin address for receiving payments.\n"
+            "\nReturns a new DAPS address for receiving payments.\n"
             "If 'account' is specified (recommended), it is added to the address book \n"
             "so payments received with the address will be credited to 'account'.\n"
             "\nArguments:\n"
@@ -194,7 +194,7 @@ UniValue getaccountaddress(const UniValue& params, bool fHelp)
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "getaccountaddress \"account\"\n"
-            "\nReturns the current DAPScoin address for receiving payments to this account.\n"
+            "\nReturns the current DAPS address for receiving payments to this account.\n"
             "\nArguments:\n"
             "1. \"account\"       (string, required) The account name for the address. It can also be set to the empty string \"\" to represent the default account. The account does not need to exist, it will be created and a new address created  if there is no account by the given name.\n"
             "\nResult:\n"
@@ -217,7 +217,7 @@ UniValue getrawchangeaddress(const UniValue& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "getrawchangeaddress\n"
-            "\nReturns a new DAPScoin address, for receiving change.\n"
+            "\nReturns a new DAPS address, for receiving change.\n"
             "This is for use with raw transactions, NOT normal use.\n"
             "\nResult:\n"
             "\"address\"    (string) The address\n"
@@ -256,7 +256,7 @@ UniValue setaccount(const UniValue& params, bool fHelp)
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid DAPScoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid DAPS address");
 
     string strAccount;
     if (params.size() > 1)
@@ -294,7 +294,7 @@ UniValue getaccount(const UniValue& params, bool fHelp)
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid DAPScoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid DAPS address");
 
     string strAccount;
     map<CTxDestination, CAddressBookData>::iterator mi = pwalletMain->mapAddressBook.find(address.Get());
@@ -348,7 +348,7 @@ void SendMoney(const CTxDestination& address, CAmount nValue, CWalletTx& wtxNew,
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
     }
 
-    // Parse DAPScoin address
+    // Parse DAPS address
     CScript scriptPubKey = GetScriptForDestination(address);
 
     // Create and send the transaction
@@ -545,7 +545,7 @@ UniValue getreceivedbyaddress(const UniValue& params, bool fHelp)
     // dapscoin address
     CBitcoinAddress address = CBitcoinAddress(params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid DAPScoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid DAPS address");
     CScript scriptPubKey = GetScriptForDestination(address.Get());
     if (!IsMine(*pwalletMain, scriptPubKey))
         return (double)0.0;
@@ -847,7 +847,7 @@ UniValue sendfrom(const UniValue& params, bool fHelp)
     string strAccount = AccountFromValue(params[0]);
     CBitcoinAddress address(params[1].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid DAPScoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid DAPS address");
     CAmount nAmount = AmountFromValue(params[2]);
     int nMinDepth = 1;
     if (params.size() > 3)
@@ -959,7 +959,7 @@ UniValue addmultisigaddress(const UniValue& params, bool fHelp)
     if (fHelp || params.size() < 2 || params.size() > 3) {
         string msg = "addmultisigaddress nrequired [\"key\",...] ( \"account\" )\n"
                      "\nAdd a nrequired-to-sign multisignature address to the wallet.\n"
-                     "Each key is a DAPScoin address or hex-encoded public key.\n"
+                     "Each key is a DAPS address or hex-encoded public key.\n"
                      "If 'account' is specified, assign address to that account.\n"
 
                      "\nArguments:\n"
@@ -2132,7 +2132,7 @@ UniValue getstakesplitthreshold(const UniValue& params, bool fHelp)
     return int(pwalletMain->nStakeSplitThreshold);
 }
 
-UniValue autocombinerewards(const UniValue& params, bool fHelp)
+UniValue autocombinedust(const UniValue& params, bool fHelp)
 {
     bool fEnable;
     if (params.size() >= 1)
@@ -2140,21 +2140,24 @@ UniValue autocombinerewards(const UniValue& params, bool fHelp)
 
     if (fHelp || params.size() < 1 || (fEnable && params.size() != 2) || params.size() > 2)
         throw runtime_error(
-            "autocombinerewards true|false ( threshold )\n"
-            "\nWallet will automatically monitor for any coins with value below the threshold amount, and combine them if they reside with the same DAPScoin address\n"
-            "When autocombinerewards runs it will create a transaction, and therefore will be subject to transaction fees.\n"
+            "autocombinedust true|false ( threshold )\n"
+            "\nWallet will automatically monitor for any coins with value below the threshold amount, and combine them if they reside with the same DAPS address\n"
+            "When autocombinedust runs it will create a transaction, and therefore will be subject to transaction fees. Minimum of 25 dust transactions before activation.\n"
 
             "\nArguments:\n"
             "1. true|false      (boolean, required) Enable auto combine (true) or disable (false)\n"
             "2. threshold       (numeric, optional) Threshold amount (default: 0)\n"
             "\nExamples:\n" +
-            HelpExampleCli("autocombinerewards", "true 540") + HelpExampleRpc("autocombinerewards", "true 540"));
+            HelpExampleCli("autocombinedust", "true 540") + HelpExampleRpc("autocombinedust", "true 540"));
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
     CAmount nThreshold = 0;
 
-    if (fEnable)
+    if (fEnable) {
         nThreshold = params[1].get_int();
+    } else {
+        nThreshold = 0;
+    }
 
     pwalletMain->fCombineDust = fEnable;
     pwalletMain->nAutoCombineThreshold = nThreshold;
@@ -2162,7 +2165,10 @@ UniValue autocombinerewards(const UniValue& params, bool fHelp)
     if (!walletdb.WriteAutoCombineSettings(fEnable, nThreshold))
         throw runtime_error("Changed settings in wallet but failed to save to database\n");
 
-    return NullUniValue;
+    UniValue result(UniValue::VOBJ);
+    result.push_back(Pair("autocombinedust", params[0].get_bool()));
+    result.push_back(Pair("amount", int(pwalletMain->nAutoCombineThreshold)));
+    return result;
 }
 
 UniValue printMultiSend()
@@ -2349,7 +2355,7 @@ UniValue multisend(const UniValue& params, bool fHelp)
             "The MultiSend transaction is sent when the staked coins mature (100 confirmations)\n"
             "****************************************************************\n"
             "TO CREATE OR ADD TO THE MULTISEND VECTOR:\n"
-            "multisend <DAPScoin Address> <percent>\n"
+            "multisend <DAPS Address> <percent>\n"
             "This will add a new address to the MultiSend vector\n"
             "Percent is a whole number 1 to 100.\n"
             "****************************************************************\n"
@@ -2678,6 +2684,28 @@ UniValue createprivacysubaddress(const UniValue& params, bool fHelp)
     return ret;
 }
 
+UniValue readmasteraccount(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+                "readmasteraccount \n"
+                "\nRead stealth master account address.\n"
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"public address\" (string) the public address"
+                "\nExamples:\n" +
+                HelpExampleCli("readmasteraccount", "") + HelpExampleCli("readmasteraccount", "\"\"") + HelpExampleCli("readmasteraccount", "") + HelpExampleRpc("readmasteraccount", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is not yet created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
+    }
+    std::string address;
+    pwalletMain->ComputeStealthPublicAddress("masteraccount", address);
+    return address;
+}
+
 UniValue decodestealthaddress(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
@@ -2747,6 +2775,61 @@ UniValue sendtostealthaddress(const UniValue& params, bool fHelp)
                            "Cannot create transaction.");
     }
     return wtx.GetHash().GetHex();
+}
+
+UniValue setdecoyconfirmation(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+                "setdecoyconfirmation\n"
+                "\nSend the minimum confirmation for decoys in RingCT\n" +
+                HelpRequiringPassphrase() +
+                "\nArguments:\n"
+                "2. \"confirm\"      (numeric, required) The required minim confirmation for decoys\n"
+                "\nResult:\n"
+                "\"decoy_confirmation\"  (numeric) The minimum decoy confirmation.\n"
+                "\nExamples:\n" +
+                HelpExampleCli("setdecoyconfirmation", "\"20\"") + HelpExampleCli("setdecoyconfirmation", "\"20\"") + HelpExampleRpc("setdecoyconfirmation", "\"20\""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
+    }
+
+    int confirmation = params[0].get_int();
+
+    if (confirmation <= 0) {
+        throw JSONRPCError(RPC_PRIVACY_DECOY_MIN,
+                           "Error: Min decoy confirmation must be positive.");
+    }
+    pwalletMain->DecoyConfirmationMinimum = confirmation;
+    UniValue ret(UniValue::VOBJ);
+    ret.push_back(Pair("decoy_confirmation", confirmation));
+    return ret;
+}
+
+UniValue getdecoyconfirmation(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+                "getdecoyconfirmation\n"
+                "\nShow the current decoy confirmation\n" +
+                HelpRequiringPassphrase() +
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"decoy_confirmation\"  (numeric) The minimum decoy confirmation.\n"
+                "\nExamples:\n" +
+                HelpExampleCli("getdecoyconfirmation", "") + HelpExampleCli("getdecoyconfirmation", "") + HelpExampleRpc("getdecoyconfirmation", ""));
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
+    }
+
+    UniValue ret(UniValue::VOBJ);
+    ret.push_back(Pair("decoy_confirmation", pwalletMain->DecoyConfirmationMinimum));
+    return ret;
 }
 
 std::string GetHex(const unsigned char* vch, int sz) {

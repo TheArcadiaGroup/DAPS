@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -250,11 +250,11 @@ UniValue stop(const UniValue& params, bool fHelp) {
     if (fHelp || params.size() > 1)
         throw runtime_error(
                 "stop\n"
-                "\nStop DAPScoin server.");
+                "\nStop DAPS server.");
     // Event loop will exit after current HTTP requests have been handled, so
     // this reply will get back to the client.
     StartShutdown();
-    return "DAPScoin server stopping";
+    return "DAPS server stopping";
 }
 
 
@@ -363,7 +363,7 @@ static const CRPCCommand vRPCCommands[] =
 
         /* Wallet */
         // {"wallet", "addmultisigaddress", &addmultisigaddress, true, false, true},
-        //{"wallet", "autocombinerewards", &autocombinerewards, false, false, true},
+        {"wallet", "autocombinedust", &autocombinedust, false, false, true},
         {"wallet", "backupwallet", &backupwallet, true, false, true},
         // {"wallet", "dumpprivkey", &dumpprivkey, true, false, true},
         // {"wallet", "dumpwallet", &dumpwallet, true, false, true},
@@ -380,11 +380,14 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "revealspendprivatekey", &revealspendprivatekey, true, false, true},
         {"wallet", "showtxprivatekeys", &showtxprivatekeys, true, false, true},
         {"wallet", "rescanwallettransactions", &rescanwallettransactions, true, false, true},
+        {"wallet", "setdecoyconfirmation", &setdecoyconfirmation, true, false, true},
+        {"wallet", "getdecoyconfirmation", &getdecoyconfirmation, true, false, true},
         {"wallet", "decodestealthaddress", &decodestealthaddress, true, false, true},
         {"wallet", "sendtostealthaddress", &sendtostealthaddress, false, false, true},
         {"wallet", "getbalance", &getbalance, false, false, true},
         {"wallet", "getbalances", &getbalances, false, false, true},
         {"wallet", "generateintegratedaddress", &generateintegratedaddress, true, false, false},
+        {"wallet", "readmasteraccount", &readmasteraccount, true, false, false},
         // {"wallet", "getnewaddress", &getnewaddress, true, false, true},
         // {"wallet", "getrawchangeaddress", &getrawchangeaddress, true, false, true},
         // {"wallet", "getreceivedbyaccount", &getreceivedbyaccount, false, false, true},

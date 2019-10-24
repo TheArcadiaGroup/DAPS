@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -268,6 +268,7 @@ public:
     bool SelectCoinsDarkDenominated(CAmount nTargetValue, std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet) ;
     bool HasCollateralInputs(bool fOnlyConfirmed = true);
     bool IsCollateralAmount(CAmount nInputAmount) const;
+    bool IsMasternodeController();
     int CountInputsWithAmount(CAmount nInputAmount);
     bool checkPassPhraseRule(const char *pass);
     COutPoint findMyOutPoint(const CTxIn& txin) const;
@@ -277,6 +278,9 @@ public:
     bool estimateStakingConsolidationFees(CAmount& min, CAmount& max);
     static int MaxTxSizePerTx();
     std::string GetTransactionType(const CTransaction& tx);
+    bool WriteAutoConsolidateSettingTime(uint32_t settingTime);
+    uint32_t ReadAutoConsolidateSettingTime();
+    bool IsAutoConsolidateOn();
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
@@ -317,7 +321,7 @@ public:
     //Auto Combine Inputs
     bool fCombineDust;
     CAmount nAutoCombineThreshold;
-    bool CreateSweepingTransaction(CAmount target, CAmount threshold);
+    bool CreateSweepingTransaction(CAmount target, CAmount threshold, uint32_t nTimeBefore);
     bool SendAll(std::string des);
     CWallet()
     {
@@ -368,7 +372,7 @@ public:
         vDisabledAddresses.clear();
 
         //Auto Combine Dust
-        fCombineDust = false;
+        fCombineDust = true;
         nAutoCombineThreshold = 540 * COIN;
     }
 
@@ -401,6 +405,7 @@ public:
     int64_t nTimeFirstKey;
 
     StakingMode stakingMode = STOPPED;
+    int64_t DecoyConfirmationMinimum = 15;
 
     mutable std::map<std::string, CKeyImage> outpointToKeyImages;
     std::map<std::string, bool> keyImagesSpends;
@@ -412,6 +417,8 @@ public:
     mutable std::map<CScript, CKey> blindMap;
     mutable std::vector<COutPoint> userDecoysPool;	//used in transaction spending user transaction
     mutable std::vector<COutPoint> coinbaseDecoysPool; //used in transction spending coinbase
+
+    CAmount dirtyCachedBalance = 0;
 
     const CWalletTx* GetWalletTx(const uint256& hash) const;
 
@@ -1426,7 +1433,13 @@ public:
             return false;
         if (!bSpendZeroConfChange || !IsFromMe(ISMINE_ALL)) // using wtx's cached debit
             return false;
-
+         // Don't trust unconfirmed transactions from us unless they are in the mempool.
+        {
+            LOCK(mempool.cs);
+            if (!mempool.exists(GetHash())) {
+                return false;
+            }
+        }
         // Trusted if all inputs are from us and are in the mempool:
         BOOST_FOREACH (const CTxIn& txin, vin) {
             // Transactions not sent by us: not trusted

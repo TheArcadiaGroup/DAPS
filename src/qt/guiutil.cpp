@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -64,6 +64,8 @@
 #include <QThread>
 #include <QTextStream>
 
+void ForceActivation();
+
 #if QT_VERSION < 0x050000
 #include <QUrl>
 #else
@@ -90,7 +92,8 @@ namespace GUIUtil
 {
 QString dateTimeStr(const QDateTime& date)
 {
-    return date.date().toString(Qt::SystemLocaleShortDate) + QString(" ") + date.toString("hh:mm:ss");
+     QString format = "MM/dd/yy HH:mm:ss";
+    return date.toString(format);
 }
 
 QString dateTimeStr(qint64 nTime)

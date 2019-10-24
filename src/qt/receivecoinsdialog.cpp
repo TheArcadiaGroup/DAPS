@@ -96,17 +96,19 @@ void ReceiveCoinsDialog::loadAccount() {
     QList<QString> stringsList;
     wl->AllMyPublicAddresses(addrList, accountList);
     for(size_t i = 0; i < addrList.size(); i++) {
+        if (accountList[i] == "masteraccount") continue;
         bool isDuplicate = false;
+        QString addr = QString(accountList[i].c_str()) + " - " + QString(addrList[i].substr(0, 30).c_str()) + "..." + 
+                QString(addrList[i].substr(addrList[i].length() - 30, 30).c_str());
         for (size_t i = 0; i < (size_t)ui->reqAddress->count(); i++) {
-            if (ui->reqAddress->itemText(i).contains(QString(addrList[i].c_str()), Qt::CaseSensitive)) {
+            if (stringsList.contains(QString(addrList[i].substr(0, 30).c_str()) + "..." + 
+                QString(addrList[i].substr(addrList[i].length() - 30, 30).c_str()))) {
                 isDuplicate = true;
                 break;
             }
         }
         if (!isDuplicate) {
-
-            stringsList.append(QString(accountList[i].c_str()) + " - " + QString(addrList[i].substr(0, 30).c_str()) + "..." + 
-                QString(addrList[i].substr(addrList[i].length() - 30, 30).c_str()));
+            stringsList.append(addr);
         }
     }
     ui->reqAddress->addItems(stringsList);

@@ -1,7 +1,7 @@
 <!--- Remove this description and sections that do not apply -->
 
-This issue tracker is only for technical issues related to DAPScoin.
-General DAPScoin questions and/or support requests and are best directed to the [DAPScoin Discord](https://officialdapscoin.com/discord).
+This issue tracker is only for technical issues related to DAPS.
+General DAPS questions and/or support requests are best directed to the [DAPS Discord](https://officialdapscoin.com/discord).
 
 ### Describe the issue
 
@@ -20,7 +20,7 @@ Tell us what happens instead
 ### Screenshots.
 If the issue is related to the GUI, screenshots can be added to this issue via drag & drop.
 
-### What version of DAPScoin are you using?
+### What version of the DAPS wallet are you using?
 List the version number/commit ID, and if it is an official binary, self compiled or a distribution package.
 
 ### Machine specs:

@@ -1,6 +1,6 @@
 // Copyright (c) 2014-2016 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,7 +12,7 @@
 #include "protocol.h"
 
 //
-// Bootup the Masternode, look for a 1000000 DAPScoin input and register on the network
+// Bootup the Masternode, look for a 1000000 DAPS input and register on the network
 //
 void CActiveMasternode::ManageStatus()
 {
@@ -472,32 +472,37 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
     // Temporary unlock MN coins from masternode.conf
     if (GetBoolArg("-mnconflock", true)) {
         uint256 mnTxHash;
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
-            mnTxHash.SetHex(mne.getTxHash());
+        {
+            LOCK2(cs_main, pwalletMain->cs_wallet);
+            BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+                mnTxHash.SetHex(mne.getTxHash());
 
-            int nIndex;
-            if(!mne.castOutputIndex(nIndex))
-                continue;
+                int nIndex;
+                if(!mne.castOutputIndex(nIndex))
+                    continue;
 
-            COutPoint outpoint = COutPoint(mnTxHash, nIndex);
-            confLockedCoins.push_back(outpoint);
-            pwalletMain->UnlockCoin(outpoint);
+                COutPoint outpoint = COutPoint(mnTxHash, nIndex);
+                confLockedCoins.push_back(outpoint);
+                pwalletMain->UnlockCoin(outpoint);
+            }
         }
     }
 
     // Retrieve all possible outputs
-    pwalletMain->AvailableCoins(vCoins, true, NULL, false, AvailableCoinsType::ONLY_1000000);
+    {
+        LOCK2(cs_main, pwalletMain->cs_wallet);
+        pwalletMain->AvailableCoins(vCoins, true, NULL, false, AvailableCoinsType::ONLY_1000000);
+        // Lock MN coins from masternode.conf back if they where temporary unlocked
+        if (!confLockedCoins.empty()) {
+            BOOST_FOREACH (COutPoint outpoint, confLockedCoins)
+                pwalletMain->LockCoin(outpoint);
+        }
 
-    // Lock MN coins from masternode.conf back if they where temporary unlocked
-    if (!confLockedCoins.empty()) {
-        BOOST_FOREACH (COutPoint outpoint, confLockedCoins)
-            pwalletMain->LockCoin(outpoint);
-    }
-
-    // Filter
-    BOOST_FOREACH (const COutput& out, vCoins) {
-        if (pwalletMain->getCTxOutValue(*out.tx, out.tx->vout[out.i]) == 1000000 * COIN) { //exactly
-            filteredCoins.push_back(out);
+        // Filter
+        BOOST_FOREACH (const COutput& out, vCoins) {
+            if (pwalletMain->getCTxOutValue(*out.tx, out.tx->vout[out.i]) == 1000000 * COIN) { //exactly
+                filteredCoins.push_back(out);
+            }
         }
     }
     return filteredCoins;

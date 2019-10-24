@@ -62,12 +62,12 @@
         <translation>Endereços de recebimento</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Esses são seus endereços DAPScoin para enviar pagamentos. Sempre confira a quantidade e os endereços de destino antes de enviar moedas.</translation>
+        <source>These are your DAPS addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Esses são seus endereços DAPS para enviar pagamentos. Sempre confira a quantidade e os endereços de destino antes de enviar moedas.</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Esses são seus endereços DAPScoin para receber pagamentos. É recomendado usar um novo endereço para cada transação.</translation>
+        <source>These are your DAPS addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Esses são seus endereços DAPS para receber pagamentos. É recomendado usar um novo endereço para cada transação.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -176,8 +176,8 @@
         <translation>Confirmar encriptação da carteira</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin encerrará para terminar o processo de encriptação. Lembre-se que encriptar sua carteira não protege completamente suas DAPSs contra roubo por malware infectando seu computador.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS encerrará para terminar o processo de encriptação. Lembre-se que encriptar sua carteira não protege completamente suas DAPSs contra roubo por malware infectando seu computador.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -247,8 +247,8 @@
         <translation>Endereço:</translation>
     </message>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
-        <translation>Um endereço DAPScoin para assinar a mensagem</translation>
+        <source>The DAPS address to sign the message with</source>
+        <translation>Um endereço DAPS para assinar a mensagem</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -279,8 +279,8 @@
         <translation>Copiar a assinatura para a area de trabalho</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Assinar a Mensagem para provar que você e dono desse endereço DAPScoin.</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Assinar a Mensagem para provar que você e dono desse endereço DAPS.</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -299,8 +299,8 @@
         <translation>Criptografia BIP 38</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
-        <translation>O endereço DAPScoin que foi assinado com</translation>
+        <source>The DAPS address the message was signed with</source>
+        <translation>O endereço DAPS que foi assinado com</translation>
     </message>
     <message>
         <source>Decrypted Key:</source>
@@ -640,8 +640,8 @@
 <context>
     <name>SignVerifyMessageDialog</name>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
-        <translation>Um endereço DAPScoin para assinar a mensagem</translation>
+        <source>The DAPS address to sign the message with</source>
+        <translation>Um endereço DAPS para assinar a mensagem</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -672,12 +672,12 @@
         <translation>Copiar a assinatura para a area de trabalho</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Assinar a Mensagem para provar que você e dono desse endereço DAPScoin.</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Assinar a Mensagem para provar que você e dono desse endereço DAPS.</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
-        <translation>O endereço DAPScoin que foi assinado com</translation>
+        <source>The DAPS address the message was signed with</source>
+        <translation>O endereço DAPS que foi assinado com</translation>
     </message>
     <message>
         <source>Reset all sign message fields</source>
@@ -1225,8 +1225,8 @@
         <translation>Carteira esta bloqueada.</translation>
     </message>
     <message>
-        <source>Wallet needed to be rewritten: restart DAPScoin to complete</source>
-        <translation>Carteira precisa ser reescrita: reinicie o DAPScoin para completar.</translation>
+        <source>Wallet needed to be rewritten: restart DAPS to complete</source>
+        <translation>Carteira precisa ser reescrita: reinicie o DAPS para completar.</translation>
     </message>
     <message>
         <source>Wallet options:</source>
