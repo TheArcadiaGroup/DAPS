@@ -187,7 +187,7 @@ void MasternodeList::updateMyMasternodeInfo(QString strAlias, QString strAddr, C
     QTableWidgetItem* addrItem = new QTableWidgetItem(pmn ? QString::fromStdString(pmn->addr.ToString()) : strAddr);
     QTableWidgetItem* statusItem = new QTableWidgetItem(QString::fromStdString(pmn ? pmn->GetStatus() : "MISSING"));
     GUIUtil::DHMSTableWidgetItem* activeSecondsItem = new GUIUtil::DHMSTableWidgetItem(pmn ? (pmn->lastPing.sigTime - pmn->sigTime) : 0);
-    QTableWidgetItem* lastSeenItem = new QTableWidgetItem(QString::fromStdString(DateTimeStrFormat("%Y-%m-%d %H:%M", pmn ? pmn->lastPing.sigTime : 0)));
+    QTableWidgetItem* lastSeenItem = new QTableWidgetItem(QString::fromStdString(pmn ? DateTimeStrFormat("%Y-%m-%d %H:%M",  pmn->lastPing.sigTime) : ""));
     QTableWidgetItem* pubkeyItem = new QTableWidgetItem(QString::fromStdString(pmn ? pmn->pubKeyCollateralAddress.GetHex() : ""));
 
     ui->tableWidgetMyMasternodes->setItem(nNewRow, 0, aliasItem);
