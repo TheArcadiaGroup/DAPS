@@ -54,7 +54,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Staking Status:</string>
+              <string>Staking Mode:</string>
              </property>
             </widget>
            </item>
