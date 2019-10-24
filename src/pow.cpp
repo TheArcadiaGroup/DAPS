@@ -297,7 +297,7 @@ bool CheckNumberOfAuditedPoSBlocks(const CBlock& block)
 bool CheckPoABlockMinedHash(const CBlockHeader& block)
 {
     const uint256 minedHash = block.minedHash; //block.ComputeMinedHash();
-    if (minedHash == block.minedHash) {
+    if (minedHash == block.minedHash && block.nBits == GetNextWorkRequired(mapBlockIndex[block.hashPrevBlock], &block)) {
         //Check minedHash satisfy difficulty based on nbits
         bool fNegative;
         bool fOverflow;

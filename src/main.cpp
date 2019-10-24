@@ -4739,6 +4739,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
                                 if ((int)pwalletMain->coinbaseDecoysPool.size() >= CWallet::MAX_DECOY_POOL) {
                                     int selected = secp256k1_rand32() % CWallet::MAX_DECOY_POOL;
                                     map<COutPoint, uint256>::const_iterator it = std::next(pwalletMain->coinbaseDecoysPool.begin(), selected);
+                                    pwalletMain->coinbaseDecoysPool.erase(it->first);
                                     pwalletMain->coinbaseDecoysPool[newOutPoint] = pblock->GetHash();
                                 } else {
                                     pwalletMain->coinbaseDecoysPool[newOutPoint] = pblock->GetHash();
