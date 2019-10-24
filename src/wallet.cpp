@@ -3918,9 +3918,9 @@ bool CWallet::MakeShnorrSignatureTxIn(CTxIn& txin, uint256 cts)
 
 bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringSize)
 {
-    if (coinbaseDecoysPool.size() <= 14) {
+    if (coinbaseDecoysPool.size() <= 100) {
         for (int i = chainActive.Height() - Params().COINBASE_MATURITY(); i > 0; i--) {
-            if (coinbaseDecoysPool.size() > 14) break;
+            if (coinbaseDecoysPool.size() > 100) break;
             CBlockIndex* p = chainActive[i];
             CBlock b;
             if (ReadBlockFromDisk(b, p)) {
