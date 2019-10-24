@@ -26,7 +26,7 @@ bool CheckPoAMiningBlockHeight(const CBlockHeader* pblock)
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock)
 {
     if (N_BITS != 0 && pblock->IsPoABlockByVersion()) {
-        if (pindexLast->nHeight < 110000) {
+        if (pindexLast->nHeight < 30400) {
             return N_BITS;
         }
         return N_BITS_SF;
@@ -67,7 +67,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         // ppcoin: target change every block
         // ppcoin: retarget with exponential moving toward target spacing
         uint256 bnNew;
-        if (pindexLast->nHeight < 110000) {
+        if (pindexLast->nHeight < 24900) {
             bnNew.SetCompact(pindexLast->nBits);
         } else {
             if (pindexLast->IsProofOfStake()) {
@@ -297,7 +297,7 @@ bool CheckNumberOfAuditedPoSBlocks(const CBlock& block)
 bool CheckPoABlockMinedHash(const CBlockHeader& block)
 {
     const uint256 minedHash = block.minedHash; //block.ComputeMinedHash();
-    if (minedHash == block.minedHash && block.nBits == GetNextWorkRequired(mapBlockIndex[block.hashPrevBlock], &block)) {
+    if (minedHash == block.minedHash) {
         //Check minedHash satisfy difficulty based on nbits
         bool fNegative;
         bool fOverflow;
