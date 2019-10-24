@@ -415,8 +415,8 @@ public:
     std::vector<COutPoint> inSpendQueueOutpointsPerSession;
     mutable std::map<CScript, CAmount> amountMap;
     mutable std::map<CScript, CKey> blindMap;
-    mutable std::vector<COutPoint> userDecoysPool;	//used in transaction spending user transaction
-    mutable std::vector<COutPoint> coinbaseDecoysPool; //used in transction spending coinbase
+    mutable std::map<COutPoint, uint256> userDecoysPool;	//used in transaction spending user transaction
+    mutable std::map<COutPoint, uint256> coinbaseDecoysPool; //used in transction spending coinbase
 
     CAmount dirtyCachedBalance = 0;
 
