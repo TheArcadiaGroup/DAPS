@@ -3513,6 +3513,33 @@ void RemoveInvalidTransactionsFromMempool()
                     break;
                 }
             }
+            bool needsBreak = false;
+            std::vector<COutPoint> decoys = tx.vin[i].decoys;
+            decoys.push_back(tx.vin[i].prevout);
+            for (size_t j = 0; j < decoys.size(); j++) {
+                CTransaction txPrev;
+                uint256 hashBlock;
+                if (!GetTransaction(decoys[j].hash, txPrev, hashBlock)) {
+                    tobeRemoveds.push_back(tx);
+                    needsBreak = true;
+                    break;
+                }
+
+                CBlockIndex* atTheblock = mapBlockIndex[hashBlock];
+                if (!atTheblock) {
+                    tobeRemoveds.push_back(tx);
+                    needsBreak = true;
+                    break;
+                } else {
+                    if (chainActive.Contains(atTheblock)) continue;
+                    if (1 + chainActive.Height() - atTheblock->nHeight > 100) {
+                        tobeRemoveds.push_back(tx);
+                        needsBreak = true;
+                        break;
+                    }
+                }
+            }
+            if (needsBreak) break;
         }
     }
     std::list<CTransaction> removed;
