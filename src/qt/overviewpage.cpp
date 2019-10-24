@@ -311,14 +311,20 @@ void OverviewPage::showBalanceSync(bool fShow){
 
 void OverviewPage::showBlockSync(bool fShow)
 {
-    ui->labelBlockStatus->setVisible(fShow);
+    ui->labelBlockStatus->setVisible(true);
     ui->labelBlockOf->setVisible(fShow);
     ui->labelBlocksTotal->setVisible(fShow);
 
     isSyncingBlocks = fShow;
 
     ui->labelBlockCurrent->setText(QString::number(clientModel->getNumBlocks()));
-    ui->labelBlockCurrent->setAlignment(fShow? (Qt::AlignRight|Qt::AlignVCenter):(Qt::AlignHCenter|Qt::AlignTop));
+    if (isSyncingBlocks){
+        ui->labelBlockStatus->setText("(syncing)");
+        ui->labelBlockCurrent->setAlignment((Qt::AlignRight|Qt::AlignVCenter));
+    } else {
+        ui->labelBlockStatus->setText("(synced)");
+        ui->labelBlockCurrent->setAlignment((Qt::AlignHCenter|Qt::AlignVCenter));
+    }
 }
 
 void OverviewPage::showBlockCurrentHeight()
