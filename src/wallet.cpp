@@ -3934,15 +3934,16 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                     if (!coinbase.vout[i].IsNull() && !coinbase.vout[i].IsEmpty()) {
                         if ((secp256k1_rand32() % 100) <= CWallet::PROBABILITY_NEW_COIN_SELECTED) {
                             COutPoint newOutPoint(coinbase.GetHash(), i);
-                            if (std::find(pwalletMain->coinbaseDecoysPool.begin(), pwalletMain->coinbaseDecoysPool.end(), newOutPoint) != pwalletMain->coinbaseDecoysPool.end()) {
+                            if (pwalletMain->coinbaseDecoysPool.count(newOutPoint) == 1) {
                                 continue;
                             }
                             //add new coinbase transaction to the pool
                             if (pwalletMain->coinbaseDecoysPool.size() >= CWallet::MAX_DECOY_POOL) {
                                 int selected = secp256k1_rand32() % CWallet::MAX_DECOY_POOL;
-                                pwalletMain->coinbaseDecoysPool[selected] = newOutPoint;
+                                map<COutPoint, uint256>::const_iterator it = std::next(coinbaseDecoysPool.begin(), selected);
+                                pwalletMain->coinbaseDecoysPool[newOutPoint] = p->GetBlockHash();
                             } else {
-                                pwalletMain->coinbaseDecoysPool.push_back(newOutPoint);
+                                pwalletMain->coinbaseDecoysPool[newOutPoint] = p->GetBlockHash();
                             }
                         }
                     }
@@ -3976,8 +3977,6 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
             }
         }
 
-        if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum) continue;
-
         CKeyImage ki;
         if (!generateKeyImage(txPrev.vout[tx.vin[i].prevout.n].scriptPubKey, ki)) {
             LogPrintf("Cannot generate key image");
@@ -3992,7 +3991,12 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
             if ((int)coinbaseDecoysPool.size() >= ringSize * 5) {
                 while (numDecoys < ringSize) {
                     bool duplicated = false;
-                    COutPoint outpoint = coinbaseDecoysPool[secp256k1_rand32() % coinbaseDecoysPool.size()];
+                    map<COutPoint, uint256>::const_iterator it = std::next(coinbaseDecoysPool.begin(), secp256k1_rand32() % coinbaseDecoysPool.size());
+                    CBlockIndex* atTheblock = mapBlockIndex[it->second];
+                    if (!atTheblock || !chainActive.Contains(atTheblock)) continue;
+                    if (!chainActive.Contains(atTheblock)) continue;
+                    if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum) continue;
+                    COutPoint outpoint = it->first;
                     for (size_t d = 0; d < tx.vin[i].decoys.size(); d++) {
                         if (tx.vin[i].decoys[d] == outpoint) {
                             duplicated = true;
@@ -4007,7 +4011,13 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                 }
             } else if ((int)coinbaseDecoysPool.size() >= ringSize) {
                 for (size_t j = 0; j < coinbaseDecoysPool.size(); j++) {
-                    tx.vin[i].decoys.push_back(coinbaseDecoysPool[j]);
+                    map<COutPoint, uint256>::const_iterator it = std::next(coinbaseDecoysPool.begin(), j);
+                    CBlockIndex* atTheblock = mapBlockIndex[it->second];
+                    if (!atTheblock || !chainActive.Contains(atTheblock)) continue;
+                    if (!chainActive.Contains(atTheblock)) continue;
+                    if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum) continue;
+                    COutPoint outpoint = it->first;
+                    tx.vin[i].decoys.push_back(outpoint);
                     numDecoys++;
                     if (numDecoys == ringSize) break;
                 }
@@ -4016,12 +4026,17 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                 return false;
             }
         } else {
-            std::vector<COutPoint> decoySet = userDecoysPool;
-            decoySet.insert(decoySet.end(), coinbaseDecoysPool.begin(), coinbaseDecoysPool.end());
+            std::map<COutPoint, uint256> decoySet = userDecoysPool;
+            decoySet.insert(coinbaseDecoysPool.begin(), coinbaseDecoysPool.end());
             if ((int)decoySet.size() >= ringSize * 5) {
                 while (numDecoys < ringSize) {
                     bool duplicated = false;
-                    COutPoint outpoint = decoySet[secp256k1_rand32() % decoySet.size()];
+                    map<COutPoint, uint256>::const_iterator it = std::next(decoySet.begin(), secp256k1_rand32() % decoySet.size());
+                    CBlockIndex* atTheblock = mapBlockIndex[it->second];
+                    if (!atTheblock || !chainActive.Contains(atTheblock)) continue;
+                    if (!chainActive.Contains(atTheblock)) continue;
+                    if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum) continue;
+                    COutPoint outpoint = it->first;
                     for (size_t d = 0; d < tx.vin[i].decoys.size(); d++) {
                         if (tx.vin[i].decoys[d] == outpoint) {
                             duplicated = true;
@@ -4036,7 +4051,13 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                 }
             } else if ((int)decoySet.size() >= ringSize) {
                 for (size_t j = 0; j < decoySet.size(); j++) {
-                    tx.vin[i].decoys.push_back(decoySet[j]);
+                    map<COutPoint, uint256>::const_iterator it = std::next(decoySet.begin(), j);
+                    CBlockIndex* atTheblock = mapBlockIndex[it->second];
+                    if (!atTheblock || !chainActive.Contains(atTheblock)) continue;
+                    if (!chainActive.Contains(atTheblock)) continue;
+                    if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum) continue;
+                    COutPoint outpoint = it->first;
+                    tx.vin[i].decoys.push_back(outpoint);
                     numDecoys++;
                     if (numDecoys == ringSize) break;
                 }
