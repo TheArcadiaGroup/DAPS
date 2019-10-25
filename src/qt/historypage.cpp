@@ -210,12 +210,7 @@ void HistoryPage::updateTableData()
 void HistoryPage::updateTableData(CWallet* wallet)
 {
 	if (!wallet) return;
-    TRY_LOCK(cs_main, lockMain);
-    if (!lockMain)
-        return;
-    TRY_LOCK(pwalletMain->cs_wallet, lockWallet);
-    if (!lockWallet)
-        return;
+	LOCK2(cs_main, pwalletMain->cs_wallet);
     {
         if (!wallet || wallet->IsLocked()) return;
         ui->tableView->setSortingEnabled(false);
