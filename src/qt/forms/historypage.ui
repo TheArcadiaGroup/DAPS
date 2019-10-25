@@ -141,6 +141,13 @@
        </item>
       </layout>
      </item>
+     <item alignment="Qt::AlignLeft">
+      <widget class="QPushButton" name="refreshButton">
+       <property name="text">
+        <string>Refresh</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QTableWidget" name="tableView">
        <property name="sizePolicy">
@@ -176,10 +183,10 @@
        <attribute name="horizontalHeaderCascadingSectionResizes">
         <bool>false</bool>
        </attribute>
-       <attribute name="horizontalHeaderDefaultSectionSize">
+       <attribute name="horizontalHeaderMinimumSectionSize">
         <number>150</number>
        </attribute>
-       <attribute name="horizontalHeaderMinimumSectionSize">
+       <attribute name="horizontalHeaderDefaultSectionSize">
         <number>150</number>
        </attribute>
        <attribute name="verticalHeaderVisible">
