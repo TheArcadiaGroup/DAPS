@@ -5971,7 +5971,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint3
 
 void CWallet::AutoCombineDust()
 {
-    if (IsInitialBlockDownload()) return;
+    if (IsInitialBlockDownload() || masternodeSync.IsBlockchainSynced()) return;
     //if (IsInitialBlockDownload()) return;
     if (chainActive.Tip()->nTime < (GetAdjustedTime() - 300) || IsLocked()) {
         LogPrintf("Time elapsed for autocombine transaction too short\n");
