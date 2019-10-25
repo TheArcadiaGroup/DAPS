@@ -2944,7 +2944,7 @@ UniValue rescanwallettransactions(const UniValue& params, bool fHelp) {
 
     int nHeight = 0;
     if (params.size() == 1) {
-    	nHeight = params[1].get_int();
+    	nHeight = params[0].get_int();
     }
     if (!pwalletMain->RescanAfterUnlock(nHeight)) {
     	return "Failed to rescan";
