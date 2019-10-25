@@ -15,7 +15,6 @@
 #include "obfuscation.h"
 #include "util.h"
 #include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
 
 CBudgetManager budget;
 CCriticalSection cs_budget;

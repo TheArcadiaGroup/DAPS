@@ -14,7 +14,6 @@
 #include "util.h"
 #include "utilmoneystr.h"
 #include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
 
 /** Object for who's going to get paid on which blocks */
 CMasternodePayments masternodePayments;
@@ -569,9 +568,9 @@ std::string CMasternodeBlockPayees::GetRequiredPaymentsString()
         std::string paymentAddress(payee.masternodeStealthAddress.begin(), payee.masternodeStealthAddress.end());
 
         if (ret != "Unknown") {
-            ret += ", " + paymentAddress + ":" + boost::lexical_cast<std::string>(payee.nVotes);
+            ret += ", " + paymentAddress + ":" + std::to_string(payee.nVotes);
         } else {
-            ret = paymentAddress + ":" + boost::lexical_cast<std::string>(payee.nVotes);
+            ret = paymentAddress + ":" + std::to_string(payee.nVotes);
         }
     }
 
