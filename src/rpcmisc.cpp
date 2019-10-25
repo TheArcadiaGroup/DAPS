@@ -116,7 +116,7 @@ UniValue getinfo(const UniValue &params, bool fHelp) {
     else if (mapHashedBlocks.count(chainActive.Tip()->nHeight - 1) && nLastCoinStakeSearchInterval)
         nStaking = true;
     obj.push_back(Pair("staking mode", (pwalletMain->ReadStakingStatus() ? "enabled" : "disabled")));
-    obj.push_back(Pair("staking status", (nStaking ? "active" : "inactive")));
+    obj.push_back(Pair("staking status", (nStaking ? "active (minting a block)" : "idle (waiting for next round)")));
     obj.push_back(Pair("errors", GetWarnings("statusbar")));
     return obj;
 }
@@ -503,7 +503,7 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
     else if (mapHashedBlocks.count(chainActive.Tip()->nHeight - 1) && nLastCoinStakeSearchInterval)
         nStaking = true;
     obj.push_back(Pair("staking mode", (pwalletMain->ReadStakingStatus() ? "enabled" : "disabled")));
-    obj.push_back(Pair("staking status", (nStaking ? "active" : "inactive")));
+    obj.push_back(Pair("staking status", (nStaking ? "active (minting a block)" : "idle (waiting for next round)")));
 
     return obj;
 }
