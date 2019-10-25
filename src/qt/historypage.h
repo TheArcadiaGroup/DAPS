@@ -74,6 +74,7 @@ private:
 public slots:
     void on_cellClicked(int row, int column);
     void updateTableData();
+    void refreshButton_clicked();
 };
 
 #endif // BITCOIN_QT_HISTORYPAGE_H

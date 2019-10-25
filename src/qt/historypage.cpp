@@ -53,6 +53,7 @@ HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent),
     connectWidgets();
     updateTableData(pwalletMain);
     updateAddressBookData(pwalletMain);
+    connect(ui->refreshButton, SIGNAL(clicked()), this, SLOT(refreshButton_clicked()));
 }
 
 
@@ -388,3 +389,8 @@ void HistoryPage::txalert(QString a, int b, CAmount c, QString d, QString e, QSt
     // ui->tableView->viewport()->update();
     //updateTableData(pwalletMain);
 }
+
+void HistoryPage::refreshButton_clicked() {
+    updateTableData(pwalletMain);
+}
+
