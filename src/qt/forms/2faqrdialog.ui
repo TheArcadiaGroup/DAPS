@@ -71,9 +71,12 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <property name="bottomMargin">
       <number>30</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
      <item>
       <widget class="QLabel" name="lblURI">
