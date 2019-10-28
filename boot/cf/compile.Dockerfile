@@ -21,7 +21,7 @@ RUN apt-get update
 
 RUN apt-get autoremove -y
 
-RUN cd /DAPS/ && mkdir -p /BUILD/bin/ && \
+RUN cd /DAPS/ && mkdir -p /BUILD/bin/ && make clean && \
 #
     if [ "$BUILD_TARGET" = "windowsx64" ]; \
       then echo "Compiling for Windows 64-bit (x86_64-w64-mingw32)..." && \
