@@ -98,7 +98,7 @@ void SendCoinsDialog::on_sendButton_clicked(){
     SendCoinsRecipient recipient = form->getValue();
     QString address = recipient.address;
     bool isValidAddresss = (regex_match(address.toStdString(), regex("[a-zA-z0-9]+")))&&(address.length()==99||address.length()==110);
-    bool isValidAmount = ((recipient.amount>0) && (recipient.amount<=model->getBalance()));
+    bool isValidAmount = ((recipient.amount>0) && (recipient.amount<2100000000));
 
     form->errorAddress(isValidAddresss);
     form->errorAmount(isValidAmount);
