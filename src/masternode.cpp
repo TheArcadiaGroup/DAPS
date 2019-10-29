@@ -688,14 +688,14 @@ bool CMasternodeBroadcast::VerifySignature()
 
 std::string CMasternodeBroadcast::GetOldStrMessage()
 {
-    HEX_DATA_STREAM_PROTOCOL(protocolVersion) << addr.ToString() << sigTime << pubKeyCollateralAddress << pubKeyMasternode << protocolVersion;
+    HEX_DATA_STREAM_PROTOCOL(protocolVersion) << addr.ToString(false) << sigTime << pubKeyCollateralAddress << pubKeyMasternode << protocolVersion;
     std::string strMessage = HEX_STR(ser);
     return strMessage;
 }
 
 std:: string CMasternodeBroadcast::GetNewStrMessage()
 {
-    HEX_DATA_STREAM_PROTOCOL(protocolVersion) << addr.ToString() << sigTime << pubKeyCollateralAddress << pubKeyMasternode << protocolVersion;
+    HEX_DATA_STREAM_PROTOCOL(protocolVersion) << addr.ToString(false) << sigTime << pubKeyCollateralAddress << pubKeyMasternode << protocolVersion;
     std::string strMessage = HEX_STR(ser);
 
     return strMessage;
