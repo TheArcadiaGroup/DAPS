@@ -31,7 +31,7 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
-/** Utility functions used by the DAPScoin Qt UI.
+/** Utility functions used by the DAPS Qt UI.
  */
 namespace GUIUtil
 {
@@ -39,7 +39,7 @@ namespace GUIUtil
 QString dateTimeStr(const QDateTime& datetime);
 QString dateTimeStr(qint64 nTime);
 
-// Render DAPScoin addresses in monospace font
+// Render DAPS addresses in monospace font
 QFont bitcoinAddressFont();
 
 void HideDisabledWidgets(QVector<QWidget*> widgets  );

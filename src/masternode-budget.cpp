@@ -1,6 +1,6 @@
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -491,7 +491,7 @@ void CBudgetManager::CheckAndRemove()
 bool CBudgetManager::FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake)
 {
     LOCK(cs);
-    LogPrintf("\n%s: budget manager filling block payee\n", __func__);
+    LogPrintf("%s: budget manager filling block payee\n", __func__);
     CBlockIndex* pindexPrev = chainActive.Tip();
     if (!pindexPrev) return false;
 
@@ -518,7 +518,6 @@ bool CBudgetManager::FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, b
 
     if (fProofOfStake) {
         if (nHighestCount > 0) {
-            LogPrintf("\n%s: fill paying highest masternode count\n", __func__);
             unsigned int i = txNew.vout.size();
             txNew.vout.resize(i + 1);
             txNew.vout[i].scriptPubKey = payee;

@@ -152,8 +152,8 @@
         <translation>Confirmer le cryptage du portefeuille</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>DAPScoin va maintenant se fermer pour finir le processus cryptage. Notez que le cryptage de votre portefeuille ne peut pas complètement protéger vos DAPSs d'un vol par un malware ayant infecté votre ordinateur. </translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>DAPS va maintenant se fermer pour finir le processus cryptage. Notez que le cryptage de votre portefeuille ne peut pas complètement protéger vos DAPSs d'un vol par un malware ayant infecté votre ordinateur. </translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -219,8 +219,8 @@
         <translation>Adresse :</translation>
     </message>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
-        <translation>L'adresse DAPScoin avec laquelle signer le message</translation>
+        <source>The DAPS address to sign the message with</source>
+        <translation>L'adresse DAPS avec laquelle signer le message</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -251,8 +251,8 @@
         <translation>Copier la signature actuelle dans le presse-papier</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Signer le message pour prouver que vous possédez cette adresse DAPScoin</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Signer le message pour prouver que vous possédez cette adresse DAPS</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -271,12 +271,12 @@
         <translation>BIP 38 Décrypter</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
-        <translation>L'adresse DAPScoin avec laquelle le message a été signé</translation>
+        <source>The DAPS address the message was signed with</source>
+        <translation>L'adresse DAPS avec laquelle le message a été signé</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>Vérifiez le message afin de vous assurer qu'il a été signé avec l'adresse DAPScoin renseignée</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>Vérifiez le message afin de vous assurer qu'il a été signé avec l'adresse DAPS renseignée</translation>
     </message>
     <message>
         <source>Decrypt &amp;Key</source>
@@ -534,8 +534,8 @@
         <translation>&amp;Aide</translation>
     </message>
     <message>
-        <source>Send coins to a DAPScoin address</source>
-        <translation>Envoyer des pièces à une adresse DAPScoin</translation>
+        <source>Send coins to a DAPS address</source>
+        <translation>Envoyer des pièces à une adresse DAPS</translation>
     </message>
     <message>
         <source>&amp;Masternodes</source>
@@ -546,16 +546,16 @@
         <translation>Afficher les masternodes</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Modifier les options de configuration pour DAPScoin</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Modifier les options de configuration pour DAPS</translation>
     </message>
     <message>
-        <source>Sign messages with your DAPScoin addresses to prove you own them</source>
-        <translation>Signer les messages avec votre adresse DAPScoin pour prouver qu'elles sont bien à vous.</translation>
+        <source>Sign messages with your DAPS addresses to prove you own them</source>
+        <translation>Signer les messages avec votre adresse DAPS pour prouver qu'elles sont bien à vous.</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified DAPScoin addresses</source>
-        <translation>Vérifier les messages afin de s'assurer qu'ils sont signés avec l'adresse DAPScoin spécifié</translation>
+        <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
+        <translation>Vérifier les messages afin de s'assurer qu'ils sont signés avec l'adresse DAPS spécifié</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -850,8 +850,8 @@ Adresse : %4
         <translation>Modifier l'adresse d'envoi</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid DAPScoin address.</source>
-        <translation>L'adresse entrée "%1" n'est pas une adresse DAPScoin valide</translation>
+        <source>The entered address "%1" is not a valid DAPS address.</source>
+        <translation>L'adresse entrée "%1" n'est pas une adresse DAPS valide</translation>
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
@@ -1464,8 +1464,8 @@ Veuillez vérifier l'adresse et réessayer.</translation>
         <translation>Payer à :</translation>
     </message>
     <message>
-        <source>The DAPScoin address to send the payment to</source>
-        <translation>L'adresse DAPScoin à laquelle envoyer le paiement</translation>
+        <source>The DAPS address to send the payment to</source>
+        <translation>L'adresse DAPS à laquelle envoyer le paiement</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -1510,8 +1510,8 @@ Veuillez vérifier l'adresse et réessayer.</translation>
         <translation>Signer le message</translation>
     </message>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
-        <translation>L'adresse DAPScoin avec laquelle signer le message</translation>
+        <source>The DAPS address to sign the message with</source>
+        <translation>L'adresse DAPS avec laquelle signer le message</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -1538,16 +1538,16 @@ Veuillez vérifier l'adresse et réessayer.</translation>
         <translation>Copier la signature actuelle dans le presse-papier</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Signer le message pour prouver que vous possédez cette adresse DAPScoin</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Signer le message pour prouver que vous possédez cette adresse DAPS</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
-        <translation>L'adresse DAPScoin avec laquelle le message a été signé</translation>
+        <source>The DAPS address the message was signed with</source>
+        <translation>L'adresse DAPS avec laquelle le message a été signé</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>Vérifiez le message afin de vous assurer qu'il a été signé avec l'adresse DAPScoin renseignée</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>Vérifiez le message afin de vous assurer qu'il a été signé avec l'adresse DAPS renseignée</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>

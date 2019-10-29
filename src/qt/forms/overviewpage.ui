@@ -159,7 +159,7 @@
               <cursorShape>WhatsThisCursor</cursorShape>
              </property>
              <property name="toolTip">
-              <string>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPScoin network after a connection is established, but this process has not completed yet.</string>
+              <string>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPS network after a connection is established, but this process has not completed yet.</string>
              </property>
              <property name="text">
               <string notr="true">(syncing)</string>
@@ -239,7 +239,7 @@
             <cursorShape>IBeamCursor</cursorShape>
            </property>
            <property name="toolTip">
-            <string>Your current spendable balance</string>
+            <string>Your current balance</string>
            </property>
            <property name="text">
             <string notr="true">0.000 000 00 DAPS</string>
@@ -425,7 +425,7 @@
               <cursorShape>WhatsThisCursor</cursorShape>
              </property>
              <property name="toolTip">
-              <string>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPScoin network after a connection is established, but this process has not completed yet.</string>
+              <string>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPS network after a connection is established, but this process has not completed yet.</string>
              </property>
              <property name="text">
               <string notr="true">(syncing)</string>

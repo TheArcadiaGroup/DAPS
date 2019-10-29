@@ -8,7 +8,7 @@
 #include <QMessageBox>
 
 ImportOrCreate::ImportOrCreate(QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
     ui(new Ui::ImportOrCreate)
 {
     ui->setupUi(this);

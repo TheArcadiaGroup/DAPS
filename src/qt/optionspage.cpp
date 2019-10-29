@@ -20,6 +20,7 @@
 #include "2faconfirmdialog.h"
 #include "zxcvbn.h"
 #include "utilmoneystr.h"
+#include "timedata.h"
 
 #include <QAction>
 #include <QCursor>
@@ -34,7 +35,7 @@
 
 using namespace std;
 
-OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
+OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                           ui(new Ui::OptionsPage),
                                                           model(0),
                                                           // m_SizeGrip(this),
@@ -207,7 +208,7 @@ void OptionsPage::on_pushButtonPassword_clicked()
     	else if (model->changePassphrase(oldPass, newPass)) {
             QMessageBox msgBox;
             msgBox.setWindowTitle("Passphrase Change Successful");
-            msgBox.setText("Wallet passphrase was successfully changed. Please remember your passphrase as there is no way to recover it.");
+            msgBox.setText("Wallet passphrase was successfully changed.\nPlease remember your passphrase as there is no way to recover it.");
             msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
             msgBox.setIcon(QMessageBox::Information);
             msgBox.exec();
@@ -239,15 +240,23 @@ void OptionsPage::on_pushButtonPasswordClear_clicked()
 }
 
 void OptionsPage::on_pushButtonBackup_clicked(){
-    if (model->backupWallet(QString("BackupWallet.dat"))) {
+    QString filename = GUIUtil::getSaveFileName(this,
+        tr("Backup Wallet"), QString(),
+        tr("Wallet Data (*.dat)"), NULL);
+
+    if (filename.isEmpty())
+        return;
+
+    if (model->backupWallet(QString(filename))) {
         ui->pushButtonBackup->setStyleSheet("border: 2px solid green");
         QMessageBox msgBox;
         msgBox.setWindowTitle("Wallet Backup Successful");
-        msgBox.setText("Wallet has been successfully backed up to BackupWallet.dat in the current directory.");
+        msgBox.setText("Wallet has been successfully backed up to " + filename);
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
         msgBox.setIcon(QMessageBox::Information);
         msgBox.exec();
-    } else { ui->pushButtonBackup->setStyleSheet("border: 2px solid red");
+    } else {
+        ui->pushButtonBackup->setStyleSheet("border: 2px solid red");
         QMessageBox msgBox;
         msgBox.setWindowTitle("Wallet Backup Failed");
         msgBox.setText("Wallet backup failed. Please try again.");
@@ -534,4 +543,25 @@ void OptionsPage::onShowMnemonic() {
     msgBox.setInformativeText("\n<b>" + mPhrase + "</b>");
     msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
     msgBox.exec();
+}
+
+void OptionsPage::setAutoConsolidate(int state) {
+    int status = model->getEncryptionStatus();
+    if (status == WalletModel::Locked || status == WalletModel::UnlockedForAnonymizationOnly) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Staking Settings");
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.setText("Please unlock the keychain wallet with your passphrase before attempting to change this setting.");
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.exec();
+        return;
+    }
+    LOCK(pwalletMain->cs_wallet);
+    //Insert Function Here
+    saveConsolidationSettingTime(ui->addNewFunds->isChecked());
+}
+
+void OptionsPage::saveConsolidationSettingTime(bool autoConsolidate)
+{
+    //disabled
 }
