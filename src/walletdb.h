@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2013 The Bitcoin developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -165,6 +165,9 @@ public:
 
     bool ReadAccount(const std::string& strAccount, CAccount& account);
     bool WriteAccount(const std::string& strAccount, const CAccount& account);
+
+    bool WriteAutoConsolidateSettingTime(uint32_t settingTime);
+    uint32_t ReadAutoConsolidateSettingTime();
 
     bool ReadStealthAccount(const std::string& strAccount, CStealthAccount& account);
     bool WriteStealthAccount(const std::string& strAccount, const CStealthAccount& account);

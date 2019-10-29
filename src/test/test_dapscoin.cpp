@@ -64,9 +64,9 @@ struct TestingSetup {
                              " or address book entries might be missing or incorrect."));
                 std::cout << msg << "\n";
             } else if (nLoadWalletRet == DB_TOO_NEW)
-                std::cout << _("Error loading wallet.dat: Wallet requires newer version of DAPScoin") << "\n";
+                std::cout << _("Error loading wallet.dat: Wallet requires newer version of DAPS") << "\n";
             else if (nLoadWalletRet == DB_NEED_REWRITE) {
-                std::cout << _("Wallet needed to be rewritten: restart DAPScoin to complete") << "\n";
+                std::cout << _("Wallet needed to be rewritten: restart DAPS to complete") << "\n";
             } else
                 std::cout << _("Error loading wallet.dat") << "\n";
         }

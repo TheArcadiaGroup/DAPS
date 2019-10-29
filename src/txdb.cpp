@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -82,19 +82,10 @@ bool CBlockTreeDB::WriteBlockIndex(const CDiskBlockIndex& blockindex)
     return Write(make_pair('b', blockindex.GetBlockHash()), blockindex);
 }
 
-bool CBlockTreeDB::WriteBlockFileInfo(int nFile, const CBlockFileInfo& info)
-{
-    return Write(make_pair('f', nFile), info);
-}
 
 bool CBlockTreeDB::ReadBlockFileInfo(int nFile, CBlockFileInfo& info)
 {
     return Read(make_pair('f', nFile), info);
-}
-
-bool CBlockTreeDB::WriteLastBlockFile(int nFile)
-{
-    return Write('l', nFile);
 }
 
 bool CBlockTreeDB::WriteReindexing(bool fReindexing)
@@ -170,6 +161,18 @@ bool CCoinsViewDB::GetStats(CCoinsStats& stats) const
     return true;
 }
 
+bool CBlockTreeDB::WriteBatchSync(const std::vector<std::pair<int, const CBlockFileInfo*> >& fileInfo, int nLastFile, const std::vector<const CBlockIndex*>& blockinfo) {
+    CLevelDBBatch batch;
+    for (std::vector<std::pair<int, const CBlockFileInfo*> >::const_iterator it=fileInfo.begin(); it != fileInfo.end(); it++) {
+        batch.Write(make_pair('f', it->first), *it->second);
+    }
+    batch.Write('l', nLastFile);
+    for (std::vector<const CBlockIndex*>::const_iterator it=blockinfo.begin(); it != blockinfo.end(); it++) {
+        batch.Write(make_pair('b', (*it)->GetBlockHash()), CDiskBlockIndex(*it));
+    }
+    return WriteBatch(batch, true);
+}
+
 bool CBlockTreeDB::ReadTxIndex(const uint256& txid, CDiskTxPos& pos)
 {
     return Read(make_pair('t', txid), pos);
@@ -190,9 +193,30 @@ bool CBlockTreeDB::ReadKeyImage(const string& keyImage, uint256& bh)
     return Read(std::make_pair('k', keyImage), bh);
 }
 
+bool CBlockTreeDB::ReadKeyImages(const string& keyImage, std::vector<uint256>& bhs)
+{
+    uint256 bh;
+    if (!Read(std::make_pair('k', keyImage), bh)) return false;
+    bhs.push_back(bh);
+    int i = 1;
+    while(ReadKeyImage(keyImage + std::to_string(i), bh)) {
+        bhs.push_back(bh);
+        i++;
+    }
+    return true;
+}
+
 bool CBlockTreeDB::WriteKeyImage(const string& keyImage, const uint256& bh)
 {
-    return Write(std::make_pair('k', keyImage), bh);
+    uint256 blockHash;
+    if (!ReadKeyImage(keyImage, blockHash)) {
+        return Write(std::make_pair('k', keyImage), bh);
+    }
+    int i = 1;
+    while (ReadKeyImage(keyImage + std::to_string(i), blockHash)) {
+        i++;
+    }
+    return Write(std::make_pair('k', keyImage + std::to_string(i)), bh);
 }
 
 bool CBlockTreeDB::WriteFlag(const std::string& name, bool fValue)

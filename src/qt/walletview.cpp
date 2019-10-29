@@ -158,7 +158,6 @@ void WalletView::setWalletModel(WalletModel* walletModel)
     // Put transaction list in tabs
     transactionView->setModel(walletModel);
     overviewPage->setWalletModel(walletModel);
-
     historyPage->setModel(walletModel);
     receiveCoinsPage->setModel(walletModel);
     sendCoinsPage->setModel(walletModel);
@@ -214,7 +213,11 @@ void WalletView::gotoOverviewPage()
 
 void WalletView::gotoHistoryPage()
 {
+    int lastTime = GetAdjustedTime();
     setCurrentWidget(historyPage);
+    if (GetAdjustedTime() - lastTime < 90) {
+        historyPage->updateTableData();
+    }
 }
 
 

@@ -11,7 +11,7 @@ ENV BUILD_TARGET=${BUILD_TARGET}
 ARG DESTDIR=/daps/bin/
 ENV DESTDIR=$DESTDIR
 
-ARG VERSION=NONE
+ARG VERSION=UNTAGGED
 ENV VERSION=$VERSION
 
 #COPY source
@@ -21,7 +21,7 @@ RUN apt-get update
 
 RUN apt-get autoremove -y
 
-RUN cd /DAPS/ && mkdir -p /BUILD/ && \
+RUN cd /DAPS/ && mkdir -p /BUILD/bin/ && \
 #
     if [ "$BUILD_TARGET" = "windowsx64" ]; \
       then echo "Compiling for Windows 64-bit (x86_64-w64-mingw32)..." && \
@@ -43,7 +43,6 @@ RUN cd /DAPS/ && mkdir -p /BUILD/ && \
 #
     elif [ "$BUILD_TARGET" = "linux" ]; \
        then echo "Compiling for Linux (x86_64-pc-linux-gnu)..." && \
-        apt-get remove libzmq3-dev -y && \
         ./autogen.sh && \
         CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --prefix=/ --enable-reduce-exports --disable-tests --disable-gui-tests --disable-bench && \
         make -j2 && \

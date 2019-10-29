@@ -336,8 +336,8 @@ ToggleButton > QPushButton:enabled:checked {
   margin: 0px;
 }
 #TxEntry QPushButton {
-  border-radius:0; 
-  border: none; 
+  border-radius:0;
+  border: none;
   background: transparent;
 }
 
@@ -350,13 +350,13 @@ ToggleButton > QPushButton:enabled:checked {
   margin: 0px;
 }
 #secondaryTxEntry QPushButton {
-  border-radius:0; 
-  border: none; 
+  border-radius:0;
+  border: none;
   background: transparent;
 }
 
-#secondaryTxEntry > #bkg_widget { 
-  background-color: #f7f7f7; 
+#secondaryTxEntry > #bkg_widget {
+  background-color: #f7f7f7;
 }
 
 #code_1,
@@ -365,8 +365,8 @@ ToggleButton > QPushButton:enabled:checked {
 #code_4,
 #code_5,
 #code_6 {
-  border-bottom-width: 1px; 
-  border-bottom-style: solid; 
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
   border-radius: 0px;
   border-color: black;
 }
@@ -377,8 +377,8 @@ ToggleButton > QPushButton:enabled:checked {
 #txtcode_4,
 #txtcode_5,
 #txtcode_6 {
-  border-width: 0 0 1px 0; 
-  border-style: solid; 
+  border-width: 0 0 1px 0;
+  border-style: solid;
   border-radius: 0px;
   border-color: black;
 
@@ -432,25 +432,4 @@ margin-top: 2px; /* make non-selected tabs look smaller */
 }
 QTabBar::tab { color: #5E1C5A; }
 QTabBar::tab:selected { color: gray; }
-
-QSlider::groove:horizontal { 
-	background-color: gray;
-	border: 0px solid #424242; 
-	height: 10px; 
-	border-radius: 4px;
-}
-
-QSlider::handle:horizontal { 
-	background-color: lightblue; 
-	border: 2px solid lightblue; 
-	width: 16px; 
-	height: 20px; 
-	line-height: 20px; 
-	margin-top: -5px; 
-	margin-bottom: -5px; 
-	border-radius: 10px; 
-}
-
-QSlider::handle:horizontal:hover { 
-	border-radius: 10px;
-}
+QLineEdit#lineEdit { color: white; }

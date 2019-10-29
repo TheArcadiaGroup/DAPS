@@ -85,7 +85,7 @@ This means you cannot use a directory that is located directly on the host Windo
 
 Acquire the source in the usual way:
 
-    git clone DAPScoin source URL
+    git clone DAPS source URL
 
 Once the source code is ready the build steps are below:
 

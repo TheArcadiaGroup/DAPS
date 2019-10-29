@@ -15,6 +15,7 @@
 #include "transactionrecord.h"
 #include "walletmodel.h"
 #include "revealtxdialog.h"
+#include "custom/dapstablewidgetitem.h"
 
 #include <algorithm>
 
@@ -40,7 +41,7 @@ bool TxCompare (std::map<QString, QString> i, std::map<QString, QString> j) {
     return date_i > date_j;
 }
 
-HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent),
+HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                             ui(new Ui::HistoryPage),
                                             // m_SizeGrip(this),
                                             model(0)
@@ -52,9 +53,6 @@ HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent),
     connectWidgets();
     updateTableData(pwalletMain);
     updateAddressBookData(pwalletMain);
-    updateHistoryTimer = new QTimer();
-    connect(updateHistoryTimer, SIGNAL(timeout()), this, SLOT(updateTableData()));
-    updateHistoryTimer->start(30000);
 }
 
 
@@ -111,6 +109,7 @@ void HistoryPage::connectWidgets() //add functions to widget signals
 
 void HistoryPage::on_cellClicked(int row, int column) 
 {
+    if (pwalletMain->IsLocked()) return;
     //1 is column index for type
     QTableWidgetItem* cell = ui->tableView->item(row, 1);
     QString type = cell->data(0).toString();
@@ -210,68 +209,75 @@ void HistoryPage::updateTableData()
 void HistoryPage::updateTableData(CWallet* wallet)
 {
 	if (!wallet) return;
-	if (!wallet || wallet->IsLocked()) return;
-	ui->tableView->setSortingEnabled(false);
-	while (ui->tableView->rowCount() > 0)
-	{
-		ui->tableView->removeRow(0);
-	}
-	ui->tableView->setRowCount(0);
-	vector<std::map<QString, QString> > txs;
-	if (wallet->IsLocked()) {
-		{
-			LOCK(pwalletMain->cs_wallet);
-			vector<std::map<QString, QString>> txs;// = WalletUtil::getTXs(pwalletMain);
+    TRY_LOCK(cs_main, lockMain);
+    if (!lockMain)
+        return;
+    TRY_LOCK(pwalletMain->cs_wallet, lockWallet);
+    if (!lockWallet)
+        return;
+    {
+        if (!wallet || wallet->IsLocked()) return;
+        ui->tableView->setSortingEnabled(false);
+        while (ui->tableView->rowCount() > 0)
+        {
+            ui->tableView->removeRow(0);
+        }
+        ui->tableView->setRowCount(0);
+        vector<std::map<QString, QString> > txs;
+        if (wallet->IsLocked()) {
+            {
+                LOCK(pwalletMain->cs_wallet);
+                vector<std::map<QString, QString>> txs;// = WalletUtil::getTXs(pwalletMain);
 
-			std::map<uint256, CWalletTx> txMap = pwalletMain->mapWallet;
-			std::vector<CWalletTx> latestTxes;
-			for (std::map<uint256, CWalletTx>::iterator tx = txMap.begin(); tx != txMap.end(); ++tx) {
-				if (tx->second.GetDepthInMainChain() > 0) {
-					latestTxes.push_back(tx->second);
-				}
-			}
+                std::map<uint256, CWalletTx> txMap = pwalletMain->mapWallet;
+                std::vector<CWalletTx> latestTxes;
+                for (std::map<uint256, CWalletTx>::iterator tx = txMap.begin(); tx != txMap.end(); ++tx) {
+                    if (tx->second.GetDepthInMainChain() > 0) {
+                        latestTxes.push_back(tx->second);
+                    }
+                }
 
-			for (int i = 0; i < (int)latestTxes.size(); i++) {
-				txs.push_back(WalletUtil::getTx(pwalletMain, latestTxes[i]));
-			}
-		}
-	} else {
-		txs = WalletUtil::getTXs(wallet);
-	}
-	std::sort (txs.begin(), txs.end(), TxCompare);
-
-	for (int row = 0; row < (short)txs.size(); row++) {
-		ui->tableView->insertRow(row);
-		int col = 0;
-		for (QString dataName : {"date", "type", "address", "amount", "confirmations"}) {
-			QString data = txs[row].at(dataName);
-			QString date = data;
-			QTableWidgetItem* cell = new QTableWidgetItem();
-			switch (col) {
-			case 0: /*date*/
-				cell->setData(0, date);
-				break;
-			case 3: /*amount*/
-				if (wallet->IsLocked()) {
-					cell->setData(0, QString("Locked; Hidden"));
-				} else {
-					cell->setData(0, data);
-				}
-				break;
-            case 4: /*confirmations*/
-                cell->setData(0, data.toInt());
-                break;
-			default:
-				cell->setData(0, data);
-				break;
-			}
-			ui->tableView->setItem(row, col, cell);
-			col++;
-		}
-	}
-	ui->tableView->setVisible(ui->tableView->rowCount());
-	ui->tableView->sortByColumn(0);
-	ui->tableView->setSortingEnabled(true);
+                for (int i = 0; i < (int)latestTxes.size(); i++) {
+                    txs.push_back(WalletUtil::getTx(pwalletMain, latestTxes[i]));
+                }
+            }
+        } else {
+            txs = WalletUtil::getTXs(wallet);
+        }
+        std::sort (txs.begin(), txs.end(), TxCompare);
+        for (int row = 0; row < (short)txs.size(); row++) {
+            ui->tableView->insertRow(row);
+            int col = 0;
+            for (QString dataName : {"date", "type", "address", "amount", "confirmations"}) {
+                QString data = txs[row].at(dataName);
+                QString date = data;
+                DAPSTableWidgetItem* cell = new DAPSTableWidgetItem();
+                switch (col) {
+                case 0: /*date*/
+                    cell->setData(0, date);
+                    break;
+                case 3: /*amount*/
+                    if (wallet->IsLocked()) {
+                        cell->setData(0, QString("Locked; Hidden"));
+                    } else {
+                        cell->setData(0, data);
+                    }
+                    break;
+                case 4: /*confirmations*/
+                    cell->setData(0, data.toInt());
+                    break;
+                default:
+                    cell->setData(0, data);
+                    break;
+                }
+                ui->tableView->setItem(row, col, cell);
+                col++;
+            }
+        }
+        ui->tableView->setVisible(ui->tableView->rowCount());
+        ui->tableView->sortByColumn(0);
+        ui->tableView->setSortingEnabled(true);
+    }
 }
 
 void HistoryPage::updateAddressBookData(CWallet* wallet)
@@ -380,5 +386,5 @@ void HistoryPage::txalert(QString a, int b, CAmount c, QString d, QString e, QSt
     // ui->tableView->setVisible(ui->tableView->rowCount());
     // ui->tableView->update();
     // ui->tableView->viewport()->update();
-    updateTableData(pwalletMain);
+    //updateTableData(pwalletMain);
 }

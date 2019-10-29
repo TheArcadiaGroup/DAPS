@@ -1,7 +1,7 @@
 Gitian building
 ================
 
-*Setup instructions for a gitian build of DAPScoin using a Debian VM or physical system.*
+*Setup instructions for a gitian build of DAPS using a Debian VM or physical system.*
 
 Gitian is the deterministic build process that is used to build the DAPScoin
 Core executables. It provides a way to be reasonably sure that the
@@ -329,7 +329,7 @@ for gitian to work offline.
 Building DAPScoin
 ----------------
 
-To build DAPScoin (for Linux, OSX and Windows) just follow the steps under 'perform
+To build DAPS (for Linux, OSX and Windows) just follow the steps under 'perform
 gitian builds' in [doc/release-process.md](release-process.md) in the dapscoin repository.
 
 This may take a long time as it also builds the dependencies needed for each descriptor.

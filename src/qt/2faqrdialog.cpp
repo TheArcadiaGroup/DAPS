@@ -28,7 +28,7 @@
 #endif
 
 TwoFAQRDialog::TwoFAQRDialog(QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
     ui(new Ui::TwoFAQRDialog)
 {
     ui->setupUi(this);
@@ -73,7 +73,7 @@ void TwoFAQRDialog::update()
 
     pwalletMain->Write2FASecret(addr);
 
-    uri.sprintf("otpauth://totp/DAPScoin:QT%20Wallet?secret=%s&issuer=dapscoin&algorithm=SHA1&digits=6&period=30", addr.c_str());
+    uri.sprintf("otpauth://totp/DAPS:QT%20Wallet?secret=%s&issuer=dapscoin&algorithm=SHA1&digits=6&period=30", addr.c_str());
     ui->lblURI->setText(uri);
 
 #ifdef USE_QRCODE

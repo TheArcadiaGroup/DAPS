@@ -239,6 +239,7 @@ private:
     // Cache some values to be able to detect changes
     CAmount cachedBalance;
     CAmount cachedUnconfirmedBalance;
+    CAmount spendableBalance;
     CAmount cachedImmatureBalance;
     CAmount cachedWatchOnlyBalance;
     CAmount cachedWatchUnconfBalance;

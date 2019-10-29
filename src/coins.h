@@ -22,7 +22,7 @@ extern bool GetTransaction(const uint256& hash, CTransaction& tx, uint256& hashB
 
 /** 
 
-    ****Note - for DAPScoin we added fCoinStake to the 2nd bit. Keep in mind when reading the following and adjust as needed.
+    ****Note - for DAPS we added fCoinStake to the 2nd bit. Keep in mind when reading the following and adjust as needed.
  * Pruned version of CTransaction: only retains metadata and unspent transaction outputs
  *
  * Serialized format:
