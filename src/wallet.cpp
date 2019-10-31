@@ -3000,18 +3000,29 @@ bool CWallet::IsWatcherWallet() const {
     if (registeredViewKey.IsValid() && registeredPubSpendKey.IsValid()) {
         std::string pubAddress;
         EncodeStealthPublicAddress(registeredViewKey.GetPubKey(), registeredPubSpendKey, pubAddress);
+        LogPrintf("pubAddress = %s\n", pubAddress);
         return pubAddress == registeredAddress;
+    }
+    if (registeredViewKey.IsValid()) {
+        LogPrintf("view key is valid");
+    }
+    if (registeredPubSpendKey.IsValid()) {
+        LogPrintf("registeredPubSpendKey key is valid");
     }
     return false;
 }
 
 void CWallet::SetRegisterViewKey(std::string viewkey) {
     std::vector<unsigned char> view;
-    if (DecodeBase58(viewkey, view)) {
-        if (view.size() == 32) {
-            registeredViewKey.Set(view.data(), view.data() + 32, true);
-        }
+    LogPrintf("view key = %s\n", viewkey);
+    CBitcoinSecret vchSecret;
+    bool fGood = vchSecret.SetString(viewkey);
+    if (!fGood) {
+        LogPrintf("Failed to decode private view key\n");
+    } else {
+        registeredViewKey = vchSecret.GetKey();
     }
+    
     if (!IsWatcherWallet()) {
         LogPrintf("No private view key is registered or Stealth address is invalid, working as a normal wallet\n");
     } else {
@@ -3023,6 +3034,8 @@ void CWallet::SetRegisterAddress(std::string stealth) {
     bool hasPaymentID; 
     uint64_t paymentID;
     DecodeStealthAddress(stealth, pubViewKey, registeredPubSpendKey, hasPaymentID, paymentID);
+    LogPrintf("registeredAddress = %s\n", stealth);
+    LogPrintf("registeredPubSpendKey = %s\n", registeredPubSpendKey.GetHex());
     registeredAddress = stealth;
 }
 //compute the amount that let users send reserve balance
