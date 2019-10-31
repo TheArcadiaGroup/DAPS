@@ -286,7 +286,7 @@ public:
     bool IsAutoConsolidateOn();
     void SetRegisterViewKey(std::string viewkey);
     void SetRegisterAddress(std::string stealth);
-    bool IsWatcherWallet();
+    bool IsWatcherWallet() const;
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
@@ -756,8 +756,8 @@ public:
 
     bool ComputeStealthPublicAddress(const std::string& accountName, std::string& pubAddress);
     bool ComputeIntegratedPublicAddress(const uint64_t paymentID, const std::string& accountName, std::string& pubAddress);
-    bool EncodeStealthPublicAddress(const std::vector<unsigned char>& pubViewKey, const std::vector<unsigned char>& pubSpendKey, std::string& pubAddr);
-    bool EncodeStealthPublicAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr);
+    bool EncodeStealthPublicAddress(const std::vector<unsigned char>& pubViewKey, const std::vector<unsigned char>& pubSpendKey, std::string& pubAddr) const;
+    bool EncodeStealthPublicAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr) const;
     static bool DecodeStealthAddress(const std::string& stealth, CPubKey& pubViewKey, CPubKey& pubSpendKey, bool& hasPaymentID, uint64_t& paymentID);
     static bool ComputeStealthDestination(const CKey& secret, const CPubKey& pubViewKey, const CPubKey& pubSpendKey, CPubKey& des);
     bool SendToStealthAddress(const std::string& stealthAddr, CAmount nValue, CWalletTx& wtxNew, bool fUseIX = false, int ringSize = 5);
@@ -800,7 +800,7 @@ public:
     void AddComputedPrivateKey(const CTxOut& out);
     bool IsCollateralized(const COutPoint& outpoint);
 private:
-    bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth);
+    bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth) const;
     bool allMyPrivateKeys(std::vector<CKey>& spends, std::vector<CKey>& views);
     void createMasterKey() const;
     bool generateBulletProofAggregate(CTransaction& tx);

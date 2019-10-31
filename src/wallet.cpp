@@ -2996,7 +2996,7 @@ int CWallet::ComputeTxSize(size_t numIn, size_t numOut, size_t ringSize)
     return txSize;
 }
 
-bool CWallet::IsWatcherWallet() {
+bool CWallet::IsWatcherWallet() const {
     if (registeredViewKey.IsValid() && registeredPubSpendKey.IsValid()) {
         std::string pubAddress;
         EncodeStealthPublicAddress(registeredViewKey.GetPubKey(), registeredPubSpendKey, pubAddress);
@@ -4127,7 +4127,11 @@ bool CWallet::computeSharedSec(const CTransaction& tx, const CTxOut& out, CPubKe
         sharedSec.Set(out.txPub.begin(), out.txPub.end());
     } else {
         CKey view;
-        myViewPrivateKey(view);
+        if (!IsWatcherWallet()) {
+            myViewPrivateKey(view);
+        } else {
+            view = registeredViewKey;
+        }
         ECDHInfo::ComputeSharedSec(view, out.txPub, sharedSec);
     }
     return true;
@@ -6385,7 +6389,7 @@ void add1s(std::string& s, int wantedSize)
 }
 
 
-bool CWallet::encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth)
+bool CWallet::encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth) const
 {
     if (raw.size() != 71 && raw.size() != 79) {
         return false;
@@ -6416,7 +6420,7 @@ bool CWallet::encodeStealthBase58(const std::vector<unsigned char>& raw, std::st
     return true;
 }
 
-bool CWallet::EncodeStealthPublicAddress(const std::vector<unsigned char>& pubViewKey, const std::vector<unsigned char>& pubSpendKey, std::string& pubAddrb58)
+bool CWallet::EncodeStealthPublicAddress(const std::vector<unsigned char>& pubViewKey, const std::vector<unsigned char>& pubSpendKey, std::string& pubAddrb58) const
 {
     std::vector<unsigned char> pubAddr;
     pubAddr.push_back(18);                                                                 //1 byte
@@ -6449,7 +6453,7 @@ bool CWallet::EncodeIntegratedAddress(const std::vector<unsigned char>& pubViewK
     return encodeStealthBase58(pubAddr, pubAddrb58);
 }
 
-bool CWallet::EncodeStealthPublicAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr)
+bool CWallet::EncodeStealthPublicAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr) const
 {
     if (pubViewKey.IsCompressed() && pubSpendKey.IsCompressed()) {
         return EncodeStealthPublicAddress(pubViewKey.Raw(), pubSpendKey.Raw(), pubAddr);
@@ -7046,31 +7050,53 @@ bool CWallet::RevealTxOutAmount(const CTransaction& tx, const CTxOut& out, CAmou
         blind.Set(blindMap[out.scriptPubKey].begin(), blindMap[out.scriptPubKey].end(), true);
         return true;
     }
-
-    std::set<CKeyID> keyIDs;
-    GetKeys(keyIDs);
     CPubKey sharedSec;
-    BOOST_FOREACH (const CKeyID& keyID, keyIDs) {
-        CKey privKey;
-        GetKey(keyID, privKey);
-        CScript scriptPubKey = GetScriptForDestination(privKey.GetPubKey());
-        if (scriptPubKey == out.scriptPubKey) {
-            CPubKey txPub(&(out.txPub[0]), &(out.txPub[0]) + 33);
-            CKey view;
-            if (myViewPrivateKey(view)) {
-                computeSharedSec(tx, out, sharedSec);
-                uint256 val = out.maskValue.amount;
-                uint256 mask = out.maskValue.mask;
-                CKey decodedMask;
-                ECDHInfo::Decode(mask.begin(), val.begin(), sharedSec, decodedMask, amount);
+    if (!IsWatcherWallet()) {
+        std::set<CKeyID> keyIDs;
+        GetKeys(keyIDs);
+        BOOST_FOREACH (const CKeyID& keyID, keyIDs) {
+            CKey privKey;
+            GetKey(keyID, privKey);
+            CScript scriptPubKey = GetScriptForDestination(privKey.GetPubKey());
+            if (scriptPubKey == out.scriptPubKey) {
+                CPubKey txPub(&(out.txPub[0]), &(out.txPub[0]) + 33);
+                CKey view;
+                if (myViewPrivateKey(view)) {
+                    computeSharedSec(tx, out, sharedSec);
+                    uint256 val = out.maskValue.amount;
+                    uint256 mask = out.maskValue.mask;
+                    CKey decodedMask;
+                    ECDHInfo::Decode(mask.begin(), val.begin(), sharedSec, decodedMask, amount);
+                    amountMap[out.scriptPubKey] = amount;
+                    blindMap[out.scriptPubKey] = decodedMask;
+                    blind.Set(blindMap[out.scriptPubKey].begin(), blindMap[out.scriptPubKey].end(), true);
+                    return true;
+                }
+            }
+        }
+    } else {
+        computeSharedSec(tx, out, sharedSec);
+        uint256 val = out.maskValue.amount;
+        uint256 mask = out.maskValue.mask;
+        CKey decodedMask;
+        ECDHInfo::Decode(mask.begin(), val.begin(), sharedSec, decodedMask, amount);
+        
+        std::vector<unsigned char> commitment;
+        if (CreateCommitment(decodedMask.begin(), amount, commitment)) {
+            if (commitment == out.commitment) {
                 amountMap[out.scriptPubKey] = amount;
                 blindMap[out.scriptPubKey] = decodedMask;
                 blind.Set(blindMap[out.scriptPubKey].begin(), blindMap[out.scriptPubKey].end(), true);
                 return true;
-            }
+            } else {
+                amount = 0;
+                amountMap[out.scriptPubKey] = amount;
+                return false;
+            }            
         }
     }
     amount = 0;
+    amountMap[out.scriptPubKey] = amount;
     return false;
 }
 
