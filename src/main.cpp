@@ -306,7 +306,7 @@ double GetPriority(const CTransaction& tx, int nHeight)
     		}
     	}
     }*/
-    return tx.ComputePriority(dResult);
+    return 1000000000 + tx.ComputePriority(dResult);
 }
 
 bool IsKeyImageSpend1(const std::string& kiHex, const uint256& againsHash)
