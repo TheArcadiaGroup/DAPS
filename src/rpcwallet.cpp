@@ -1346,7 +1346,9 @@ UniValue listtransactions(const UniValue& params, bool fHelp)
     if (params.size() > 3)
         if (params[3].get_bool())
             filter = filter | ISMINE_WATCH_ONLY;
-
+    if (pwalletMain->IsWatcherWallet()) {
+        filter = filter | ISMINE_WATCH_ONLY;
+    }
     if (nCount < 0)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Negative count");
     if (nFrom < 0)
@@ -1527,7 +1529,9 @@ UniValue listsinceblock(const UniValue& params, bool fHelp)
     if (params.size() > 2)
         if (params[2].get_bool())
             filter = filter | ISMINE_WATCH_ONLY;
-
+    if (pwalletMain->IsWatcherWallet()) {
+        filter = filter | ISMINE_WATCH_ONLY;
+    }
     int depth = pindex ? (1 + chainActive.Height() - pindex->nHeight) : -1;
 
     UniValue transactions(UniValue::VARR);
