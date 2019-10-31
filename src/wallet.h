@@ -242,6 +242,9 @@ private:
 
     int64_t nNextResend;
     int64_t nLastResend;
+    CKey registeredViewKey;
+    CPubKey registeredPubSpendKey;
+    std::string registeredAddress;
 
     /**
      * Used to keep track of spent outpoints, and
@@ -281,6 +284,9 @@ public:
     bool WriteAutoConsolidateSettingTime(uint32_t settingTime);
     uint32_t ReadAutoConsolidateSettingTime();
     bool IsAutoConsolidateOn();
+    void SetRegisterViewKey(std::string viewkey);
+    void SetRegisterAddress(std::string stealth);
+    bool IsWatcherWallet();
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet

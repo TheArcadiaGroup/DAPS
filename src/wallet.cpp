@@ -2996,6 +2996,35 @@ int CWallet::ComputeTxSize(size_t numIn, size_t numOut, size_t ringSize)
     return txSize;
 }
 
+bool CWallet::IsWatcherWallet() {
+    if (registeredViewKey.IsValid() && registeredPubSpendKey.IsValid()) {
+        std::string pubAddress;
+        EncodeStealthPublicAddress(registeredViewKey.GetPubKey(), registeredPubSpendKey, pubAddress);
+        return pubAddress == registeredAddress;
+    }
+    return false;
+}
+
+void CWallet::SetRegisterViewKey(std::string viewkey) {
+    std::vector<unsigned char> view;
+    if (DecodeBase58(viewkey, view)) {
+        if (view.size() == 32) {
+            registeredViewKey.Set(view.data(), view.data() + 32, true);
+        }
+    }
+    if (!IsWatcherWallet()) {
+        LogPrintf("No private view key is registered or Stealth address is invalid, working as a normal wallet\n");
+    } else {
+        LogPrintf("Private view key is successfully registered\n");
+    }
+}
+void CWallet::SetRegisterAddress(std::string stealth) {
+    CPubKey pubViewKey; 
+    bool hasPaymentID; 
+    uint64_t paymentID;
+    DecodeStealthAddress(stealth, pubViewKey, registeredPubSpendKey, hasPaymentID, paymentID);
+    registeredAddress = stealth;
+}
 //compute the amount that let users send reserve balance
 CAmount CWallet::ComputeReserveUTXOAmount() {
     CAmount fee = ComputeFee(1, 2, MAX_RING_SIZE);

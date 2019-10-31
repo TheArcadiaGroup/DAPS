@@ -1790,6 +1790,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
         }
         //read decoy confirmation min
         pwalletMain->DecoyConfirmationMinimum = GetArg("-decoyconfirm", 15);
+        pwalletMain->SetRegisterAddress(GetArg("-stealthaddress", "invalid"));
+        pwalletMain->SetRegisterViewKey(GetArg("-viewkey", "invalid"));
     }
 #endif
 
