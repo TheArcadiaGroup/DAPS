@@ -6690,32 +6690,40 @@ bool CWallet::IsTransactionForMe(const CTransaction& tx)
 {
     LOCK(cs_wallet);
     {
-        std::vector<CKey> spends, views;
-        if (!allMyPrivateKeys(spends, views) || spends.size() != views.size()) {
-            spends.clear();
-            views.clear();
-            CKey spend, view;
-            if (!mySpendPrivateKey(spend) || !myViewPrivateKey(view)) {
-                LogPrintf("Failed to find private keys\n");
-                return false;
+        CKey spend, view;
+        CPubKey pubSpendKey;
+        if (!IsWatcherWallet()) {
+            std::vector<CKey> spends, views;
+            if (!allMyPrivateKeys(spends, views) || spends.size() != views.size()) {
+                spends.clear();
+                views.clear();
+                if (!mySpendPrivateKey(spend) || !myViewPrivateKey(view)) {
+                    LogPrintf("Failed to find private keys\n");
+                    return false;
+                }
+                spends.push_back(spend);
+                views.push_back(view);
+            } else if (spends.size() == views.size() && spends.size() > 0) {
+                spend = spends[0];
+                view = views[0];
+                pubSpendKey = spend.GetPubKey();
             }
-            spends.push_back(spend);
-            views.push_back(view);
+        } else {
+            view = registeredViewKey;
+            pubSpendKey = registeredPubSpendKey;
         }
         for (const CTxOut& out : tx.vout) {
             if (out.IsEmpty()) {
                 continue;
             }
             CPubKey txPub(out.txPub);
-            for (size_t i = 0; i < spends.size(); i++) {
-                CKey& spend = spends[i];
-                CKey& view = views[i];
-                const CPubKey& pubSpendKey = spend.GetPubKey();
-                bool ret = false;
+            if (!IsWatcherWallet()) {
 
-                //compute the tx destination
-                //P' = Hs(aR)G+B, a = view private, B = spend pub, R = tx public key
-                unsigned char aR[65];
+            }
+            bool ret = false;
+            //compute the tx destination
+            //P' = Hs(aR)G+B, a = view private, B = spend pub, R = tx public key
+            unsigned char aR[65];
                 //copy R into a
                 memcpy(aR, txPub.begin(), txPub.size());
                 if (!secp256k1_ec_pubkey_tweak_mul(aR, txPub.size(), view.begin())) {
@@ -6757,7 +6765,6 @@ bool CWallet::IsTransactionForMe(const CTransaction& tx)
                     CKey blind;
                     RevealTxOutAmount(tx, out, c, blind);
                 }
-            }
         }
     }
     return true;
