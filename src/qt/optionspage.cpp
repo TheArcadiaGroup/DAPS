@@ -35,7 +35,7 @@
 
 using namespace std;
 
-OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
+OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                           ui(new Ui::OptionsPage),
                                                           model(0),
                                                           // m_SizeGrip(this),

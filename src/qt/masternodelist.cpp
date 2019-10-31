@@ -18,7 +18,7 @@
 
 CCriticalSection cs_masternodes;
 
-MasternodeList::MasternodeList(QWidget* parent) : QDialog(parent),
+MasternodeList::MasternodeList(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                   ui(new Ui::MasternodeList),
                                                   clientModel(0),
                                                   // m_SizeGrip(this),

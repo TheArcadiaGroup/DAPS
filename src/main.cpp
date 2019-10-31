@@ -428,22 +428,22 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
     const size_t MAX_VOUT = 5;
 
     if (tx.vin.size() > MAX_VIN) {
-        LogPrintf("\nTx input too many\n");
+        LogPrintf("Tx input too many\n");
         return false;
     }
     for (size_t i = 1; i < tx.vin.size(); i++) {
         if (tx.vin[i].decoys.size() != tx.vin[0].decoys.size()) {
-            LogPrintf("\nThe number of decoys not equal for all inputs, input %d has %d decoys but input 0 has only %d\n", i, tx.vin[i].decoys.size(), tx.vin[0].decoys.size());
+            LogPrintf("The number of decoys not equal for all inputs, input %d has %d decoys but input 0 has only %d\n", i, tx.vin[i].decoys.size(), tx.vin[0].decoys.size());
             return false;
         }
     }
     if (tx.vin.size() == 0) {
-        LogPrintf("\nTransaction %s has no inputs\n", tx.GetHash().GetHex());
+        LogPrintf("Transaction %s has no inputs\n", tx.GetHash().GetHex());
         return false;
     }
 
     if (tx.vin[0].decoys.size() > MAX_DECOYS || tx.vin[0].decoys.size() < MIN_RING_SIZE) {
-        LogPrintf("\nThe number of decoys RingSize %d not within range [%d, %d]\n", tx.vin[0].decoys.size(), MIN_RING_SIZE, MAX_RING_SIZE);
+        LogPrintf("The number of decoys RingSize %d not within range [%d, %d]\n", tx.vin[0].decoys.size(), MIN_RING_SIZE, MAX_RING_SIZE);
         return false; //maximum decoys = 15
     }
 
@@ -474,7 +474,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
             CTransaction txPrev;
             uint256 hashBlock;
             if (!GetTransaction(decoysForIn[j].hash, txPrev, hashBlock)) {
-                LogPrintf("\nfailed to find transaction %s\n", decoysForIn[j].hash.GetHex());
+                LogPrintf("failed to find transaction %s\n", decoysForIn[j].hash.GetHex());
                 return false;
             }
             CBlockIndex* tip = chainActive.Tip();
@@ -484,19 +484,19 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
             //verify that tip and hashBlock must be in the same fork
             CBlockIndex* atTheblock = mapBlockIndex[hashBlock];
             if (!atTheblock) {
-                LogPrintf("\nDecoy for transactions %s not in the same chain with block %s\n", decoysForIn[j].hash.GetHex(), tip->GetBlockHash().GetHex());
+                LogPrintf("Decoy for transactions %s not in the same chain with block %s\n", decoysForIn[j].hash.GetHex(), tip->GetBlockHash().GetHex());
                 return false;
             } else {
                 CBlockIndex* ancestor = tip->GetAncestor(atTheblock->nHeight);
                 if (ancestor != atTheblock) {
-                    LogPrintf("\nDecoy for transactions %s not in the same chain with block %s\n", decoysForIn[j].hash.GetHex(), tip->GetBlockHash().GetHex());
+                    LogPrintf("Decoy for transactions %s not in the same chain with block %s\n", decoysForIn[j].hash.GetHex(), tip->GetBlockHash().GetHex());
                     return false;
                 }
             }
 
             CPubKey extractedPub;
             if (!ExtractPubKey(txPrev.vout[decoysForIn[j].n].scriptPubKey, extractedPub)) {
-                LogPrintf("\nfailed to extract pubkey\n");
+                LogPrintf("failed to extract pubkey\n");
                 return false;
             }
             memcpy(allInPubKeys[i][j], extractedPub.begin(), 33);
@@ -519,7 +519,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
     for (size_t i = 0; i < tx.vout.size(); i++) {
         memcpy(allOutCommitments[i], &(tx.vout[i].commitment[0]), 33);
         if (!secp256k1_pedersen_commitment_parse(both, &allOutCommitmentsPacked[i], allOutCommitments[i])) {
-            LogPrintf("\nfailed to parse commitment\n");
+            LogPrintf("failed to parse commitment\n");
             return false;
         }
     }
@@ -548,7 +548,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
         const secp256k1_pedersen_commitment* inCptr[MAX_VIN * 2];
         for (size_t k = 0; k < tx.vin.size(); k++) {
             if (!secp256k1_pedersen_commitment_parse(both, &allInCommitmentsPacked[k][j], allInCommitments[k][j])) {
-                LogPrintf("\nfailed to parse commitment\n");
+                LogPrintf("failed to parse commitment\n");
                 return false;
             }
             inCptr[k] = &allInCommitmentsPacked[k][j];
@@ -560,11 +560,11 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
         secp256k1_pedersen_commitment out;
         size_t length;
         if (!secp256k1_pedersen_commitment_sum(both, inCptr, tx.vin.size() * 2, outCptr, tx.vout.size() + 1, &out)) {
-            LogPrintf("\nfailed to secp256k1_pedersen_commitment_sum\n");
+            LogPrintf("failed to secp256k1_pedersen_commitment_sum\n");
             return false;
         }
         if (!secp256k1_pedersen_commitment_to_serialized_pubkey(&out, allInPubKeys[tx.vin.size()][j], &length)) {
-            LogPrintf("\nfailed to serialized pubkey\n");
+            LogPrintf("failed to serialized pubkey\n");
             return false;
         }
     }
@@ -579,12 +579,12 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
             unsigned char P[33];
             memcpy(P, allInPubKeys[i][j], 33);
             if (!secp256k1_ec_pubkey_tweak_mul(P, 33, C)) {
-                LogPrintf("\nfailed to mul pubkey\n");
+                LogPrintf("failed to mul pubkey\n");
                 return false;
             }
 
             if (!secp256k1_ec_pubkey_tweak_add(P, 33, SIJ[i][j])) {
-                LogPrintf("\nfailed to add pubkey\n");
+                LogPrintf("failed to add pubkey\n");
                 return false;
             }
 
@@ -599,7 +599,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
             unsigned char ci[33];
             memcpy(ci, allKeyImages[i], 33);
             if (!secp256k1_ec_pubkey_tweak_mul(ci, 33, C)) {
-                LogPrintf("\nfailed to mul tweak\n");
+                LogPrintf("failed to mul tweak\n");
                 return false;
             }
 
@@ -638,7 +638,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
         uint256 temppi1 = Hash(tempForHash, tempForHash + 2 * (tx.vin.size() + 1) * 33 + 32);
         memcpy(C, temppi1.begin(), 32);
     }
-    //LogPrintf("\nVerifying\n");
+    //LogPrintf("Verifying\n");
     return HexStr(tx.c.begin(), tx.c.end()) == HexStr(C, C + 32);
 }
 
@@ -1702,7 +1702,7 @@ bool CheckHaveInputs(const CCoinsViewCache& view, const CTransaction& tx)
 
 				if (prev.vout[alldecoys[j].n].nValue == 1000000 * COIN) {
 					if (!VerifyKeyImages(tx)) {
-						LogPrintf("\nFailed to verify correctness of key image of collateralization spend\n");
+						LogPrintf("Failed to verify correctness of key image of collateralization spend\n");
 						return false;
 					}
 				}*/
@@ -1719,19 +1719,19 @@ bool CheckHaveInputs(const CCoinsViewCache& view, const CTransaction& tx)
                 //verify that tip and hashBlock must be in the same fork
                 CBlockIndex* atTheblock = mapBlockIndex[bh];
                 if (!atTheblock) {
-                    LogPrintf("\nDecoy for transactions %s not in the same chain with block %s\n", alldecoys[j].hash.GetHex(), tip->GetBlockHash().GetHex());
+                    LogPrintf("Decoy for transactions %s not in the same chain with block %s\n", alldecoys[j].hash.GetHex(), tip->GetBlockHash().GetHex());
                     return false;
                 } else {
                     CBlockIndex* ancestor = tip->GetAncestor(atTheblock->nHeight);
                     if (ancestor != atTheblock) {
-                        LogPrintf("\nDecoy for transactions %s not in the same chain with block %s\n", alldecoys[j].hash.GetHex(), tip->GetBlockHash().GetHex());
+                        LogPrintf("Decoy for transactions %s not in the same chain with block %s\n", alldecoys[j].hash.GetHex(), tip->GetBlockHash().GetHex());
                         return false;
                     }
                 }
             }
             if (!tx.IsCoinStake()) {
                 if (tx.vin[i].decoys.size() != tx.vin[0].decoys.size()) {
-                    LogPrintf("\nTransaction does not have the same ring size for inputs\n");
+                    LogPrintf("Transaction does not have the same ring size for inputs\n");
                     return false;
                 }
             }
@@ -1739,7 +1739,7 @@ bool CheckHaveInputs(const CCoinsViewCache& view, const CTransaction& tx)
 
         if (tx.IsCoinStake()) {
             if (!VerifyShnorrKeyImageTx(tx)) {
-                LogPrintf("\nFailed to verify correctness of key image of staking transaction\n");
+                LogPrintf("Failed to verify correctness of key image of staking transaction\n");
                 return false;
             }
         }
@@ -1763,7 +1763,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
             REJECT_INVALID, "coinbase");
     //Coinstake is also only valid in a block, not as a loose transaction
     if (tx.IsCoinStake()) {
-        LogPrintf("\n%s: txRejected=%s\n", __func__, tx.GetHash().GetHex());
+        LogPrintf("%s: txRejected=%s\n", __func__, tx.GetHash().GetHex());
         return state.DoS(100, error("AcceptToMemoryPool: coinstake as individual tx"),
             REJECT_INVALID, "coinstake");
     }
@@ -2461,7 +2461,7 @@ bool VerifyDerivedAddress(const CTxOut& out, std::string stealth)
     bool hasPaymentID;
     uint64_t paymentID;
     if (!CWallet::DecodeStealthAddress(stealth, pubView, pubSpend, hasPaymentID, paymentID)) {
-        LogPrintf("\n%s: Cannot decode foundational address", __func__);
+        LogPrintf("%s: Cannot decode foundational address\n", __func__);
         return false;
     }
 
@@ -3500,6 +3500,7 @@ bool DisconnectBlocksAndReprocess(int blocks)
 
 void RemoveInvalidTransactionsFromMempool()
 {
+    LOCK2(cs_main, pwalletMain->cs_wallet);
     LOCK(mempool.cs);
     std::vector<CTransaction> tobeRemoveds;
     for (std::map<uint256, CTxMemPoolEntry>::const_iterator it = mempool.mapTx.begin(); it != mempool.mapTx.end(); ++it) {
@@ -4776,7 +4777,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
                     }
                 }
             }
-            LogPrintf("\n%s: Coinbase decoys = %d, user decoys = %d\n", __func__, pwalletMain->coinbaseDecoysPool.size(), pwalletMain->userDecoysPool.size());
+            LogPrintf("%s: Coinbase decoys = %d, user decoys = %d\n", __func__, pwalletMain->coinbaseDecoysPool.size(), pwalletMain->userDecoysPool.size());
         }
     }
 

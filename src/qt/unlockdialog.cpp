@@ -9,7 +9,7 @@
 #include <QMessageBox>
 
 UnlockDialog::UnlockDialog(QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
     model(0),
     ui(new Ui::UnlockDialog)
 {

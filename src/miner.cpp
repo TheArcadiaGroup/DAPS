@@ -479,13 +479,13 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
 
             //Shnorr sign
             if (!pwalletMain->MakeShnorrSignature(pblock->vtx[1])) {
-            	LogPrintf("\n%s : failed to make Shnorr signature\n", __func__);
+            	LogPrintf("%s : failed to make Shnorr signature\n", __func__);
             	return NULL;
             }
 
             //Test verify shnorr signature
             if (!VerifyShnorrKeyImageTx(pblock->vtx[1])) {
-                LogPrintf("\n%s: Failed to verify shnorr key image\n", __func__);
+                LogPrintf("%s: Failed to verify shnorr key image\n", __func__);
             	return NULL;
             }
             pwalletMain->IsTransactionForMe(pblock->vtx[1]);
@@ -562,7 +562,7 @@ CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, const CPubKey& 
     memset(zeroBlind, 0, 32);
     pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin());
     if (!pwallet->CreateCommitment(zeroBlind, pblock->vtx[0].vout[0].nValue, pblock->vtx[0].vout[0].commitment)) {
-        LogPrintf("\n%s: unable to create commitment to 0\n", __func__);
+        LogPrintf("%s: unable to create commitment to 0\n", __func__);
         return NULL;
     }
     pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin());
@@ -729,7 +729,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
             }
 
             if (!fGenerateDapscoins) {
-            	LogPrintf("\nStopping staking or mining\n");
+            	LogPrintf("Stopping staking or mining\n");
             	nLastCoinStakeSearchInterval = 0;
             	break;
             }

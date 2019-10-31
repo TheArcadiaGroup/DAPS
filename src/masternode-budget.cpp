@@ -491,7 +491,7 @@ void CBudgetManager::CheckAndRemove()
 bool CBudgetManager::FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake)
 {
     LOCK(cs);
-    LogPrintf("\n%s: budget manager filling block payee\n", __func__);
+    LogPrintf("%s: budget manager filling block payee\n", __func__);
     CBlockIndex* pindexPrev = chainActive.Tip();
     if (!pindexPrev) return false;
 

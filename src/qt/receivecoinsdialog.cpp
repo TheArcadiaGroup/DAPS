@@ -23,7 +23,7 @@
 #include <QTextDocument>
 #include <QStylePainter>
 
-ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent),
+ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                           ui(new Ui::ReceiveCoinsDialog),
                                                           // m_SizeGrip(this),
                                                           model(0)
@@ -71,8 +71,6 @@ static inline int64_t roundint64(double d)
 
 CAmount ReceiveCoinsDialog::getValidatedAmount() {
     double dAmount = ui->reqAmount->text().toDouble();
-    if (dAmount < 0.0 || dAmount > Params().MAX_MONEY)
-        throw runtime_error("Invalid amount, amount should be < 2.1B DAPS");
     CAmount nAmount = roundint64(dAmount * COIN);
     return nAmount;
 }
@@ -143,6 +141,16 @@ void ReceiveCoinsDialog::updateDisplayUnit()
 
 void ReceiveCoinsDialog::on_receiveButton_clicked()
 {
+    double dAmount = ui->reqAmount->text().toDouble();
+    if (dAmount < 0.0 || dAmount > Params().MAX_MONEY) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Invalid Amount");
+        msgBox.setText("Invalid amount entered. Please enter an amount less than 2.1B DAPS.");
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
+        return;
+    }
     if (!model || !model->getOptionsModel() || !model->getAddressTableModel() || !model->getRecentRequestsTableModel())
         return;
 

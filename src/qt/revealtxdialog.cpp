@@ -5,7 +5,7 @@
 #include <QClipboard>
 
 RevealTxDialog::RevealTxDialog(QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
     ui(new Ui::RevealTxDialog)
 {
     ui->setupUi(this);

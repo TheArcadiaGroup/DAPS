@@ -41,7 +41,7 @@ bool TxCompare (std::map<QString, QString> i, std::map<QString, QString> j) {
     return date_i > date_j;
 }
 
-HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent),
+HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                             ui(new Ui::HistoryPage),
                                             // m_SizeGrip(this),
                                             model(0)

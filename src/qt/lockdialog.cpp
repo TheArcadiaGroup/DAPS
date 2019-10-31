@@ -5,7 +5,7 @@
 #include <QDateTime>
 
 LockDialog::LockDialog(QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
     model(0),
     ui(new Ui::LockDialog)
 {

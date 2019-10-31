@@ -1185,7 +1185,7 @@ bool CWallet::AddToWalletIfInvolvingMe(const CTransaction& tx, const CBlock* pbl
                 try {
                     CWalletDB(strWalletFile).WriteScannedBlockHeight(mapBlockIndex[pblock->GetHash()]->nHeight);
                 } catch (std::exception& e) {
-                    LogPrintf("\nCannot open data base or wallet is locked\n");
+                    LogPrintf("Cannot open data base or wallet is locked\n");
                 }
             }
         }
@@ -2576,7 +2576,7 @@ bool CWallet::SelectCoins(bool needFee, CAmount& estimatedFee, int ringSize, int
                     CreateCommitment(decodedBlind.begin(), decodedAmount, commitment);
                 }
                 if (pcoin->vout[i].commitment != commitment) {
-                    LogPrintf("\n%s: Commitment not match hash = %s, i = %d, commitment = %s, recomputed = %s, revealed mask = %s", __func__, pcoin->GetHash().GetHex(), i, HexStr(&pcoin->vout[i].commitment[0], &pcoin->vout[i].commitment[0] + 33), HexStr(&commitment[0], &commitment[0] + 33), HexStr(decodedBlind.begin(), decodedBlind.begin() + 32));
+                    LogPrintf("%s: Commitment not match hash = %s, i = %d, commitment = %s, recomputed = %s, revealed mask = %s\n", __func__, pcoin->GetHash().GetHex(), i, HexStr(&pcoin->vout[i].commitment[0], &pcoin->vout[i].commitment[0] + 33), HexStr(&commitment[0], &commitment[0] + 33), HexStr(decodedBlind.begin(), decodedBlind.begin() + 32));
                     continue;
                 }
 
@@ -3155,7 +3155,7 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
                     nBytes = rsSize;
                     CAmount nFeeNeeded = max(nFeePay, GetMinimumFee(nBytes, nTxConfirmTarget, mempool));
                     nFeeNeeded += BASE_FEE;
-                    LogPrintf("\n%s: nFeeNeeded=%d, rsSize=%d\n", __func__, nFeeNeeded, rsSize);
+                    LogPrintf("%s: nFeeNeeded=%d, rsSize=%d\n", __func__, nFeeNeeded, rsSize);
                     if (nFeeNeeded < COIN) nFeeNeeded = COIN;
                     newTxOut.nValue -= nFeeNeeded;
                     txNew.nTxFee = nFeeNeeded;
@@ -4022,7 +4022,7 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                     if (numDecoys == ringSize) break;
                 }
             } else {
-                LogPrintf("\nDont have enough decoys, please wait for around 10 minutes and re-try\n");
+                LogPrintf("Dont have enough decoys, please wait for around 10 minutes and re-try\n");
                 return false;
             }
         } else {
@@ -4062,7 +4062,7 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                     if (numDecoys == ringSize) break;
                 }
             } else {
-                LogPrintf("\nDont have enough decoys, please wait for around 10 minutes and re-try\n");
+                LogPrintf("Dont have enough decoys, please wait for around 10 minutes and re-try\n");
                 return false;
             }
         }
@@ -4136,7 +4136,7 @@ void CWallet::AddComputedPrivateKey(const CTxOut& out)
         if (scriptPubKey == out.scriptPubKey) {
             AddKey(privKey);
         } else {
-            LogPrintf("\nAddComputedPrivateKey: Fail to generate corresponding private key\n");
+            LogPrintf("AddComputedPrivateKey: Fail to generate corresponding private key\n");
         }
     }
 }
@@ -4381,7 +4381,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
             //Masternode payment
             if (!FillBlockPayee(txNew, 0, true)) {
-                LogPrintf("\n%s: Cannot fill block payee", __func__);
+                LogPrintf("%s: Cannot fill block payee\n", __func__);
                 return false;
             }
 
@@ -4395,7 +4395,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 bool hasPaymentID;
                 uint64_t paymentID;
                 if (!CWallet::DecodeStealthAddress(foundational, pubView, pubSpend, hasPaymentID, paymentID)) {
-                    LogPrintf("\n%s: Cannot decode foundational address", __func__);
+                    LogPrintf("%s: Cannot decode foundational address\n", __func__);
                     continue;
                 }
                 CKey foundationTxPriv;
@@ -5563,7 +5563,7 @@ bool CWallet::SendAll(std::string des)
                         CreateCommitment(decodedBlind.begin(), decodedAmount, commitment);
                     }
                     if (pcoin->vout[i].commitment != commitment) {
-                        LogPrintf("\n%s: Commitment not match hash = %s, i = %d, commitment = %s, recomputed = %s, revealed mask = %s", __func__, pcoin->GetHash().GetHex(), i, HexStr(&pcoin->vout[i].commitment[0], &pcoin->vout[i].commitment[0] + 33), HexStr(&commitment[0], &commitment[0] + 33), HexStr(decodedBlind.begin(), decodedBlind.begin() + 32));
+                        LogPrintf("%s: Commitment not match hash = %s, i = %d, commitment = %s, recomputed = %s, revealed mask = %s\n", __func__, pcoin->GetHash().GetHex(), i, HexStr(&pcoin->vout[i].commitment[0], &pcoin->vout[i].commitment[0] + 33), HexStr(&commitment[0], &commitment[0] + 33), HexStr(decodedBlind.begin(), decodedBlind.begin() + 32));
                         continue;
                     }
 
@@ -5763,7 +5763,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint3
                         CreateCommitment(decodedBlind.begin(), decodedAmount, commitment);
                     }
                     if (pcoin->vout[i].commitment != commitment) {
-                        LogPrintf("\n%s: Commitment not match hash = %s, i = %d, commitment = %s, recomputed = %s, revealed mask = %s", __func__, pcoin->GetHash().GetHex(), i, HexStr(&pcoin->vout[i].commitment[0], &pcoin->vout[i].commitment[0] + 33), HexStr(&commitment[0], &commitment[0] + 33), HexStr(decodedBlind.begin(), decodedBlind.begin() + 32));
+                        LogPrintf("%s: Commitment not match hash = %s, i = %d, commitment = %s, recomputed = %s, revealed mask = %s\n", __func__, pcoin->GetHash().GetHex(), i, HexStr(&pcoin->vout[i].commitment[0], &pcoin->vout[i].commitment[0] + 33), HexStr(&commitment[0], &commitment[0] + 33), HexStr(decodedBlind.begin(), decodedBlind.begin() + 32));
                         continue;
                     }
 
@@ -5847,7 +5847,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint3
                         }
                     }
                 }
-                LogPrintf("\nGenerate consolidation, total = %d\n", total);
+                LogPrintf("Generate consolidation, total = %d\n", total);
                 // Generate transaction public key
                 CWalletTx wtxNew;
                 CKey secret;
@@ -5971,7 +5971,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint3
 
 void CWallet::AutoCombineDust()
 {
-    if (IsInitialBlockDownload() || masternodeSync.IsBlockchainSynced()) return;
+    if (IsInitialBlockDownload() || !masternodeSync.IsBlockchainSynced()) return;
     //if (IsInitialBlockDownload()) return;
     if (chainActive.Tip()->nTime < (GetAdjustedTime() - 300) || IsLocked()) {
         LogPrintf("Time elapsed for autocombine transaction too short\n");
@@ -6032,7 +6032,7 @@ bool CWallet::estimateStakingConsolidationFees(CAmount& minFee, CAmount& maxFee)
 						CreateCommitment(decodedBlind.begin(), decodedAmount, commitment);
 					}
 					if (pcoin->vout[i].commitment != commitment) {
-						LogPrintf("\n%s: Commitment not match hash = %s, i = %d, commitment = %s, recomputed = %s, revealed mask = %s", __func__, pcoin->GetHash().GetHex(), i, HexStr(&pcoin->vout[i].commitment[0], &pcoin->vout[i].commitment[0] + 33), HexStr(&commitment[0], &commitment[0] + 33), HexStr(decodedBlind.begin(), decodedBlind.begin() + 32));
+                        LogPrintf("%s: Commitment not match hash = %s, i = %d, commitment = %s, recomputed = %s, revealed mask = %s\n", __func__, pcoin->GetHash().GetHex(), i, HexStr(&pcoin->vout[i].commitment[0], &pcoin->vout[i].commitment[0] + 33), HexStr(&commitment[0], &commitment[0] + 33), HexStr(decodedBlind.begin(), decodedBlind.begin() + 32));
 						continue;
 					}
 
@@ -6579,7 +6579,7 @@ bool CWallet::GenerateAddress(CPubKey& pub, CPubKey& txPub, CKey& txPriv) const
     {
         CKey view, spend;
         if (IsLocked()) {
-            LogPrintf("\n%s:Wallet is locked\n", __func__);
+            LogPrintf("%s:Wallet is locked\n", __func__);
             return false;
         }
         myViewPrivateKey(view);
@@ -6667,7 +6667,7 @@ bool CWallet::IsTransactionForMe(const CTransaction& tx)
             views.clear();
             CKey spend, view;
             if (!mySpendPrivateKey(spend) || !myViewPrivateKey(view)) {
-                LogPrintf("\nFailed to find private keys");
+                LogPrintf("Failed to find private keys\n");
                 return false;
             }
             spends.push_back(spend);
@@ -6962,7 +6962,7 @@ bool CWallet::mySpendPrivateKey(CKey& spend) const
     {
         LOCK2(cs_main, cs_wallet);
         if (IsLocked()) {
-            LogPrintf("\n%s:Wallet is locked\n", __func__);
+            LogPrintf("%s:Wallet is locked\n", __func__);
             return false;
         }
         std::string spendAccountLabel = "spendaccount";
@@ -6983,7 +6983,7 @@ bool CWallet::myViewPrivateKey(CKey& view) const
     {
         LOCK2(cs_main, cs_wallet);
         if (IsLocked()) {
-            LogPrintf("\n%s:Wallet is locked\n", __func__);
+            LogPrintf("%s:Wallet is locked\n", __func__);
             return false;
         }
         std::string viewAccountLabel = "viewaccount";
