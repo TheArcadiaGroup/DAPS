@@ -107,7 +107,7 @@ public:
     {
         LOCK(cs_vecPayments);
 
-        BOOST_FOREACH (CMasternodePayee& payee, vecPayments) {
+        for (CMasternodePayee& payee : vecPayments) {
             if (payee.masternodeStealthAddress == masternodeStealthAddress) {
                 payee.nVotes += nIncrement;
                 return;
@@ -123,7 +123,7 @@ public:
         LOCK(cs_vecPayments);
 
         int nVotes = -1;
-        BOOST_FOREACH (CMasternodePayee& p, vecPayments) {
+        for (CMasternodePayee& p : vecPayments) {
             if (p.nVotes > nVotes) {
                 payee = p.masternodeStealthAddress;
                 nVotes = p.nVotes;
@@ -137,7 +137,7 @@ public:
     {
         LOCK(cs_vecPayments);
 
-        BOOST_FOREACH (CMasternodePayee& p, vecPayments) {
+        for (CMasternodePayee& p : vecPayments) {
             if (p.nVotes >= nVotesReq && p.masternodeStealthAddress == payee) return true;
         }
 
