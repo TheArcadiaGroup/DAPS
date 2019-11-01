@@ -36,6 +36,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/thread.hpp>
 #include "masternodeconfig.h"
+#include "univalue.h"
 
 
 using namespace std;
@@ -1686,6 +1687,7 @@ set<uint256> CWalletTx::GetConflicts() const
 }
 
 bool CWallet::ExportTransactionList(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash) {
+    if (IsLocked()) return false;
     LOCK2(cs_main, cs_wallet);
     for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
         txHashes.push_back(it->first);
@@ -1708,6 +1710,26 @@ bool CWallet::ExportTransactionList(std::vector<uint256>& txHashes, int& lastSca
     }
     lastScannedHeight = pindexRescan->nHeight;
     lastScannedBlockHash = pindexRescan->GetBlockHash();
+    return true;
+}
+
+std::string CWallet::ExportTransactionList() {
+    std::vector<uint256> txes;
+    int lastScannedHeight = 0;
+    uint256 lastScannedBlockHash;
+    ExportTransactionList(txes, lastScannedHeight, lastScannedBlockHash);
+    UniValue ret(UniValue::VOBJ);
+    UniValue txesArr(UniValue::VARR);
+    for(size_t i = 0; i < txes.size(); i++) {
+        txesArr.push_back(txes[i].GetHex());
+    }
+    std::string masterAddr;
+    ComputeStealthPublicAddress("masteraccount", masterAddr);
+    ret.push_back(Pair("address", masterAddr));
+    ret.push_back(Pair("transactions", txesArr));
+    ret.push_back(Pair("lastheight", lastScannedHeight));
+    ret.push_back(Pair("lastblock", lastScannedBlockHash.GetHex()));
+    return ret.get_str();
 }
 
 void CWallet::ResendWalletTransactions()
