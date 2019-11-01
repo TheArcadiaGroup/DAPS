@@ -16,8 +16,6 @@
 #include "utilmoneystr.h"
 #include "utilstrencodings.h"
 
-#include <boost/foreach.hpp>
-
 using namespace std;
 
 string FormatScript(const CScript& script)
