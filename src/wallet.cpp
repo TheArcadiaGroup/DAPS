@@ -1685,6 +1685,31 @@ set<uint256> CWalletTx::GetConflicts() const
     return result;
 }
 
+bool CWallet::ExportTransactionList(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash) {
+    LOCK2(cs_main, cs_wallet);
+    for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
+        txHashes.push_back(it->first);
+    }
+    CBlockIndex* pindexRescan = chainActive.Tip();
+    CWalletDB walletdb(strWalletFile);
+    CBlockLocator locator;
+    if (walletdb.ReadBestBlock(locator)) {
+        pindexRescan = FindForkInGlobalIndex(chainActive, locator);
+    } else {
+        if (!walletdb.ReadScannedBlockHeight(lastScannedHeight)) {
+            if (lastScannedHeight > chainActive.Height()) {
+                pindexRescan = chainActive.Genesis();
+            } else {
+                pindexRescan = chainActive[lastScannedHeight];
+            }
+        } else {
+            pindexRescan = chainActive.Genesis();
+        }
+    }
+    lastScannedHeight = pindexRescan->nHeight;
+    lastScannedBlockHash = pindexRescan->GetBlockHash();
+}
+
 void CWallet::ResendWalletTransactions()
 {
     // Do this infrequently and randomly to avoid giving away

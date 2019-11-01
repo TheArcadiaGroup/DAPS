@@ -281,6 +281,7 @@ public:
     bool WriteAutoConsolidateSettingTime(uint32_t settingTime);
     uint32_t ReadAutoConsolidateSettingTime();
     bool IsAutoConsolidateOn();
+    bool ExportTransactionList(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash);
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
