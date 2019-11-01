@@ -616,8 +616,7 @@ CCriticalSection CNode::cs_vWhitelistedRange;
 
 bool CNode::IsWhitelistedRange(const CNetAddr &addr) {
     LOCK(cs_vWhitelistedRange);
-    BOOST_FOREACH(
-    const CSubNet &subnet, vWhitelistedRange) {
+    for (const CSubNet &subnet : vWhitelistedRange) {
         if (subnet.Match(addr))
             return true;
     }
@@ -879,8 +878,7 @@ void ThreadSocketHandler() {
         SOCKET hSocketMax = 0;
         bool have_fds = false;
 
-        BOOST_FOREACH(
-        const ListenSocket &hListenSocket, vhListenSocket) {
+        for (const ListenSocket &hListenSocket : vhListenSocket) {
             FD_SET(hListenSocket.socket, &fdsetRecv);
             hSocketMax = max(hSocketMax, hListenSocket.socket);
             have_fds = true;
@@ -946,8 +944,7 @@ void ThreadSocketHandler() {
         //
         // Accept new connections
         //
-        BOOST_FOREACH(
-        const ListenSocket &hListenSocket, vhListenSocket) {
+        for (const ListenSocket &hListenSocket : vhListenSocket) {
             if (hListenSocket.socket != INVALID_SOCKET && FD_ISSET(hListenSocket.socket, &fdsetRecv)) {
                 struct sockaddr_storage sockaddr;
                 socklen_t len = sizeof(sockaddr);
@@ -1215,8 +1212,7 @@ void ThreadDNSAddressSeed() {
 
     LogPrintf("Loading addresses from DNS seeds (could take a while)\n");
 
-    BOOST_FOREACH(
-    const CDNSSeedData &seed, vSeeds) {
+    for (const CDNSSeedData &seed : vSeeds) {
         if (HaveNameProxy()) {
             AddOneShot(seed.host);
         } else {
@@ -1278,8 +1274,7 @@ void ThreadOpenConnections() {
     if (mapArgs.count("-connect") && mapMultiArgs["-connect"].size() > 0) {
         for (int64_t nLoop = 0;; nLoop++) {
             ProcessOneShot();
-            BOOST_FOREACH(string
-            strAddr, mapMultiArgs["-connect"]) {
+            for (string strAddr : mapMultiArgs["-connect"]) {
                 CAddress addr;
                 OpenNetworkConnection(addr, NULL, strAddr.c_str());
                 for (int i = 0; i < 10 && i < nLoop; i++) {

@@ -182,8 +182,7 @@ string CRPCTable::help(string strCommand) const {
         vCommands.push_back(make_pair(mi->second->category + mi->first, mi->second));
     sort(vCommands.begin(), vCommands.end());
 
-    BOOST_FOREACH(
-    const PAIRTYPE(string, const CRPCCommand*) &command, vCommands) {
+    for (const PAIRTYPE(string, const CRPCCommand*) &command : vCommands) {
         const CRPCCommand *pcmd = command.second;
         string strMethod = pcmd->name;
         // We already filter duplicates, but these deprecated screw up the sort order
