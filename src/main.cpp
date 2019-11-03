@@ -6471,6 +6471,10 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                     block.GetHash().GetHex());
             }
         }
+        //prune peers for seednodes so that other nodes could join the network
+        if (!IsInitialBlockDownload() && chainActive.Height() % 5 == 0) {
+            DisconnectOldNodes();
+        }
     }
 
 
@@ -6672,10 +6676,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         masternodeSync.ProcessMessage(pfrom, strCommand, vRecv);
     }
 
-    //prune peers for seednodes so that other nodes could join the network
-    if (!IsInitialBlockDownload() && chainActive.Height() % 5 == 0) {
-        DisconnectOldNodes();
-    }
     return true;
 }
 
