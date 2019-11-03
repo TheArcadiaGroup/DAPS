@@ -1906,7 +1906,9 @@ bool CObfuScationSigner::VerifyMessage(CPubKey pubkey, vector<unsigned char>& vc
 
     if (fDebug && pubkey2.GetID() != pubkey.GetID())
         LogPrintf("CObfuScationSigner::VerifyMessage -- keys don't match: %s %s\n", pubkey2.GetID().ToString(), pubkey.GetID().ToString());
-
+    if (pubkey2.GetID() != pubkey.GetID()) {
+        LogPrintf("CObfuScationSigner::VerifyMessage masternode recovered key is different, original key = %s, recovered key = %s\n", pubkey.GetHex(), pubkey2.GetHex());
+    }
     return (pubkey2.GetID() == pubkey.GetID());
 }
 

@@ -820,6 +820,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
     if (nFD - MIN_CORE_FILEDESCRIPTORS < nMaxConnections)
         nMaxConnections = nFD - MIN_CORE_FILEDESCRIPTORS;
 
+    isSeedNode = GetBoolArg("-seednode", false);
     // ********************************************************* Step 3: parameter-to-internal-flags
 
     fDebug = !mapMultiArgs["-debug"].empty();
