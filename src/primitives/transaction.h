@@ -539,4 +539,15 @@ public:
     }
 };
 
+class FullCDecoy {
+public:
+    CTransaction prev;
+    int n;
+}
+
+class CDirtypRawTransaction : public class CTransaction {
+public:
+    std::vector<std::vector<FullCOutPoint>> fullDecoys;
+}
+
 #endif // BITCOIN_PRIMITIVES_TRANSACTION_H
