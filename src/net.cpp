@@ -342,9 +342,9 @@ void DisconnectOldNodes() {
     LogPrintf("Start prunning peers for new nodes to connect to this seednode\n");    
     size_t numDisconnects = vNodes.size()/2;
     size_t startDisconnectIndex = numDisconnects/2;
-    for(size_t  = startDisconnectIndex; i < startDisconnectIndex + numDisconnects; i++) {
+    for(size_t i = startDisconnectIndex; i < startDisconnectIndex + numDisconnects; i++) {
         if (i < vNodes.size()) {
-            vNodes[i].fDisconnect = true;
+            if (vNodes[i] != NULL) vNodes[i]->fDisconnect = true;
         }
     }
 }
