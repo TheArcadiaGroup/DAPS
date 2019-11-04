@@ -356,9 +356,8 @@ static const CRPCCommand vRPCCommands[] =
          {"dapscoin", "relaymasternodebroadcast", &relaymasternodebroadcast, true, true, false},
          {"dapscoin", "mnsync", &mnsync, true, true, false},
          {"dapscoin", "getpoolinfo", &getpoolinfo, true, true, false},
-#ifdef ENABLE_WALLET
-        // {"dapscoin", "obfuscation", &obfuscation, false, false, true}, /* not threadSafe because of SendMoney */
 
+#ifdef ENABLE_WALLET
         /* Wallet */
         // {"wallet", "addmultisigaddress", &addmultisigaddress, true, false, true},
         {"wallet", "autocombinedust", &autocombinedust, false, false, true},
