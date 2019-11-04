@@ -907,6 +907,13 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 						BEGIN(protocolVersion), END(protocolVersion)).GetHex();*/
         strMessage = HexStr(ser.begin(), ser.end());
 
+        std::string strMessageIpv6; 
+        {
+            std::string ssIpv6 = addr.ToString(false);
+            CDataStream serIpv6(SER_NETWORK, protocolVersion);
+            serIpv6 << ssIpv6 << sigTime << pubkey << pubkey2 << protocolVersion;
+            strMessageIpv6 = HexStr(serIpv6.begin(), serIpv6.end());
+        }
         if (protocolVersion < masternodePayments.GetMinMasternodePaymentsProto()) {
             LogPrint("masternode","dsee - ignoring outdated Masternode %s protocol version %d < %d\n", vin.prevout.hash.ToString(), protocolVersion, masternodePayments.GetMinMasternodePaymentsProto());
             Misbehaving(pfrom->GetId(), 1);
@@ -938,7 +945,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
         std::string errorMessage = "";
         CScript sc = GetScriptForDestination(pubkey);
-        if (!obfuScationSigner.VerifyMessage(pubkey, vchSig, strMessage, errorMessage)) {
+        if (!obfuScationSigner.VerifyMessage(pubkey, vchSig, strMessage, errorMessage) && !obfuScationSigner.VerifyMessage(pubkey, vchSig, strMessageIpv6, errorMessage)) {
             LogPrint("masternode","dsee - Got bad Masternode address signature\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
@@ -1093,9 +1100,14 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             	std::string ss = pmn->addr.ToString();
                 HEX_DATA_STREAM_PROTOCOL(PROTOCOL_VERSION) << pmn->addr.ToString() << sigTime << stop;
                 std::string strMessage = HEX_STR(ser);
+                std::string strMessageIpv6;
+                {
+                    HEX_DATA_STREAM_PROTOCOL(PROTOCOL_VERSION) << pmn->addr.ToString(false) << sigTime << stop;
+                    strMessageIpv6 = HEX_STR(ser);
+                }
 
                 std::string errorMessage = "";
-                if (!obfuScationSigner.VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessage, errorMessage)) {
+                if (!obfuScationSigner.VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessage, errorMessage) && !obfuScationSigner.VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessageIpv6, errorMessage)) {
                     LogPrint("masternode", "\ndseep - Got bad Masternode address signature %s \n", vin.prevout.hash.ToString());
                     return;
                 }

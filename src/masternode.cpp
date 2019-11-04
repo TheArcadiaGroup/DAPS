@@ -483,6 +483,11 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
 
     HEX_DATA_STREAM_PROTOCOL(protocolVersion) << addr.ToString() << sigTime << pubKeyCollateralAddress << pubKeyMasternode << protocolVersion;
     std::string strMessage = HEX_STR(ser);
+    std::string strMessageIpv6;
+    {
+        HEX_DATA_STREAM_PROTOCOL(protocolVersion) << addr.ToString(false) << sigTime << pubKeyCollateralAddress << pubKeyMasternode << protocolVersion;
+        strMessageIpv6 = HEX_STR(ser);
+    }
 
     if (protocolVersion < masternodePayments.GetMinMasternodePaymentsProto()) {
         LogPrint("masternode","mnb - ignoring outdated Masternode %s protocol version %d\n", vin.prevout.hash.ToString(), protocolVersion);
@@ -678,23 +683,26 @@ bool CMasternodeBroadcast::VerifySignature()
 {
     std::string errorMessage;
 
-    if(!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetNewStrMessage(), errorMessage)
-       && !obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(), errorMessage))
-        return error("CMasternodeBroadcast::VerifySignature() - Error: %s", errorMessage);
+    if(!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetNewStrMessage(false), errorMessage)
+       && !obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(false), errorMessage)) {
+        if(!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetNewStrMessage(true), errorMessage)
+            && !obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(false), errorMessage))
+            return error("CMasternodeBroadcast::VerifySignature() - Error: %s", errorMessage);
+    }
 
     return true;
 }
 
-std::string CMasternodeBroadcast::GetOldStrMessage()
+std::string CMasternodeBroadcast::GetOldStrMessage(bool fUseGetName)
 {
-    HEX_DATA_STREAM_PROTOCOL(protocolVersion) << addr.ToString(false) << sigTime << pubKeyCollateralAddress << pubKeyMasternode << protocolVersion;
+    HEX_DATA_STREAM_PROTOCOL(protocolVersion) << addr.ToString(fUseGetName) << sigTime << pubKeyCollateralAddress << pubKeyMasternode << protocolVersion;
     std::string strMessage = HEX_STR(ser);
     return strMessage;
 }
 
-std:: string CMasternodeBroadcast::GetNewStrMessage()
+std:: string CMasternodeBroadcast::GetNewStrMessage(bool fUseGetName)
 {
-    HEX_DATA_STREAM_PROTOCOL(protocolVersion) << addr.ToString(false) << sigTime << pubKeyCollateralAddress << pubKeyMasternode << protocolVersion;
+    HEX_DATA_STREAM_PROTOCOL(protocolVersion) << addr.ToString(fUseGetName) << sigTime << pubKeyCollateralAddress << pubKeyMasternode << protocolVersion;
     std::string strMessage = HEX_STR(ser);
 
     return strMessage;

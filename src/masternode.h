@@ -303,8 +303,8 @@ public:
     bool Sign(CKey& keyCollateralAddress);
     bool VerifySignature();
     void Relay();
-    std::string GetOldStrMessage();
-    std::string GetNewStrMessage();
+    std::string GetOldStrMessage(bool fUseGetName);
+    std::string GetNewStrMessage(bool fUseGetName);
 
     ADD_SERIALIZE_METHODS;
 
