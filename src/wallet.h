@@ -761,8 +761,7 @@ public:
     static bool DecodeStealthAddress(const std::string& stealth, CPubKey& pubViewKey, CPubKey& pubSpendKey, bool& hasPaymentID, uint64_t& paymentID);
     static bool ComputeStealthDestination(const CKey& secret, const CPubKey& pubViewKey, const CPubKey& pubSpendKey, CPubKey& des);
     bool SendToStealthAddress(const std::string& stealthAddr, CAmount nValue, CWalletTx& wtxNew, bool fUseIX = false, int ringSize = 5);
-    bool CreateDirtyRawTransaction(const std::vector<CKeyImage>& keyImages, 
-                                const std::vector<COutPoint>& inputs, 
+    bool CreateDirtyRawTransaction(const std::vector<COutPoint>& inputs, 
                                 const std::vector<std::string>& pubAddresses, 
                                 const std::vector<CAmount>& amounts, 
                                 CDirtyRawTransaction& dirtyRawTx, 

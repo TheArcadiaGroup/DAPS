@@ -2783,34 +2783,73 @@ UniValue sendtostealthaddress(const UniValue& params, bool fHelp)
 
 UniValue createdirtyrawtransaction(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() != 2)
+    if (fHelp || params.size() != 3)
         throw runtime_error(
-                "sendtostealthaddress \"dapsstealthaddress\" amount\n"
-                "\nSend an amount to a given daps stealth address address. The amount is a real and is rounded to the nearest 0.00000001\n" +
-                HelpRequiringPassphrase() +
-                "\nArguments:\n"
-                "1. \"dapsstealthaddress\"  (string, required) The dapscoin stealth address to send to.\n"
-                "2. \"amount\"      (numeric, required) The amount in btc to send. eg 0.1\n"
-                "\nResult:\n"
-                "\"transactionid\"  (string) The transaction id.\n"
-                "\nExamples:\n" +
-                HelpExampleCli("sendtostealthaddress", "\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\" 0.1") + HelpExampleCli("sendtostealthaddress", "\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\" 0.1 \"donation\" \"seans outpost\"") + HelpExampleRpc("sendtostealthaddress", "\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\", 0.1, \"donation\", \"seans outpost\""));
+            "createdirtyrawtransaction {\"hash\":index,...} {\"address\":amount,...} ringsize\n"
+            "\nMake raw transactions with a list of inputs and public addresses and amounts for outputs." +
+            HelpRequiringPassphrase() + "\n"
+                                        "\nArguments:\n"
+                                        "1. \"inputs\"         (string, required) Transaction hash and indexes of inputs\n"
+                                        "    {\n"
+                                        "      \"hash\":index   (numeric) The hash of input, and the corresponding index\n"
+                                        "      ,...\n"
+                                        "    }\n"
+                                        "2. \"amounts\"             (string, required) A json object with addresses and amounts\n"
+                                        "    {\n"
+                                        "      \"address\":amount   (numeric) The dapscoin address is the key, the numeric amount in DAPS is the value\n"
+                                        "      ,...\n"
+                                        "    }\n"
+                                        "3. \"ringsize\"    (numeric, required) ring signature size [11-15]\n"
+                                        "\nResult:\n"
+                                        "\"hex of unsigned transcation\"          (string) The transaction of unsigned transaction \n"
+                                        "\nExamples:\n"
+                                        "\nSend two amounts to two different addresses:\n" +
+            HelpExampleCli("createdirtyrawtransaction", "{\"57b7be02b156b3b3079fad2b9defb00be4d28bf29887eb9b181207d72b5248c7\":0} {\\\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\\\":100,\\\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\\\":200}\""));
+    
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    std::string stealthAddr = params[0].get_str();
+    CDirtyRawTransaction dirtyRawTx;
+    UniValue inputs(UniValue::VOBJ); 
+    UniValue outputs(UniValue::VOBJ); 
+    try {
+        inputs = params[0].get_obj();
+        outputs = params[1].get_obj();
+    } catch(std::exception& e) {
+        throw std::runtime_error("JSON value is not an object as expected");
+    }
+    int ringSize = params[2].get_int();
 
-    // Amount
-    CAmount nAmount = AmountFromValue(params[1]);
+    if (ringSize < MIN_RING_SIZE || ringSize > MAX_RING_SIZE) {
+        throw runtime_error("Ring size must be within [11,15]");
+    }
 
-    // Wallet comments
-    CWalletTx wtx;
+    vector<COutPoint> inOutPoints;
+
+    const vector<string>& inputHashes = inputs.getKeys();
+    const vector<UniValue>& objIdxes = inputs.getValues();
+    for(size_t i = 0; i < inputHashes.size(); i++) {
+        COutPoint op(uint256(inputHashes[i]), objIdxes[i].get_int());
+        inOutPoints.push_back(op);
+    }
+
+    const vector<std::string>& pubAddresses = outputs.getKeys();
+    vector<CAmount> amounts;
+    const vector<UniValue>& amountsObj = outputs.getValues();
+
+    for(size_t i = 0; i < amountsObj.size(); i++) {
+        CAmount amount = AmountFromValue(amountsObj[i]);
+        amounts.push_back(amount);
+    }
 
     EnsureWalletIsUnlocked();
 
-    if (!pwalletMain->SendToStealthAddress(stealthAddr, nAmount, wtx)) {
+    if (!pwalletMain->CreateDirtyRawTransaction(inOutPoints, pubAddresses, amounts, dirtyRawTx, ringSize)) {
         throw JSONRPCError(RPC_WALLET_ERROR,
                            "Cannot create transaction.");
     }
-    return wtx.GetHash().GetHex();
+    CDataStream ser(SER_NETWORK, PROTOCOL_VERSION);
+    ser << dirtyRawTx;
+    return HexStr(ser);
 }
 
 UniValue setdecoyconfirmation(const UniValue& params, bool fHelp)
@@ -3023,3 +3062,5 @@ UniValue revealmnemonicphrase(const UniValue& params, bool fHelp)
 
     return mPhrase;
 }
+
+

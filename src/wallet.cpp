@@ -6639,8 +6639,7 @@ bool CWallet::GenerateAddress(CPubKey& pub, CPubKey& txPub, CKey& txPriv) const
     }
 }
 
-bool CWallet::CreateDirtyRawTransaction(const std::vector<CKeyImage>& keyImages, 
-                                        const std::vector<COutPoint>& inputs, 
+bool CWallet::CreateDirtyRawTransaction(const std::vector<COutPoint>& inputs, 
                                         const std::vector<std::string>& pubAddresses, 
                                         const std::vector<CAmount>& amounts, 
                                         CDirtyRawTransaction& dirtyRawTx, 
@@ -6659,19 +6658,19 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<CKeyImage>& keyImages,
     }
     int numIntegratedAddresses = 0;
 
-    if (keyImages.size() != inputs.size()) {
-        throw runtime_error("invalid inputs");
-    }
-    {   
-        LOCK2(cs_main, cs_wallet);
-        for(size_t i = 0; i < keyImages.size(); i++) {
-            if (!keyImages[i].IsValid()) 
-                throw runtime_error("key images are invalid");
-            if (IsKeyImageSpend1(keyImages[i].GetHex(), uint256())) {
-                throw runtime_error("key images are already spent");
-            }
-        }
-    }
+    // if (keyImages.size() != inputs.size()) {
+    //     throw runtime_error("invalid inputs");
+    // }
+    // {   
+    //     LOCK2(cs_main, cs_wallet);
+    //     for(size_t i = 0; i < keyImages.size(); i++) {
+    //         if (!keyImages[i].IsValid()) 
+    //             throw runtime_error("key images are invalid");
+    //         if (IsKeyImageSpend1(keyImages[i].GetHex(), uint256())) {
+    //             throw runtime_error("key images are already spent");
+    //         }
+    //     }
+    // }
 
     string strError;
     if (this->IsLocked()) {
