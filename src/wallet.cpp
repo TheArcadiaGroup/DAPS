@@ -55,38 +55,6 @@ bool fPayAtLeastCustomFee = true;
 
 #include "uint256.h"
 
-//Elliptic Curve Diffie Helman: encodes and decodes the amount b and mask a
-void ecdhEncode(unsigned char* unmasked, unsigned char* amount, const unsigned char* sharedSec, int size)
-{
-    uint256 sharedSec1 = Hash(sharedSec, sharedSec + size);
-    uint256 sharedSec2 = Hash(sharedSec1.begin(), sharedSec1.end());
-
-    for (int i = 0; i < 32; i++) {
-        unmasked[i] ^= *(sharedSec1.begin() + i);
-    }
-    unsigned char temp[32];
-    memcpy(temp, amount, 32);
-    for (int i = 0; i < 32; i++) {
-        amount[i] = temp[i % 8] ^ *(sharedSec2.begin() + i);
-    }
-}
-void ecdhDecode(unsigned char* masked, unsigned char* amount, const unsigned char* sharedSec, int size)
-{
-    uint256 sharedSec1 = Hash(sharedSec, sharedSec + size);
-    uint256 sharedSec2 = Hash(sharedSec1.begin(), sharedSec1.end());
-
-    for (int i = 0; i < 32; i++) {
-        masked[i] ^= *(sharedSec1.begin() + i);
-    }
-
-    unsigned char temp[32];
-    memcpy(temp, amount, 32);
-    memset(amount, 0, 8);
-    for (int i = 0; i < 32; i++) {
-        amount[i] = temp[i % 8] ^ *(sharedSec2.begin() + i);
-    }
-}
-
 static std::string ValueFromAmountToString(const CAmount &amount) {
     bool sign = amount < 0;
     int64_t n_abs = (sign ? -amount : amount);
@@ -95,38 +63,6 @@ static std::string ValueFromAmountToString(const CAmount &amount) {
     std::string ret(strprintf("%s%d.%08d", sign ? "-" : "", quotient, remainder));
     return ret;
 }
-
-void ECDHInfo::ComputeSharedSec(const CKey& priv, const CPubKey& pubKey, CPubKey& sharedSec)
-{
-    sharedSec.Set(pubKey.begin(), pubKey.end());
-    unsigned char temp[65];
-    memcpy(temp, sharedSec.begin(), sharedSec.size());
-    if (!secp256k1_ec_pubkey_tweak_mul(temp, sharedSec.size(), priv.begin()))
-        throw runtime_error("Cannot compute EC multiplication: secp256k1_ec_pubkey_tweak_mul");
-    sharedSec.Set(temp, temp + 33);
-}
-
-void ECDHInfo::Encode(const CKey& mask, const CAmount& amount, const CPubKey& sharedSec, uint256& encodedMask, uint256& encodedAmount)
-{
-    memcpy(encodedMask.begin(), mask.begin(), 32);
-    memcpy(encodedAmount.begin(), &amount, 32);
-    ecdhEncode(encodedMask.begin(), encodedAmount.begin(), sharedSec.begin(), sharedSec.size());
-}
-
-void ECDHInfo::Decode(unsigned char* encodedMask, unsigned char* encodedAmount, const CPubKey& sharedSec, CKey& decodedMask, CAmount& decodedAmount)
-{
-    unsigned char tempAmount[32], tempDecoded[32];
-    memcpy(tempDecoded, encodedMask, 32);
-    decodedMask.Set(tempDecoded, tempDecoded + 32, 32);
-    memcpy(tempAmount, encodedAmount, 32);
-    memcpy(tempDecoded, decodedMask.begin(), 32);
-    ecdhDecode(tempDecoded, tempAmount, sharedSec.begin(), sharedSec.size());
-    memcpy(&decodedAmount, tempAmount, 8);
-
-    decodedMask.Set(tempDecoded, tempDecoded + 32, true);
-    memcpy(&decodedAmount, tempAmount, 8);
-}
-
 
 /**
  * Fees smaller than this (in duffs) are considered zero fee (for transaction creation)
@@ -6758,6 +6694,7 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<COutPoint>& inputs,
                 std::vector<unsigned char> txPriv;
                 std::copy(secret.begin(), secret.end(), std::back_inserter(txPriv));
                 dirtyRawTx.txPrivs.push_back(txPriv);
+                dirtyRawTx.recipientPubAddresses.push_back(pubAddresses[i]);
 
                 //Compute stealth destination
                 CPubKey stealthDes;
@@ -6773,6 +6710,10 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<COutPoint>& inputs,
                 CPubKey sharedSec;
                 ECDHInfo::ComputeSharedSec(secret, pubViewKey, sharedSec);
                 EncodeTxOutAmount(txout, txout.nValue, sharedSec.begin());
+                std::vector<unsigned char> blind;
+                std::copy(txout.maskValue.inMemoryRawBind.begin(), txout.maskValue.inMemoryRawBind.end(), std::back_inserter(blind));
+                txout.blinds.push_back(blind);
+
                 dirtyRawTx.vout.push_back(txout);
                 nBytes += ::GetSerializeSize(*(CTxOut*)&txout, SER_NETWORK, PROTOCOL_VERSION);
             }
@@ -6781,6 +6722,20 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<COutPoint>& inputs,
             int myIndex;
             if (ret && !selectDecoysAndRealIndex(dirtyRawTx, myIndex, ringSize, false)) {
                 ret = false;
+            }
+
+            //Read full decoy transactions
+            for(size_t i = 0; i < dirtyRawTx.vin.size(); i++) {
+                std::vector<COutPoint> allDecoys = dirtyRawTx.vin[i].decoys;
+                allDecoys.insert(allDecoys.begin(), dirtyRawTx.vin[i].prevout);
+                std::vector<CTxOut> fullDecoys;
+                for(size_t j = 0; j < allDecoys.size(); j++) {
+                    CTransaction txPrev;
+                    uint256 hashBlock;
+                    GetTransaction(allDecoys[j].hash, txPrev, hashBlock);   
+                    fullDecoys.push_back(txPrev.vout[allDecoys[j].n]);
+                }
+                dirtyRawTx.fullDecoys.push_back(fullDecoys);
             }
 
             dirtyRawTx.myIndex = myIndex;

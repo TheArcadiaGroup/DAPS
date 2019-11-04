@@ -77,11 +77,6 @@ bool fAlerts = DEFAULT_ALERTS;
 unsigned int nStakeMinAge = 60 * 60;
 int64_t nReserveBalance = 0;
 
-const int MIN_RING_SIZE = 11;
-const int MAX_RING_SIZE = 15;
-const int MAX_TX_INPUTS = 50;
-const int MIN_TX_INPUTS_FOR_SWEEPING = 25;
-
 /** Fees smaller than this (in duffs) are considered zero fee (for relaying and mining)
  * We are ~100 times smaller then bitcoin now (2015-06-23), set minRelayTxFee only 10 times higher
  * so it's still 10 times lower comparing to bitcoin.

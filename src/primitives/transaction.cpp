@@ -18,6 +18,74 @@
 
 #include <boost/foreach.hpp>
 
+const int MIN_RING_SIZE = 11;
+const int MAX_RING_SIZE = 15;
+const int MAX_TX_INPUTS = 50;
+const int MIN_TX_INPUTS_FOR_SWEEPING = 25;
+
+//Elliptic Curve Diffie Helman: encodes and decodes the amount b and mask a
+void ecdhEncode(unsigned char* unmasked, unsigned char* amount, const unsigned char* sharedSec, int size)
+{
+    uint256 sharedSec1 = Hash(sharedSec, sharedSec + size);
+    uint256 sharedSec2 = Hash(sharedSec1.begin(), sharedSec1.end());
+
+    for (int i = 0; i < 32; i++) {
+        unmasked[i] ^= *(sharedSec1.begin() + i);
+    }
+    unsigned char temp[32];
+    memcpy(temp, amount, 32);
+    for (int i = 0; i < 32; i++) {
+        amount[i] = temp[i % 8] ^ *(sharedSec2.begin() + i);
+    }
+}
+void ecdhDecode(unsigned char* masked, unsigned char* amount, const unsigned char* sharedSec, int size)
+{
+    uint256 sharedSec1 = Hash(sharedSec, sharedSec + size);
+    uint256 sharedSec2 = Hash(sharedSec1.begin(), sharedSec1.end());
+
+    for (int i = 0; i < 32; i++) {
+        masked[i] ^= *(sharedSec1.begin() + i);
+    }
+
+    unsigned char temp[32];
+    memcpy(temp, amount, 32);
+    memset(amount, 0, 8);
+    for (int i = 0; i < 32; i++) {
+        amount[i] = temp[i % 8] ^ *(sharedSec2.begin() + i);
+    }
+}
+
+void ECDHInfo::ComputeSharedSec(const CKey& priv, const CPubKey& pubKey, CPubKey& sharedSec)
+{
+    sharedSec.Set(pubKey.begin(), pubKey.end());
+    unsigned char temp[65];
+    memcpy(temp, sharedSec.begin(), sharedSec.size());
+    if (!secp256k1_ec_pubkey_tweak_mul(temp, sharedSec.size(), priv.begin()))
+        throw runtime_error("Cannot compute EC multiplication: secp256k1_ec_pubkey_tweak_mul");
+    sharedSec.Set(temp, temp + 33);
+}
+
+void ECDHInfo::Encode(const CKey& mask, const CAmount& amount, const CPubKey& sharedSec, uint256& encodedMask, uint256& encodedAmount)
+{
+    memcpy(encodedMask.begin(), mask.begin(), 32);
+    memcpy(encodedAmount.begin(), &amount, 32);
+    ecdhEncode(encodedMask.begin(), encodedAmount.begin(), sharedSec.begin(), sharedSec.size());
+}
+
+void ECDHInfo::Decode(unsigned char* encodedMask, unsigned char* encodedAmount, const CPubKey& sharedSec, CKey& decodedMask, CAmount& decodedAmount)
+{
+    unsigned char tempAmount[32], tempDecoded[32];
+    memcpy(tempDecoded, encodedMask, 32);
+    decodedMask.Set(tempDecoded, tempDecoded + 32, 32);
+    memcpy(tempAmount, encodedAmount, 32);
+    memcpy(tempDecoded, decodedMask.begin(), 32);
+    ecdhDecode(tempDecoded, tempAmount, sharedSec.begin(), sharedSec.size());
+    memcpy(&decodedAmount, tempAmount, 8);
+
+    decodedMask.Set(tempDecoded, tempDecoded + 32, true);
+    memcpy(&decodedAmount, tempAmount, 8);
+}
+
 extern bool GetTransaction(const uint256 &hash, CTransaction &txOut, uint256 &hashBlock, bool fAllowSlow);
 
 std::string COutPoint::ToString() const

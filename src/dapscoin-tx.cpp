@@ -19,6 +19,12 @@
 #include "utilmoneystr.h"
 #include "utilstrencodings.h"
 
+#include "secp256k1_bulletproofs.h"
+#include "secp256k1_commitment.h"
+#include "secp256k1_generator.h"
+#include "secp256k1.h"
+#include "secp256k1-mw/src/hash_impl.h"
+
 #include <stdio.h>
 
 #include <boost/algorithm/string.hpp>
@@ -65,12 +71,15 @@ static bool AppInitRawTx(int argc, char* argv[])
         strUsage += HelpMessageOpt("-txid", _("Output only the hex-encoded transaction id of the resultant transaction."));
         strUsage += HelpMessageOpt("-regtest", _("Enter regression test mode, which uses a special chain in which blocks can be solved instantly."));
         strUsage += HelpMessageOpt("-testnet", _("Use the test network"));
+        strUsage += HelpMessageOpt("-signdaps", _("Sign a DAPS raw transaction"));
 
         fprintf(stdout, "%s", strUsage.c_str());
 
 
         strUsage = HelpMessageGroup(_("Commands:"));
         strUsage += HelpMessageOpt("delin=N", _("Delete input N from TX"));
+        strUsage += HelpMessageOpt("viewkey=key", _("Private view key to sign DAPS transactions"));
+        strUsage += HelpMessageOpt("spendkey=key", _("Private view key to sign DAPS transactions"));
         strUsage += HelpMessageOpt("delout=N", _("Delete output N from TX"));
         strUsage += HelpMessageOpt("in=TXID:VOUT", _("Add input to TX"));
         strUsage += HelpMessageOpt("locktime=N", _("Set TX lock time to N"));
@@ -547,6 +556,493 @@ static string readStdin()
     return ret;
 }
 
+
+//----------------------------------------RINGCT AND BULLETPROOFS----------------------------
+secp256k1_context2* GetContext()
+{
+    static secp256k1_context2* both;
+    if (!both) both = secp256k1_context_create2(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    return both;
+}
+
+secp256k1_scratch_space2* GetScratch()
+{
+    static secp256k1_scratch_space2* scratch;
+    if (!scratch) scratch = secp256k1_scratch_space_create(GetContext(), 1024 * 1024 * 512);
+    return scratch;
+}
+
+secp256k1_bulletproof_generators* GetGenerator()
+{
+    static secp256k1_bulletproof_generators* generator;
+    if (!generator) generator = secp256k1_bulletproof_generators_create(GetContext(), &secp256k1_generator_const_g, 64 * 1024);
+    return generator;
+}
+
+CKey computePrivateKey(const CTxOut& out, const CKey& view, const CKey& spend)
+{
+    unsigned char aR[65];
+    //copy R into a
+    memcpy(aR, out.txPub.begin(), out.txPub.size());
+    if (!secp256k1_ec_pubkey_tweak_mul(aR, out.txPub.size(), view.begin())) {
+        return false;
+    }
+    uint256 HS = Hash(aR, aR + txPub.size());
+
+    unsigned char HStemp[32];
+    unsigned char spendTemp[32];
+    memcpy(HStemp, HS.begin(), 32);
+    memcpy(spendTemp, spend.begin(), 32);
+    if (!secp256k1_ec_privkey_tweak_add(HStemp, spendTemp))
+        throw runtime_error("Failed to do secp256k1_ec_privkey_tweak_add");
+    CKey privKey;
+    privKey.Set(HStemp, HStemp + 32, true);
+    return privKey;
+}
+
+bool CreateCommitment(const unsigned char* blind, CAmount val, std::vector<unsigned char>& commitment)
+{
+    secp256k1_context2* both = GetContext();
+    secp256k1_pedersen_commitment commitmentD;
+    if (!secp256k1_pedersen_commit(both, &commitmentD, blind, val, &secp256k1_generator_const_h, &secp256k1_generator_const_g)) {
+        return false;
+    }
+    unsigned char output[33];
+    if (!secp256k1_pedersen_commitment_serialize(both, output, &commitmentD)) {
+        return false;
+    }
+    std::copy(output, output + 33, std::back_inserter(commitment));
+    return true;
+}
+
+bool CreateCommitment(const CAmount val, CKey& blind, std::vector<unsigned char>& commitment)
+{
+    blind.MakeNewKey(true);
+    return CreateCommitment(blind.begin(), val, commitment);
+}
+
+bool CreateCommitmentWithZeroBlind(const CAmount val, unsigned char* pBlind, std::vector<unsigned char>& commitment)
+{
+    memset(pBlind, 0, 32);
+    return CreateCommitment(pBlind, val, commitment);
+}
+
+bool RevealTxOutAmount(const CKey view, const CTxOut& out, CAmount& amount, CKey& blind) const
+{
+    CPubKey sharedSec;
+    ECDHInfo::ComputeSharedSec(view, out.txPub, sharedSec);
+    uint256 val = out.maskValue.amount;
+    uint256 mask = out.maskValue.mask;
+    CKey decodedMask;
+    ECDHInfo::Decode(mask.begin(), val.begin(), sharedSec, decodedMask, amount);
+        
+    std::vector<unsigned char> commitment;
+    if (CreateCommitment(decodedMask.begin(), amount, commitment)) {
+        if (commitment == out.commitment) {
+            blind.Set(blindMap[out.scriptPubKey].begin(), blindMap[out.scriptPubKey].end(), true);
+            return true;
+        } else {
+            amount = 0;
+            amountMap[out.scriptPubKey] = amount;
+            return false;
+        }            
+    }
+    amount = 0;
+    return false;
+}
+
+
+bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spend)
+{
+    int myIndex = wtxNew.myIndex;
+    int ringSize = wtxNew.ringSize;
+
+    secp256k1_context2* both = GetContext();
+    int i = 0;
+    for (CTxOut& out : wtxNew.vout) {
+        if (!out.IsEmpty()) {
+            secp256k1_pedersen_commitment commitment;
+            CKey blind;
+            blind.Set(wtxNew.blinds[i].begin(), wtxNew.blinds[i].end(), true);
+            if (!secp256k1_pedersen_commit(both, &commitment, blind.begin(), out.nValue, &secp256k1_generator_const_h, &secp256k1_generator_const_g))
+                throw runtime_error("Cannot commit commitment");
+            unsigned char output[33];
+            if (!secp256k1_pedersen_commitment_serialize(both, output, &commitment))
+                throw runtime_error("Cannot serialize commitment");
+            out.commitment.clear();
+            std::copy(output, output + 33, std::back_inserter(out.commitment));
+        }
+        i++;
+    }
+
+    const size_t MAX_VIN = MAX_TX_INPUTS;
+    const size_t MAX_DECOYS = MAX_RING_SIZE; 
+    const size_t MAX_VOUT = 5;
+
+    if (wtxNew.vin.size() > MAX_TX_INPUTS || wtxNew.vin.size() == 0) {
+        throw runtime_error("You have attempted to send a total value that is comprised of more than 50 smaller deposits. This is a rare occurrence, and lowering the total value sent, or sending the same total value in two separate transactions will usually work around this limitation.");
+        return false;
+    }
+
+    for (size_t i = 0; i < wtxNew.vin.size(); i++) {
+        if (wtxNew.vin[i].decoys.size() != wtxNew.vin[0].decoys.size()) {
+            throw runtime_error("All inputs should have the same number of decoys");
+            return false;
+        }
+    }
+
+    if (wtxNew.vin[0].decoys.size() > MAX_DECOYS || wtxNew.vin[0].decoys.size() < MIN_RING_SIZE) {
+        throw runtime_error("Too many decoys");
+        return false; //maximum decoys = 15
+    }
+
+    std::vector<secp256k1_pedersen_commitment> myInputCommiments;
+    int totalCommits = wtxNew.vin.size() + wtxNew.vout.size();
+    int npositive = wtxNew.vin.size();
+    unsigned char myBlinds[MAX_VIN + MAX_VIN + MAX_VOUT + 1][32]; //myBlinds is used for compuitng additional private key in the ring =
+    memset(myBlinds, 0, (MAX_VIN + MAX_VIN + MAX_VOUT + 1) * 32);
+    const unsigned char* bptr[MAX_VIN + MAX_VIN + MAX_VOUT + 1];
+    //all in pubkeys + an additional public generated from commitments
+    unsigned char allInPubKeys[MAX_VIN + 1][MAX_DECOYS + 1][33];
+    unsigned char allKeyImages[MAX_VIN + 1][33];
+    unsigned char allInCommitments[MAX_VIN][MAX_DECOYS + 1][33];
+    unsigned char allOutCommitments[MAX_VOUT][33];
+
+    int myBlindsIdx = 0;
+    //additional member in the ring = Sum of All input public keys + sum of all input commitments - sum of all output commitments
+    for (size_t j = 0; j < wtxNew.vin.size(); j++) {
+        const CTxOut& inCTxOut = wtxNew.fullDecoys[j][myIndex + 1];
+        CKey tmp = computePrivateKey(inCTxOut, view, spend);
+
+        //compute key images
+        unsigned char ki[33];
+        PointHashingSuccessively(tmp.GetPubKey(), tmp.begin(), ki);
+        wtxNew.vin[j].keyImage.Set(ki, ki + 33);
+
+        memcpy(&myBlinds[myBlindsIdx][0], tmp.begin(), 32);
+        bptr[myBlindsIdx] = &myBlinds[myBlindsIdx][0];
+        myBlindsIdx++;
+    }
+
+    //Collecting input commitments blinding factors
+    i = 0;
+    for (CTxIn& in : wtxNew.vin) {
+        const CTxOut& inCTxOut = wtxNew.fullDecoys[i][myIndex + 1];
+        secp256k1_pedersen_commitment inCommitment;
+        if (!secp256k1_pedersen_commitment_parse(both, &inCommitment, &(inCTxOut.commitment[0]))) {
+            throw runtime_error("Cannot parse the commitment for inputs");
+            return false;
+        }
+
+        myInputCommiments.push_back(inCommitment);
+        CAmount tempAmount;
+        CKey tmp;
+        RevealTxOutAmount(view, inCTxOut, tempAmount, tmp);
+        if (tmp.IsValid()) memcpy(&myBlinds[myBlindsIdx][0], tmp.begin(), 32);
+        //verify input commitments
+        std::vector<unsigned char> recomputedCommitment;
+        if (!CreateCommitment(&myBlinds[myBlindsIdx][0], tempAmount, recomputedCommitment))
+            throw runtime_error("Cannot create pedersen commitment");
+        if (recomputedCommitment != inCTxOut.commitment) {
+            throw runtime_error("Input commitments are not correct");
+            return false;
+        }
+
+        bptr[myBlindsIdx] = myBlinds[myBlindsIdx];
+        myBlindsIdx++;
+        i++;
+    }
+
+    //collecting output commitment blinding factors
+    i = 0;
+    for (CTxOut& out : wtxNew.vout) {
+        if (!out.IsEmpty()) {
+            memcpy(&myBlinds[myBlindsIdx][0], wtxNew.blinds[i].begin(), 32);
+            bptr[myBlindsIdx] = &myBlinds[myBlindsIdx][0];
+            myBlindsIdx++;
+        }
+        i++;
+    }
+    CKey newBlind;
+    newBlind.MakeNewKey(true);
+    memcpy(&myBlinds[myBlindsIdx][0], newBlind.begin(), 32);
+    bptr[myBlindsIdx] = &myBlinds[myBlindsIdx][0];
+
+    int myRealIndex = 0;
+    if (myIndex != -1) {
+        myRealIndex = myIndex + 1;
+    }
+
+    int PI = myRealIndex;
+    unsigned char SIJ[MAX_VIN + 1][MAX_DECOYS + 1][32];
+    unsigned char LIJ[MAX_VIN + 1][MAX_DECOYS + 1][33];
+    unsigned char RIJ[MAX_VIN + 1][MAX_DECOYS + 1][33];
+    unsigned char ALPHA[MAX_VIN + 1][32];
+    unsigned char AllPrivKeys[MAX_VIN + 1][32];
+
+    //generating LIJ and RIJ at PI: LIJ[j][PI], RIJ[j][PI], j=0..wtxNew.vin.size()
+    for (size_t j = 0; j < wtxNew.vin.size(); j++) {
+        const CTxOut& inCTxOut = wtxNew.fullDecoys[j][myIndex + 1];
+        CKey tempPk = computePrivateKey(inCTxOut, view, spend);
+        memcpy(AllPrivKeys[j], tempPk.begin(), 32);
+        //copying corresponding key images
+        memcpy(allKeyImages[j], wtxNew.vin[j].keyImage.begin(), 33);
+        //copying corresponding in public keys
+        CPubKey tempPubKey = tempPk.GetPubKey();
+        memcpy(allInPubKeys[j][PI], tempPubKey.begin(), 33);
+
+        memcpy(allInCommitments[j][PI], &(inCTxOut.commitment[0]), 33);
+        CKey alpha;
+        alpha.MakeNewKey(true);
+        memcpy(ALPHA[j], alpha.begin(), 32);
+        CPubKey LIJ_PI = alpha.GetPubKey();
+        memcpy(LIJ[j][PI], LIJ_PI.begin(), 33);
+        PointHashingSuccessively(tempPubKey, alpha.begin(), RIJ[j][PI]);
+    }
+
+    //computing additional input pubkey and key images
+    //additional private key = sum of all existing private keys + sum of all blinds in - sum of all blind outs
+    unsigned char outSum[32];
+    if (!secp256k1_pedersen_blind_sum(both, outSum, (const unsigned char* const*)bptr, npositive + totalCommits, 2 * npositive))
+        throw runtime_error("Cannot compute pedersen blind sum");
+    memcpy(myBlinds[myBlindsIdx], outSum, 32);
+    memcpy(AllPrivKeys[wtxNew.vin.size()], outSum, 32);
+    CKey additionalPkKey;
+    additionalPkKey.Set(myBlinds[myBlindsIdx], myBlinds[myBlindsIdx] + 32, true);
+    CPubKey additionalPubKey = additionalPkKey.GetPubKey();
+    memcpy(allInPubKeys[wtxNew.vin.size()][PI], additionalPubKey.begin(), 33);
+    PointHashingSuccessively(additionalPubKey, myBlinds[myBlindsIdx], allKeyImages[wtxNew.vin.size()]);
+
+    //verify that additional public key = sum of wtx.vin.size() real public keys + sum of wtx.vin.size() commitments - sum of wtx.vout.size() commitments - commitment to zero of transction fee
+
+    //filling LIJ & RIJ at [j][PI]
+    CKey alpha_additional;
+    alpha_additional.MakeNewKey(true);
+    memcpy(ALPHA[wtxNew.vin.size()], alpha_additional.begin(), 32);
+    CPubKey LIJ_PI_additional = alpha_additional.GetPubKey();
+    memcpy(LIJ[wtxNew.vin.size()][PI], LIJ_PI_additional.begin(), 33);
+    PointHashingSuccessively(additionalPubKey, alpha_additional.begin(), RIJ[wtxNew.vin.size()][PI]);
+
+    //Initialize SIJ except S[..][PI]
+    for (int i = 0; i < (int)wtxNew.vin.size() + 1; i++) {
+        for (int j = 0; j < (int)wtxNew.vin[0].decoys.size() + 1; j++) {
+            if (j != PI) {
+                CKey randGen;
+                randGen.MakeNewKey(true);
+                memcpy(SIJ[i][j], randGen.begin(), 32);
+            }
+        }
+    }
+
+    //extract all public keys
+    for (int i = 0; i < (int)wtxNew.vin.size(); i++) {
+        std::vector<COutPoint> decoysForIn;
+        decoysForIn.push_back(wtxNew.vin[i].prevout);
+        for (int j = 0; j < (int)wtxNew.vin[i].decoys.size(); j++) {
+            decoysForIn.push_back(wtxNew.vin[i].decoys[j]);
+        }
+        for (int j = 0; j < (int)wtxNew.vin[0].decoys.size() + 1; j++) {
+            if (j != PI) {
+                CTransaction txPrev;
+                uint256 hashBlock;
+                if (!GetTransaction(decoysForIn[j].hash, txPrev, hashBlock)) {
+                    return false;
+                }
+                CPubKey extractedPub;
+                if (!ExtractPubKey(txPrev.vout[decoysForIn[j].n].scriptPubKey, extractedPub)) {
+                    strFailReason = _("Cannot extract public key from script pubkey");
+                    return false;
+                }
+                memcpy(allInPubKeys[i][j], extractedPub.begin(), 33);
+                memcpy(allInCommitments[i][j], &(txPrev.vout[decoysForIn[j].n].commitment[0]), 33);
+            }
+        }
+    }
+
+    secp256k1_pedersen_commitment allInCommitmentsPacked[MAX_VIN][MAX_DECOYS + 1];
+    secp256k1_pedersen_commitment allOutCommitmentsPacked[MAX_VOUT + 1]; //+1 for tx fee
+
+    for (size_t i = 0; i < wtxNew.vout.size(); i++) {
+        memcpy(&(allOutCommitments[i][0]), &(wtxNew.vout[i].commitment[0]), 33);
+        if (!secp256k1_pedersen_commitment_parse(both, &allOutCommitmentsPacked[i], allOutCommitments[i])) {
+            strFailReason = _("Cannot parse the commitment for inputs");
+            return false;
+        }
+    }
+
+    //commitment to tx fee, blind = 0
+    unsigned char txFeeBlind[32];
+    memset(txFeeBlind, 0, 32);
+    if (!secp256k1_pedersen_commit(both, &allOutCommitmentsPacked[wtxNew.vout.size()], txFeeBlind, wtxNew.nTxFee, &secp256k1_generator_const_h, &secp256k1_generator_const_g)) {
+        strFailReason = _("Cannot parse the commitment for transaction fee");
+        return false;
+    }
+
+    //filling the additional pubkey elements for decoys: allInPubKeys[wtxNew.vin.size()][..]
+    //allInPubKeys[wtxNew.vin.size()][j] = sum of allInPubKeys[..][j] + sum of allInCommitments[..][j] - sum of allOutCommitments
+    const secp256k1_pedersen_commitment* outCptr[MAX_VOUT + 1];
+    for (size_t i = 0; i < wtxNew.vout.size() + 1; i++) {
+        outCptr[i] = &allOutCommitmentsPacked[i];
+    }
+    secp256k1_pedersen_commitment inPubKeysToCommitments[MAX_VIN][MAX_DECOYS + 1];
+    for (int i = 0; i < (int)wtxNew.vin.size(); i++) {
+        for (int j = 0; j < (int)wtxNew.vin[0].decoys.size() + 1; j++) {
+            secp256k1_pedersen_serialized_pubkey_to_commitment(allInPubKeys[i][j], 33, &inPubKeysToCommitments[i][j]);
+        }
+    }
+
+    for (int j = 0; j < (int)wtxNew.vin[0].decoys.size() + 1; j++) {
+        if (j != PI) {
+            const secp256k1_pedersen_commitment* inCptr[MAX_VIN * 2];
+            for (int k = 0; k < (int)wtxNew.vin.size(); k++) {
+                if (!secp256k1_pedersen_commitment_parse(both, &allInCommitmentsPacked[k][j], allInCommitments[k][j])) {
+                    strFailReason = _("Cannot parse the commitment for inputs");
+                    return false;
+                }
+                inCptr[k] = &allInCommitmentsPacked[k][j];
+            }
+            for (size_t k = wtxNew.vin.size(); k < 2 * wtxNew.vin.size(); k++) {
+                inCptr[k] = &inPubKeysToCommitments[k - wtxNew.vin.size()][j];
+            }
+            secp256k1_pedersen_commitment out;
+            size_t length;
+            //convert allInPubKeys to pederson commitment to compute sum of all in public keys
+            if (!secp256k1_pedersen_commitment_sum(both, inCptr, wtxNew.vin.size() * 2, outCptr, wtxNew.vout.size() + 1, &out))
+                throw runtime_error("Cannot compute sum of commitment");
+            if (!secp256k1_pedersen_commitment_to_serialized_pubkey(&out, allInPubKeys[wtxNew.vin.size()][j], &length))
+                throw runtime_error("Cannot covert from commitment to public key");
+        }
+    }
+
+    //Computing C
+    int PI_interator = PI + 1; //PI_interator: PI + 1 .. wtxNew.vin[0].decoys.size() + 1 .. PI
+    //unsigned char SIJ[wtxNew.vin.size() + 1][wtxNew.vin[0].decoys.size() + 1][32];
+    //unsigned char LIJ[wtxNew.vin.size() + 1][wtxNew.vin[0].decoys.size() + 1][33];
+    //unsigned char RIJ[wtxNew.vin.size() + 1][wtxNew.vin[0].decoys.size() + 1][33];
+    unsigned char CI[MAX_DECOYS + 1][32];
+    unsigned char tempForHash[2 * (MAX_VIN + 1) * 33 + 32];
+    unsigned char* tempForHashPtr = tempForHash;
+    for (size_t i = 0; i < wtxNew.vin.size() + 1; i++) {
+        memcpy(tempForHashPtr, &LIJ[i][PI][0], 33);
+        tempForHashPtr += 33;
+        memcpy(tempForHashPtr, &RIJ[i][PI][0], 33);
+        tempForHashPtr += 33;
+    }
+    uint256 ctsHash = GetTxSignatureHash(wtxNew);
+    memcpy(tempForHashPtr, ctsHash.begin(), 32);
+
+    if (PI_interator == (int)wtxNew.vin[0].decoys.size() + 1) PI_interator = 0;
+    uint256 temppi1 = Hash(tempForHash, tempForHash + 2 * (wtxNew.vin.size() + 1) * 33 + 32);
+    if (PI_interator == 0) {
+        memcpy(CI[0], temppi1.begin(), 32);
+    } else {
+        memcpy(CI[PI_interator], temppi1.begin(), 32);
+    }
+
+    while (PI_interator != PI) {
+        for (int j = 0; j < (int)wtxNew.vin.size() + 1; j++) {
+            //compute LIJ
+            unsigned char CP[33];
+            memcpy(CP, allInPubKeys[j][PI_interator], 33);
+            if (!secp256k1_ec_pubkey_tweak_mul(CP, 33, CI[PI_interator])) {
+                strFailReason = _("Cannot compute LIJ for ring signature in secp256k1_ec_pubkey_tweak_mul");
+                return false;
+            }
+            if (!secp256k1_ec_pubkey_tweak_add(CP, 33, SIJ[j][PI_interator])) {
+                strFailReason = _("Cannot compute LIJ for ring signature in secp256k1_ec_pubkey_tweak_add");
+                return false;
+            }
+            memcpy(LIJ[j][PI_interator], CP, 33);
+
+            //compute RIJ
+            //first compute CI * I
+            memcpy(RIJ[j][PI_interator], allKeyImages[j], 33);
+            if (!secp256k1_ec_pubkey_tweak_mul(RIJ[j][PI_interator], 33, CI[PI_interator])) {
+                strFailReason = _("Cannot compute RIJ for ring signature in secp256k1_ec_pubkey_tweak_mul");
+                return false;
+            }
+
+            //compute S*H(P)
+            unsigned char SHP[33];
+            CPubKey tempP;
+            tempP.Set(allInPubKeys[j][PI_interator], allInPubKeys[j][PI_interator] + 33);
+            PointHashingSuccessively(tempP, SIJ[j][PI_interator], SHP);
+            //convert shp into commitment
+            secp256k1_pedersen_commitment SHP_commitment;
+            secp256k1_pedersen_serialized_pubkey_to_commitment(SHP, 33, &SHP_commitment);
+
+            //convert CI*I into commitment
+            secp256k1_pedersen_commitment cii_commitment;
+            secp256k1_pedersen_serialized_pubkey_to_commitment(RIJ[j][PI_interator], 33, &cii_commitment);
+
+            const secp256k1_pedersen_commitment* twoElements[2];
+            twoElements[0] = &SHP_commitment;
+            twoElements[1] = &cii_commitment;
+
+            secp256k1_pedersen_commitment sum;
+            if (!secp256k1_pedersen_commitment_sum_pos(both, twoElements, 2, &sum))
+                throw runtime_error("Cannot compute sum of commitments");
+            size_t tempLength;
+            if (!secp256k1_pedersen_commitment_to_serialized_pubkey(&sum, RIJ[j][PI_interator], &tempLength)) {
+                strFailReason = _("Cannot compute two elements and serialize it to pubkey");
+            }
+        }
+
+        PI_interator++;
+        if (PI_interator == (int)wtxNew.vin[0].decoys.size() + 1) PI_interator = 0;
+
+        int prev, ciIdx;
+        if (PI_interator == 0) {
+            prev = wtxNew.vin[0].decoys.size();
+            ciIdx = 0;
+        } else {
+            prev = PI_interator - 1;
+            ciIdx = PI_interator;
+        }
+
+        tempForHashPtr = tempForHash;
+        for (int i = 0; i < (int)wtxNew.vin.size() + 1; i++) {
+            memcpy(tempForHashPtr, LIJ[i][prev], 33);
+            tempForHashPtr += 33;
+            memcpy(tempForHashPtr, RIJ[i][prev], 33);
+            tempForHashPtr += 33;
+        }
+        memcpy(tempForHashPtr, ctsHash.begin(), 32);
+        uint256 ciHashTmp = Hash(tempForHash, tempForHash + 2 * (wtxNew.vin.size() + 1) * 33 + 32);
+        memcpy(CI[ciIdx], ciHashTmp.begin(), 32);
+    }
+
+    //compute S[j][PI] = alpha_j - c_pi * x_j, x_j = private key corresponding to key image I
+    for (size_t j = 0; j < wtxNew.vin.size() + 1; j++) {
+        unsigned char cx[32];
+        memcpy(cx, CI[PI], 32);
+        if (!secp256k1_ec_privkey_tweak_mul(cx, AllPrivKeys[j]))
+            throw runtime_error("Cannot compute EC mul");
+        const unsigned char* sumArray[2];
+        sumArray[0] = ALPHA[j];
+        sumArray[1] = cx;
+        if (!secp256k1_pedersen_blind_sum(both, SIJ[j][PI], sumArray, 2, 1))
+            throw runtime_error("Cannot compute pedersen blind sum");
+    }
+    memcpy(wtxNew.c.begin(), CI[0], 32);
+    //i for decoy index => PI
+    for (int i = 0; i < (int)wtxNew.vin[0].decoys.size() + 1; i++) {
+        std::vector<uint256> S_column;
+        for (int j = 0; j < (int)wtxNew.vin.size() + 1; j++) {
+            uint256 t;
+            memcpy(t.begin(), SIJ[j][i], 32);
+            S_column.push_back(t);
+        }
+        wtxNew.S.push_back(S_column);
+    }
+    wtxNew.ntxFeeKeyImage.Set(allKeyImages[wtxNew.vin.size()], allKeyImages[wtxNew.vin.size()] + 33);
+    return true;
+}
+
+static void SignDirtyRawDAPSTx(CDirtyRawTransaction& tx, const CKey& view, const CKey& spend) {
+
+}
+
 static int CommandLineRawTx(int argc, char* argv[])
 {
     string strPrint;
@@ -560,8 +1056,9 @@ static int CommandLineRawTx(int argc, char* argv[])
         }
 
         CTransaction txDecodeTmp;
+        CDrityRawTransaction dirtyTxDecodeTmp;
         int startArg;
-
+        bool signDAPSTx = GetBoolArg("-signdaps", false);
         if (!fCreateBlank) {
             // require at least one param
             if (argc < 2)
@@ -571,9 +1068,14 @@ static int CommandLineRawTx(int argc, char* argv[])
             string strHexTx(argv[1]);
             if (strHexTx == "-") // "-" implies standard input
                 strHexTx = readStdin();
-
-            if (!DecodeHexTx(txDecodeTmp, strHexTx))
-                throw runtime_error("invalid transaction encoding");
+            
+            if (signDAPSTx) {
+                if (!DecodeHexDirtyTx(dirtyTxDecodeTmp, strHexTx))
+                    throw runtime_error("invalid transaction encoding");
+            } else {
+                if (!DecodeHexTx(txDecodeTmp, strHexTx))
+                    throw runtime_error("invalid transaction encoding");
+            }
 
             startArg = 2;
         } else
@@ -581,6 +1083,7 @@ static int CommandLineRawTx(int argc, char* argv[])
 
         CMutableTransaction tx(txDecodeTmp);
 
+        std::string viewKeyString, spendKeyString;
         for (int i = startArg; i < argc; i++) {
             string arg = argv[i];
             string key, value;
@@ -591,11 +1094,36 @@ static int CommandLineRawTx(int argc, char* argv[])
                 key = arg.substr(0, eqpos);
                 value = arg.substr(eqpos + 1);
             }
+            if (!signDAPSTx) {
+                MutateTx(tx, key, value);
+            }
+            if (key == "viewkey") {
+                viewKeyString = value;
+            }
 
-            MutateTx(tx, key, value);
+            if (key == "spendkey") {
+                spendKeyString = value;
+            }
         }
 
-        OutputTx(tx);
+        if (signDAPSTx) {
+            CBitcoinSecret vchSecret, spendSecret;
+            bool fGood = vchSecret.SetString(viewKeyString);
+            if (!fGood) {
+                throw runtime_error("view private key is invalid");
+            }
+
+            fGood = spendSecret.SetString(spendKeyString);
+            if (!fGood) {
+                throw runtime_error("spend private key is invalid");
+            }
+
+            CKey view = vchSecret.GetKey();
+            CKey spend = spendSecret.GetKey();
+            SignDirtyRawDAPSTx(dirtyTxDecodeTmp, view, spend);
+        } else {
+            OutputTx(tx);
+        }
     }
 
     catch (boost::thread_interrupted) {
