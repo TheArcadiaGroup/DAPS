@@ -543,11 +543,31 @@ class FullCDecoy {
 public:
     CTransaction prev;
     int n;
-}
+    ADD_SERIALIZE_METHODS;
 
-class CDirtypRawTransaction : public class CTransaction {
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+        READWRITE(prev);
+        READWRITE(n);
+    }
+};
+
+class CDirtyRawTransaction : public CTransaction {
 public:
-    std::vector<std::vector<FullCOutPoint>> fullDecoys;
-}
+    std::vector<std::vector<FullCDecoy>> fullDecoys;
+    std::vector<std::vector<unsigned char>> txPrivs;
+    std::vector<std::vector<unsigned char>> recipientPubAddresses; //privacy addresses of recipient
+    int myIndex;
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+        READWRITE(*(CTransaction*)this);
+        READWRITE(fullDecoys);
+        READWRITE(txPrivs);
+        READWRITE(recipientPubAddresses); 
+        READWRITE(myIndex);
+    }
+};
 
 #endif // BITCOIN_PRIMITIVES_TRANSACTION_H

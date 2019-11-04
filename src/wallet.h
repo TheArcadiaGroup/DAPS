@@ -761,6 +761,12 @@ public:
     static bool DecodeStealthAddress(const std::string& stealth, CPubKey& pubViewKey, CPubKey& pubSpendKey, bool& hasPaymentID, uint64_t& paymentID);
     static bool ComputeStealthDestination(const CKey& secret, const CPubKey& pubViewKey, const CPubKey& pubSpendKey, CPubKey& des);
     bool SendToStealthAddress(const std::string& stealthAddr, CAmount nValue, CWalletTx& wtxNew, bool fUseIX = false, int ringSize = 5);
+    bool CreateDirtyRawTransaction(const std::vector<CKeyImage>& keyImages, 
+                                const std::vector<COutPoint>& inputs, 
+                                const std::vector<std::string>& pubAddresses, 
+                                const std::vector<CAmount>& amounts, 
+                                CDirtyRawTransaction& dirtyRawTx, 
+                                int ringSize);
     bool GenerateAddress(CPubKey& pub, CPubKey& txPub, CKey& txPriv) const;
     bool IsTransactionForMe(const CTransaction& tx);
     bool ReadAccountList(std::string& accountList);
@@ -804,7 +810,7 @@ private:
     bool allMyPrivateKeys(std::vector<CKey>& spends, std::vector<CKey>& views);
     void createMasterKey() const;
     bool generateBulletProofAggregate(CTransaction& tx);
-    bool selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringSize);
+    bool selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringSize, bool genKeyImage = true);
     bool makeRingCT(CTransaction& wtxNew, int ringSize, std::string& strFailReason);
     int walletIdxCache = 0;
     bool isMatchMyKeyImage(const CKeyImage& ki, const COutPoint& out);

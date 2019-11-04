@@ -2781,6 +2781,38 @@ UniValue sendtostealthaddress(const UniValue& params, bool fHelp)
     return wtx.GetHash().GetHex();
 }
 
+UniValue createdirtyrawtransaction(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 2)
+        throw runtime_error(
+                "sendtostealthaddress \"dapsstealthaddress\" amount\n"
+                "\nSend an amount to a given daps stealth address address. The amount is a real and is rounded to the nearest 0.00000001\n" +
+                HelpRequiringPassphrase() +
+                "\nArguments:\n"
+                "1. \"dapsstealthaddress\"  (string, required) The dapscoin stealth address to send to.\n"
+                "2. \"amount\"      (numeric, required) The amount in btc to send. eg 0.1\n"
+                "\nResult:\n"
+                "\"transactionid\"  (string) The transaction id.\n"
+                "\nExamples:\n" +
+                HelpExampleCli("sendtostealthaddress", "\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\" 0.1") + HelpExampleCli("sendtostealthaddress", "\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\" 0.1 \"donation\" \"seans outpost\"") + HelpExampleRpc("sendtostealthaddress", "\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\", 0.1, \"donation\", \"seans outpost\""));
+
+    std::string stealthAddr = params[0].get_str();
+
+    // Amount
+    CAmount nAmount = AmountFromValue(params[1]);
+
+    // Wallet comments
+    CWalletTx wtx;
+
+    EnsureWalletIsUnlocked();
+
+    if (!pwalletMain->SendToStealthAddress(stealthAddr, nAmount, wtx)) {
+        throw JSONRPCError(RPC_WALLET_ERROR,
+                           "Cannot create transaction.");
+    }
+    return wtx.GetHash().GetHex();
+}
+
 UniValue setdecoyconfirmation(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)

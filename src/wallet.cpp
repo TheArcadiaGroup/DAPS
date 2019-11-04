@@ -3958,7 +3958,7 @@ bool CWallet::MakeShnorrSignatureTxIn(CTxIn& txin, uint256 cts)
     return true;
 }
 
-bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringSize)
+bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringSize, bool genKeyImage)
 {
     if (coinbaseDecoysPool.size() <= 100) {
         for (int i = chainActive.Height() - Params().COINBASE_MATURITY(); i > 0; i--) {
@@ -4018,16 +4018,19 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                 continue;
             }
         }
+        
+        if (genKeyImage) {
+            CKeyImage ki;
+            if (!generateKeyImage(txPrev.vout[tx.vin[i].prevout.n].scriptPubKey, ki)) {
+                LogPrintf("Cannot generate key image");
+                return false;
+            } else {
+                tx.vin[i].keyImage = ki;
+            }
 
-        CKeyImage ki;
-        if (!generateKeyImage(txPrev.vout[tx.vin[i].prevout.n].scriptPubKey, ki)) {
-            LogPrintf("Cannot generate key image");
-            return false;
-        } else {
-            tx.vin[i].keyImage = ki;
-        }
+            pendingKeyImages.push_back(ki.GetHex());
+        } 
 
-        pendingKeyImages.push_back(ki.GetHex());
         int numDecoys = 0;
         if (txPrev.IsCoinAudit() || txPrev.IsCoinBase() || txPrev.IsCoinStake()) {
             if ((int)coinbaseDecoysPool.size() >= ringSize * 5) {
@@ -6634,6 +6637,188 @@ bool CWallet::GenerateAddress(CPubKey& pub, CPubKey& txPub, CKey& txPriv) const
         txPub = txPriv.GetPubKey();
         return computeStealthDestination(txPriv, view.GetPubKey(), spend.GetPubKey(), pub);
     }
+}
+
+bool CWallet::CreateDirtyRawTransaction(const std::vector<CKeyImage>& keyImages, const std::vector<COutPoint>& inputs, const std::vector<std::string>& pubAddresses, const std::vector<CAmount>& amounts, CDirtyRawTransaction& dirtyRawTx, int ringSize);
+    if (amounts.size() <= 0 || amounts.size() > 2);
+        throw runtime_error("Invalid amount");
+
+    for (size_t i = 0; i < amounts.size(); i++) {
+        if (amounts[i] <= 0) {
+            throw runtime_error("Invalid amount");
+        }
+    }
+
+    if (pubAddresses.size() != amounts.size()) {
+        throw runtime_error("Recipient privacy addresses are not correspondent to outputs");
+    }
+    int numIntegratedAddresses = 0;
+
+    if (keyImages.size() != inputs.size()) {
+        throw runtime_error("invalid inputs");
+    }
+    {   
+        LOCK2(cs_main, cs_wallet);
+        for(size_t i = 0; i < keyImages.size(); i++) {
+            if (!keyImages[i].IsValid()) 
+                throw runtime_error("key images are invalid");
+            if (IsKeyImageSpend1(keyImages[i].GetHex(), uint256())) {
+                throw runtime_error("key images are already spent");
+            }
+        }
+    }
+
+    string strError;
+    if (this->IsLocked()) {
+        strError = "Error: Wallet locked, unable to create transaction!";
+        throw runtime_error(strError);
+    }
+
+    //------------------WATCHER WALLET------------------
+    CAmount totalIn = 0;
+    LOCK2(cs_main, cs_wallet);
+    dirtyRawTx.hasPaymentID = false;
+    dirtyRawTx.paymentID = 0;
+    std::vector<CAmount> inputAmounts;
+    for (size_t i = 0; i < inputs.size(); i++) {
+        if (mapWallet.count[inputs[i].hash] < 1) {
+            throw runtime_error("Transaction input does not exist");
+        }
+        CWalletTx txPrev = mapWallet[inputs[i].hash];
+        // Quick answer in most cases
+        if (!IsFinalTx(txPrev))
+            throw runtime_error("Transaction input does not exist");
+        int nDepth = txPrev.GetDepthInMainChain();
+        if (nDepth < 1)
+            throw runtime_error("Transaction input does not exist");
+        
+        if (!IsMine(txPrev.vout[inputs[i].n])) {
+            throw runtime_error("Transaction input is not yours");
+        }
+        dirtyRawTx.vin.push_back(CTxIn(inputs[i].hash, inputs[i].n));
+
+        CAmount decodedAmount = 0;
+        CKey blind;
+        if (!RevealTxOutAmount(txPrev, txPrev.vout[inputs[i].n], decodedAmount, blind)) {
+            throw runtime_error("Transaction input is not yours");
+        }
+
+        if (decodedAmount == 0) {
+            throw runtime_error("Invalid input amount");
+        }
+
+        inputAmounts.push_back(decodedAmount);
+        totalIn += decodedAmount;
+    }
+
+    CAmount totalOut = 0;
+    for(size_t i = 0; i < amounts.size(); i++) {
+        totalOut += amounts[i];
+    }
+
+    dirtyRawTx.nTxFee = ComputeFee(inputAmounts.size(), amounts.size(), ringSize);
+    if (totalIn <= totalOut) {
+        throw runtime_error("Transaction inputs must be strictly less than sum of outputs");
+    }
+    if (dirtyRawTx.nTxFee != totalIn - totalOut) {
+        throw runtime_error("Transaction fee is incorrectly computed");
+    }
+    bool ret = true;
+    {
+        LOCK2(cs_main, cs_wallet);
+        {
+            nFeeRet = 0;
+            unsigned int nBytes = 0;
+            double dPriority = 0;
+            // vouts to the payees
+            for(size_t i = 0; i < amounts.size(); i++) {
+                //create transaction output from pubAddress and amount
+                //Parse stealth address
+                CPubKey pubViewKey, pubSpendKey;
+                bool hasPaymentID;
+                uint64_t paymentID;
+                if (!CWallet::DecodeStealthAddress(pubAddresses[i], pubViewKey, pubSpendKey, hasPaymentID, paymentID)) {
+                    throw runtime_error("Stealth address mal-formatted");
+                }
+
+                if (hasPaymentID) {
+                    numIntegratedAddresses++;
+                    dirtyRawTx.hasPaymentID = true;
+                    dirtyRawTx.paymentID = paymentID;
+                }
+                if (numIntegratedAddresses > 1) {
+                    throw runtime_error("For safety, only allow at most 1 integrated address per transaction");
+                }
+                // Generate transaction public key
+                CKey secret;
+                secret.MakeNewKey(true);
+                std::vector<unsigned char> txPriv;
+                std::copy(secret.begin(), secret.end(), std::back_inserter(txPriv));
+                dirtyRawTx.txPrivs(txPriv);
+
+                //Compute stealth destination
+                CPubKey stealthDes;
+                computeStealthDestination(secret, pubViewKey, pubSpendKey, stealthDes);
+
+                CScript scriptPubKey = GetScriptForDestination(stealthDes);
+
+                CTxOut txout(amounts[i], scriptPubKey);
+                CPubKey txPub = secret.GetPubKey();
+                txPrivKeys.push_back(secret);
+                std::copy(txPub.begin(), txPub.end(), std::back_inserter(txout.txPub));
+                if (txout.IsDust(::minRelayTxFee)) {
+                    strFailReason = _("Transaction amount too small");
+                    ret = false;
+                    break;
+                }
+                    
+                CPubKey sharedSec;
+                ECDHInfo::ComputeSharedSec(secret, pubViewKey, sharedSec);
+                EncodeTxOutAmount(txout, txout.nValue, sharedSec.begin());
+                dirtyRawTx.vout.push_back(txout);
+                nBytes += ::GetSerializeSize(*(CTxOut*)&txout, SER_NETWORK, PROTOCOL_VERSION);
+            }
+
+            //dont make ringCT here, but instead select decoys only
+            int myIndex;
+            if (ret && !selectDecoysAndRealIndex(dirtyRawTx, myIndex, ringSize, false)) {
+                ret = false;
+            }
+
+            //dont generate  bullet proof here, generate it in an offline module
+            /*if (ret && !generateBulletProofAggregate(wtxNew)) {
+                strFailReason = _("Failed to generate bulletproof");
+                ret = false;
+            }*/
+
+            /*if (ret) {
+                //set transaction output amounts as 0
+                for (size_t i = 0; i < wtxNew.vout.size(); i++) {
+                    wtxNew.vout[i].nValue = 0;
+                }
+
+                if (!CommitTransaction(wtxNew, reservekey, (!useIX ? "tx" : "ix"))) {
+                    inSpendQueueOutpointsPerSession.clear();
+                    ret = false;
+                    strFailReason = _("Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.");
+                }
+                for (size_t i = 0; i < inSpendQueueOutpointsPerSession.size(); i++) {
+                    inSpendQueueOutpoints[inSpendQueueOutpointsPerSession[i]] = true;
+                }
+                inSpendQueueOutpointsPerSession.clear();
+
+                uint256 hash = wtxNew.GetHash();
+                int maxTxPrivKeys = txPrivKeys.size() > wtxNew.vout.size() ? wtxNew.vout.size() : txPrivKeys.size();
+                for (int i = 0; i < maxTxPrivKeys; i++) {
+                    std::string key = hash.GetHex() + std::to_string(i);
+                    CWalletDB(strWalletFile).WriteTxPrivateKey(key, CBitcoinSecret(txPrivKeys[i]).ToString());
+                }
+                txPrivKeys.clear();
+            }*/
+        }
+    }
+
+    return ret;
 }
 
 bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount nValue, CWalletTx& wtxNew, bool fUseIX, int ringSize)
