@@ -6639,8 +6639,13 @@ bool CWallet::GenerateAddress(CPubKey& pub, CPubKey& txPub, CKey& txPriv) const
     }
 }
 
-bool CWallet::CreateDirtyRawTransaction(const std::vector<CKeyImage>& keyImages, const std::vector<COutPoint>& inputs, const std::vector<std::string>& pubAddresses, const std::vector<CAmount>& amounts, CDirtyRawTransaction& dirtyRawTx, int ringSize);
-    if (amounts.size() <= 0 || amounts.size() > 2);
+bool CWallet::CreateDirtyRawTransaction(const std::vector<CKeyImage>& keyImages, 
+                                        const std::vector<COutPoint>& inputs, 
+                                        const std::vector<std::string>& pubAddresses, 
+                                        const std::vector<CAmount>& amounts, 
+                                        CDirtyRawTransaction& dirtyRawTx, 
+                                        int ringSize) {
+    if (amounts.size() <= 0 || amounts.size() > 2)
         throw runtime_error("Invalid amount");
 
     for (size_t i = 0; i < amounts.size(); i++) {
@@ -6681,7 +6686,7 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<CKeyImage>& keyImages,
     dirtyRawTx.paymentID = 0;
     std::vector<CAmount> inputAmounts;
     for (size_t i = 0; i < inputs.size(); i++) {
-        if (mapWallet.count[inputs[i].hash] < 1) {
+        if (mapWallet.count(inputs[i].hash) < 1) {
             throw runtime_error("Transaction input does not exist");
         }
         CWalletTx txPrev = mapWallet[inputs[i].hash];
@@ -6727,7 +6732,6 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<CKeyImage>& keyImages,
     {
         LOCK2(cs_main, cs_wallet);
         {
-            nFeeRet = 0;
             unsigned int nBytes = 0;
             double dPriority = 0;
             // vouts to the payees
@@ -6754,7 +6758,7 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<CKeyImage>& keyImages,
                 secret.MakeNewKey(true);
                 std::vector<unsigned char> txPriv;
                 std::copy(secret.begin(), secret.end(), std::back_inserter(txPriv));
-                dirtyRawTx.txPrivs(txPriv);
+                dirtyRawTx.txPrivs.push_back(txPriv);
 
                 //Compute stealth destination
                 CPubKey stealthDes;
@@ -6766,11 +6770,6 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<CKeyImage>& keyImages,
                 CPubKey txPub = secret.GetPubKey();
                 txPrivKeys.push_back(secret);
                 std::copy(txPub.begin(), txPub.end(), std::back_inserter(txout.txPub));
-                if (txout.IsDust(::minRelayTxFee)) {
-                    strFailReason = _("Transaction amount too small");
-                    ret = false;
-                    break;
-                }
                     
                 CPubKey sharedSec;
                 ECDHInfo::ComputeSharedSec(secret, pubViewKey, sharedSec);
@@ -6784,6 +6783,8 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<CKeyImage>& keyImages,
             if (ret && !selectDecoysAndRealIndex(dirtyRawTx, myIndex, ringSize, false)) {
                 ret = false;
             }
+
+            dirtyRawTx.myIndex = myIndex;
 
             //dont generate  bullet proof here, generate it in an offline module
             /*if (ret && !generateBulletProofAggregate(wtxNew)) {
