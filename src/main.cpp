@@ -4661,6 +4661,14 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
         }
         CheckBlockIndex();
         if (!ret) {
+            if (pindexBestForkTip == NULL) {
+                    pindexBestForkTip = chainActive.Genesis();
+                }
+                int temp = pindexBestForkTip->nHeight%500;
+                pindexBestForkTip = chainActive[pindexBestForkTip->nHeight - temp];
+            if (pfrom) {
+                pfrom->PushMessage("getblocks", chainActive.GetLocator(pindexBestForkTip), pblock->GetHash());
+            }
             if (pfrom) {
                 pfrom->PushMessage("getblocks", chainActive.GetLocator(pindexBestForkTip), pblock->GetHash());
             }
