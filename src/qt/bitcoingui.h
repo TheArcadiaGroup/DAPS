@@ -70,7 +70,7 @@ public:
 #endif // ENABLE_WALLET
     bool enableWallet;
     bool fMultiSend = false;
-
+    RPCConsole* rpcConsole;
 
 protected:
     void changeEvent(QEvent* e);
@@ -133,7 +133,6 @@ private:
     QSystemTrayIcon* trayIcon;
     QMenu* trayIconMenu;
     Notificator* notificator;
-    RPCConsole* rpcConsole;
     BlockExplorer* explorerWindow;
     bool showTooltips = false;
 
