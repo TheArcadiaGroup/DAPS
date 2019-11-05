@@ -6,13 +6,12 @@
 #include "walletmodel.h"
 #include <QLineEdit>
 #include <QMessageBox>
-#include <boost/lexical_cast.hpp>
 #include <QStyle>
 
 using namespace std;
 using namespace boost;
 
-MultiSendDialog::MultiSendDialog(QWidget* parent) : QDialog(parent),
+MultiSendDialog::MultiSendDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                     ui(new Ui::MultiSendDialog),
                                                     model(0)
 {
@@ -74,7 +73,7 @@ void MultiSendDialog::on_viewButton_clicked()
         pMultiSend = pwalletMain->vMultiSend[i];
         strMultiSendPrint += pMultiSend.first.c_str();
         strMultiSendPrint += " - ";
-        strMultiSendPrint += boost::lexical_cast<string>(pMultiSend.second);
+        strMultiSendPrint += std::to_string(pMultiSend.second);
         strMultiSendPrint += "% \n";
     }
     ui->message->setProperty("status", "ok");
@@ -123,7 +122,7 @@ void MultiSendDialog::on_addButton_clicked()
         pMultiSend = pwalletMain->vMultiSend[i];
         strMultiSendPrint += pMultiSend.first.c_str();
         strMultiSendPrint += " - ";
-        strMultiSendPrint += boost::lexical_cast<string>(pMultiSend.second);
+        strMultiSendPrint += std::to_string(pMultiSend.second);
         strMultiSendPrint += "% \n";
     }
     CWalletDB walletdb(pwalletMain->strWalletFile);

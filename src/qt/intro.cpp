@@ -104,7 +104,7 @@ void FreespaceChecker::check()
 }
 
 
-Intro::Intro(QWidget* parent) : QDialog(parent),
+Intro::Intro(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                 ui(new Ui::Intro),
                                 thread(0),
                                 signalled(false)
@@ -156,8 +156,8 @@ bool Intro::pickDataDirectory()
         return true;
     /* 1) Default data directory for operating system */
     QString dataDir = getDefaultDataDirectory();
-    //dont allow to overwrite default dir to not mix chain data folders between standard and multisig binaries
-    //dataDir = settings.value("strDataDir", dataDir).toString();
+    /* 2) Allow QSettings to override default dir */
+    dataDir = settings.value("strDataDir", dataDir).toString();
 
     if (!fs::exists(GUIUtil::qstringToBoostPath(dataDir)) || GetBoolArg("-choosedatadir", false)) {
         /* If current default data directory does not exist, let the user choose one */

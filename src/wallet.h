@@ -268,6 +268,7 @@ public:
     bool SelectCoinsDarkDenominated(CAmount nTargetValue, std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet) ;
     bool HasCollateralInputs(bool fOnlyConfirmed = true);
     bool IsCollateralAmount(CAmount nInputAmount) const;
+    bool IsMasternodeController();
     int CountInputsWithAmount(CAmount nInputAmount);
     bool checkPassPhraseRule(const char *pass);
     COutPoint findMyOutPoint(const CTxIn& txin) const;
@@ -277,6 +278,9 @@ public:
     bool estimateStakingConsolidationFees(CAmount& min, CAmount& max);
     static int MaxTxSizePerTx();
     std::string GetTransactionType(const CTransaction& tx);
+    bool WriteAutoConsolidateSettingTime(uint32_t settingTime);
+    uint32_t ReadAutoConsolidateSettingTime();
+    bool IsAutoConsolidateOn();
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
@@ -317,7 +321,7 @@ public:
     //Auto Combine Inputs
     bool fCombineDust;
     CAmount nAutoCombineThreshold;
-    bool CreateSweepingTransaction(CAmount target, CAmount threshold);
+    bool CreateSweepingTransaction(CAmount target, CAmount threshold, uint32_t nTimeBefore);
     bool SendAll(std::string des);
     CWallet()
     {
@@ -401,6 +405,7 @@ public:
     int64_t nTimeFirstKey;
 
     StakingMode stakingMode = STOPPED;
+    int64_t DecoyConfirmationMinimum = 15;
 
     mutable std::map<std::string, CKeyImage> outpointToKeyImages;
     std::map<std::string, bool> keyImagesSpends;
@@ -410,8 +415,10 @@ public:
     std::vector<COutPoint> inSpendQueueOutpointsPerSession;
     mutable std::map<CScript, CAmount> amountMap;
     mutable std::map<CScript, CKey> blindMap;
-    mutable std::vector<COutPoint> userDecoysPool;	//used in transaction spending user transaction
-    mutable std::vector<COutPoint> coinbaseDecoysPool; //used in transction spending coinbase
+    mutable std::map<COutPoint, uint256> userDecoysPool;	//used in transaction spending user transaction
+    mutable std::map<COutPoint, uint256> coinbaseDecoysPool; //used in transction spending coinbase
+
+    CAmount dirtyCachedBalance = 0;
 
     const CWalletTx* GetWalletTx(const uint256& hash) const;
 
@@ -641,7 +648,7 @@ public:
     }
     bool IsMine(const CTransaction& tx) const
     {
-        BOOST_FOREACH (const CTxOut& txout, tx.vout)
+        for (const CTxOut& txout : tx.vout)
         if (IsMine(txout))
             return true;
         return false;
@@ -654,7 +661,7 @@ public:
     CAmount GetDebit(const CTransaction& tx, const isminefilter& filter) const
     {
         CAmount nDebit = 0;
-        BOOST_FOREACH (const CTxIn& txin, tx.vin) {
+        for (const CTxIn& txin : tx.vin) {
             nDebit += GetDebit(txin, filter);
         }
         return nDebit;
@@ -662,7 +669,7 @@ public:
     CAmount GetCredit(const CTransaction& tx, const isminefilter& filter) const
     {
         CAmount nCredit = 0;
-        BOOST_FOREACH (const CTxOut& txout, tx.vout) {
+        for (const CTxOut& txout : tx.vout) {
             nCredit += GetCredit(tx, txout, filter);
         }
         return nCredit;
@@ -670,7 +677,7 @@ public:
     CAmount GetChange(const CTransaction& tx) const
     {
         CAmount nChange = 0;
-        BOOST_FOREACH (const CTxOut& txout, tx.vout) {
+        for (const CTxOut& txout : tx.vout) {
             nChange += GetChange(tx, txout);
         }
         return nChange;
@@ -1434,7 +1441,7 @@ public:
             }
         }
         // Trusted if all inputs are from us and are in the mempool:
-        BOOST_FOREACH (const CTxIn& txin, vin) {
+        for (const CTxIn& txin : vin) {
             // Transactions not sent by us: not trusted
         	COutPoint prevout = pwallet->findMyOutPoint(txin);
             const CWalletTx* parent = pwallet->GetWalletTx(prevout.hash);
@@ -1485,7 +1492,7 @@ public:
     //Used with Obfuscation. Will return largest nondenom, then denominations, then very small inputs
     int Priority() const
     {
-        BOOST_FOREACH (CAmount d, obfuScationDenominations)
+        for (CAmount d : obfuScationDenominations)
         if (tx->vout[i].nValue == d) return 10000;
         if (tx->vout[i].nValue < 1 * COIN) return 20000;
 

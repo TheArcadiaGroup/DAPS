@@ -1,4 +1,4 @@
-DAPS version 1.0.2 is now available from:
+DAPS version 1.0.3 is now available from:
 
   <https://github.com/DAPSCoin/DAPSCoin/releases>
 

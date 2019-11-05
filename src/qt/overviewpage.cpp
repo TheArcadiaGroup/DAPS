@@ -106,7 +106,7 @@ public:
 };
 #include "overviewpage.moc"
 
-OverviewPage::OverviewPage(QWidget* parent) : QDialog(parent),
+OverviewPage::OverviewPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                               ui(new Ui::OverviewPage),
                                               clientModel(0),
                                               walletModel(0),
@@ -187,13 +187,14 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
         ui->labelUnconfirmed->setText("Locked; Hidden");
     } else {
         if (stkStatus && !nLastCoinStakeSearchInterval) {
-            ui->labelBalance_2->setText("Enabling Staking");
+            ui->labelBalance_2->setText("Enabling Staking...");
             ui->labelBalance_2->setToolTip("Enabling Staking... Please wait up to 1.5 hours for it to be properly enabled after consolidation.");
+            ui->labelBalance->setText("Enabling Staking...");
         } else {
             ui->labelBalance_2->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance, false, BitcoinUnits::separatorAlways));
             ui->labelBalance_2->setToolTip("Your current balance");
+            ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nSpendableDisplayed, false, BitcoinUnits::separatorAlways));
         }
-        ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nSpendableDisplayed, false, BitcoinUnits::separatorAlways));
         ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
     }
     QFont font = ui->labelBalance_2->font();
@@ -243,7 +244,7 @@ void OverviewPage::setWalletModel(WalletModel* model)
     this->walletModel = model;
     if (model && model->getOptionsModel()) {
         // Set up transaction list
-        LogPrintf("\n%s:setWalletModel\n", __func__);
+        LogPrintf("%s:setWalletModel\n", __func__);
         filter = new TransactionFilterProxy(this);
         filter->setSourceModel(model->getTransactionTableModel());
         filter->setLimit(NUM_ITEMS);
@@ -310,14 +311,20 @@ void OverviewPage::showBalanceSync(bool fShow){
 
 void OverviewPage::showBlockSync(bool fShow)
 {
-    ui->labelBlockStatus->setVisible(fShow);
+    ui->labelBlockStatus->setVisible(true);
     ui->labelBlockOf->setVisible(fShow);
     ui->labelBlocksTotal->setVisible(fShow);
 
     isSyncingBlocks = fShow;
 
     ui->labelBlockCurrent->setText(QString::number(clientModel->getNumBlocks()));
-    ui->labelBlockCurrent->setAlignment(fShow? (Qt::AlignRight|Qt::AlignVCenter):(Qt::AlignHCenter|Qt::AlignTop));
+    if (isSyncingBlocks){
+        ui->labelBlockStatus->setText("(syncing)");
+        ui->labelBlockCurrent->setAlignment((Qt::AlignRight|Qt::AlignVCenter));
+    } else {
+        ui->labelBlockStatus->setText("(synced)");
+        ui->labelBlockCurrent->setAlignment((Qt::AlignHCenter|Qt::AlignVCenter));
+    }
 }
 
 void OverviewPage::showBlockCurrentHeight()
@@ -425,7 +432,7 @@ int OverviewPage::tryNetworkBlockCount(){
 }
 
 void OverviewPage::updateRecentTransactions(){
-	if (!pwalletMain || pwalletMain->IsLocked()) return;
+    if (!pwalletMain) return;
     {
         LOCK2(cs_main, pwalletMain->cs_wallet);
         QLayoutItem* item;
@@ -475,7 +482,12 @@ void OverviewPage::updateRecentTransactions(){
                     ui->verticalLayoutRecent->addWidget(entry);
                     CWalletTx wtx = pwalletMain->mapWallet[txHash];
                     int64_t txTime = wtx.GetComputedTxTime();
-                    entry->setData(txTime, txs[i]["address"] , txs[i]["amount"], txs[i]["id"], txs[i]["type"]);
+                    if (pwalletMain->IsLocked()) {
+                        entry->setData(txTime, "Locked; Hidden", "Locked; Hidden", "Locked; Hidden", "Locked; Hidden");
+                    } else {
+                        entry->setData(txTime, txs[i]["address"] , txs[i]["amount"], txs[i]["id"], txs[i]["type"]);
+                    }
+
                     if (i % 2 == 0) {
                         entry->setObjectName("secondaryTxEntry");
                     }
@@ -484,7 +496,7 @@ void OverviewPage::updateRecentTransactions(){
                 ui->lblRecentTransaction->setVisible(true);
             }
         } else {
-            LogPrintf("\npwalletMain has not been initialized\n");
+            LogPrintf("pwalletMain has not been initialized\n");
         }
     }
 }
@@ -519,6 +531,7 @@ void OverviewPage::unlockDialogIsFinished(int result) {
         ui->labelBalance_2->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getBalance(), false, BitcoinUnits::separatorAlways));
         ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getSpendableBalance(), false, BitcoinUnits::separatorAlways));
         ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getUnconfirmedBalance(), false, BitcoinUnits::separatorAlways));
+        pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
     }
 }
 
@@ -528,6 +541,7 @@ void OverviewPage::lockDialogIsFinished(int result) {
         ui->labelBalance_2->setText("Locked; Hidden");
         ui->labelBalance->setText("Locked; Hidden");
         ui->labelUnconfirmed->setText("Locked; Hidden");
+        pwalletMain->stakingMode = StakingMode::STOPPED;
     }
 }
 

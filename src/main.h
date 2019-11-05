@@ -266,6 +266,8 @@ CAmount GetBlockValue(const CBlockIndex *ptip);
 CAmount TeamRewards(const CBlockIndex *ptip);
 CAmount PoSBlockReward();
 
+void RemoveInvalidTransactionsFromMempool();
+
 /** Create a new block index entry for a given block hash */
 CBlockIndex* InsertBlockIndex(uint256 hash);
 /** Abort with a message */
@@ -287,6 +289,8 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
 bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransaction& tx, bool fLimitFree, bool* pfMissingInputs, bool fRejectInsaneFee = false, bool isDSTX = false);
 
 bool IsKeyImageSpend1(const std::string& kiHex, const uint256& againsHash);
+bool CheckKeyImageSpendInMainChain(const std::string& kiHex, int& confirmations);
+
 double GetPriority(const CTransaction& tx, int nHeight);
 
 bool IsKeyImageSpend2(const std::string&, const uint256& bh);
