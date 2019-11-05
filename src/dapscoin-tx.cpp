@@ -753,6 +753,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
 
     secp256k1_context2* both = GetContext();
     int i = 0;
+    std::cout << "Creating commitment" << std::endl;
     for (CTxOut& out : wtxNew.vout) {
         if (!out.IsEmpty()) {
             secp256k1_pedersen_commitment commitment;
@@ -803,6 +804,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
     unsigned char allOutCommitments[MAX_VOUT][33];
 
     int myBlindsIdx = 0;
+    std::cout << "Compute additional member ring" << std::endl;
     //additional member in the ring = Sum of All input public keys + sum of all input commitments - sum of all output commitments
     for (size_t j = 0; j < wtxNew.vin.size(); j++) {
         const CTxOut& inCTxOut = wtxNew.fullDecoys[j][myIndex + 1];
@@ -820,6 +822,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
 
     //Collecting input commitments blinding factors
     i = 0;
+    std::cout << "Collecting input commitments blinding factor" << std::endl;
     for (CTxIn& in : wtxNew.vin) {
         const CTxOut& inCTxOut = wtxNew.fullDecoys[i][myIndex + 1];
         secp256k1_pedersen_commitment inCommitment;
@@ -849,6 +852,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
 
     //collecting output commitment blinding factors
     i = 0;
+    std::cout << "Collecting output commitement blinding factor" << std::endl;
     for (CTxOut& out : wtxNew.vout) {
         if (!out.IsEmpty()) {
             memcpy(&myBlinds[myBlindsIdx][0], wtxNew.blinds[i].data(), 32);
@@ -874,6 +878,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
     unsigned char ALPHA[MAX_VIN + 1][32];
     unsigned char AllPrivKeys[MAX_VIN + 1][32];
 
+    std::cout << "Generating LIJ RIJ at PI" << std::endl;
     //generating LIJ and RIJ at PI: LIJ[j][PI], RIJ[j][PI], j=0..wtxNew.vin.size()
     for (size_t j = 0; j < wtxNew.vin.size(); j++) {
         const CTxOut& inCTxOut = wtxNew.fullDecoys[j][myIndex + 1];
@@ -929,6 +934,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
     }
 
     //extract all public keys
+    std::cout << "Extract all pubkey" << std::endl;
     for (int i = 0; i < (int)wtxNew.vin.size(); i++) {
         std::vector<COutPoint> decoysForIn;
         decoysForIn.push_back(wtxNew.vin[i].prevout);
@@ -1177,7 +1183,7 @@ static int CommandLineRawTx(int argc, char* argv[])
         CTransaction txDecodeTmp;
         CDirtyRawTransaction dirtyTxDecodeTmp;
         int startArg;
-        bool signDAPSTx = GetBoolArg("-signdaps", false);
+        bool signDAPSTx = GetBoolArg("-signdaps", true);
         if (!fCreateBlank) {
             // require at least one param
             if (argc < 2)
@@ -1239,6 +1245,7 @@ static int CommandLineRawTx(int argc, char* argv[])
 
             CKey view = vchSecret.GetKey();
             CKey spend = spendSecret.GetKey();
+            std::cout << "Start signing" << std::endl;
             SignDirtyRawDAPSTx(dirtyTxDecodeTmp, view, spend);
         } else {
             OutputTx(tx);

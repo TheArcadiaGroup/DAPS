@@ -3044,6 +3044,21 @@ UniValue rescanwallettransactions(const UniValue& params, bool fHelp) {
     return "Started rescanning from block " + std::to_string(nHeight);
 }
 
+UniValue computetxfee(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error(
+                "computetxfee <numInput> <numOutput> <ringSize>\n"
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"Mnemonic Phrase\"    (string) mnemonic phrase\n"
+                "\nExamples:\n" +
+                HelpExampleCli("computetxfee", "") + HelpExampleCli("computetxfee", "\"\"") +
+                HelpExampleCli("computetxfee", "") + HelpExampleRpc("computetxfee", ""));
+    
+    return ValueFromAmount(CWallet::ComputeFee(params[0].get_int(), params[1].get_int(), params[2].get_int()));
+}
+
 UniValue revealmnemonicphrase(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)

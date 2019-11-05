@@ -592,7 +592,7 @@ public:
                                       AvailableCoinsType coin_type = ALL_COINS, bool useIX = false,
                                       CAmount nFeePay = 0, int ringSize = 6, bool tomyself = false);
 
-    int ComputeFee(size_t numIn, size_t numOut, size_t ringSize);
+    static int ComputeFee(size_t numIn, size_t numOut, size_t ringSize);
     CAmount ComputeReserveUTXOAmount();
     bool CreateTransaction(CScript scriptPubKey, const CAmount &nValue, CWalletTx &wtxNew, CReserveKey &reservekey,
                            CAmount &nFeeRet, std::string &strFailReason, const CCoinControl *coinControl = NULL,

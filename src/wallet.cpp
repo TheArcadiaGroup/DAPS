@@ -2936,14 +2936,7 @@ bool CWallet::IsWatcherWallet() const {
     if (registeredViewKey.IsValid() && registeredPubSpendKey.IsValid()) {
         std::string pubAddress;
         EncodeStealthPublicAddress(registeredViewKey.GetPubKey(), registeredPubSpendKey, pubAddress);
-        LogPrintf("pubAddress = %s\n", pubAddress);
         return pubAddress == registeredAddress;
-    }
-    if (registeredViewKey.IsValid()) {
-        LogPrintf("view key is valid");
-    }
-    if (registeredPubSpendKey.IsValid()) {
-        LogPrintf("registeredPubSpendKey key is valid");
     }
     return false;
 }
