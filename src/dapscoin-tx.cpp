@@ -629,6 +629,94 @@ bool CreateCommitmentWithZeroBlind(const CAmount val, unsigned char* pBlind, std
     return CreateCommitment(pBlind, val, commitment);
 }
 
+void add1s(std::string& s, int wantedSize)
+{
+    int currentLength = s.length();
+    for (int i = 0; i < wantedSize - currentLength; i++) {
+        s = "1" + s;
+    }
+}
+
+bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth) 
+{
+    if (raw.size() != 71 && raw.size() != 79) {
+        return false;
+    }
+    stealth = "";
+
+    //Encoding Base58 using block=8 bytes
+    int i = 0;
+    while (i < (int)raw.size()) {
+        std::vector<unsigned char> input8;
+        std::copy(raw.begin() + i, raw.begin() + i + 8, std::back_inserter(input8)); //copy 8 bytes
+        std::string out = EncodeBase58(input8);
+        if (out.length() < 11) {
+            add1s(out, 11);
+        }
+        stealth += out;
+        i += 8;
+        if (i + 8 > (int)raw.size()) {
+            //the last block of 7
+            std::vector<unsigned char> input7;
+            std::copy(raw.begin() + i, raw.begin() + i + 7, std::back_inserter(input7)); //copy 7 bytes
+            std::string out11 = EncodeBase58(input7);
+            add1s(out11, 11);
+            stealth += out11;
+            i += 7;
+        }
+    }
+    return true;
+}
+
+bool EncodeStealthPublicAddress(const std::vector<unsigned char>& pubViewKey, const std::vector<unsigned char>& pubSpendKey, std::string& pubAddrb58) 
+{
+    std::vector<unsigned char> pubAddr;
+    pubAddr.push_back(18);                                                                 //1 byte
+    std::copy(pubSpendKey.begin(), pubSpendKey.begin() + 33, std::back_inserter(pubAddr)); //copy 33 bytes
+    std::copy(pubViewKey.begin(), pubViewKey.begin() + 33, std::back_inserter(pubAddr));   //copy 33 bytes
+    uint256 h = Hash(pubAddr.begin(), pubAddr.end());
+    unsigned char* begin = h.begin();
+    pubAddr.push_back(*(begin));
+    pubAddr.push_back(*(begin + 1));
+    pubAddr.push_back(*(begin + 2));
+    pubAddr.push_back(*(begin + 3));
+
+    return encodeStealthBase58(pubAddr, pubAddrb58);
+}
+
+bool EncodeStealthPublicAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr) 
+{
+    if (pubViewKey.IsCompressed() && pubSpendKey.IsCompressed()) {
+        return EncodeStealthPublicAddress(pubViewKey.Raw(), pubSpendKey.Raw(), pubAddr);
+    }
+    return false;
+}
+
+bool EncodeIntegratedAddress(const std::vector<unsigned char>& pubViewKey, const std::vector<unsigned char>& pubSpendKey, uint64_t paymentID, std::string& pubAddrb58)
+{
+    std::vector<unsigned char> pubAddr;
+    pubAddr.push_back(19);                                                                            //1 byte 19 for integrated address
+    std::copy(pubSpendKey.begin(), pubSpendKey.begin() + 33, std::back_inserter(pubAddr));            //copy 33 bytes
+    std::copy(pubViewKey.begin(), pubViewKey.begin() + 33, std::back_inserter(pubAddr));              //copy 33 bytes
+    std::copy((char*)&paymentID, (char*)&paymentID + sizeof(paymentID), std::back_inserter(pubAddr)); //8 bytes of payment id
+    uint256 h = Hash(pubAddr.begin(), pubAddr.end());
+    unsigned char* begin = h.begin();
+    pubAddr.push_back(*(begin));
+    pubAddr.push_back(*(begin + 1));
+    pubAddr.push_back(*(begin + 2));
+    pubAddr.push_back(*(begin + 3));
+
+    return encodeStealthBase58(pubAddr, pubAddrb58);
+}
+
+bool EncodeIntegratedAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, uint64_t paymentID, std::string& pubAddr)
+{
+    if (pubViewKey.IsCompressed() && pubSpendKey.IsCompressed()) {
+        return EncodeIntegratedAddress(pubViewKey.Raw(), pubSpendKey.Raw(), paymentID, pubAddr);
+    }
+    return false;
+}
+
 bool RevealTxOutAmount(const CKey view, const CTxOut& out, CAmount& amount, CKey& blind) 
 {
     CPubKey sharedSec;
