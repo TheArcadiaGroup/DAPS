@@ -1248,6 +1248,7 @@ static int CommandLineRawTx(int argc, char* argv[])
             CKey spend = spendSecret.GetKey();
             std::cout << "Start signing" << std::endl;
             SignDirtyRawDAPSTx(dirtyTxDecodeTmp, view, spend);
+            OutputTx(dirtyTxDecodeTmp);
         } else {
             OutputTx(tx);
         }
