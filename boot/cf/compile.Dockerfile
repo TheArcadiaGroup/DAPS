@@ -120,10 +120,8 @@ RUN cd /BUILD/ && \
     mkdir -p $DESTDIR && \
     #files only
     find ./ -type f | \
-    #flatten
-    tar pcvf - --transform 's/.*\///g' --files-from=/dev/stdin | \
-    #compress
-    xz -9 - > $DESTDIR$BUILD_TARGET-v$VERSION.tar.xz
+    #zip
+    zip -@ $DESTDIR$BUILD_TARGET-v$VERSION.zip
 
 RUN mkdir -p /codefresh/volume/out/bin/ && \
     cp -r /daps/bin/* /codefresh/volume/out/bin/ && \
