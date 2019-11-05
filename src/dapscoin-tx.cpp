@@ -24,6 +24,7 @@
 #include "secp256k1_generator.h"
 #include "secp256k1.h"
 #include "secp256k1-mw/src/hash_impl.h"
+#include "random.h"
 
 #include <stdio.h>
 
@@ -1036,8 +1037,41 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
     return true;
 }
 
-static void SignDirtyRawDAPSTx(CDirtyRawTransaction& tx, const CKey& view, const CKey& spend) {
+bool generateBulletProofAggregate(CDirtyRawTransaction& tx)
+{
+    unsigned char proof[2000];
+    size_t len = 2000;
+    const size_t MAX_VOUT = 5;
+    unsigned char nonce[32];
+    GetRandBytes(nonce, 32);
+    unsigned char blinds[MAX_VOUT][32];
+    uint64_t values[MAX_VOUT];
+    size_t i = 0;
+    const unsigned char* blind_ptr[MAX_VOUT];
+    if (tx.vout.size() > MAX_VOUT) return false;
+    memset(blinds, 0, tx.vout.size() * 32);
+    for (i = 0; i < tx.vout.size(); i++) {
+        memcpy(&blinds[i][0], tx.blinds[i].data(), 32);
+        blind_ptr[i] = blinds[i];
+        values[i] = tx.vout[i].nValue;
+    }
+    int ret = secp256k1_bulletproof_rangeproof_prove(GetContext(), GetScratch(), GetGenerator(), proof, &len, values, NULL, blind_ptr, tx.vout.size(), &secp256k1_generator_const_h, 64, nonce, NULL, 0);
+    std::copy(proof, proof + len, std::back_inserter(tx.bulletproofs));
+    return ret;
+}
 
+static void SignDirtyRawDAPSTx(CDirtyRawTransaction& tx, const CKey& view, const CKey& spend) {
+    if (!makeRingCT(tx, view, spend)) {
+        throw runtime_error("Failed to generate RingCT");
+    }
+
+    if (!generateBulletProofAggregate(tx)) {
+        throw runtime_error("Failed to generate bulletproof");
+    }
+
+    for (size_t i = 0; i < tx.vout.size(); i++) {
+        tx.vout[i].nValue = 0;
+    }
 }
 
 static int CommandLineRawTx(int argc, char* argv[])
