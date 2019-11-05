@@ -6660,9 +6660,10 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<COutPoint>& inputs,
     if (totalIn <= totalOut) {
         throw runtime_error("Transaction inputs must be strictly less than sum of outputs");
     }
-    if (dirtyRawTx.nTxFee != totalIn - totalOut) {
+    if (dirtyRawTx.nTxFee > totalIn - totalOut) {
         throw runtime_error("Transaction fee is incorrectly computed");
     }
+    dirtyRawTx.nTxFee = totalIn - totalOut;
     bool ret = true;
     {
         LOCK2(cs_main, cs_wallet);
