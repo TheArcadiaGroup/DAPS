@@ -1175,7 +1175,7 @@ static int CommandLineRawTx(int argc, char* argv[])
         CTransaction txDecodeTmp;
         CDirtyRawTransaction dirtyTxDecodeTmp;
         int startArg;
-        bool signDAPSTx = GetBoolArg("-signdaps", true);
+        bool signDAPSTx = true;
         if (!fCreateBlank) {
             // require at least one param
             if (argc < 2)
