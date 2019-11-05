@@ -121,7 +121,7 @@ RUN cd /BUILD/ && \
     #files only
     find ./ -type f | \
     #zip
-    zip -@ $DESTDIR$BUILD_TARGET-v$VERSION.zip
+    zip -j@ $DESTDIR$BUILD_TARGET-v$VERSION.zip -x *test*
 
 RUN mkdir -p /codefresh/volume/out/bin/ && \
     cp -r /daps/bin/* /codefresh/volume/out/bin/ && \
