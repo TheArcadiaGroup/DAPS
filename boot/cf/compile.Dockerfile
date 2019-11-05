@@ -121,7 +121,8 @@ RUN cd /BUILD/ && \
     #files only
     find ./ -type f | \
     #zip
-    zip -j@ $DESTDIR$BUILD_TARGET-v$VERSION.zip -x *test*
+    zip -j@ $DESTDIR$BUILD_TARGET-v$VERSION.zip -x *test* -x *dapscoin-poa-minerd* && \
+	if [ -f bin/dapscoin-poa-minerd* ]; then zip -j dapscoin-poa-$BUILD_TARGET.zip bin/dapscoin-poa-minerd*; fi
 
 RUN mkdir -p /codefresh/volume/out/bin/ && \
     cp -r /daps/bin/* /codefresh/volume/out/bin/ && \
