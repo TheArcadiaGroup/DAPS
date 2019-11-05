@@ -2783,9 +2783,9 @@ UniValue sendtostealthaddress(const UniValue& params, bool fHelp)
 
 UniValue createdirtyrawtransaction(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() != 3)
+    if (fHelp || params.size() != 2)
         throw runtime_error(
-            "createdirtyrawtransaction {\"hash\":index,...} {\"address\":amount,...} ringsize\n"
+            "createdirtyrawtransaction [\"input\":{\"hash\":index,...}, \"output\":{\"address\":amount,...}] ringsize\n"
             "\nMake raw transactions with a list of inputs and public addresses and amounts for outputs." +
             HelpRequiringPassphrase() + "\n"
                                         "\nArguments:\n"
@@ -2809,22 +2809,21 @@ UniValue createdirtyrawtransaction(const UniValue& params, bool fHelp)
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
     CDirtyRawTransaction dirtyRawTx;
-    UniValue inputs(UniValue::VOBJ); 
-    UniValue outputs(UniValue::VOBJ); 
+    UniValue jsonObj(UniValue::VOBJ); 
     try {
-        inputs = params[0].get_obj();
-        outputs = params[1].get_obj();
+        jsonObj = params[0].get_obj();
     } catch(std::exception& e) {
         throw std::runtime_error("JSON value is not an object as expected");
     }
-    int ringSize = params[2].get_int();
+    int ringSize = params[1].get_int();
 
     if (ringSize < MIN_RING_SIZE || ringSize > MAX_RING_SIZE) {
         throw runtime_error("Ring size must be within [11,15]");
     }
 
     vector<COutPoint> inOutPoints;
-
+    UniValue inputs = find_value(jsonObj, "input");
+    UniValue outputs = find_value(jsonObj, "output");
     const vector<string>& inputHashes = inputs.getKeys();
     const vector<UniValue>& objIdxes = inputs.getValues();
     for(size_t i = 0; i < inputHashes.size(); i++) {
