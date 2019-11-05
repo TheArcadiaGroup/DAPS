@@ -6712,7 +6712,7 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<COutPoint>& inputs,
                 EncodeTxOutAmount(txout, txout.nValue, sharedSec.begin());
                 std::vector<unsigned char> blind;
                 std::copy(txout.maskValue.inMemoryRawBind.begin(), txout.maskValue.inMemoryRawBind.end(), std::back_inserter(blind));
-                txout.blinds.push_back(blind);
+                dirtyRawTx.blinds.push_back(blind);
 
                 dirtyRawTx.vout.push_back(txout);
                 nBytes += ::GetSerializeSize(*(CTxOut*)&txout, SER_NETWORK, PROTOCOL_VERSION);

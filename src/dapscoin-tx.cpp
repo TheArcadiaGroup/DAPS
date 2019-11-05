@@ -583,9 +583,10 @@ CKey computePrivateKey(const CTxOut& out, const CKey& view, const CKey& spend)
 {
     unsigned char aR[65];
     //copy R into a
-    memcpy(aR, out.txPub.begin(), out.txPub.size());
+    CPubKey txPub = out.txPub;
+    memcpy(aR, txPub.begin(), out.txPub.size());
     if (!secp256k1_ec_pubkey_tweak_mul(aR, out.txPub.size(), view.begin())) {
-        return false;
+        throw runtime_error("Failed to compute private key");
     }
     uint256 HS = Hash(aR, aR + txPub.size());
 
@@ -627,7 +628,7 @@ bool CreateCommitmentWithZeroBlind(const CAmount val, unsigned char* pBlind, std
     return CreateCommitment(pBlind, val, commitment);
 }
 
-bool RevealTxOutAmount(const CKey view, const CTxOut& out, CAmount& amount, CKey& blind) const
+bool RevealTxOutAmount(const CKey view, const CTxOut& out, CAmount& amount, CKey& blind) 
 {
     CPubKey sharedSec;
     ECDHInfo::ComputeSharedSec(view, out.txPub, sharedSec);
@@ -639,11 +640,10 @@ bool RevealTxOutAmount(const CKey view, const CTxOut& out, CAmount& amount, CKey
     std::vector<unsigned char> commitment;
     if (CreateCommitment(decodedMask.begin(), amount, commitment)) {
         if (commitment == out.commitment) {
-            blind.Set(blindMap[out.scriptPubKey].begin(), blindMap[out.scriptPubKey].end(), true);
+            blind.Set(decodedMask.begin(), decodedMask.end(), true);
             return true;
         } else {
             amount = 0;
-            amountMap[out.scriptPubKey] = amount;
             return false;
         }            
     }
@@ -651,6 +651,11 @@ bool RevealTxOutAmount(const CKey view, const CTxOut& out, CAmount& amount, CKey
     return false;
 }
 
+uint256 GetTxSignatureHash(const CTransaction& tx)
+{
+    CTransactionSignature cts(tx);
+    return cts.GetHash();
+}
 
 bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spend)
 {
@@ -757,7 +762,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
     i = 0;
     for (CTxOut& out : wtxNew.vout) {
         if (!out.IsEmpty()) {
-            memcpy(&myBlinds[myBlindsIdx][0], wtxNew.blinds[i].begin(), 32);
+            memcpy(&myBlinds[myBlindsIdx][0], wtxNew.blinds[i].data(), 32);
             bptr[myBlindsIdx] = &myBlinds[myBlindsIdx][0];
             myBlindsIdx++;
         }
@@ -843,18 +848,14 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
         }
         for (int j = 0; j < (int)wtxNew.vin[0].decoys.size() + 1; j++) {
             if (j != PI) {
-                CTransaction txPrev;
-                uint256 hashBlock;
-                if (!GetTransaction(decoysForIn[j].hash, txPrev, hashBlock)) {
-                    return false;
-                }
+                const CTxOut& inCTxOut = wtxNew.fullDecoys[i][j];
                 CPubKey extractedPub;
-                if (!ExtractPubKey(txPrev.vout[decoysForIn[j].n].scriptPubKey, extractedPub)) {
-                    strFailReason = _("Cannot extract public key from script pubkey");
+                if (!ExtractPubKey(inCTxOut.scriptPubKey, extractedPub)) {
+                    throw runtime_error("Cannot extract public key from script pubkey");
                     return false;
                 }
                 memcpy(allInPubKeys[i][j], extractedPub.begin(), 33);
-                memcpy(allInCommitments[i][j], &(txPrev.vout[decoysForIn[j].n].commitment[0]), 33);
+                memcpy(allInCommitments[i][j], &(inCTxOut.commitment[0]), 33);
             }
         }
     }
@@ -865,7 +866,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
     for (size_t i = 0; i < wtxNew.vout.size(); i++) {
         memcpy(&(allOutCommitments[i][0]), &(wtxNew.vout[i].commitment[0]), 33);
         if (!secp256k1_pedersen_commitment_parse(both, &allOutCommitmentsPacked[i], allOutCommitments[i])) {
-            strFailReason = _("Cannot parse the commitment for inputs");
+            throw runtime_error("Cannot parse the commitment for inputs");
             return false;
         }
     }
@@ -874,7 +875,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
     unsigned char txFeeBlind[32];
     memset(txFeeBlind, 0, 32);
     if (!secp256k1_pedersen_commit(both, &allOutCommitmentsPacked[wtxNew.vout.size()], txFeeBlind, wtxNew.nTxFee, &secp256k1_generator_const_h, &secp256k1_generator_const_g)) {
-        strFailReason = _("Cannot parse the commitment for transaction fee");
+        throw runtime_error("Cannot parse the commitment for transaction fee");
         return false;
     }
 
@@ -896,8 +897,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
             const secp256k1_pedersen_commitment* inCptr[MAX_VIN * 2];
             for (int k = 0; k < (int)wtxNew.vin.size(); k++) {
                 if (!secp256k1_pedersen_commitment_parse(both, &allInCommitmentsPacked[k][j], allInCommitments[k][j])) {
-                    strFailReason = _("Cannot parse the commitment for inputs");
-                    return false;
+                    throw runtime_error("Cannot parse the commitment for inputs");
                 }
                 inCptr[k] = &allInCommitmentsPacked[k][j];
             }
@@ -945,12 +945,10 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
             unsigned char CP[33];
             memcpy(CP, allInPubKeys[j][PI_interator], 33);
             if (!secp256k1_ec_pubkey_tweak_mul(CP, 33, CI[PI_interator])) {
-                strFailReason = _("Cannot compute LIJ for ring signature in secp256k1_ec_pubkey_tweak_mul");
-                return false;
+                throw runtime_error("Cannot compute LIJ for ring signature in secp256k1_ec_pubkey_tweak_mul");
             }
             if (!secp256k1_ec_pubkey_tweak_add(CP, 33, SIJ[j][PI_interator])) {
-                strFailReason = _("Cannot compute LIJ for ring signature in secp256k1_ec_pubkey_tweak_add");
-                return false;
+                throw runtime_error("Cannot compute LIJ for ring signature in secp256k1_ec_pubkey_tweak_add");
             }
             memcpy(LIJ[j][PI_interator], CP, 33);
 
@@ -958,8 +956,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
             //first compute CI * I
             memcpy(RIJ[j][PI_interator], allKeyImages[j], 33);
             if (!secp256k1_ec_pubkey_tweak_mul(RIJ[j][PI_interator], 33, CI[PI_interator])) {
-                strFailReason = _("Cannot compute RIJ for ring signature in secp256k1_ec_pubkey_tweak_mul");
-                return false;
+                throw runtime_error("Cannot compute RIJ for ring signature in secp256k1_ec_pubkey_tweak_mul");
             }
 
             //compute S*H(P)
@@ -984,7 +981,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
                 throw runtime_error("Cannot compute sum of commitments");
             size_t tempLength;
             if (!secp256k1_pedersen_commitment_to_serialized_pubkey(&sum, RIJ[j][PI_interator], &tempLength)) {
-                strFailReason = _("Cannot compute two elements and serialize it to pubkey");
+                throw runtime_error("Cannot compute two elements and serialize it to pubkey");
             }
         }
 
@@ -1056,7 +1053,7 @@ static int CommandLineRawTx(int argc, char* argv[])
         }
 
         CTransaction txDecodeTmp;
-        CDrityRawTransaction dirtyTxDecodeTmp;
+        CDirtyRawTransaction dirtyTxDecodeTmp;
         int startArg;
         bool signDAPSTx = GetBoolArg("-signdaps", false);
         if (!fCreateBlank) {

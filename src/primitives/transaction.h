@@ -25,8 +25,8 @@ extern const int MIN_TX_INPUTS_FOR_SWEEPING;
 
 //Elliptic Curve Diffie Helman: encodes and decodes the amount b and mask a
 // where C= aG + bH
-void ecdhEncode(unsigned char* unmasked, unsigned char* amount, const unsigned char* sharedSec, int size)
-void ecdhDecode(unsigned char* masked, unsigned char* amount, const unsigned char* sharedSec, int size)
+void ecdhEncode(unsigned char* unmasked, unsigned char* amount, const unsigned char* sharedSec, int size);
+void ecdhDecode(unsigned char* masked, unsigned char* amount, const unsigned char* sharedSec, int size);
 
 class ECDHInfo {
 public:
