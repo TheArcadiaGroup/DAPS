@@ -2785,7 +2785,7 @@ UniValue createdirtyrawtransaction(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 3)
         throw runtime_error(
-            "createdirtyrawtransaction [\"input\":{\"hash\":index,...}, \"output\":{\"address\":amount,...}] ringsize\n"
+            "createdirtyrawtransaction <inputhash1>:index1-<inputhash2>:index2... <receiver1>:amount1-receiver2:amount2 ringsize\n"
             "\nMake raw transactions with a list of inputs and public addresses and amounts for outputs." +
             HelpRequiringPassphrase() + "\n"
                                         "\nArguments:\n"
@@ -2794,7 +2794,7 @@ UniValue createdirtyrawtransaction(const UniValue& params, bool fHelp)
                                         "      \"hash\":index   (numeric) The hash of input, and the corresponding index\n"
                                         "      ,...\n"
                                         "    }\n"
-                                        "2. \"amounts\"             (string, required) A json object with addresses and amounts\n"
+                                        "2. \"outputs\"             (string, required) A json object with addresses and amounts\n"
                                         "    {\n"
                                         "      \"address\":amount   (numeric) The dapscoin address is the key, the numeric amount in DAPS is the value\n"
                                         "      ,...\n"
@@ -2804,7 +2804,7 @@ UniValue createdirtyrawtransaction(const UniValue& params, bool fHelp)
                                         "\"hex of unsigned transcation\"          (string) The transaction of unsigned transaction \n"
                                         "\nExamples:\n"
                                         "\nSend two amounts to two different addresses:\n" +
-            HelpExampleCli("createdirtyrawtransaction", "{\"57b7be02b156b3b3079fad2b9defb00be4d28bf29887eb9b181207d72b5248c7\":0} {\\\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\\\":100,\\\"41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n\\\":200}\""));
+            HelpExampleCli("createdirtyrawtransaction", "57b7be02b156b3b3079fad2b9defb00be4d28bf29887eb9b181207d72b5248c7:0 41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n:100-41kYDmcd27f2ULWE6tfC19UnEHYpEhMBtfiYwVFUYbZhXrjLomZXSovQPGzwTCAgwQLpWiEQPA5uyNjmEVLPr4g71AUMNjaVD3n:200 12\""));
     
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
