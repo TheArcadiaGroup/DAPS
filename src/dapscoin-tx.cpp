@@ -986,7 +986,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
             secp256k1_pedersen_serialized_pubkey_to_commitment(allInPubKeys[i][j], 33, &inPubKeysToCommitments[i][j]);
         }
     }
-
+    std::cout << "Compute all commitments" << std::endl;
     for (int j = 0; j < (int)wtxNew.vin[0].decoys.size() + 1; j++) {
         if (j != PI) {
             const secp256k1_pedersen_commitment* inCptr[MAX_VIN * 2];
@@ -1033,7 +1033,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
     } else {
         memcpy(CI[PI_interator], temppi1.begin(), 32);
     }
-
+    std::cout << "Computing C" << std::endl;
     while (PI_interator != PI) {
         for (int j = 0; j < (int)wtxNew.vin.size() + 1; j++) {
             //compute LIJ
@@ -1128,6 +1128,7 @@ bool makeRingCT(CDirtyRawTransaction& wtxNew, const CKey& view, const CKey& spen
         wtxNew.S.push_back(S_column);
     }
     wtxNew.ntxFeeKeyImage.Set(allKeyImages[wtxNew.vin.size()], allKeyImages[wtxNew.vin.size()] + 33);
+    std::cout << "Finish RingCT" << std::endl;
     return true;
 }
 
