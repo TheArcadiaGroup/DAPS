@@ -2783,7 +2783,7 @@ UniValue sendtostealthaddress(const UniValue& params, bool fHelp)
 
 UniValue createdirtyrawtransaction(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() != 2)
+    if (fHelp || params.size() != 3)
         throw runtime_error(
             "createdirtyrawtransaction [\"input\":{\"hash\":index,...}, \"output\":{\"address\":amount,...}] ringsize\n"
             "\nMake raw transactions with a list of inputs and public addresses and amounts for outputs." +
@@ -2809,34 +2809,47 @@ UniValue createdirtyrawtransaction(const UniValue& params, bool fHelp)
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
     CDirtyRawTransaction dirtyRawTx;
-    UniValue jsonObj(UniValue::VOBJ); 
-    try {
-        jsonObj = params[0].get_obj();
-    } catch(std::exception& e) {
-        throw std::runtime_error("JSON value is not an object as expected");
-    }
-    int ringSize = params[1].get_int();
+    std::string inputString = params[0].get_str();
+    std::string outputString = params[1].get_str();
+    int ringSize = params[2].get_int();
 
     if (ringSize < MIN_RING_SIZE || ringSize > MAX_RING_SIZE) {
         throw runtime_error("Ring size must be within [11,15]");
     }
 
+    std::vector<string> inputOutpointStrings, outputStrings;
+    boost::split(inputOutpointStrings, inputString, boost::is_any_of("-"));
+    boost::split(outputStrings, outputString, boost::is_any_of("-"));
+    
     vector<COutPoint> inOutPoints;
-    UniValue inputs = find_value(jsonObj, "input");
-    UniValue outputs = find_value(jsonObj, "output");
-    const vector<string>& inputHashes = inputs.getKeys();
-    const vector<UniValue>& objIdxes = inputs.getValues();
-    for(size_t i = 0; i < inputHashes.size(); i++) {
-        COutPoint op(uint256(inputHashes[i]), objIdxes[i].get_int());
+    
+    for(size_t i = 0; i < inputOutpointStrings.size(); i++) {
+        std::vector<string> splits;
+        boost::split(splits, inputOutpointStrings[i], boost::is_any_of(":"));
+        if (splits.size() != 2 || splits[0].empty() || splits[1].empty()) 
+            throw runtime_error("Input is ill formated");
+        
+        uint256 hash;
+        hash.SetHex(splits[0]);
+        UniValue idx(UniValue::VNUM);
+        idx.setNumStr(splits[1]);
+        COutPoint op(hash, idx.get_int());
         inOutPoints.push_back(op);
     }
 
-    const vector<std::string>& pubAddresses = outputs.getKeys();
+    vector<std::string> pubAddresses;
     vector<CAmount> amounts;
-    const vector<UniValue>& amountsObj = outputs.getValues();
 
-    for(size_t i = 0; i < amountsObj.size(); i++) {
-        CAmount amount = AmountFromValue(amountsObj[i]);
+    for(size_t i = 0; i < outputStrings.size(); i++) {
+        std::vector<string> splits;
+        boost::split(splits, outputStrings[i], boost::is_any_of(":"));
+        if (splits.size() != 2 || splits[0].empty() || splits[1].empty()) 
+            throw runtime_error("Output is ill formated");
+        
+        pubAddresses.push_back(splits[0]);
+        UniValue amObj(UniValue::VNUM);
+        amObj.setNumStr(splits[1]);
+        CAmount amount = AmountFromValue(amObj);
         amounts.push_back(amount);
     }
 

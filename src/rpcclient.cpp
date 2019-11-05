@@ -54,7 +54,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"getbalance", 2},
         {"getblockhash", 0},
         {"setdecoyconfirmation", 0},
-        {"createdirtyrawtransaction", 1},
+        {"createdirtyrawtransaction", 2},
         {"getrawtransactionbyblockheight", 0},
         {"move", 2},
         {"move", 3},
