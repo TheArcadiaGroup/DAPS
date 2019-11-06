@@ -6614,17 +6614,31 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<COutPoint>& inputs,
     dirtyRawTx.paymentID = 0;
     std::vector<CAmount> inputAmounts;
     for (size_t i = 0; i < inputs.size(); i++) {
+        CTransaction txPrev;
         if (mapWallet.count(inputs[i].hash) < 1) {
-            throw runtime_error("Transaction input does not exist");
+            uint256 hashBlock;
+            if (!GetTransaction(inputs[i].hash, txPrev, hashBlock)) {
+                throw runtime_error("Transaction input does not exist");
+            }
+
+            CBlockIndex* atTheblock = mapBlockIndex[hashBlock];
+            CBlockIndex* tip = chainActive.Tip();
+            if (!chainActive.Contains(atTheblock)) {
+                throw runtime_error("Transaction input does not exist");
+            }
+            IsTransactionForMe(txPrev);
+        } else {
+            txPrev = mapWallet[inputs[i].hash];
         }
-        CWalletTx txPrev = mapWallet[inputs[i].hash];
         // Quick answer in most cases
         if (!IsFinalTx(txPrev))
             throw runtime_error("Transaction input does not exist");
         int nDepth = txPrev.GetDepthInMainChain();
         if (nDepth < 1)
             throw runtime_error("Transaction input does not exist");
-        
+        if (inputs[i].n >= txPrev.vout.size()) {
+            throw runtime_error("Transaction input index is not valid");
+        }
         if (!IsMine(txPrev.vout[inputs[i].n])) {
             throw runtime_error("Transaction input is not yours");
         }
