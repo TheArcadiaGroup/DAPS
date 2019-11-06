@@ -176,7 +176,6 @@ public:
 
         hashGenesisBlock = genesis.GetHash();
         assert(hashGenesisBlock == uint256("00000b559a6c3159df473a60f91237c0c91577ccccfa11d5fd23c5afb6e74981"));
-        printf("genesis.hashMerkleRoot: %s\n", genesis.hashMerkleRoot.GetHex().c_str());
         assert(genesis.hashMerkleRoot == uint256("0995cf4323032851eb42ac13e7aa4596a4837470a08763074b986cbf681d3f17"));
 
         vSeeds.push_back(CDNSSeedData("dev-seed1.dapscoin.com", "dev-seed1.dapscoin.com"));        // Single node address
