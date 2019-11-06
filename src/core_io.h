@@ -11,6 +11,7 @@
 class CBlock;
 class CScript;
 class CTransaction;
+class CDirtyRawTransaction;
 class uint256;
 class UniValue;
 class PoSBlockSummary;
@@ -18,6 +19,7 @@ class PoSBlockSummary;
 // core_read.cpp
 extern CScript ParseScript(std::string s);
 extern bool DecodeHexTx(CTransaction& tx, const std::string& strHexTx);
+extern bool DecodeHexDirtyTx(CDirtyRawTransaction& tx, const std::string& strHexTx);
 extern bool DecodeHexBlk(CBlock&, const std::string& strHexBlk);
 extern uint256 ParseHashUV(const UniValue& v, const std::string& strName);
 extern uint256 ParseHashStr(const std::string&, const std::string& strName);

@@ -18,10 +18,15 @@
 
 #include <list>
 
+extern const int MIN_RING_SIZE;
+extern const int MAX_RING_SIZE;
+extern const int MAX_TX_INPUTS;
+extern const int MIN_TX_INPUTS_FOR_SWEEPING;
+
 //Elliptic Curve Diffie Helman: encodes and decodes the amount b and mask a
 // where C= aG + bH
-void ecdhEncode(uint256& unmasked, uint256& amount, const unsigned char * sharedSec, int size);
-void ecdhDecode(uint256& masked, uint256& amount, const unsigned char * sharedSec, int size);
+void ecdhEncode(unsigned char* unmasked, unsigned char* amount, const unsigned char* sharedSec, int size);
+void ecdhDecode(unsigned char* masked, unsigned char* amount, const unsigned char* sharedSec, int size);
 
 class ECDHInfo {
 public:
@@ -536,6 +541,41 @@ public:
 
     uint256 GetHash() {
     	return SerializeHash(*this);
+    }
+};
+
+class FullCDecoy {
+public:
+    CTransaction prev;
+    int n;
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+        READWRITE(prev);
+        READWRITE(n);
+    }
+};
+
+class CDirtyRawTransaction : public CTransaction {
+public:
+    std::vector<std::vector<CTxOut>> fullDecoys;
+    std::vector<std::vector<unsigned char>> txPrivs;
+    std::vector<std::vector<unsigned char>> blinds;
+    std::vector<std::string> recipientPubAddresses; //privacy addresses of recipient
+    int myIndex;
+    int ringSize;
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+        READWRITE(*(CTransaction*)this);
+        READWRITE(fullDecoys);
+        READWRITE(txPrivs);
+        READWRITE(blinds);
+        READWRITE(recipientPubAddresses); 
+        READWRITE(myIndex);
+        READWRITE(ringSize);
     }
 };
 

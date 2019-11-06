@@ -242,6 +242,9 @@ private:
 
     int64_t nNextResend;
     int64_t nLastResend;
+    CKey registeredViewKey;
+    CPubKey registeredPubSpendKey;
+    std::string registeredAddress;
 
     /**
      * Used to keep track of spent outpoints, and
@@ -281,6 +284,9 @@ public:
     bool WriteAutoConsolidateSettingTime(uint32_t settingTime);
     uint32_t ReadAutoConsolidateSettingTime();
     bool IsAutoConsolidateOn();
+    void SetRegisterViewKey(std::string viewkey);
+    void SetRegisterAddress(std::string stealth);
+    bool IsWatcherWallet() const;
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
@@ -586,7 +592,7 @@ public:
                                       AvailableCoinsType coin_type = ALL_COINS, bool useIX = false,
                                       CAmount nFeePay = 0, int ringSize = 6, bool tomyself = false);
 
-    int ComputeFee(size_t numIn, size_t numOut, size_t ringSize);
+    static int ComputeFee(size_t numIn, size_t numOut, size_t ringSize);
     CAmount ComputeReserveUTXOAmount();
     bool CreateTransaction(CScript scriptPubKey, const CAmount &nValue, CWalletTx &wtxNew, CReserveKey &reservekey,
                            CAmount &nFeeRet, std::string &strFailReason, const CCoinControl *coinControl = NULL,
@@ -648,7 +654,7 @@ public:
     }
     bool IsMine(const CTransaction& tx) const
     {
-        BOOST_FOREACH (const CTxOut& txout, tx.vout)
+        for (const CTxOut& txout : tx.vout)
         if (IsMine(txout))
             return true;
         return false;
@@ -661,7 +667,7 @@ public:
     CAmount GetDebit(const CTransaction& tx, const isminefilter& filter) const
     {
         CAmount nDebit = 0;
-        BOOST_FOREACH (const CTxIn& txin, tx.vin) {
+        for (const CTxIn& txin : tx.vin) {
             nDebit += GetDebit(txin, filter);
         }
         return nDebit;
@@ -669,7 +675,7 @@ public:
     CAmount GetCredit(const CTransaction& tx, const isminefilter& filter) const
     {
         CAmount nCredit = 0;
-        BOOST_FOREACH (const CTxOut& txout, tx.vout) {
+        for (const CTxOut& txout : tx.vout) {
             nCredit += GetCredit(tx, txout, filter);
         }
         return nCredit;
@@ -677,7 +683,7 @@ public:
     CAmount GetChange(const CTransaction& tx) const
     {
         CAmount nChange = 0;
-        BOOST_FOREACH (const CTxOut& txout, tx.vout) {
+        for (const CTxOut& txout : tx.vout) {
             nChange += GetChange(tx, txout);
         }
         return nChange;
@@ -750,11 +756,16 @@ public:
 
     bool ComputeStealthPublicAddress(const std::string& accountName, std::string& pubAddress);
     bool ComputeIntegratedPublicAddress(const uint64_t paymentID, const std::string& accountName, std::string& pubAddress);
-    bool EncodeStealthPublicAddress(const std::vector<unsigned char>& pubViewKey, const std::vector<unsigned char>& pubSpendKey, std::string& pubAddr);
-    bool EncodeStealthPublicAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr);
+    bool EncodeStealthPublicAddress(const std::vector<unsigned char>& pubViewKey, const std::vector<unsigned char>& pubSpendKey, std::string& pubAddr) const;
+    bool EncodeStealthPublicAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr) const;
     static bool DecodeStealthAddress(const std::string& stealth, CPubKey& pubViewKey, CPubKey& pubSpendKey, bool& hasPaymentID, uint64_t& paymentID);
     static bool ComputeStealthDestination(const CKey& secret, const CPubKey& pubViewKey, const CPubKey& pubSpendKey, CPubKey& des);
     bool SendToStealthAddress(const std::string& stealthAddr, CAmount nValue, CWalletTx& wtxNew, bool fUseIX = false, int ringSize = 5);
+    bool CreateDirtyRawTransaction(const std::vector<COutPoint>& inputs, 
+                                const std::vector<std::string>& pubAddresses, 
+                                const std::vector<CAmount>& amounts, 
+                                CDirtyRawTransaction& dirtyRawTx, 
+                                int ringSize);
     bool GenerateAddress(CPubKey& pub, CPubKey& txPub, CKey& txPriv) const;
     bool IsTransactionForMe(const CTransaction& tx);
     bool ReadAccountList(std::string& accountList);
@@ -794,11 +805,11 @@ public:
     void AddComputedPrivateKey(const CTxOut& out);
     bool IsCollateralized(const COutPoint& outpoint);
 private:
-    bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth);
+    bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth) const;
     bool allMyPrivateKeys(std::vector<CKey>& spends, std::vector<CKey>& views);
     void createMasterKey() const;
     bool generateBulletProofAggregate(CTransaction& tx);
-    bool selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringSize);
+    bool selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringSize, bool genKeyImage = true);
     bool makeRingCT(CTransaction& wtxNew, int ringSize, std::string& strFailReason);
     int walletIdxCache = 0;
     bool isMatchMyKeyImage(const CKeyImage& ki, const COutPoint& out);
@@ -1441,7 +1452,7 @@ public:
             }
         }
         // Trusted if all inputs are from us and are in the mempool:
-        BOOST_FOREACH (const CTxIn& txin, vin) {
+        for (const CTxIn& txin : vin) {
             // Transactions not sent by us: not trusted
         	COutPoint prevout = pwallet->findMyOutPoint(txin);
             const CWalletTx* parent = pwallet->GetWalletTx(prevout.hash);
@@ -1492,7 +1503,7 @@ public:
     //Used with Obfuscation. Will return largest nondenom, then denominations, then very small inputs
     int Priority() const
     {
-        BOOST_FOREACH (CAmount d, obfuScationDenominations)
+        for (CAmount d : obfuScationDenominations)
         if (tx->vout[i].nValue == d) return 10000;
         if (tx->vout[i].nValue < 1 * COIN) return 20000;
 

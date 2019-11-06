@@ -79,6 +79,22 @@ bool DecodeHexTx(CTransaction& tx, const std::string& strHexTx)
     return true;
 }
 
+bool DecodeHexDirtyTx(CDirtyRawTransaction& tx, const std::string& strHexTx)
+{
+    if (!IsHex(strHexTx))
+        return false;
+
+    vector<unsigned char> txData(ParseHex(strHexTx));
+    CDataStream ssData(txData, SER_NETWORK, PROTOCOL_VERSION);
+    try {
+        ssData >> tx;
+    } catch (const std::exception&) {
+        return false;
+    }
+
+    return true;
+}
+
 bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk)
 {
     if (!IsHex(strHexBlk))
