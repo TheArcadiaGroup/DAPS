@@ -6628,14 +6628,15 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<COutPoint>& inputs,
             }
             IsTransactionForMe(txPrev);
         } else {
+            int nDepth = mapWallet[inputs[i].hash].GetDepthInMainChain();
+            if (nDepth < 1)
+                throw runtime_error("Transaction input does not exist");
             txPrev = mapWallet[inputs[i].hash];
         }
         // Quick answer in most cases
         if (!IsFinalTx(txPrev))
             throw runtime_error("Transaction input does not exist");
-        int nDepth = txPrev.GetDepthInMainChain();
-        if (nDepth < 1)
-            throw runtime_error("Transaction input does not exist");
+        
         if (inputs[i].n >= txPrev.vout.size()) {
             throw runtime_error("Transaction input index is not valid");
         }
