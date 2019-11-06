@@ -515,9 +515,13 @@ static void OutputTxHash(const CTransaction& tx)
     fprintf(stdout, "%s\n", strHexHash.c_str());
 }
 
-static void OutputTxHex(const CTransaction& tx)
+static void OutputTxHex(CTransaction tx)
 {
+    UniValue entry(UniValue::VOBJ);
     string strHex = EncodeHexTx(tx);
+    string strHexHash = tx.GetHash().GetHex();
+    entry.push_back(Pair("hex", strHex));
+    entry.push_back(Pair("txid", strHexHash));
 
     fprintf(stdout, "%s\n", strHex.c_str());
 }
