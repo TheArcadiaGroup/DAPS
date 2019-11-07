@@ -75,7 +75,7 @@ void TwoFAQRDialog::update()
     pwalletMain->Write2FASecret(addr);
 
     uri.sprintf("otpauth://totp/DAPS:QT%20Wallet?secret=%s&issuer=dapscoin&algorithm=SHA1&digits=6&period=30", addr.c_str());
-    infoText = "Secret Key: ";
+    infoText = "Recovery Key: ";
     ui->lblURI->setText(infoText + addr.c_str());
 
 #ifdef USE_QRCODE
