@@ -23,6 +23,7 @@
 #include "validationinterface.h"
 #include "wallet_ismine.h"
 #include "walletdb.h"
+#include "univalue.h"
 
 #include <algorithm>
 #include <map>
@@ -259,6 +260,7 @@ public:
     static const CAmount MINIMUM_STAKE_AMOUNT = 400000 * COIN;
     static const int32_t MAX_DECOY_POOL = 500;
     static const int32_t PROBABILITY_NEW_COIN_SELECTED = 70;
+    const std::string StrWalletFileTextBackup = "wallet.backup.json";
     bool RescanAfterUnlock(bool fromBeginning = false);
     bool MintableCoins();
     StakingStatusError StakingCoinStatus(CAmount& minFee, CAmount& maxFee);
@@ -282,7 +284,9 @@ public:
     uint32_t ReadAutoConsolidateSettingTime();
     bool IsAutoConsolidateOn();
     bool ExportTransactionList(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash);
-    std::string ExportTransactionList();
+    UniValue ExportTransactionList();
+    bool ReadTxesFromBackup(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash);
+    void BackupWalletTXes();
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet

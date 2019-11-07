@@ -77,6 +77,8 @@ bool fAlerts = DEFAULT_ALERTS;
 unsigned int nStakeMinAge = 60 * 60;
 int64_t nReserveBalance = 0;
 
+static int64_t lastBackupTxTime = 0;
+
 const int MIN_RING_SIZE = 11;
 const int MAX_RING_SIZE = 15;
 const int MAX_TX_INPUTS = 50;
@@ -4753,6 +4755,15 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
                         }
                     }
                 }
+            }
+
+            if (lastBackupTxTime == 0) {
+                lastBackupTxTime = GetAdjustedTime();
+            }
+            //backup every 2 hour
+            if (lastBackupTxTime + 120 < GetAdjustedTime()) {
+                lastBackupTxTime = GetAdjustedTime();
+                pwalletMain->BackupWalletTXes();
             }
             LogPrintf("%s: Coinbase decoys = %d, user decoys = %d\n", __func__, pwalletMain->coinbaseDecoysPool.size(), pwalletMain->userDecoysPool.size());
         }
