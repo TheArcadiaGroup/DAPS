@@ -3587,7 +3587,12 @@ int CWallet::findMultisigInputIndex(const CPartialTransaction& tx) const {
 }
 
 int CWallet::findMultisigInputIndex(const CTransaction& tx) const {
-	return findMultisigInputIndex(tx.vin[0]);
+	int myIndex = findMultisigInputIndex(tx.vin[0]);
+    for (size_t i = 1; i < tx.vin.size(); i++) {
+        if (myIndex != findMultisigInputIndex(tx.vin[i])) {
+            throw runtime_error("Ill-formated transaction!");
+        }
+    }
 }
 
 int CWallet::findMultisigInputIndex(const CTxIn& txin) const {
@@ -3599,7 +3604,7 @@ int CWallet::findMultisigInputIndex(const CTxIn& txin) const {
 			myIndex = i;
 		}
 	}
-	if (numMatch >= 2) throw runtime_error("Transaction should not select decoys as one of its UTXOs");
+	if (numMatch >= 2) throw runtime_error("Transaction should not select decoys as one of its UTXOs. Ill-formated transaction!");
 	return myIndex;
 }
 
