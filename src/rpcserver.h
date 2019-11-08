@@ -249,6 +249,7 @@ extern UniValue importkeys(const UniValue& params, bool fHelp);
 extern UniValue revealviewprivatekey(const UniValue& params, bool fHelp);
 extern UniValue revealspendprivatekey(const UniValue& params, bool fHelp);
 extern UniValue addcosigners(const UniValue& params, bool fHelp);
+extern UniValue cosigntransaction(const UniValue& params, bool fHelp);
 extern UniValue showmultisigaddress(const UniValue& params, bool fHelp);
 extern UniValue showcombokey(const UniValue& params, bool fHelp);
 extern UniValue showtxprivatekeys(const UniValue& params, bool fHelp);

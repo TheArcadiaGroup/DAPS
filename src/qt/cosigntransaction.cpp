@@ -40,6 +40,7 @@ CoSignTransaction::CoSignTransaction(QWidget* parent) : QDialog(parent),
                                                     model(0)
 {
     ui->setupUi(this);
+    connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(cosignTransaction()));
 }
 
 void CoSignTransaction::setClientModel(ClientModel* clientModel)
@@ -69,6 +70,41 @@ CoSignTransaction::~CoSignTransaction(){
     delete ui;
 }
 
+void CoSignTransaction::cosignTransaction()
+{
+    std::string hexPartial = ui->hexCode->toPlainText().trimmed().toStdString();
+	if (!IsHex(hexPartial)) return;
+    
+    vector<unsigned char> partialTxData(ParseHex(hexPartial));
+	CDataStream ssdata(partialTxData, SER_NETWORK, PROTOCOL_VERSION);
+	CPartialTransaction partialTx;
+	try {
+		ssdata >> partialTx;
+	} catch (const std::exception&) {
+		return;
+	}
+    if (!pwalletMain->CoSignPartialTransaction(partialTx)) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Transaction co-sining failed");
+        msgBox.setText("Failed to cosign transaction.\n\n");
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
+		return;
+    }
+
+    CDataStream dex(SER_NETWORK, PROTOCOL_VERSION);
+    dex << partialTx;
+    std::string hex = HexStr(dex.begin(), dex.end());
+    ui->signedHex->setReadOnly(true);
+    ui->signedHex->setText(QString::fromStdString(hex));
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Transaction Signed");
+    msgBox.setText("Multisignature transaction CoSigned by you. You can copy the hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");
+    msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.exec();
+}
 
 
 

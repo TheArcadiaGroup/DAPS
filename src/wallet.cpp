@@ -239,6 +239,7 @@ bool CWallet::AddKeyPubKey(const CKey& secret, const CPubKey& pubkey)
 }
 
 void CWallet::GenerateMultisigWallet(int numSigners) {
+    LOCK(cs_wallet);
 	if (multiSigPrivView.IsValid() && multiSigPubSpend.IsFullyValid()) return;
 	if (IsLocked()) {
 		LogPrintf("Wallet need to be unlocked");

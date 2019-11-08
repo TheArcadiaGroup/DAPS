@@ -2951,6 +2951,52 @@ UniValue addcosigners(const UniValue& params, bool fHelp) {
     return pwalletMain->MyMultisigPubAddress();
 }
 
+UniValue cosigntransaction(const UniValue& params, bool fHelp) {
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+                "cosigntransaction <hexcode>\n"
+                "\nCosign a transaction.\n"
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\nExamples:\n" +
+                HelpExampleCli("cosigntransaction", "hexcode") + HelpExampleCli("cosigntransaction", "\"\"") +
+                HelpExampleCli("cosigntransaction", "") + HelpExampleRpc("cosigntransaction", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacywallet to create one.");
+    }
+
+    EnsureWalletIsUnlocked();
+
+    std::string hexPartial = params[0].get_str();
+	if (!IsHex(hexPartial)) throw runtime_error("Invalid hex code");
+    
+    vector<unsigned char> partialTxData(ParseHex(hexPartial));
+	CDataStream ssdata(partialTxData, SER_NETWORK, PROTOCOL_VERSION);
+	CPartialTransaction partialTx;
+	try {
+		ssdata >> partialTx;
+	} catch (const std::exception&) {
+		throw runtime_error("Fail to parse hex code");
+	}
+    bool ret = false;
+    try {
+        ret = pwalletMain->CoSignPartialTransaction(partialTx);
+    } catch(std::exception& e) {
+        throw runtime_error(e.what());
+    }
+    if (!ret) {
+        throw runtime_error("Fail to co-sign transaction");
+    }
+
+    CDataStream dex(SER_NETWORK, PROTOCOL_VERSION);
+    dex << partialTx;
+    std::string hex = HexStr(dex.begin(), dex.end());
+    return hex;
+}
+
 UniValue revealspendprivatekey(const UniValue& params, bool fHelp) {
     if (fHelp || params.size() != 0)
         throw runtime_error(
