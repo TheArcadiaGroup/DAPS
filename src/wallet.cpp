@@ -1686,6 +1686,48 @@ set<uint256> CWalletTx::GetConflicts() const
     return result;
 }
 
+void CWallet::RecoverFromJsonBackup()
+{
+    if (IsLocked()) return;
+    LOCK2(cs_main, cs_wallet);
+    int lastScanned;
+    uint256 lastBlock;
+    std::vector<uint256> txsHashes;
+    if (!ReadTxesFromBackup(txsHashes, lastScanned, lastBlock)) {
+        throw runtime_error("No backup found");
+    }
+    int highestHeight = 0;
+    int numRecovered = 0;
+    for (size_t i = 0; i < txsHashes.size(); i++) {
+        CTransaction tx;
+        uint256 hashBlock;
+        if (GetTransaction(txsHashes[i], tx, hashBlock)) {
+            if (mapBlockIndex.count(hashBlock) == 1) {
+                CBlockIndex* pindex = mapBlockIndex[hashBlock];
+                CBlock b;
+                if (ReadBlockFromDisk(b, pindex)) {
+                    AddToWalletIfInvolvingMe(tx, &b, true);
+                    numRecovered++;
+                    if (pindex->nHeight > highestHeight) {
+                        highestHeight = pindex->nHeight;
+                    }
+                }
+            }
+        }
+    }
+
+    LogPrintf("Successfully recovered %d of %d transactions, from block %d\n", txsHashes.size(), numRecovered, lastScanned);
+
+    //continue scanned from block txsHashes
+    lastScanned = lastScanned - 100;
+    lastScanned = highestHeight > lastScanned?highestHeight:lastScanned;
+    if (chainActive.Height() < lastScanned) {
+        lastScanned = chainActive.Height();
+    }
+
+    ScanForWalletTransactions(chainActive[lastScanned], true, lastScanned);
+}
+
 bool CWallet::ReadTxesFromBackup(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash) 
 {
     LOCK2(cs_main, cs_wallet);

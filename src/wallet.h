@@ -287,6 +287,7 @@ public:
     UniValue ExportTransactionList();
     bool ReadTxesFromBackup(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash);
     void BackupWalletTXes();
+    void RecoverFromJsonBackup();
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
