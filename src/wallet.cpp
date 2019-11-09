@@ -4265,13 +4265,16 @@ bool CWallet::CoSignPartialTransaction(CPartialTransaction& tx)
 	const size_t MAX_VOUT = 5;
 	unsigned char SIJ[MAX_VIN + 1][MAX_DECOYS + 1][32];
 
+    LogPrintf("Copying S\n");
 	for (size_t i = 0; i < tx.vin[0].decoys.size() + 1; i++) {
 		std::vector<uint256> S_column = tx.S[i];
+        LogPrintf("Copying column %d\n", i);
 		for (size_t j = 0; j < tx.vin.size() + 1; j++) {
 			memcpy(SIJ[j][i], S_column[j].begin(), 32);
 		}
 	}
 
+    LogPrintf("Looking for multisig index\n");
 	int myIndex = findMultisigInputIndex(tx);
 	int myRealIndex = 0;
 	if (myIndex != -1) {
@@ -4293,6 +4296,7 @@ bool CWallet::CoSignPartialTransaction(CPartialTransaction& tx)
 	//each signer provides its part of alpha_j and c_pi* private key
 	CKey mySpend;
 	mySpendPrivateKey(mySpend);
+    LogPrintf("Computing S\n");
 	for (size_t j = 0; j < tx.vin.size(); j++) {
 		COutPoint myOutpoint;
 		if (myIndex == -1) {
@@ -4316,6 +4320,7 @@ bool CWallet::CoSignPartialTransaction(CPartialTransaction& tx)
 		secp256k1_ec_privkey_tweak_add(SIJ[j][PI], s);
 		memcpy(tx.S[PI][j].begin(), SIJ[j][PI], 32);
 	}
+    LogPrintf("Compute alpha\n");
 	unsigned char s[32], temp[32];
 	CKey alpha = generateAdditionalPartialAlpha(tx);
 
