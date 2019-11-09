@@ -494,7 +494,7 @@ bool CWallet::LoadMultiSig(const CScript& dest)
     return CCryptoKeyStore::AddMultiSig(dest);
 }
 
-bool CWallet::RescanAfterUnlock(bool fromBeginning)
+bool CWallet::RescanAfterUnlock(int fromHeight)
 {
     if (IsLocked()) {
         return false;
@@ -503,38 +503,47 @@ bool CWallet::RescanAfterUnlock(bool fromBeginning)
     if (fImporting || fReindex) {
         return false;
     }
-
-    //rescan from scanned position stored in database
-    int scannedHeight = 0;
-    CWalletDB(strWalletFile).ReadScannedBlockHeight(scannedHeight);
-    if (fromBeginning) scannedHeight = 0;
     CBlockIndex* pindex;
-    if (scannedHeight > chainActive.Height() || scannedHeight == 0) {
-        pindex = chainActive.Genesis();
-    } else {
-        pindex = chainActive[scannedHeight];
-    }
-
-    {
+    
+    if (fromHeight == 0) {
         LOCK2(cs_main, cs_wallet);
-        if (mapWallet.size() > 0) {
-            //looking for highest blocks
-            for (map<uint256, CWalletTx>::iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
-                CWalletTx* wtx = &((*it).second);
-                uint256 wtxid = (*it).first;
-                if (mapBlockIndex.count(wtx->hashBlock) == 1) {
-                    CBlockIndex* pForTx = mapBlockIndex[wtx->hashBlock];
-                    if (pForTx != NULL && pForTx->nHeight > pindex->nHeight) {
-                        if (chainActive.Contains(pForTx)) {
-                            pindex = pForTx;
+        //rescan from scanned position stored in database
+        int scannedHeight = 0;
+        CWalletDB(strWalletFile).ReadScannedBlockHeight(scannedHeight);
+        if (scannedHeight > chainActive.Height() || scannedHeight == 0) {
+            pindex = chainActive.Genesis();
+        } else {
+            pindex = chainActive[scannedHeight];
+        }
+
+        {
+            if (mapWallet.size() > 0) {
+                //looking for highest blocks
+                for (map<uint256, CWalletTx>::iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
+                    CWalletTx* wtx = &((*it).second);
+                    uint256 wtxid = (*it).first;
+                    if (mapBlockIndex.count(wtx->hashBlock) == 1) {
+                        CBlockIndex* pForTx = mapBlockIndex[wtx->hashBlock];
+                        if (pForTx != NULL && pForTx->nHeight > pindex->nHeight) {
+                            if (chainActive.Contains(pForTx)) {
+                                pindex = pForTx;
+                            }
                         }
                     }
                 }
             }
         }
+    } else {
+        LOCK2(cs_main, cs_wallet);
+        //scan from a specific block height
+        if (fromHeight > chainActive.Height()) {
+            pindex = chainActive[chainActive.Height()];
+        } else {
+            pindex = chainActive[fromHeight];
+        }
     }
 
-    ScanForWalletTransactions(pindex, true);
+    ScanForWalletTransactions(pindex, true, fromHeight != 0?pindex->nHeight:-1);
     return true;
 }
 
@@ -570,7 +579,7 @@ bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool anonymizeOnly
     }
 
     if (rescanNeeded) {
-        pwalletMain->RescanAfterUnlock();
+        pwalletMain->RescanAfterUnlock(0);
         walletUnlockCountStatus++;
         return true;
     }
@@ -624,7 +633,7 @@ bool CWallet::ChangeWalletPassphrase(const SecureString& strOldWalletPassphrase,
     }
 
     if (rescanNeeded) {
-        pwalletMain->RescanAfterUnlock();
+        pwalletMain->RescanAfterUnlock(0);
         return true;
     }
 
@@ -1599,10 +1608,12 @@ int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate, i
     {
         LOCK2(cs_main, cs_wallet);
 
-        // no need to read and scan block, if block was created before
-        // our wallet birthday (as adjusted for block time variability)
-        while (pindex && nTimeFirstKey && (pindex->GetBlockTime() < (nTimeFirstKey - 7200))) {
-            pindex = chainActive.Next(pindex);
+        if (nHeight == -1) {
+            // no need to read and scan block, if block was created before
+            // our wallet birthday (as adjusted for block time variability)
+            while (pindex && nTimeFirstKey && (pindex->GetBlockTime() < (nTimeFirstKey - 7200))) {
+                pindex = chainActive.Next(pindex);
+            }
         }
 
         ShowProgress(_("Rescanning..."), 0); // show rescan progress in GUI as dialog or on splashscreen, if -rescan on startup
