@@ -315,11 +315,11 @@ bool CheckPoABlockMinedHash(const CBlockHeader& block)
         }
 
         bnTarget.SetCompact(block.nBits, &fNegative, &fOverflow);
-        LogPrintf("Target:%s, minedHash:%s", bnTarget.GetHex(), minedHash.GetHex());
+        LogPrintf("Target:%s, minedHash:%s\n", bnTarget.GetHex(), minedHash.GetHex());
 
         // Check proof of work matches claimed amount
         if (minedHash > bnTarget) {
-            LogPrintf("Block mined hash not satisfied");
+            LogPrintf("Block mined hash not satisfied\n");
             return error("CheckProofOfWork() : hash doesn't match nBits");
         }
 

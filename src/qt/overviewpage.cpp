@@ -106,7 +106,7 @@ public:
 };
 #include "overviewpage.moc"
 
-OverviewPage::OverviewPage(QWidget* parent) : QDialog(parent),
+OverviewPage::OverviewPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                               ui(new Ui::OverviewPage),
                                               clientModel(0),
                                               walletModel(0),
@@ -244,7 +244,7 @@ void OverviewPage::setWalletModel(WalletModel* model)
     this->walletModel = model;
     if (model && model->getOptionsModel()) {
         // Set up transaction list
-        LogPrintf("\n%s:setWalletModel\n", __func__);
+        LogPrintf("%s:setWalletModel\n", __func__);
         filter = new TransactionFilterProxy(this);
         filter->setSourceModel(model->getTransactionTableModel());
         filter->setLimit(NUM_ITEMS);
@@ -496,7 +496,7 @@ void OverviewPage::updateRecentTransactions(){
                 ui->lblRecentTransaction->setVisible(true);
             }
         } else {
-            LogPrintf("\npwalletMain has not been initialized\n");
+            LogPrintf("pwalletMain has not been initialized\n");
         }
     }
 }
@@ -531,6 +531,7 @@ void OverviewPage::unlockDialogIsFinished(int result) {
         ui->labelBalance_2->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getBalance(), false, BitcoinUnits::separatorAlways));
         ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getSpendableBalance(), false, BitcoinUnits::separatorAlways));
         ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getUnconfirmedBalance(), false, BitcoinUnits::separatorAlways));
+        pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
     }
 }
 
@@ -540,6 +541,7 @@ void OverviewPage::lockDialogIsFinished(int result) {
         ui->labelBalance_2->setText("Locked; Hidden");
         ui->labelBalance->setText("Locked; Hidden");
         ui->labelUnconfirmed->setText("Locked; Hidden");
+        pwalletMain->stakingMode = StakingMode::STOPPED;
     }
 }
 

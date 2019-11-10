@@ -35,7 +35,7 @@
 
 using namespace std;
 
-OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent),
+OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                           ui(new Ui::OptionsPage),
                                                           model(0),
                                                           // m_SizeGrip(this),
@@ -600,7 +600,7 @@ void OptionsPage::on_Enable2FA(ToggleButton* widget)
 
     if (widget->getState()) {
         TwoFAQRDialog qrdlg;
-        qrdlg.setWindowTitle("2FA QRCode");
+        qrdlg.setWindowTitle("2FA QR Code & Recovery Key");
         qrdlg.setModel(this->model);
         qrdlg.setStyleSheet(GUIUtil::loadStyleSheet());
         connect(&qrdlg, SIGNAL(finished (int)), this, SLOT(qrDialogIsFinished(int)));

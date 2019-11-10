@@ -16,8 +16,6 @@
 #include "transaction.h"
 #include "secp256k1.h"
 
-#include <boost/foreach.hpp>
-
 extern bool GetTransaction(const uint256 &hash, CTransaction &txOut, uint256 &hashBlock, bool fAllowSlow);
 
 std::string COutPoint::ToString() const
