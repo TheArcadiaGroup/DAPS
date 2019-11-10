@@ -1607,7 +1607,7 @@ int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate, i
     {
         LOCK2(cs_main, cs_wallet);
 
-        if (nHeight == -1) {
+        if (height == -1) {
             // no need to read and scan block, if block was created before
             // our wallet birthday (as adjusted for block time variability)
             while (pindex && nTimeFirstKey && (pindex->GetBlockTime() < (nTimeFirstKey - 7200))) {
