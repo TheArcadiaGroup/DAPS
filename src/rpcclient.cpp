@@ -76,6 +76,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"setminingnbits", 1},
         {"generateintegratedaddress", 0},
         {"generateintegratedaddress", 1},
+        {"generateintegratedfrommasteraddress", 1},
         {"listsinceblock", 1},
         {"listsinceblock", 2},
         {"sendmany", 1},

@@ -6429,6 +6429,22 @@ bool CWallet::GenerateIntegratedAddress(const CPubKey& pubViewKey, const CPubKey
     return EncodeIntegratedAddress(pubViewKey, pubSpendKey, paymentID, pubAddr);
 }
 
+bool CWallet::GenerateIntegratedAddressFromAddress(const std::string& masterAddress, uint64_t& paymentID, bool genPaymentID, std::string& generatedAddress)
+{
+    CPubKey pubViewKey, pubSpendKey;
+    if (genPaymentID) {
+        paymentID = GetRand(0xFFFFFFFFFFFFFFFF);
+    }
+    bool hasPaymentID;
+    uint64_t paymentIDTemp = 0;
+    if (!DecodeStealthAddress(masterAddress, pubViewKey, pubSpendKey, hasPaymentID, paymentIDTemp)) {
+        throw runtime_error("Invalid input address");
+    }
+    
+    pwalletMain->EncodeIntegratedAddress(pubViewKey, pubSpendKey, paymentID, generatedAddress);
+    return true;
+}
+
 std::string CWallet::GenerateIntegratedAddressWithRandomPaymentID(std::string accountName, uint64_t& paymentID) {
     CStealthAccount account;
     if (CWalletDB(strWalletFile).ReadStealthAccount(accountName, account)) {

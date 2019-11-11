@@ -775,6 +775,7 @@ public:
     bool GenerateIntegratedAddress(const std::string& accountName, std::string& pubAddr);
     std::string GenerateIntegratedAddressWithRandomPaymentID(std::string accountName, uint64_t& paymentID);
     std::string GenerateIntegratedAddressWithProvidedPaymentID(std::string accountName, uint64_t paymentID);
+    static bool GenerateIntegratedAddressFromAddress(const std::string& masterAddress, uint64_t& paymentID, bool, std::string& generatedAddress);
     bool GenerateIntegratedAddress(const CPubKey& pubViewKey, const CPubKey& pubSpendKey, std::string& pubAddr);
     bool AllMyPublicAddresses(std::vector<std::string>& addresses, std::vector<std::string>& accountNames);
     bool RevealTxOutAmount(const CTransaction &tx, const CTxOut &out, CAmount &amount, CKey&) const;

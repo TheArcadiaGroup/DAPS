@@ -2572,6 +2572,40 @@ UniValue generateintegratedaddress(const UniValue& params, bool fHelp)
     return ret;
 }
 
+UniValue generateintegratedfrommasteraddress(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() > 2 || params.size() < 1)
+        throw runtime_error(
+                "generateintegratedfrommasteraddress <address> <paymentID>\n"
+                "\nGenerate integrated addresses for this address with or without a random payment ID.\n"
+                "\nArguments:\n"
+                "required: generateintegratedfrommasteraddress\n"
+                "optional: paymentID\n"
+                "\nResult:\n"
+                "\nExamples:\n" +
+                HelpExampleCli("generateintegratedfrommasteraddress", "41jdpSXrJgCAbzVeTaiUC77wc5qTusbyr6UkuzSd7f9EMXwgWTQJr4k8JPbUrH4gj7gDeiLuedSzhdzcMsgd8bx118NBCCgrw3n 1234") + HelpExampleCli("generateintegratedfrommasteraddress", "41jdpSXrJgCAbzVeTaiUC77wc5qTusbyr6UkuzSd7f9EMXwgWTQJr4k8JPbUrH4gj7gDeiLuedSzhdzcMsgd8bx118NBCCgrw3n") + HelpExampleCli("generateintegratedfrommasteraddress", "") + HelpExampleRpc("generateintegratedfrommasteraddress", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
+    }
+
+    UniValue ret(UniValue::VOBJ);
+    uint64_t paymentID = 0;
+    std::string masterAddress = params[0].get_str();
+    std::string generatedAddress;
+    if (params.size() == 2) {
+        paymentID = params[1].get_int64();
+        pwalletMain->GenerateIntegratedAddressFromAddress(masterAddress, paymentID, false, generatedAddress);
+    } else {
+        pwalletMain->GenerateIntegratedAddressFromAddress(masterAddress, paymentID, true, generatedAddress);
+    }
+    ret.push_back(Pair("integratedaddress", generatedAddress));
+    ret.push_back(Pair("paymentid", paymentID));
+    return ret;
+}
+
 UniValue importkeys(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 2)
