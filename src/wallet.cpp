@@ -578,7 +578,7 @@ bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool anonymizeOnly
     }
 
     if (rescanNeeded) {
-        pwalletMain->RescanAfterUnlock(0);
+        pwalletMain->RescanAfterUnlock(1);
         walletUnlockCountStatus++;
         return true;
     }
