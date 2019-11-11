@@ -14,7 +14,6 @@
 #include "util.h"
 #include "utilmoneystr.h"
 #include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
 
 /** Object for who's going to get paid on which blocks */
 CMasternodePayments masternodePayments;
@@ -264,7 +263,7 @@ bool CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFe
     if (payeeAddr.size() != 0) {
     	bool isNotSpent = false;
     	std::vector <CMasternode> mns = mnodeman.GetFullMasternodeVector();
-    	BOOST_FOREACH(CMasternode& mn, mns) {
+    	for (CMasternode& mn : mns) {
     		if (mn.vin.masternodeStealthAddress == payeeAddr && mn.IsEnabled()) {
     			isNotSpent = true;
     			break;
@@ -283,7 +282,7 @@ bool CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFe
         if (payeeAddr.size() != 0) {
         	bool isNotSpent = false;
         	std::vector <CMasternode> mns = mnodeman.GetFullMasternodeVector();
-            BOOST_FOREACH(CMasternode& mn, mns) {
+            for (CMasternode& mn : mns) {
         		if (mn.vin.masternodeStealthAddress == payeeAddr && mn.IsEnabled()) {
         			isNotSpent = true;
         			break;
@@ -524,16 +523,16 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
     CAmount requiredMasternodePayment = GetMasternodePayment(nBlockHeight, GetBlockValue(pindexPrev));
 
     //require at least 6 signatures
-    BOOST_FOREACH (CMasternodePayee& payee, vecPayments)
+    for (CMasternodePayee& payee : vecPayments)
         if (payee.nVotes >= nMaxSignatures && payee.nVotes >= MNPAYMENTS_SIGNATURES_REQUIRED)
             nMaxSignatures = payee.nVotes;
 
     // if we don't have at least 6 signatures on a payee, approve whichever is the longest chain
     if (nMaxSignatures < MNPAYMENTS_SIGNATURES_REQUIRED) return true;
 
-    BOOST_FOREACH (CMasternodePayee& payee, vecPayments) {
+    for (CMasternodePayee& payee : vecPayments) {
     	bool found = false;
-    	BOOST_FOREACH (CTxOut out, txNew.vout) {
+    	for (CTxOut out : txNew.vout) {
     		if (payee.masternodeStealthAddress == out.masternodeStealthAddress) {
     			if(out.nValue >= requiredMasternodePayment)
     				found = true;
@@ -564,14 +563,14 @@ std::string CMasternodeBlockPayees::GetRequiredPaymentsString()
 
     std::string ret = "Unknown";
 
-    BOOST_FOREACH (CMasternodePayee& payee, vecPayments) {
+    for (CMasternodePayee& payee : vecPayments) {
         //CTxDestination address1;
         std::string paymentAddress(payee.masternodeStealthAddress.begin(), payee.masternodeStealthAddress.end());
 
         if (ret != "Unknown") {
-            ret += ", " + paymentAddress + ":" + boost::lexical_cast<std::string>(payee.nVotes);
+            ret += ", " + paymentAddress + ":" + std::to_string(payee.nVotes);
         } else {
-            ret = paymentAddress + ":" + boost::lexical_cast<std::string>(payee.nVotes);
+            ret = paymentAddress + ":" + std::to_string(payee.nVotes);
         }
     }
 
