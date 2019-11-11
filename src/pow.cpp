@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,6 +17,7 @@
 #include <math.h>
 
 unsigned int N_BITS = 0x1e1ffff0;
+unsigned int N_BITS_SF = 0x1e050000;
 bool CheckPoAMiningBlockHeight(const CBlockHeader* pblock)
 {
     return false;
@@ -25,7 +26,10 @@ bool CheckPoAMiningBlockHeight(const CBlockHeader* pblock)
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock)
 {
     if (N_BITS != 0 && pblock->IsPoABlockByVersion()) {
-        return N_BITS;
+        if (pindexLast->nHeight < 30400) {
+            return N_BITS;
+        }
+        return N_BITS_SF;
     }
     /* current difficulty formula, dapscoin - DarkGravity v3, written by Evan Duffield - evan@dashpay.io */
     const CBlockIndex* BlockLastSolved = pindexLast;
@@ -63,7 +67,15 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         // ppcoin: target change every block
         // ppcoin: retarget with exponential moving toward target spacing
         uint256 bnNew;
-        bnNew.SetCompact(pindexLast->nBits);
+        if (pindexLast->nHeight < 24900) {
+            bnNew.SetCompact(pindexLast->nBits);
+        } else {
+            if (pindexLast->IsProofOfStake()) {
+                bnNew.SetCompact(pindexLast->nBits);    
+            } else {
+                bnNew.SetCompact(pLastPoS->nBits);
+            }
+        }
 
         int64_t nInterval = nTargetTimespan / nTargetSpacing;
         bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
@@ -303,11 +315,11 @@ bool CheckPoABlockMinedHash(const CBlockHeader& block)
         }
 
         bnTarget.SetCompact(block.nBits, &fNegative, &fOverflow);
-        LogPrintf("Target:%s, minedHash:%s", bnTarget.GetHex(), minedHash.GetHex());
+        LogPrintf("Target:%s, minedHash:%s\n", bnTarget.GetHex(), minedHash.GetHex());
 
         // Check proof of work matches claimed amount
         if (minedHash > bnTarget) {
-            LogPrintf("Block mined hash not satisfied");
+            LogPrintf("Block mined hash not satisfied\n");
             return error("CheckProofOfWork() : hash doesn't match nBits");
         }
 

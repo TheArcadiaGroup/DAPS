@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -193,6 +193,7 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
     {
         mapArgs["-gen"] = (fGenerate ? "1" : "0");
         mapArgs["-genproclimit"] = itostr(nGenProcLimit);
+        pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
         GenerateDapscoins(fGenerate, pwalletMain, nGenProcLimit);
     }
 
@@ -258,7 +259,7 @@ UniValue generatepoa(const UniValue& params, bool fHelp)
 	if (!pblocktemplate.get())
 		throw JSONRPCError(RPC_INTERNAL_ERROR, "Wallet keypool empty");
 	CBlock* pblock = &pblocktemplate->block;
-	
+
 	CValidationState state;
 	if (!ProcessNewBlock(state, NULL, pblock))
 		throw JSONRPCError(RPC_INTERNAL_ERROR, "ProcessNewBlock, block not accepted");
@@ -496,10 +497,10 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
 
     if (vNodes.empty())
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DAPScoin is not connected!");
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DAPS is not connected!");
 
     if (IsInitialBlockDownload())
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DAPScoin is downloading blocks...");
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DAPS is downloading blocks...");
 
     static unsigned int nTransactionsUpdatedLast;
 
@@ -587,7 +588,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
     UniValue transactions(UniValue::VARR);
     map<uint256, int64_t> setTxIndex;
     int i = 0;
-    BOOST_FOREACH (CTransaction& tx, pblock->vtx) {
+    for (CTransaction& tx : pblock->vtx) {
         uint256 txHash = tx.GetHash();
         setTxIndex[txHash] = i++;
 
@@ -601,7 +602,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         entry.push_back(Pair("hash", txHash.GetHex()));
 
         UniValue deps(UniValue::VARR);
-        BOOST_FOREACH (const CTxIn& in, tx.vin) {
+        for (const CTxIn& in : tx.vin) {
             if (setTxIndex.count(in.prevout.hash))
                 deps.push_back(setTxIndex[in.prevout.hash]);
         }
@@ -701,141 +702,143 @@ UniValue getpoablocktemplate(const UniValue& params, bool fHelp)
 
                 "\nExamples:\n" +
                 HelpExampleCli("getpoablocktemplate", "") + HelpExampleRpc("getpoablocktemplate", ""));
+    LOCK(cs_main);
 
-    std::string strMode = "template";
-    UniValue lpval = NullUniValue;
+    {
+        std::string strMode = "template";
+        UniValue lpval = NullUniValue;
 
-    if (strMode != "template")
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
+        if (strMode != "template")
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
 
-    if (vNodes.empty())
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DAPScoin is not connected!");
+        if (vNodes.empty())
+            throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DAPS is not connected!");
 
-    if (IsInitialBlockDownload())
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DAPScoin is downloading blocks...");
+        if (IsInitialBlockDownload())
+            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DAPS is downloading blocks...");
 
-    // Update block
-    static CBlockIndex* pindexPrev;
-    static int64_t nStart;
-    static CBlockTemplate* pblocktemplate;
-    if (pindexPrev != chainActive.Tip()) {
-        // Clear pindexPrev so future calls make a new block, despite any failures from here on
-        pindexPrev = NULL;
+        // Update block
+        static CBlockIndex* pindexPrev;
+        static int64_t nStart;
+        static CBlockTemplate* pblocktemplate;
+        if (pindexPrev != chainActive.Tip()) {
+            // Clear pindexPrev so future calls make a new block, despite any failures from here on
+            pindexPrev = NULL;
 
-        // Store the chainActive.Tip() used before CreateNewBlock, to avoid races
-        CBlockIndex* pindexPrevNew = chainActive.Tip();
-        nStart = GetTime();
+            // Store the chainActive.Tip() used before CreateNewBlock, to avoid races
+            CBlockIndex* pindexPrevNew = chainActive.Tip();
+            nStart = GetTime();
 
-        // Create new block
-        if (pblocktemplate) {
-            delete pblocktemplate;
-            pblocktemplate = NULL;
+            // Create new block
+            if (pblocktemplate) {
+                delete pblocktemplate;
+                pblocktemplate = NULL;
+            }
+            CReserveKey reservekey(pwalletMain);
+            pblocktemplate = CreateNewPoABlockWithKey(reservekey, pwalletMain);
+            if (!pblocktemplate)
+                throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
+
+            // Need to update only after we know CreateNewPoABlock succeeded
+            pindexPrev = pindexPrevNew;
         }
-        CReserveKey reservekey(pwalletMain);
-        pblocktemplate = CreateNewPoABlockWithKey(reservekey, pwalletMain);
-        if (!pblocktemplate)
-            throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
+        CBlock* pblock = &pblocktemplate->block; // pointer for convenience
 
-        // Need to update only after we know CreateNewPoABlock succeeded
-        pindexPrev = pindexPrevNew;
-    }
-    CBlock* pblock = &pblocktemplate->block; // pointer for convenience
+        // Update nTime: I don't think time is necessary for PoA miners here
+        UpdateTime(pblock, pindexPrev);
+        pblock->nNonce = 0;
 
-    // Update nTime: I don't think time is necessary for PoA miners here
-    UpdateTime(pblock, pindexPrev);
-    pblock->nNonce = 0;
+        UniValue aCaps = NullUniValue;
+    //    static const Array aCaps = boost::assign::list_of("proposal");
 
-    UniValue aCaps = NullUniValue;
-//    static const Array aCaps = boost::assign::list_of("proposal");
+        UniValue transactions(UniValue::VARR);
+        map<uint256, int64_t> setTxIndex;
+        int i = 0;
+        for (CTransaction& tx : pblock->vtx) {
+            uint256 txHash = tx.GetHash();
+            setTxIndex[txHash] = i++;
 
-    UniValue transactions(UniValue::VARR);
-    map<uint256, int64_t> setTxIndex;
-    int i = 0;
-    BOOST_FOREACH (CTransaction& tx, pblock->vtx) {
-        uint256 txHash = tx.GetHash();
-        setTxIndex[txHash] = i++;
+            if (tx.IsCoinBase())
+                continue;
 
-        if (tx.IsCoinBase())
-            continue;
+            UniValue entry(UniValue::VOBJ);
 
-        UniValue entry(UniValue::VOBJ);
+            entry.push_back(Pair("data", EncodeHexTx(tx)));
 
-        entry.push_back(Pair("data", EncodeHexTx(tx)));
+            entry.push_back(Pair("hash", txHash.GetHex()));
 
-        entry.push_back(Pair("hash", txHash.GetHex()));
+            UniValue deps(UniValue::VARR);
+            for (const CTxIn& in : tx.vin) {
+                if (setTxIndex.count(in.prevout.hash))
+                    deps.push_back(setTxIndex[in.prevout.hash]);
+            }
+            entry.push_back(Pair("depends", deps));
 
-        UniValue deps(UniValue::VARR);
-        BOOST_FOREACH (const CTxIn& in, tx.vin) {
-            if (setTxIndex.count(in.prevout.hash))
-                deps.push_back(setTxIndex[in.prevout.hash]);
+            int index_in_template = i - 1;
+            entry.push_back(Pair("fee", pblocktemplate->vTxFees[index_in_template]));
+            entry.push_back(Pair("sigops", pblocktemplate->vTxSigOps[index_in_template]));
+
+            transactions.push_back(entry);
         }
-        entry.push_back(Pair("depends", deps));
 
-        int index_in_template = i - 1;
-        entry.push_back(Pair("fee", pblocktemplate->vTxFees[index_in_template]));
-        entry.push_back(Pair("sigops", pblocktemplate->vTxSigOps[index_in_template]));
+        UniValue coinbasetxn(UniValue::VOBJ);
+        CTransaction& tx = pblock->vtx[0];
+        coinbasetxn.push_back(Pair("data", EncodeHexTx(tx)));
+        coinbasetxn.push_back(Pair("hash", tx.GetHash().GetHex()));
 
-        transactions.push_back(entry);
+        UniValue aux(UniValue::VOBJ);
+        aux.push_back(Pair("flags", HexStr(COINBASE_FLAGS.begin(), COINBASE_FLAGS.end())));
+
+        UniValue aMutable(UniValue::VARR);
+        if (aMutable.empty()) {
+            aMutable.push_back("time");
+            aMutable.push_back("transactions");
+            aMutable.push_back("prevblock");
+        }
+
+        //Information about PoS blocks to be audited
+        UniValue posBlocksAudited(UniValue::VARR);
+        for (size_t idx = 0; idx < pblock->posBlocksAudited.size(); idx++) {
+            UniValue entry(UniValue::VOBJ);
+            PoSBlockSummary pos = pblock->posBlocksAudited.at(idx);
+            entry.push_back(Pair("data", EncodeHexPoSBlockSummary(pos)));
+            posBlocksAudited.push_back(entry);
+        }
+
+        uint256 poaMerkleRoot = pblock->BuildPoAMerkleTree();
+        uint256 hashTarget;
+        hashTarget.SetCompact(pblock->nBits);
+
+        pblock->SetVersionPoABlock();
+        UniValue result(UniValue::VOBJ);
+        result.push_back(Pair("version", pblock->nVersion));
+        result.push_back(Pair("previouspoablockhash", pblock->hashPrevPoABlock.GetHex()));
+        result.push_back(Pair("poamerkleroot", poaMerkleRoot.GetHex()));
+        result.push_back(Pair("transactions", transactions));
+        result.push_back(Pair("coinbasetxn", coinbasetxn));
+        result.push_back(Pair("coinbasevalue", (int64_t)pblock->vtx[0].GetValueOut()));
+        result.push_back(Pair("noncerange", "00000000ffffffff"));
+        result.push_back(Pair("curtime", pblock->GetBlockTime()));
+        result.push_back(Pair("bits", strprintf("%08x", pblock->nBits)));
+        result.push_back(Pair("target", hashTarget.GetHex()));
+        result.push_back(Pair("height", (int64_t)(pindexPrev->nHeight + 1)));
+        result.push_back(Pair("posblocksaudited", posBlocksAudited));
+
+        if (pblock->payee != CScript()) {
+            CTxDestination address1;
+            ExtractDestination(pblock->payee, address1);
+            CBitcoinAddress address2(address1);
+            result.push_back(Pair("payee", address2.ToString().c_str()));
+            result.push_back(Pair("payee_amount", (int64_t)pblock->vtx[0].vout[1].nValue));
+        } else {
+            result.push_back(Pair("payee", ""));
+            result.push_back(Pair("payee_amount", ""));
+        }
+
+        result.push_back(Pair("masternode_payments", pblock->nTime > Params().StartMasternodePayments()));
+        result.push_back(Pair("enforce_masternode_payments", true));
+        return result;
     }
-
-    UniValue coinbasetxn(UniValue::VOBJ);
-    CTransaction& tx = pblock->vtx[0];
-    coinbasetxn.push_back(Pair("data", EncodeHexTx(tx)));
-    coinbasetxn.push_back(Pair("hash", tx.GetHash().GetHex()));
-
-    UniValue aux(UniValue::VOBJ);
-    aux.push_back(Pair("flags", HexStr(COINBASE_FLAGS.begin(), COINBASE_FLAGS.end())));
-
-    UniValue aMutable(UniValue::VARR);
-    if (aMutable.empty()) {
-        aMutable.push_back("time");
-        aMutable.push_back("transactions");
-        aMutable.push_back("prevblock");
-    }
-
-    //Information about PoS blocks to be audited
-	UniValue posBlocksAudited(UniValue::VARR);
-    for (size_t idx = 0; idx < pblock->posBlocksAudited.size(); idx++) {
-    	UniValue entry(UniValue::VOBJ);
-    	PoSBlockSummary pos = pblock->posBlocksAudited.at(idx);
-    	entry.push_back(Pair("data", EncodeHexPoSBlockSummary(pos)));
-    	posBlocksAudited.push_back(entry);
-    }
-
-    uint256 poaMerkleRoot = pblock->BuildPoAMerkleTree();
-    uint256 hashTarget;
-    hashTarget.SetCompact(pblock->nBits);
-
-    pblock->SetVersionPoABlock();
-    UniValue result(UniValue::VOBJ);
-    result.push_back(Pair("version", pblock->nVersion));
-    result.push_back(Pair("previouspoablockhash", pblock->hashPrevPoABlock.GetHex()));
-    result.push_back(Pair("poamerkleroot", poaMerkleRoot.GetHex()));
-    result.push_back(Pair("transactions", transactions));
-    result.push_back(Pair("coinbasetxn", coinbasetxn));
-    result.push_back(Pair("coinbasevalue", (int64_t)pblock->vtx[0].GetValueOut()));
-    result.push_back(Pair("noncerange", "00000000ffffffff"));
-    result.push_back(Pair("curtime", pblock->GetBlockTime()));
-    result.push_back(Pair("bits", strprintf("%08x", pblock->nBits)));
-    result.push_back(Pair("target", hashTarget.GetHex()));
-    result.push_back(Pair("height", (int64_t)(pindexPrev->nHeight + 1)));
-    result.push_back(Pair("posblocksaudited", posBlocksAudited));
-
-    if (pblock->payee != CScript()) {
-        CTxDestination address1;
-        ExtractDestination(pblock->payee, address1);
-        CBitcoinAddress address2(address1);
-        result.push_back(Pair("payee", address2.ToString().c_str()));
-        result.push_back(Pair("payee_amount", (int64_t)pblock->vtx[0].vout[1].nValue));
-    } else {
-        result.push_back(Pair("payee", ""));
-        result.push_back(Pair("payee_amount", ""));
-    }
-
-    result.push_back(Pair("masternode_payments", pblock->nTime > Params().StartMasternodePayments()));
-    result.push_back(Pair("enforce_masternode_payments", true));
-
-    return result;
 }
 
 UniValue setminingnbits(const UniValue& params, bool fHelp) {

@@ -62,12 +62,12 @@
         <translation>Gavimo adresai</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Tai jūsų DAPScoin adresai mokėjimų išsiuntimams. Visada patikrinkite sumą ir gavėjo adresą prieš siųsdami monetas.</translation>
+        <source>These are your DAPS addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Tai jūsų DAPS adresai mokėjimų išsiuntimams. Visada patikrinkite sumą ir gavėjo adresą prieš siųsdami monetas.</translation>
     </message>
     <message>
-        <source>These are your DAPScoin addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Tai jūsų DAPScoin adresai mokėjimų gavimams. Rekomenduojama naudoti naują adresą kiekvienam pavedimui.</translation>
+        <source>These are your DAPS addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Tai jūsų DAPS adresai mokėjimų gavimams. Rekomenduojama naudoti naują adresą kiekvienam pavedimui.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -176,8 +176,8 @@
         <translation>Patvirtinkite piniginės užšifravimą.</translation>
     </message>
     <message>
-        <source>DAPScoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
-        <translation>Dabar DAPScoin išsijungs, kad būtų užbaigtas šifravimo procesas. Atminkite, kad jūsų piniginės užšifravimas negali visiškai apsaugoti jūsų DAPS nuo kenkėjiškų programų, užkrėsto jūsų kompiuterio.</translation>
+        <source>DAPS will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your DAPSs from being stolen by malware infecting your computer.</source>
+        <translation>Dabar DAPS išsijungs, kad būtų užbaigtas šifravimo procesas. Atminkite, kad jūsų piniginės užšifravimas negali visiškai apsaugoti jūsų DAPS nuo kenkėjiškų programų, užkrėsto jūsų kompiuterio.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -254,12 +254,12 @@
         <translation>Adresas:</translation>
     </message>
     <message>
-        <source>Enter a DAPScoin Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
+        <source>Enter a DAPS Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
         <translation>Įveskite Dapscoin adresą, kurį norėtumėte užšifruoti naudojant BIP 38. Vidiniame laukelyje įrašykite slaptą frazę. Paspauskite užšifruoti, jei norite gauti užšifruotą privatųjį raktą.</translation>
     </message>
     <message>
-        <source>The DAPScoin address to encrypt</source>
-        <translation>DAPScoin adresas, kurį norite užšifruoti</translation>
+        <source>The DAPS address to encrypt</source>
+        <translation>DAPS adresas, kurį norite užšifruoti</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -290,8 +290,8 @@
         <translation>Kopijuoti dabartinį parašą</translation>
     </message>
     <message>
-        <source>Encrypt the private key for this DAPScoin address</source>
-        <translation>Užšifruoti šio DAPScoin adreso privatų raktą</translation>
+        <source>Encrypt the private key for this DAPS address</source>
+        <translation>Užšifruoti šio DAPS adreso privatų raktą</translation>
     </message>
     <message>
         <source>Reset all fields</source>
@@ -641,12 +641,12 @@
         <translation>Skirtukų įrankių juosta</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
-        <source>Send coins to a DAPScoin address</source>
-        <translation>Siųsti monetas į DAPScoin adresą</translation>
+        <source>Send coins to a DAPS address</source>
+        <translation>Siųsti monetas į DAPS adresą</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and dapscoin: URIs)</source>
@@ -665,24 +665,24 @@
         <translation>Naršyti masternod'us</translation>
     </message>
     <message>
-        <source>&amp;About DAPScoin</source>
-        <translation>&amp;Apie DAPScoin</translation>
+        <source>&amp;About DAPS</source>
+        <translation>&amp;Apie DAPS</translation>
     </message>
     <message>
-        <source>Show information about DAPScoin</source>
-        <translation>Rodyti informaciją apie DAPScoin</translation>
+        <source>Show information about DAPS</source>
+        <translation>Rodyti informaciją apie DAPS</translation>
     </message>
     <message>
-        <source>Modify configuration options for DAPScoin</source>
-        <translation>Keisti DAPScoin konfigūravimo parinktis</translation>
+        <source>Modify configuration options for DAPS</source>
+        <translation>Keisti DAPS konfigūravimo parinktis</translation>
     </message>
     <message>
-        <source>Sign messages with your DAPScoin addresses to prove you own them</source>
-        <translation>Pasirašykite pranešimus naudodami savo DAPScoin adresus, kad įrodytumėte, kad juos turite</translation>
+        <source>Sign messages with your DAPS addresses to prove you own them</source>
+        <translation>Pasirašykite pranešimus naudodami savo DAPS adresus, kad įrodytumėte, kad juos turite</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified DAPScoin addresses</source>
-        <translation>Patvirtinkite pranešimus, kad jie būtų pasirašyti su nurodytais DAPScoin adresais</translation>
+        <source>Verify messages to ensure they were signed with specified DAPS addresses</source>
+        <translation>Patvirtinkite pranešimus, kad jie būtų pasirašyti su nurodytais DAPS adresais</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -713,8 +713,8 @@
         <translation>Atidaryti Masternod'o konfigūracijos failą</translation>
     </message>
     <message>
-        <source>Open a DAPScoin: URI or payment request</source>
-        <translation>Atidaryti DAPScoin: URI arba mokėjimo prašymą</translation>
+        <source>Open a DAPS: URI or payment request</source>
+        <translation>Atidaryti DAPS: URI arba mokėjimo prašymą</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -725,16 +725,16 @@
         <translation>Blokų naršyklės langas</translation>
     </message>
     <message>
-        <source>Show the DAPScoin help message to get a list with possible DAPScoin command-line options</source>
-        <translation>Rodyti DAPScoin žinyną, kad gautumėte sąrašą su galimomis DAPScoin komandinės eilutės parinktimis</translation>
+        <source>Show the DAPS help message to get a list with possible DAPS command-line options</source>
+        <translation>Rodyti DAPS žinyną, kad gautumėte sąrašą su galimomis DAPS komandinės eilutės parinktimis</translation>
     </message>
     <message>
-        <source>DAPScoin client</source>
-        <translation>DAPScoin piniginė</translation>
+        <source>DAPS client</source>
+        <translation>DAPS piniginė</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to DAPScoin network</source>
-        <translation><numerusform>%n aktyvių prisijungimų DAPScoin tinkle ()</numerusform><numerusform>%n aktyvių prisijungimų DAPScoin tinkle ()</numerusform><numerusform>%n aktyvių prisijungimų DAPScoin tinkle ()</numerusform><numerusform>%n aktyvių prisijungimų DAPScoin tinkle ()</numerusform></translation>
+        <source>%n active connection(s) to DAPS network</source>
+        <translation><numerusform>%n aktyvių prisijungimų DAPS tinkle ()</numerusform><numerusform>%n aktyvių prisijungimų DAPS tinkle ()</numerusform><numerusform>%n aktyvių prisijungimų DAPS tinkle ()</numerusform><numerusform>%n aktyvių prisijungimų DAPS tinkle ()</numerusform></translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -1165,8 +1165,8 @@ MultiSend: %1</translation>
         <translation>Keisti siuntimo adresą</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid DAPScoin address.</source>
-        <translation>Įvestas adresas "%1" nėra galiojantis DAPScoin adresas.</translation>
+        <source>The entered address "%1" is not a valid DAPS address.</source>
+        <translation>Įvestas adresas "%1" nėra galiojantis DAPS adresas.</translation>
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
@@ -1211,16 +1211,16 @@ MultiSend: %1</translation>
         <translation>versija</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>(%1-bit)</source>
         <translation>(%1-bitai)</translation>
     </message>
     <message>
-        <source>About DAPScoin</source>
-        <translation>Apie DAPScoin</translation>
+        <source>About DAPS</source>
+        <translation>Apie DAPS</translation>
     </message>
     <message>
         <source>Command-line options</source>
@@ -1266,16 +1266,16 @@ MultiSend: %1</translation>
         <translation>Sveiki</translation>
     </message>
     <message>
-        <source>Welcome to DAPScoin.</source>
-        <translation>Sveiki atvykę į DAPScoin</translation>
+        <source>Welcome to DAPS.</source>
+        <translation>Sveiki atvykę į DAPS</translation>
     </message>
     <message>
-        <source>As this is the first time the program is launched, you can choose where DAPScoin will store its data.</source>
-        <translation>Kadangi programa paleista pirmą kartą, galite pasirinkti kur DAPScoin saugos savo duomenis.</translation>
+        <source>As this is the first time the program is launched, you can choose where DAPS will store its data.</source>
+        <translation>Kadangi programa paleista pirmą kartą, galite pasirinkti kur DAPS saugos savo duomenis.</translation>
     </message>
     <message>
-        <source>DAPScoin will download and store a copy of the DAPScoin block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DAPScoin atsisiųs ir saugos DAPScoin blockchain'o kopiją. Šiame kataloge bus saugomas ne mažesnis kaip %1GB duomenų kiekis, kuris laikui bėgant augs. Piniginė taip pat bus saugoma šiame kataloge.</translation>
+        <source>DAPS will download and store a copy of the DAPS block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>DAPS atsisiųs ir saugos DAPS blockchain'o kopiją. Šiame kataloge bus saugomas ne mažesnis kaip %1GB duomenų kiekis, kuris laikui bėgant augs. Piniginė taip pat bus saugoma šiame kataloge.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -1286,8 +1286,8 @@ MultiSend: %1</translation>
         <translation>Naudoti pasirinktą duomenų katalogą:</translation>
     </message>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -1428,12 +1428,12 @@ MultiSend: %1</translation>
         <translation>Įveskite adresą kuriam norite siųsti</translation>
     </message>
     <message>
-        <source>MultiSend allows you to automatically send up to 100% of your stake or masternode reward to a list of other DAPScoin addresses after it matures.
-To Add: enter percentage to give and DAPScoin address to add to the MultiSend vector.
+        <source>MultiSend allows you to automatically send up to 100% of your stake or masternode reward to a list of other DAPS addresses after it matures.
+To Add: enter percentage to give and DAPS address to add to the MultiSend vector.
 To Delete: Enter address to delete and press delete.
 MultiSend will not be activated unless you have clicked Activate</source>
-        <translation>MultiSend leidžia automatiškai išsiųsti iki 100% jūsų stake'inimo ar masternod'ų atlygio į kitus DAPScoin adresus.
-Norėdami pridėti: įveskite pateiktą procentą ir DAPScoin adresą, kurį norite pridėti prie MultiSend sąrašo.
+        <translation>MultiSend leidžia automatiškai išsiųsti iki 100% jūsų stake'inimo ar masternod'ų atlygio į kitus DAPS adresus.
+Norėdami pridėti: įveskite pateiktą procentą ir DAPS adresą, kurį norite pridėti prie MultiSend sąrašo.
 Norėdami ištrinti: įveskite adresą, kurį norite ištrinti, ir paspauskite ištrinti
 MultiSend nebus aktyvuotas, nebent paspausite "Įjungti"</translation>
     </message>
@@ -1524,7 +1524,7 @@ MultiSend nebus aktyvuotas, nebent paspausite "Įjungti"</translation>
     <message>
         <source>The entered address:
 </source>
-        <translation>Įvestas adresas: 
+        <translation>Įvestas adresas:
 </translation>
     </message>
     <message>
@@ -1770,16 +1770,16 @@ Patikrinkite adresą ir bandykite dar kartą.</translation>
         <translation>Obfuscation Konfigūracija</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Obfuscation buvo sėkmingai nustatytas į paprastą (%1 ir 2 raundai). Bet kada galite tai pakeisti, atidarę DAPScoin konfigūracijos ekraną.</translation>
+        <source>Obfuscation was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Obfuscation buvo sėkmingai nustatytas į paprastą (%1 ir 2 raundai). Bet kada galite tai pakeisti, atidarę DAPS konfigūracijos ekraną.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Obfuscation buvo sėkmingai nustatytas į aukštą (%1 ir 8 raundai). Bet kada galite tai pakeisti, atidarę DAPScoin konfigūracijos ekraną.</translation>
+        <source>Obfuscation was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Obfuscation buvo sėkmingai nustatytas į aukštą (%1 ir 8 raundai). Bet kada galite tai pakeisti, atidarę DAPS konfigūracijos ekraną.</translation>
     </message>
     <message>
-        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPScoin's configuration screen.</source>
-        <translation>Obfuscation buvo sėkmingai nustatytas į maksimumą (%1 ir 16 raundai). Bet kada galite tai pakeisti, atidarę DAPScoin konfigūracijos ekraną.</translation>
+        <source>Obfuscation was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DAPS's configuration screen.</source>
+        <translation>Obfuscation buvo sėkmingai nustatytas į maksimumą (%1 ir 16 raundai). Bet kada galite tai pakeisti, atidarę DAPS konfigūracijos ekraną.</translation>
     </message>
 </context>
 <context>
@@ -1832,12 +1832,12 @@ Patikrinkite adresą ir bandykite dar kartą.</translation>
         <translation>Ekspertas</translation>
     </message>
     <message>
-        <source>Automatically start DAPScoin after logging in to the system.</source>
-        <translation>Automatiškai paleisti DAPScoin prisijungus prie sistemos.</translation>
+        <source>Automatically start DAPS after logging in to the system.</source>
+        <translation>Automatiškai paleisti DAPS prisijungus prie sistemos.</translation>
     </message>
     <message>
-        <source>&amp;Start DAPScoin on system login</source>
-        <translation>&amp;Paleisti DAPScoin sistemai įsijungiant</translation>
+        <source>&amp;Start DAPS on system login</source>
+        <translation>&amp;Paleisti DAPS sistemai įsijungiant</translation>
     </message>
     <message>
         <source>Whether to show coin control features or not.</source>
@@ -1864,13 +1864,13 @@ Patikrinkite adresą ir bandykite dar kartą.</translation>
         <translation>&amp;Tinklas</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DAPScoin.</source>
-        <translation>Čia galite nustatyti vartotojo sąsajos kalbą. Šis nustatymas įsigalios iš naujo paleidus "DAPScoin".</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting DAPS.</source>
+        <translation>Čia galite nustatyti vartotojo sąsajos kalbą. Šis nustatymas įsigalios iš naujo paleidus "DAPS".</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
 https://www.transifex.com/dapscoin-project/dapscoin-project-translations</source>
-        <translation>Trūksta kalbos arba vertimas nebaigtas? Padėkite prisidėdami prie vertimų čia: 
+        <translation>Trūksta kalbos arba vertimas nebaigtas? Padėkite prisidėdami prie vertimų čia:
 https://www.transifex.com/dapscoin-project/dapscoin-project-translations</translation>
     </message>
     <message>
@@ -1878,8 +1878,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Įrašyti prievadą naudojant &amp;UPnP</translation>
     </message>
     <message>
-        <source>Connect to the DAPScoin network through a SOCKS5 proxy.</source>
-        <translation>Jungtis prie DAPScoin tinklo naudojant SOCKS5 tarpinį serverį.</translation>
+        <source>Connect to the DAPS network through a SOCKS5 proxy.</source>
+        <translation>Jungtis prie DAPS tinklo naudojant SOCKS5 tarpinį serverį.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -2021,8 +2021,8 @@ https://www.transifex.com/dapscoin-project/dapscoin-project-translations</transl
         <translation>Dabartinis bendras užrakintas balansas tik žiūrėjimo adresuose</translation>
     </message>
     <message>
-        <source>Your current DAPScoin balance, unconfirmed and immature transactions included</source>
-        <translation>Jūsų dabartinis DAPScoin balansas, įskaitant nepatvirtintus ir nesubrendusius sandorius</translation>
+        <source>Your current DAPS balance, unconfirmed and immature transactions included</source>
+        <translation>Jūsų dabartinis DAPS balansas, įskaitant nepatvirtintus ir nesubrendusius sandorius</translation>
     </message>
     <message>
         <source>Unconfirmed: less than 20 confirmations
@@ -2031,8 +2031,8 @@ Immature: confirmed, but less than 1 mint of the same denomination after it was 
 Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos to pačio nominalo po to, kai buvo konvertuotas.</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPScoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>Rodoma informacija gali būti pasenusi. Jūsų piniginė automatiškai sinchronizuojasi su DAPScoin tinklu po ryšio aktyvavimo, tačiau šis procesas dar nebaigtas.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DAPS network after a connection is established, but this process has not completed yet.</source>
+        <translation>Rodoma informacija gali būti pasenusi. Jūsų piniginė automatiškai sinchronizuojasi su DAPS tinklu po ryšio aktyvavimo, tačiau šis procesas dar nebaigtas.</translation>
     </message>
     <message>
         <source>OVERVIEW</source>
@@ -2160,8 +2160,8 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos to pačio nominalo
         <translation>Suma</translation>
     </message>
     <message>
-        <source>Enter a DAPScoin address (e.g. %1)</source>
-        <translation>Įveskite DAPScoin adresą (pvz. %1)</translation>
+        <source>Enter a DAPS address (e.g. %1)</source>
+        <translation>Įveskite DAPS adresą (pvz. %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -2338,8 +2338,8 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos to pačio nominalo
         <translation>Iš:</translation>
     </message>
     <message>
-        <source>Welcome to the DAPScoin RPC console.</source>
-        <translation>Sveiki atvykę į DAPScoin RPC konsolę.</translation>
+        <source>Welcome to the DAPS RPC console.</source>
+        <translation>Sveiki atvykę į DAPS RPC konsolę.</translation>
     </message>
     <message>
         <source>never</source>
@@ -2667,8 +2667,8 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos to pačio nominalo
 <context>
     <name>SignVerifyMessageDialog</name>
     <message>
-        <source>The DAPScoin address to sign the message with</source>
-        <translation>DAPScoin adresas, kuriuo pasirašyti žinute</translation>
+        <source>The DAPS address to sign the message with</source>
+        <translation>DAPS adresas, kuriuo pasirašyti žinute</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -2691,16 +2691,16 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos to pačio nominalo
         <translation>Kopijuoti dabartinį parašą</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DAPScoin address</source>
-        <translation>Pažymėkite žinutę, kad įrodytumėte, jog jūs šio DAPScoin adreso savininkas</translation>
+        <source>Sign the message to prove you own this DAPS address</source>
+        <translation>Pažymėkite žinutę, kad įrodytumėte, jog jūs šio DAPS adreso savininkas</translation>
     </message>
     <message>
-        <source>The DAPScoin address the message was signed with</source>
-        <translation>DAPScoin adresas, kurio buvo pasirašyta žinutė</translation>
+        <source>The DAPS address the message was signed with</source>
+        <translation>DAPS adresas, kurio buvo pasirašyta žinutė</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DAPScoin address</source>
-        <translation>Patikrinkite pranešimą, kad jis būtų pasirašytas su nurodytu DAPScoin adresu</translation>
+        <source>Verify the message to ensure it was signed with the specified DAPS address</source>
+        <translation>Patikrinkite pranešimą, kad jis būtų pasirašytas su nurodytu DAPS adresu</translation>
     </message>
     <message>
         <source>Reset all sign message fields</source>
@@ -2738,8 +2738,8 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos to pačio nominalo
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DAPScoin</source>
-        <translation>DAPScoin</translation>
+        <source>DAPS</source>
+        <translation>DAPS</translation>
     </message>
     </context>
 <context>
@@ -2992,8 +2992,8 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos to pačio nominalo
         <translation>Klaida kraunant wallet.dat: Piniginė yra sugadinta</translation>
     </message>
     <message>
-        <source>Error loading wallet.dat: Wallet requires newer version of DAPScoin</source>
-        <translation>Klaida kraunant wallet.dat: Piniginė reikalauja naujesnės DAPScoin versijos</translation>
+        <source>Error loading wallet.dat: Wallet requires newer version of DAPS</source>
+        <translation>Klaida kraunant wallet.dat: Piniginė reikalauja naujesnės DAPS versijos</translation>
     </message>
     <message>
         <source>Error opening block database</source>
@@ -3216,8 +3216,8 @@ Nesubrendusios: patvirtintos, bet mažiau nei 1 konvertacijos to pačio nominalo
         <translation>Piniginė užrakinta.</translation>
     </message>
     <message>
-        <source>Wallet needed to be rewritten: restart DAPScoin to complete</source>
-        <translation>Piniginę reikia perrašyti: paleiskite DAPScoin iš naujo</translation>
+        <source>Wallet needed to be rewritten: restart DAPS to complete</source>
+        <translation>Piniginę reikia perrašyti: paleiskite DAPS iš naujo</translation>
     </message>
     <message>
         <source>Wallet options:</source>

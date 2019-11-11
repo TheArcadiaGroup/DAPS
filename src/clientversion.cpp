@@ -6,14 +6,13 @@
 
 #include "tinyformat.h"
 
-#include <string>
 
 /**
  * Name of client reported in the 'version' message. Report the same name
  * for both dapscoind and dapscoin-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("DAPScoin");
+const std::string CLIENT_NAME("DAPS");
 
 /**
  * Client version number
@@ -42,10 +41,10 @@ const std::string CLIENT_NAME("DAPScoin");
 #include "build.h"
 #endif
 
-//! git will put "#define GIT_ARCHIVE 1" on the next line inside archives.
+//! git will put "#define GIT_ARCHIVE 1" on the next line inside archives. $Format:%n#define GIT_ARCHIVE 1$
 #ifdef GIT_ARCHIVE
-#define GIT_COMMIT_ID "cbcb549"
-#define GIT_COMMIT_DATE "Tue, 9 Feb 2016 16:54:57 -0500"
+#define GIT_COMMIT_ID "$Format:%H$"
+#define GIT_COMMIT_DATE "$Format:%cD$"
 #endif
 
 #define BUILD_DESC_WITH_SUFFIX(maj, min, rev, build, suffix) \

@@ -9,7 +9,7 @@
 #include <QCloseEvent>
 
 EncryptDialog::EncryptDialog(QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
     ui(new Ui::EncryptDialog)
 {
     ui->setupUi(this);
@@ -105,6 +105,7 @@ void EncryptDialog::on_acceptPassphrase() {
         }
 
         if (model->setWalletEncrypted(true, newPass)) {
+            model->setWalletLocked(false, newPass);
             QMessageBox msgBox;
             msgBox.setWindowTitle("Wallet Encryption Successful");
             msgBox.setText("Wallet passphrase was successfully set.\nPlease remember your passphrase as there is no way to recover it.");

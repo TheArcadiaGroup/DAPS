@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -130,8 +130,14 @@ static inline int64_t roundint64(double d)
 
 CAmount SendCoinsEntry::getValidatedAmount() {
     double dAmount = ui->payAmount->text().toDouble();
-    if (dAmount < 0.0 || dAmount > Params().MAX_MONEY)
-        throw runtime_error("Invalid amount, amount should be < 2.1B DAPS");
+    if (dAmount < 0.0 || dAmount > Params().MAX_MONEY) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Invalid Amount");
+        msgBox.setText("Invalid amount entered. Please enter an amount less than 2.1B DAPS.");
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
+    }
     CAmount nAmount = roundint64(dAmount * COIN);
     return nAmount;
 }

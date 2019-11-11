@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -275,41 +275,6 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
             COrphan* porphan = NULL;
             double dPriority = 0;
             CAmount nTotalIn = 0;
-            bool fMissingInputs = false;
-            for (const CTxIn& txin : tx.vin) {
-                // Read prev transaction
-                //if (!view.HaveCoins(txin.prevout.hash)) {
-                    // This should never happen; all transactions in the memory
-                    // pool should connect to either transactions in the chain
-                    // or other transactions in the memory pool.
-                    /*if (!mempool.mapTx.count(txin.prevout.hash)) {
-                        LogPrintf("ERROR: mempool transaction missing input\n");
-                        if (fDebug) assert("mempool transaction missing input" == 0);
-                        fMissingInputs = true;
-                        if (porphan)
-                            vOrphan.pop_back();
-                        break;
-                    }*/
-
-                    // Has to wait for dependencies
-                    if (!porphan) {
-                        // Use list for automatic deletion
-                        vOrphan.push_back(COrphan(&tx));
-                        porphan = &vOrphan.back();
-                    }
-                    //mapDependers[txin.prevout.hash].push_back(porphan);
-                    //porphan->setDependsOn.insert(txin.prevout.hash);
-                    //continue;
-                //}
-
-                //Check for invalid/fraudulent inputs. They shouldn't make it through mempool, but check anyways.
-                if (mapInvalidOutPoints.count(txin.prevout)) {
-                    LogPrintf("%s : found invalid input %s in tx %s", __func__, txin.prevout.ToString(), tx.GetHash().ToString());
-                    fMissingInputs = true;
-                    break;
-                }
-            }
-            if (fMissingInputs) continue;
 
             // Priority is sum(valuein * age) / modified_txsize
             unsigned int nTxSize = ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION);
@@ -331,9 +296,9 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
             }
             if (isDuplicate) continue;
             vecPriority.push_back(TxPriority(dPriority, feeRate, &mi->second.GetTx()));
-
         }
 
+        LogPrintf("Selecting %d transactions from mempool\n", vecPriority.size());
         // Collect transactions into block
         uint64_t nBlockSize = 1000;
         uint64_t nBlockTx = 0;
@@ -359,18 +324,13 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
             if (nBlockSize + nTxSize >= nBlockMaxSize)
                 continue;
 
-            // Legacy limits on sigOps:
-            unsigned int nMaxBlockSigOps = MAX_BLOCK_SIGOPS_CURRENT;
-            unsigned int nTxSigOps = GetLegacySigOpCount(tx);
-            if (nBlockSigOps + nTxSigOps >= nMaxBlockSigOps)
-                continue;
-
             // Skip free transactions if we're past the minimum block size:
             const uint256& hash = tx.GetHash();
             double dPriorityDelta = 0;
             CAmount nFeeDelta = 0;
             mempool.ApplyDeltas(hash, dPriorityDelta, nFeeDelta);
-            if (fSortedByFee && (dPriorityDelta <= 0) && (nFeeDelta <= 0) && (feeRate < ::minRelayTxFee) && (nBlockSize + nTxSize >= nBlockMinSize))
+            CFeeRate customMinRelayTxFee = CFeeRate(5000);
+            if (fSortedByFee && (feeRate < customMinRelayTxFee) && (nBlockSize + nTxSize >= nBlockMinSize))
                 continue;
 
             // Prioritise by fee once past the priority size or we run out of high-priority
@@ -387,9 +347,6 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
 
             CAmount nTxFees = tx.nTxFee;
 
-            if (nBlockSigOps + nTxSigOps >= nMaxBlockSigOps)
-                continue;
-
             // Note that flags: we don't want to set mempool/IsStandard()
             // policy here, but we still have to ensure that the block we
             // create only contains transactions that are valid in new blocks.
@@ -405,10 +362,9 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
             // Added
             pblock->vtx.push_back(tx);
             pblocktemplate->vTxFees.push_back(nTxFees);
-            pblocktemplate->vTxSigOps.push_back(nTxSigOps);
+            pblocktemplate->vTxSigOps.push_back(0);
             nBlockSize += nTxSize;
             ++nBlockTx;
-            nBlockSigOps += nTxSigOps;
             nFees += nTxFees;
 
             for (const CBigNum bnSerial : vTxSerials)
@@ -421,7 +377,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
 
             // Add transactions that depend on this one to the priority queue
             if (mapDependers.count(hash)) {
-                BOOST_FOREACH (COrphan* porphan, mapDependers[hash]) {
+                for (COrphan* porphan : mapDependers[hash]) {
                     if (!porphan->setDependsOn.empty()) {
                         porphan->setDependsOn.erase(hash);
                         if (porphan->setDependsOn.empty()) {
@@ -466,29 +422,26 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
             pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin());
             nValue = pblock->vtx[0].vout[0].nValue;
             if (!pwallet->CreateCommitment(zeroBlind, nValue, pblock->vtx[0].vout[0].commitment)) {
-                LogPrintf("\n%s: coinbase unable to create commitment to 0\n", __func__);
                 return NULL;
             }
         } else {
             sharedSec.Set(pblock->vtx[1].vout[2].txPub.begin(), pblock->vtx[1].vout[2].txPub.end());
             pwallet->EncodeTxOutAmount(pblock->vtx[1].vout[2], pblock->vtx[1].vout[2].nValue, sharedSec.begin());
             nValue = pblock->vtx[1].vout[2].nValue;
-            LogPrintf("\n%s:Commitment value = %d\n", __func__, nValue);
             pblock->vtx[1].vout[2].commitment.clear();
             if (!pwallet->CreateCommitment(zeroBlind, nValue, pblock->vtx[1].vout[2].commitment)) {
-                LogPrintf("\n%s: pos unable to create commitment to 0\n", __func__);
                 return NULL;
             }
 
             //Shnorr sign
             if (!pwalletMain->MakeShnorrSignature(pblock->vtx[1])) {
-            	LogPrintf("\n%s : failed to make Shnorr signature\n", __func__);
+            	LogPrintf("%s : failed to make Shnorr signature\n", __func__);
             	return NULL;
             }
 
             //Test verify shnorr signature
             if (!VerifyShnorrKeyImageTx(pblock->vtx[1])) {
-                LogPrintf("\n%s: Failed to verify shnorr key image\n", __func__);
+                LogPrintf("%s: Failed to verify shnorr key image\n", __func__);
             	return NULL;
             }
             pwalletMain->IsTransactionForMe(pblock->vtx[1]);
@@ -565,7 +518,7 @@ CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, const CPubKey& 
     memset(zeroBlind, 0, 32);
     pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin());
     if (!pwallet->CreateCommitment(zeroBlind, pblock->vtx[0].vout[0].nValue, pblock->vtx[0].vout[0].commitment)) {
-        LogPrintf("\n%s: unable to create commitment to 0\n", __func__);
+        LogPrintf("%s: unable to create commitment to 0\n", __func__);
         return NULL;
     }
     pwallet->EncodeTxOutAmount(pblock->vtx[0].vout[0], pblock->vtx[0].vout[0].nValue, sharedSec.begin());
@@ -732,7 +685,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
             }
 
             if (!fGenerateDapscoins) {
-            	LogPrintf("\nStopping staking or mining\n");
+            	LogPrintf("Stopping staking or mining\n");
             	nLastCoinStakeSearchInterval = 0;
             	break;
             }
@@ -745,25 +698,26 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
             		continue;
             	}
             }
-
-            MilliSleep(30000);
-
+            
         }
-
+        MilliSleep(30000);
         //
         // Create new block
         //
         unsigned int nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
-        CBlockIndex* pindexPrev = chainActive.Tip();
+        CBlockIndex* pindexPrev; 
+        {
+            LOCK(cs_main);
+            pindexPrev = chainActive.Tip();
+        }
         if (!pindexPrev)
             continue;
-
+ 
         unique_ptr<CBlockTemplate> pblocktemplate(CreateNewBlockWithKey(reservekey, pwallet, fProofOfStake));
         if (!pblocktemplate.get())
             continue;
 
         CBlock* pblock = &pblocktemplate->block;
-        LogPrintf("Bitcoinminer: generated %s\n", FormatMoney(pblock->vtx[0].vout[0].nValue));
         IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
 
         //Stake miner main
@@ -866,7 +820,6 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
             }
         }
     }
-    LogPrintf("Finish creating block\n");
 }
 
 void static ThreadBitcoinMiner(void* parg)

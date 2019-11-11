@@ -71,6 +71,7 @@ WalletView::WalletView(QWidget* parent) : QStackedWidget(parent),
     sendCoinsPage = new SendCoinsDialog();
     optionsPage = new OptionsPage();
     historyPage = new HistoryPage();
+    masternodeListPage = new MasternodeList();
 
     addWidget(overviewPage);
     addWidget(historyPage);
@@ -78,12 +79,7 @@ WalletView::WalletView(QWidget* parent) : QStackedWidget(parent),
     addWidget(sendCoinsPage);
     addWidget(optionsPage);
     addWidget(explorerWindow);
-
-    QSettings settings;
-    if (settings.value("fShowMasternodesTab").toBool()) {
-        masternodeListPage = new MasternodeList();
-        addWidget(masternodeListPage);
-    }
+    addWidget(masternodeListPage);
 
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -135,10 +131,8 @@ void WalletView::setClientModel(ClientModel* clientModel)
 
     overviewPage->setClientModel(clientModel);
     sendCoinsPage->setClientModel(clientModel);
-    QSettings settings;
-    if (settings.value("fShowMasternodesTab").toBool()) {
-        masternodeListPage->setClientModel(clientModel);
-    }
+    masternodeListPage->setClientModel(clientModel);
+
 }
 
 void WalletView::setWalletModel(WalletModel* walletModel)
@@ -148,10 +142,7 @@ void WalletView::setWalletModel(WalletModel* walletModel)
     // Put transaction list in tabs
     transactionView->setModel(walletModel);
     overviewPage->setWalletModel(walletModel);
-    QSettings settings;
-    if (settings.value("fShowMasternodesTab").toBool()) {
-        masternodeListPage->setWalletModel(walletModel);
-    }
+    masternodeListPage->setWalletModel(walletModel);
     historyPage->setModel(walletModel);
     receiveCoinsPage->setModel(walletModel);
     sendCoinsPage->setModel(walletModel);
@@ -205,7 +196,11 @@ void WalletView::gotoOverviewPage()
 
 void WalletView::gotoHistoryPage()
 {
+    int lastTime = GetAdjustedTime();
     setCurrentWidget(historyPage);
+    if (GetAdjustedTime() - lastTime < 90) {
+        historyPage->updateTableData();
+    }
 }
 
 
@@ -216,10 +211,7 @@ void WalletView::gotoBlockExplorerPage()
 
 void WalletView::gotoMasternodePage()
 {
-    QSettings settings;
-    if (settings.value("fShowMasternodesTab").toBool()) {
-        setCurrentWidget(masternodeListPage);
-    }
+    setCurrentWidget(masternodeListPage);
 }
 
 void WalletView::gotoReceiveCoinsPage()

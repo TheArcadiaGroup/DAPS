@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -23,7 +23,6 @@
 
 #include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
 #include <boost/iostreams/concepts.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/shared_ptr.hpp>
@@ -42,7 +41,7 @@ static std::string rpcWarmupStatus("RPC server started");
 static CCriticalSection cs_rpcWarmup;
 
 /* Timer-creating functions */
-static std::vector<RPCTimerInterface *> timerInterfaces;
+static RPCTimerInterface* timerInterface = NULL;
 /* Map of name to timer.
  * @note Can be changed to std::unique_ptr when C++11 */
 static std::map <std::string, boost::shared_ptr<RPCTimerBase>> deadlineTimers;
@@ -72,7 +71,7 @@ void RPCServer::OnPostCommand(boost::function<void(const CRPCCommand &)> slot) {
 
 void RPCTypeCheck(const UniValue &params, const list <UniValue::VType> &typesExpected, bool fAllowNull) {
     unsigned int i = 0;
-    BOOST_FOREACH(UniValue::VType t, typesExpected) {
+    for (UniValue::VType t : typesExpected) {
         if (params.size() <= i)
             break;
 
@@ -90,7 +89,7 @@ void RPCTypeCheckObj(const UniValue& o,
                      const map<string, UniValue::VType>& typesExpected,
                      bool fAllowNull)
 {
-    BOOST_FOREACH(const PAIRTYPE(string, UniValue::VType)& t, typesExpected) {
+    for (const PAIRTYPE(string, UniValue::VType)& t : typesExpected) {
         const UniValue& v = find_value(o, t.first);
         if (!fAllowNull && v.isNull())
             throw JSONRPCError(RPC_TYPE_ERROR, strprintf("Missing %s", t.first));
@@ -112,8 +111,6 @@ CAmount AmountFromValue(const UniValue& value) {
     if (dAmount <= 0.0 || dAmount > Params().MAX_MONEY)
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount");
     CAmount nAmount = roundint64(dAmount * COIN);
-    if (!MoneyRange(nAmount))
-        throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount");
     return nAmount;
 }
 
@@ -185,8 +182,7 @@ string CRPCTable::help(string strCommand) const {
         vCommands.push_back(make_pair(mi->second->category + mi->first, mi->second));
     sort(vCommands.begin(), vCommands.end());
 
-    BOOST_FOREACH(
-    const PAIRTYPE(string, const CRPCCommand*) &command, vCommands) {
+    for (const PAIRTYPE(string, const CRPCCommand*) &command : vCommands) {
         const CRPCCommand *pcmd = command.second;
         string strMethod = pcmd->name;
         // We already filter duplicates, but these deprecated screw up the sort order
@@ -252,11 +248,11 @@ UniValue stop(const UniValue& params, bool fHelp) {
     if (fHelp || params.size() > 1)
         throw runtime_error(
                 "stop\n"
-                "\nStop DAPScoin server.");
+                "\nStop DAPS server.");
     // Event loop will exit after current HTTP requests have been handled, so
     // this reply will get back to the client.
     StartShutdown();
-    return "DAPScoin server stopping";
+    return "DAPS server stopping";
 }
 
 
@@ -360,12 +356,11 @@ static const CRPCCommand vRPCCommands[] =
          {"dapscoin", "relaymasternodebroadcast", &relaymasternodebroadcast, true, true, false},
          {"dapscoin", "mnsync", &mnsync, true, true, false},
          {"dapscoin", "getpoolinfo", &getpoolinfo, true, true, false},
-#ifdef ENABLE_WALLET
-        // {"dapscoin", "obfuscation", &obfuscation, false, false, true}, /* not threadSafe because of SendMoney */
 
+#ifdef ENABLE_WALLET
         /* Wallet */
         // {"wallet", "addmultisigaddress", &addmultisigaddress, true, false, true},
-        {"wallet", "autocombinerewards", &autocombinerewards, false, false, true},
+        {"wallet", "autocombinedust", &autocombinedust, false, false, true},
         {"wallet", "backupwallet", &backupwallet, true, false, true},
         // {"wallet", "dumpprivkey", &dumpprivkey, true, false, true},
         // {"wallet", "dumpwallet", &dumpwallet, true, false, true},
@@ -382,11 +377,14 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "revealspendprivatekey", &revealspendprivatekey, true, false, true},
         {"wallet", "showtxprivatekeys", &showtxprivatekeys, true, false, true},
         {"wallet", "rescanwallettransactions", &rescanwallettransactions, true, false, true},
+        {"wallet", "setdecoyconfirmation", &setdecoyconfirmation, true, false, true},
+        {"wallet", "getdecoyconfirmation", &getdecoyconfirmation, true, false, true},
         {"wallet", "decodestealthaddress", &decodestealthaddress, true, false, true},
         {"wallet", "sendtostealthaddress", &sendtostealthaddress, false, false, true},
         {"wallet", "getbalance", &getbalance, false, false, true},
         {"wallet", "getbalances", &getbalances, false, false, true},
         {"wallet", "generateintegratedaddress", &generateintegratedaddress, true, false, false},
+        {"wallet", "readmasteraccount", &readmasteraccount, true, false, false},
         // {"wallet", "getnewaddress", &getnewaddress, true, false, true},
         // {"wallet", "getrawchangeaddress", &getrawchangeaddress, true, false, true},
         // {"wallet", "getreceivedbyaccount", &getreceivedbyaccount, false, false, true},
@@ -583,21 +581,24 @@ std::string HelpExampleRpc(string methodname, string args) {
            methodname + "\", \"params\": [" + args + "] }' -H 'content-type: text/plain;' http://127.0.0.1:53573/\n";
 }
 
-void RPCRegisterTimerInterface(RPCTimerInterface *iface) {
-    timerInterfaces.push_back(iface);
+void RPCSetTimerInterfaceIfUnset(RPCTimerInterface *iface) {
+    if (!timerInterface)
+        timerInterface = iface;
 }
 
-void RPCUnregisterTimerInterface(RPCTimerInterface *iface) {
-    std::vector<RPCTimerInterface *>::iterator i = std::find(timerInterfaces.begin(), timerInterfaces.end(), iface);
-    assert(i != timerInterfaces.end());
-    timerInterfaces.erase(i);
+void RPCSetTimerInterface(RPCTimerInterface *iface) {
+    timerInterface = iface;
+}
+
+void RPCUnsetTimerInterface(RPCTimerInterface *iface) {
+    if (timerInterface == iface)
+        timerInterface = NULL;
 }
 
 void RPCRunLater(const std::string &name, boost::function<void(void)> func, int64_t nSeconds) {
-    if (timerInterfaces.empty())
+    if (!timerInterface)
         throw JSONRPCError(RPC_INTERNAL_ERROR, "No timer handler registered for RPC");
     deadlineTimers.erase(name);
-    RPCTimerInterface *timerInterface = timerInterfaces[0];
     LogPrint("rpc", "queue run of timer %s in %i seconds (using %s)\n", name, nSeconds, timerInterface->Name());
     deadlineTimers.insert(
             std::make_pair(name, boost::shared_ptr<RPCTimerBase>(timerInterface->NewTimer(func, nSeconds * 1000))));

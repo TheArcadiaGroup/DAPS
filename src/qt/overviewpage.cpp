@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -106,7 +106,7 @@ public:
 };
 #include "overviewpage.moc"
 
-OverviewPage::OverviewPage(QWidget* parent) : QDialog(parent),
+OverviewPage::OverviewPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                               ui(new Ui::OverviewPage),
                                               clientModel(0),
                                               walletModel(0),
@@ -136,7 +136,6 @@ OverviewPage::OverviewPage(QWidget* parent) : QDialog(parent),
     timerBlockHeightLabel->start(45000);
 
     connect(ui->btnLockUnlock, SIGNAL(clicked()), this, SLOT(on_lockUnlock()));
-    updateRecentTransactions();
 }
 
 void OverviewPage::handleTransactionClicked(const QModelIndex& index)
@@ -173,12 +172,6 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     currentWatchImmatureBalance = watchImmatureBalance;
     CAmount nSpendableBalance = balance - immatureBalance;
     if (nSpendableBalance < 0) {
-        TRY_LOCK(cs_main, lockMain);
-        if (!lockMain)
-            return;
-        TRY_LOCK(pwalletMain->cs_wallet, lockWallet);
-        if (!lockWallet)
-            return;
     	nSpendableBalance = pwalletMain->GetSpendableBalance();
     }
     CAmount nSpendableDisplayed = nSpendableBalance; //if it is not staking
@@ -194,19 +187,22 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
         ui->labelUnconfirmed->setText("Locked; Hidden");
     } else {
         if (stkStatus && !nLastCoinStakeSearchInterval) {
-            ui->labelBalance_2->setText("Enabling Staking");
+            ui->labelBalance_2->setText("Enabling Staking...");
             ui->labelBalance_2->setToolTip("Enabling Staking... Please wait up to 1.5 hours for it to be properly enabled after consolidation.");
+            ui->labelBalance->setText("Enabling Staking...");
         } else {
             ui->labelBalance_2->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance, false, BitcoinUnits::separatorAlways));
             ui->labelBalance_2->setToolTip("Your current balance");
+            ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nSpendableDisplayed, false, BitcoinUnits::separatorAlways));
         }
-        ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nSpendableDisplayed, false, BitcoinUnits::separatorAlways));
         ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
     }
     QFont font = ui->labelBalance_2->font();
     font.setPointSize(15);
     font.setBold(true);
     ui->labelBalance_2->setFont(font);   
+
+    refreshRecentTransactions();
 }
 
 // show/hide watch-only labels
@@ -248,7 +244,7 @@ void OverviewPage::setWalletModel(WalletModel* model)
     this->walletModel = model;
     if (model && model->getOptionsModel()) {
         // Set up transaction list
-        LogPrintf("\n%s:setWalletModel\n", __func__);
+        LogPrintf("%s:setWalletModel\n", __func__);
         filter = new TransactionFilterProxy(this);
         filter->setSourceModel(model->getTransactionTableModel());
         filter->setLimit(NUM_ITEMS);
@@ -265,8 +261,6 @@ void OverviewPage::setWalletModel(WalletModel* model)
         connect(model, SIGNAL(stakingStatusChanged(bool)), this, 
                          SLOT(setSpendableBalance(bool)));
         connect(model, SIGNAL(WalletUnlocked()), this,
-                                 SLOT(refreshRecentTransactions()));
-        connect(model, SIGNAL(WalletUnlocked()), this,
                                          SLOT(updateBalance()));
         connect(model, SIGNAL(encryptionStatusChanged(int)), this,
                                          SLOT(updateLockStatus(int)));
@@ -275,9 +269,6 @@ void OverviewPage::setWalletModel(WalletModel* model)
 
         updateWatchOnlyLabels(model->haveWatchOnly());
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
-
-        connect(walletModel, SIGNAL(RefreshRecent()), this, SLOT(refreshRecentTransactions()));
-
         updateLockStatus(walletModel->getEncryptionStatus());
     }
     // update the display unit, to not use the default ("DAPS")
@@ -320,14 +311,20 @@ void OverviewPage::showBalanceSync(bool fShow){
 
 void OverviewPage::showBlockSync(bool fShow)
 {
-    ui->labelBlockStatus->setVisible(fShow);
+    ui->labelBlockStatus->setVisible(true);
     ui->labelBlockOf->setVisible(fShow);
     ui->labelBlocksTotal->setVisible(fShow);
 
     isSyncingBlocks = fShow;
 
     ui->labelBlockCurrent->setText(QString::number(clientModel->getNumBlocks()));
-    ui->labelBlockCurrent->setAlignment(fShow? (Qt::AlignRight|Qt::AlignVCenter):(Qt::AlignHCenter|Qt::AlignTop));
+    if (isSyncingBlocks){
+        ui->labelBlockStatus->setText("(syncing)");
+        ui->labelBlockCurrent->setAlignment((Qt::AlignRight|Qt::AlignVCenter));
+    } else {
+        ui->labelBlockStatus->setText("(synced)");
+        ui->labelBlockCurrent->setAlignment((Qt::AlignHCenter|Qt::AlignVCenter));
+    }
 }
 
 void OverviewPage::showBlockCurrentHeight()
@@ -416,6 +413,7 @@ void OverviewPage::updateTotalBlocksLabel(){
 
 int OverviewPage::tryNetworkBlockCount(){
     try{
+        LOCK(cs_vNodes);
         if (vNodes.size()>=1){
             int highestCount = 0;
             for (CNode* node : vNodes)
@@ -434,14 +432,9 @@ int OverviewPage::tryNetworkBlockCount(){
 }
 
 void OverviewPage::updateRecentTransactions(){
-	if (!pwalletMain || pwalletMain->IsLocked()) return;
+    if (!pwalletMain) return;
     {
-        TRY_LOCK(cs_main, lockMain);
-        if (!lockMain)
-            return;
-        TRY_LOCK(pwalletMain->cs_wallet, lockWallet);
-        if (!lockWallet)
-            return;
+        LOCK2(cs_main, pwalletMain->cs_wallet);
         QLayoutItem* item;
         QSettings settings;
         QVariant theme = settings.value("theme");
@@ -489,7 +482,12 @@ void OverviewPage::updateRecentTransactions(){
                     ui->verticalLayoutRecent->addWidget(entry);
                     CWalletTx wtx = pwalletMain->mapWallet[txHash];
                     int64_t txTime = wtx.GetComputedTxTime();
-                    entry->setData(txTime, txs[i]["address"] , txs[i]["amount"], txs[i]["id"], txs[i]["type"]);
+                    if (pwalletMain->IsLocked()) {
+                        entry->setData(txTime, "Locked; Hidden", "Locked; Hidden", "Locked; Hidden", "Locked; Hidden");
+                    } else {
+                        entry->setData(txTime, txs[i]["address"] , txs[i]["amount"], txs[i]["id"], txs[i]["type"]);
+                    }
+
                     if (i % 2 == 0) {
                         entry->setObjectName("secondaryTxEntry");
                     }
@@ -498,7 +496,7 @@ void OverviewPage::updateRecentTransactions(){
                 ui->lblRecentTransaction->setVisible(true);
             }
         } else {
-            LogPrintf("\npwalletMain has not been initialized\n");
+            LogPrintf("pwalletMain has not been initialized\n");
         }
     }
 }
@@ -533,6 +531,7 @@ void OverviewPage::unlockDialogIsFinished(int result) {
         ui->labelBalance_2->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getBalance(), false, BitcoinUnits::separatorAlways));
         ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getSpendableBalance(), false, BitcoinUnits::separatorAlways));
         ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getUnconfirmedBalance(), false, BitcoinUnits::separatorAlways));
+        pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
     }
 }
 
@@ -542,6 +541,7 @@ void OverviewPage::lockDialogIsFinished(int result) {
         ui->labelBalance_2->setText("Locked; Hidden");
         ui->labelBalance->setText("Locked; Hidden");
         ui->labelUnconfirmed->setText("Locked; Hidden");
+        pwalletMain->stakingMode = StakingMode::STOPPED;
     }
 }
 

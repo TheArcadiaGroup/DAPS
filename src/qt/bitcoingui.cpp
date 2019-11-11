@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The DAPScoin developers
+// Copyright (c) 2018-2019 The DAPS Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -117,7 +117,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
     this->setMinimumSize(1180, 790);
     GUIUtil::restoreWindowGeometry("nWindow", QSize(1180, 790), this);
 
-    QString windowTitle = tr("DAPScoin") + " - ";
+    QString windowTitle = tr("DAPS Coin") + " ";
 #ifdef ENABLE_WALLET
     /* if compiled with wallet support, -disablewallet can still disable the wallet */
     enableWallet = !GetBoolArg("-disablewallet", false);
@@ -125,7 +125,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
     enableWallet = false;
 #endif // ENABLE_WALLET
     if (enableWallet) {
-        windowTitle += tr("Wallet");
+        windowTitle += tr("Keychain Wallet");
     } else {
         windowTitle += tr("Node");
     }
@@ -236,7 +236,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
 
-    
+
 
     // Initially wallet actions should be disabled
     setWalletActionsEnabled(false);
@@ -317,9 +317,6 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     tabGroup->addAction(historyAction);
 
 #ifdef ENABLE_WALLET
-
-    QSettings settings;
-    if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeAction = new QAction(QIcon(":/icons/masternodes"), tr("&Masternodes"), this);
         masternodeAction->setIconText("    &Masternodes");
         masternodeAction->setStatusTip(tr("Masternodes"));
@@ -333,7 +330,6 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
         tabGroup->addAction(masternodeAction);
         connect(masternodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
         connect(masternodeAction, SIGNAL(triggered()), this, SLOT(gotoMasternodePage()));
-    }
 
     // These showNormalIfMinimized are needed because Send Coins and Receive Coins
     // can be triggered from the tray menu, and need to show the GUI to be useful.
@@ -351,8 +347,8 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     quitAction->setStatusTip(tr("Quit application"));
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     quitAction->setMenuRole(QAction::QuitRole);
-    aboutAction = new QAction(networkStyle->getAppIcon(), tr("&About DAPScoin"), this);
-    aboutAction->setStatusTip(tr("Show information about DAPScoin"));
+    aboutAction = new QAction(networkStyle->getAppIcon(), tr("&About DAPS"), this);
+    aboutAction->setStatusTip(tr("Show information about DAPS"));
     aboutAction->setMenuRole(QAction::AboutRole);
 #if QT_VERSION < 0x050000
     aboutQtAction = new QAction(QIcon(":/trolltech/qmessagebox/images/qtlogo-64.png"), tr("About &Qt"), this);
@@ -430,13 +426,13 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     multisigSignAction->setStatusTip(tr("Sign with a multisignature address"));
 
     openAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_FileIcon), tr("Open &URI..."), this);
-    openAction->setStatusTip(tr("Open a DAPScoin: URI or payment request"));
+    openAction->setStatusTip(tr("Open a DAPS: URI or payment request"));
     openBlockExplorerAction = new QAction(QIcon(":/icons/explorer"), tr("&Blockchain explorer"), this);
     openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
 
     showHelpMessageAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
-    showHelpMessageAction->setStatusTip(tr("Show the DAPScoin help message to get a list with possible DAPScoin command-line options"));
+    showHelpMessageAction->setStatusTip(tr("Show the DAPS help message to get a list with possible DAPS command-line options"));
 
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
@@ -532,10 +528,7 @@ void BitcoinGUI::createToolBars()
         toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
-        QSettings settings;
-        if (settings.value("fShowMasternodesTab").toBool()) {
-            toolbar->addAction(masternodeAction);
-        }
+        toolbar->addAction(masternodeAction);
 
         toolbar->setMovable(false); // remove unused icon in upper left corner
         overviewAction->setChecked(true);
@@ -543,7 +536,7 @@ void BitcoinGUI::createToolBars()
 
         // Create NavBar
         QToolBar* bottomToolbar = new QToolBar(this);
-        
+
         bottomToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         bottomToolbar->setOrientation(Qt::Vertical);
         bottomToolbar->addAction(optionsAction);
@@ -553,7 +546,7 @@ void BitcoinGUI::createToolBars()
         bottomToolbar->addAction(networkAction);
         bottomToolbar->addWidget(connectionCount);
         bottomToolbar->setStyleSheet("QToolBar{spacing:5px;}");
-        
+
         bottomToolbar->setObjectName("bottomToolbar");
 
         QHBoxLayout* layout = new QHBoxLayout(this);
@@ -670,10 +663,7 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     sendCoinsAction->setEnabled(enabled);
     receiveCoinsAction->setEnabled(enabled);
     historyAction->setEnabled(enabled);
-    QSettings settings;
-    if (settings.value("fShowMasternodesTab").toBool()) {
-        masternodeAction->setEnabled(enabled);
-    }
+    masternodeAction->setEnabled(enabled);
     encryptWalletAction->setEnabled(enabled);
     backupWalletAction->setEnabled(enabled);
     changePassphraseAction->setEnabled(enabled);
@@ -689,7 +679,7 @@ void BitcoinGUI::createTrayIcon(const NetworkStyle* networkStyle)
 {
 #ifndef Q_OS_MAC
     trayIcon = new QSystemTrayIcon(this);
-    QString toolTip = tr("DAPScoin client") + " " + networkStyle->getTitleAddText();
+    QString toolTip = tr("DAPS client") + " " + networkStyle->getTitleAddText();
     trayIcon->setToolTip(toolTip);
     trayIcon->setIcon(networkStyle->getAppIcon());
     trayIcon->show();
@@ -799,11 +789,9 @@ void BitcoinGUI::gotoHistoryPage()
 
 void BitcoinGUI::gotoMasternodePage()
 {
-    QSettings settings;
-    if (settings.value("fShowMasternodesTab").toBool()) {
-        masternodeAction->setChecked(true);
-        if (walletFrame) walletFrame->gotoMasternodePage();
-    }
+    masternodeAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoMasternodePage();
+
 }
 
 void BitcoinGUI::gotoReceiveCoinsPage()
@@ -878,7 +866,7 @@ void BitcoinGUI::setNumConnections(int count)
         icon = ":/icons/connect_4";
         break;
     }
-    
+
     connectionCount->setText(tr("%n Active Connections", "", count));
     if (count < 1)
         networkAction->setIcon(QIcon(":icons/staking_disabled"));
@@ -968,7 +956,7 @@ void BitcoinGUI::setNumBlocks(int count)
 
 void BitcoinGUI::message(const QString& title, const QString& message, unsigned int style, bool* ret)
 {
-    QString strTitle = tr("DAPScoin"); // default title
+    QString strTitle = tr("DAPS"); // default title
     // Default to information icon
     int nMBoxIcon = QMessageBox::Information;
     int nNotifyIcon = Notificator::Information;
@@ -993,7 +981,7 @@ void BitcoinGUI::message(const QString& title, const QString& message, unsigned 
             break;
         }
     }
-    // Append title to "DAPScoin - "
+    // Append title to "DAPS - "
     if (!msgType.isEmpty())
         strTitle += " - " + msgType;
 
@@ -1104,7 +1092,7 @@ void BitcoinGUI::setStakingStatus()
         stkStatus = pwalletMain->ReadStakingStatus();
     }
 
-    if (!stkStatus) {
+    if (!stkStatus || pwalletMain->stakingMode == StakingMode::STOPPED) {
         stakingState->setText(tr("Staking Disabled"));
         stakingState->setToolTip("Staking Disabled");
         stakingAction->setIcon(QIcon(":/icons/staking_inactive"));
@@ -1123,7 +1111,7 @@ void BitcoinGUI::setStakingStatus()
         stakingState->setText(tr("Enabling Staking..."));
         stakingState->setToolTip("Enabling Staking... Please wait up to 1.5 hours for it to be properly enabled after consolidation.");
         stakingAction->setIcon(QIcon(":/icons/staking_active"));
-    } 
+    }
 }
 void BitcoinGUI::setStakingInProgress(bool inProgress)
 {
