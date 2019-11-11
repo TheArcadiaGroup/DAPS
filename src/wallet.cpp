@@ -632,7 +632,7 @@ bool CWallet::ChangeWalletPassphrase(const SecureString& strOldWalletPassphrase,
     }
 
     if (rescanNeeded) {
-        pwalletMain->RescanAfterUnlock(0);
+        pwalletMain->RescanAfterUnlock(1);
         return true;
     }
 
