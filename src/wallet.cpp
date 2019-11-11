@@ -1782,6 +1782,7 @@ bool CWallet::ReadTxesFromBackup(std::vector<uint256>& txHashes, int& lastScanne
     lastScannedBlockHash = uint256(find_value(found, "lastblock").getValStr());
 
     std::vector<UniValue> uniValues = txesUniValue.getValues();
+    return true;
 }
 
 bool CWallet::ExportTransactionList(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash) {
