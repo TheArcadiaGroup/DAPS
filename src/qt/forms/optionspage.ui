@@ -98,8 +98,6 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="toolTip">
-             </property>
              <property name="layoutDirection">
               <enum>Qt::RightToLeft</enum>
              </property>
@@ -198,16 +196,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEditNewPassRepeat">
-           <property name="echoMode">
-            <enum>QLineEdit::Password</enum>
-           </property>
-           <property name="placeholderText">
-            <string>Repeat new passphrase</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QLineEdit" name="lineEditOldPass">
            <property name="echoMode">
             <enum>QLineEdit::Password</enum>
@@ -224,6 +212,16 @@
            </property>
            <property name="placeholderText">
             <string>New passphrase</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditNewPassRepeat">
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+           <property name="placeholderText">
+            <string>Repeat new passphrase</string>
            </property>
           </widget>
          </item>

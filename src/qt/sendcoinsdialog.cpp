@@ -116,7 +116,7 @@ void SendCoinsDialog::on_sendButton_clicked(){
     if (!isValidAmount) {
         QMessageBox msgBox;
         msgBox.setWindowTitle("Invalid Amount");
-        msgBox.setText("Invalid amount entered. Please enter an amount less than 2.1B DAPS.");
+        msgBox.setText("Invalid amount entered. Please enter an amount less than your Spendable Balance.");
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.exec();
