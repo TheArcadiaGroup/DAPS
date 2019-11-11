@@ -15,6 +15,7 @@ MultiSigSetupChooseNumSigners::MultiSigSetupChooseNumSigners(QWidget *parent) :
 
     connect(ui->btnNext, SIGNAL(clicked()), this, SLOT(on_btnNext()));
     connect(ui->btnCancel, SIGNAL(clicked()), this, SLOT(on_btnCancel()));
+    setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
 }
 
 MultiSigSetupChooseNumSigners::~MultiSigSetupChooseNumSigners()
