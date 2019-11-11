@@ -1764,6 +1764,7 @@ bool CWallet::ReadTxesFromBackup(std::vector<uint256>& txHashes, int& lastScanne
             src.close();
         } else return false;; 
     } else {
+        LogPrintf("Backup file does not exist\n");
         return false;
     } 
 
@@ -1782,6 +1783,9 @@ bool CWallet::ReadTxesFromBackup(std::vector<uint256>& txHashes, int& lastScanne
     lastScannedBlockHash = uint256(find_value(found, "lastblock").getValStr());
 
     std::vector<UniValue> uniValues = txesUniValue.getValues();
+    for(size_t i = 0; i < uniValues.size(); i++) {
+        txHashes.push_back(uint256(uniValues[i].get_str()));
+    }
     return true;
 }
 
@@ -1834,6 +1838,7 @@ UniValue CWallet::ExportTransactionList() {
 
 void CWallet::BackupWalletTXes() {
     if (IsLocked()) return;
+    static bool isBackupTransactionUpdated = false;
     UniValue bWalletTxs = ExportTransactionList();
     //Read wallet.backup.json
     std::string sourcePathStr = GetDataDir().string();
@@ -1872,9 +1877,33 @@ void CWallet::BackupWalletTXes() {
                 if (keys[i] == masterAccountAddr) {
                     UniValue bk0 = find_value(gWalletBackup, keys[i]);
                     if (find_value(bk0, "lastheight").get_int() < find_value(bWalletTxs, "lastheight").get_int()) {
+                        if (!isBackupTransactionUpdated) {
+                            isBackupTransactionUpdated = true;
+                            std::vector<UniValue> oldTxList = find_value(bk0, "transactions").getValues();
+                            std::vector<UniValue> newTxList = find_value(bWalletTxs, "transactions").getValues();
+                            //mixing new and old list
+                            UniValue mixedList(UniValue::VARR);
+                            mixedList.push_backV(oldTxList);
+                            mixedList.push_backV(newTxList);
+                            bWalletTxs.push_back(Pair("transactions", mixedList));
+                            std::vector<UniValue> all = mixedList.getValues();
+                            for (size_t i = 0; i < all.size(); i++) {
+                                CTransaction tx;
+                                uint256 hashBlock;
+                                if (GetTransaction(uint256(all[i].get_str()), tx, hashBlock)) {
+                                    if (mapBlockIndex.count(hashBlock) == 1) {
+                                        CBlockIndex* pindex = mapBlockIndex[hashBlock];
+                                        CBlock b;
+                                        if (ReadBlockFromDisk(b, pindex)) {
+                                            AddToWalletIfInvolvingMe(tx, &b, true);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         gWalletBackupNew.push_back(Pair(keys[i], bWalletTxs));
+                        isAdded = true;
                     }
-                    isAdded = true;
                 } else {
                     UniValue val = find_value(gWalletBackup, keys[i]);
                     gWalletBackupNew.push_back(Pair(keys[i], val));
