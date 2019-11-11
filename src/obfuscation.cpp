@@ -1118,11 +1118,6 @@ void CObfuscationPool::SendObfuscationDenominate(std::vector<CTxIn>& vin, std::v
         return;
     }
 
-    if (txCollateral == CMutableTransaction()) {
-        LogPrintf("CObfuscationPool:SendObfuscationDenominate() - Obfuscation collateral not set");
-        return;
-    }
-
     // lock the funds we're going to use
     for (CTxIn in : txCollateral.vin)
         lockedCoins.push_back(in);

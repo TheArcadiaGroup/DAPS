@@ -454,8 +454,6 @@ void BitcoinApplication::requestShutdown()
 {
     qDebug() << __func__ << ": Requesting shutdown";
     startThread();
-    if (window->rpcConsole)
-        delete window->rpcConsole;
     window->hide();
     window->setClientModel(0);
     pollShutdownTimer->stop();
