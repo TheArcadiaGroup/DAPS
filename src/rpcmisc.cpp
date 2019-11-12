@@ -512,7 +512,11 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
         obj.push_back(Pair("staking status", ("inactive")));
     } else {
         obj.push_back(Pair("staking mode", (pwalletMain->ReadStakingStatus() ? "enabled" : "disabled")));
-        obj.push_back(Pair("staking status", (nStaking ? "active (attempting to mint a block)" : "idle (waiting for next round)")));
+        if (!masternodeSync.IsSynced()) {
+			obj.push_back(Pair("staking status", ("syncing masternode list")));
+        } else {
+			obj.push_back(Pair("staking status", (nStaking ? "active (attempting to mint a block)" : "idle (waiting for next round)")));
+        }
     }
     return obj;
 }
