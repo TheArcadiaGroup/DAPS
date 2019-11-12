@@ -1102,7 +1102,7 @@ void BitcoinGUI::setStakingStatus()
     if (!masternodeSync.IsSynced()) {
         stakingState->setText(tr("Syncing MN List..."));
         stakingState->setToolTip("Syncing Masternode List");
-        stakingAction->setIcon(QIcon(":/icons/staking_inactive"));
+        stakingAction->setIcon(QIcon(":/icons/staking_waiting"));
         return;
     }
 
