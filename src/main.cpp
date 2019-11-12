@@ -4760,8 +4760,8 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
             if (lastBackupTxTime == 0) {
                 lastBackupTxTime = GetAdjustedTime();
             }
-            //backup every 2 hour
-            if (lastBackupTxTime + 120 < GetAdjustedTime()) {
+            //backup every 15m
+            if (lastBackupTxTime + 900 < GetAdjustedTime()) {
                 lastBackupTxTime = GetAdjustedTime();
                 pwalletMain->BackupWalletTXes();
             }

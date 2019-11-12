@@ -830,6 +830,29 @@ bool PointHashingSuccessively(const CPubKey& pk, const unsigned char* tweak, uns
     return true;
 }
 
+bool SimpleEncodeHex(const unsigned char* key, int keySize, const std::vector<unsigned char>& input, std::vector<unsigned char>& encoded)
+{
+    encoded.clear();
+    if (key == NULL || keySize == 0) return false;
+    uint256 hash = Hash(key, key + keySize);
+    hash = Hash(hash.begin(), hash.end());
+    for(size_t i = 0; i < input.size(); i++) {
+        encoded.push_back((input[i] ^ *(hash.begin() + (i % 32)))); 
+    } 
+    return true;
+}
+bool SimpleDecodeHex(const unsigned char* key, int keySize, const std::vector<unsigned char>& encoded, std::vector<unsigned char>& output)
+{
+    output.clear();
+    if (key == NULL || keySize == 0) return false;
+    uint256 hash = Hash(key, key + keySize);
+    hash = Hash(hash.begin(), hash.end());
+    for(size_t i = 0; i < encoded.size(); i++) {
+        output.push_back((encoded[i] ^ *(hash.begin() + (i % 32)))); 
+    }
+    return true;
+}
+
 bool SetupNetworking()
 {
 #ifdef WIN32
