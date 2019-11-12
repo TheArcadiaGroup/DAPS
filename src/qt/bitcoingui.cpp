@@ -1099,6 +1099,13 @@ void BitcoinGUI::setStakingStatus()
         return;
     }
 
+    if (!masternodeSync.IsSynced()) {
+        stakingState->setText(tr("Syncing MN List..."));
+        stakingState->setToolTip("Syncing Masternode List");
+        stakingAction->setIcon(QIcon(":/icons/staking_inactive"));
+        return;
+    }
+
     if (stakingState->text().contains("Enabling")) {
         if (!nLastCoinStakeSearchInterval) return;
     }
