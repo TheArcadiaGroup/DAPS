@@ -122,6 +122,8 @@ UniValue getinfo(const UniValue &params, bool fHelp) {
         obj.push_back(Pair("staking mode", (pwalletMain->ReadStakingStatus() ? "enabled" : "disabled")));
         if (!masternodeSync.IsSynced()) {
             obj.push_back(Pair("staking status", ("syncing masternode list")));
+        } else if (!pwalletMain->MintableCoins() && pwalletMain->stakingMode == StakingMode::STAKING_WITH_CONSOLIDATION) {
+            obj.push_back(Pair("staking status", ("delayed (waiting for 100 blocks)")));
         } else {
             obj.push_back(Pair("staking status", (nStaking ? "active (attempting to mint a block)" : "idle (waiting for next round)")));
         }
@@ -517,9 +519,11 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
     } else {
         obj.push_back(Pair("staking mode", (pwalletMain->ReadStakingStatus() ? "enabled" : "disabled")));
         if (!masternodeSync.IsSynced()) {
-			obj.push_back(Pair("staking status", ("syncing masternode list")));
+            obj.push_back(Pair("staking status", ("syncing masternode list")));
+        } else if (!pwalletMain->MintableCoins() && pwalletMain->stakingMode == StakingMode::STAKING_WITH_CONSOLIDATION) {
+            obj.push_back(Pair("staking status", ("delayed (waiting for 100 blocks)")));
         } else {
-			obj.push_back(Pair("staking status", (nStaking ? "active (attempting to mint a block)" : "idle (waiting for next round)")));
+            obj.push_back(Pair("staking status", (nStaking ? "active (attempting to mint a block)" : "idle (waiting for next round)")));
         }
     }
     return obj;
