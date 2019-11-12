@@ -47,6 +47,7 @@ public:
 public slots:
     void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
                     const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance);
+    void hideOrphans(bool fHide);
     void onAnimTick();   
     void updateTotalBlocksLabel();
     int tryNetworkBlockCount();
