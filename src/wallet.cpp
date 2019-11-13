@@ -2431,13 +2431,15 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
                 coinLowestLarger = coin;
             }
         }
-
-        if (nTotalLower == nTargetValue + feeNeeded) {
-            for (unsigned int i = 0; i < vValue.size(); ++i) {
-                setCoinsRet.insert(vValue[i].second);
-                nValueRet += vValue[i].first;
+        
+        if (vValue.size() <= MAX_TX_INPUTS) {
+            if (nTotalLower == nTargetValue + feeNeeded) {
+                for (unsigned int i = 0; i < vValue.size(); ++i) {
+                    setCoinsRet.insert(vValue[i].second);
+                    nValueRet += vValue[i].first;
+                }
+                return true;
             }
-            return true;
         }
         if (nTotalLower < nTargetValue + feeNeeded) {
             if (coinLowestLarger.second.first == NULL) // there is no input larger than nTargetValue
@@ -2445,15 +2447,30 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
                 if (tryDenom == 0)
                     // we didn't look at denom yet, let's do it
                     continue;
-                else
+                else {
                     // we looked at everything possible and didn't find anything, no luck
                     return false;
+                }
             }
             setCoinsRet.insert(coinLowestLarger.second);
             nValueRet += coinLowestLarger.first;
             return true;
-        }
+        } else {
+            CAmount maxFee = ComputeFee(50, numOut, ringSize); 
+            if (vValue.size() <= MAX_TX_INPUTS) {
+                //putting all into the transaction
+                string s = "CWallet::SelectCoinsMinConf best subset: ";
+                for (unsigned int i = 0; i < vValue.size(); i++) {
+                    setCoinsRet.insert(vValue[i].second);
+                    nValueRet += vValue[i].first;
+                    s += FormatMoney(vValue[i].first) + " ";
+                }
+                LogPrintf("%s - total %s\n", s, FormatMoney(nValueRet));
+                return true;
+            } else {
 
+            }
+        }
         break;
     }
 

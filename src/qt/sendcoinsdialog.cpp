@@ -23,6 +23,7 @@
 #include "utilmoneystr.h"
 #include "wallet.h"
 #include "2faconfirmdialog.h"
+#include "timedata.h"
 
 #include <regex>
 #include <QMessageBox>
@@ -187,12 +188,50 @@ void SendCoinsDialog::sendTx() {
             false
         );
     } catch (const std::exception& err) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("Transaction Creation Error");
-        msgBox.setText(QString(err.what()));
-        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
-        msgBox.setIcon(QMessageBox::Critical);
-        msgBox.exec();
+        std::string errMes(err.what());
+        if (errMes.find("You have attempted to send more than 50 UTXOs in a single transaction") != std::string::npos) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question(this, "Transaction Size Too Large", QString(err.what()) + QString("\n Do you want to combine small UTXOs into a larger one?"), QMessageBox::Yes|QMessageBox::No);
+            if (reply == QMessageBox::Yes) {
+                CAmount backupReserve = nReserveBalance;
+                try {
+                    uint32_t nTime = GetAdjustedTime();
+                    nReserveBalance = 0;
+                    success = model->getCWallet()->CreateSweepingTransaction(
+                                    send_amount,
+                                    send_amount, nTime);
+                    nReserveBalance = backupReserve;
+                    if (success) {
+                        QString msg = "Consolidation transaction created!";
+                        QMessageBox msgBox;
+                        msgBox.setWindowTitle("Information");
+                        msgBox.setIcon(QMessageBox::Information);
+                        msgBox.setText(msg);
+                        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+                        msgBox.exec();
+                    }
+                } catch (const std::exception& err1) {
+                    nReserveBalance = backupReserve;
+                    QMessageBox msgBox;
+                    LogPrintf("ERROR:%s: %s\n", __func__, err1.what());
+                    msgBox.setWindowTitle("Sweeping Transaction Creation Error");
+                    msgBox.setText(QString("Sweeping transaction failed due to an internal error! Please try again later!"));
+                    msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+                    msgBox.setIcon(QMessageBox::Critical);
+                    msgBox.exec();
+                }
+                return;
+            } else {
+                return;
+            }
+        } else {
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Transaction Creation Error");
+            msgBox.setText(QString(err.what()));
+            msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+            msgBox.setIcon(QMessageBox::Critical);
+            msgBox.exec();
+        }
         return;
     }
 
