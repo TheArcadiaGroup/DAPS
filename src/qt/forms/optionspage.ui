@@ -477,7 +477,7 @@
             </font>
            </property>
            <property name="text">
-            <string>We strongly recommend you only view your mnemonic phrase in a secure environment safe from video cameras or any wandering eyes.</string>
+            <string>We strongly recommend you only view your Mnemonic Phrase in a secure environment safe from video cameras or any wandering eyes. You will be required to enter your passphrase to view it.</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

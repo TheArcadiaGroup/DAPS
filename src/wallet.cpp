@@ -2696,13 +2696,15 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
                 coinLowestLarger = coin;
             }
         }
-
-        if (nTotalLower == nTargetValue + feeNeeded) {
-            for (unsigned int i = 0; i < vValue.size(); ++i) {
-                setCoinsRet.insert(vValue[i].second);
-                nValueRet += vValue[i].first;
+        
+        if (vValue.size() <= MAX_TX_INPUTS) {
+            if (nTotalLower == nTargetValue + feeNeeded) {
+                for (unsigned int i = 0; i < vValue.size(); ++i) {
+                    setCoinsRet.insert(vValue[i].second);
+                    nValueRet += vValue[i].first;
+                }
+                return true;
             }
-            return true;
         }
         if (nTotalLower < nTargetValue + feeNeeded) {
             if (coinLowestLarger.second.first == NULL) // there is no input larger than nTargetValue
@@ -2710,15 +2712,30 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
                 if (tryDenom == 0)
                     // we didn't look at denom yet, let's do it
                     continue;
-                else
+                else {
                     // we looked at everything possible and didn't find anything, no luck
                     return false;
+                }
             }
             setCoinsRet.insert(coinLowestLarger.second);
             nValueRet += coinLowestLarger.first;
             return true;
-        }
+        } else {
+            CAmount maxFee = ComputeFee(50, numOut, ringSize); 
+            if (vValue.size() <= MAX_TX_INPUTS) {
+                //putting all into the transaction
+                string s = "CWallet::SelectCoinsMinConf best subset: ";
+                for (unsigned int i = 0; i < vValue.size(); i++) {
+                    setCoinsRet.insert(vValue[i].second);
+                    nValueRet += vValue[i].first;
+                    s += FormatMoney(vValue[i].first) + " ";
+                }
+                LogPrintf("%s - total %s\n", s, FormatMoney(nValueRet));
+                return true;
+            } else {
 
+            }
+        }
         break;
     }
 
@@ -4633,13 +4650,13 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             nReward = PoSBlockReward();
             txNew.vout[1].nValue = nCredit;
             txNew.vout[2].nValue = nReward;
-            /*if (stakingMode == STAKING_WITH_CONSOLIDATION || STAKING_WITH_CONSOLIDATION_WITH_STAKING_NEWW_FUNDS) {
+            if (stakingMode == STAKING_WITH_CONSOLIDATION || STAKING_WITH_CONSOLIDATION_WITH_STAKING_NEWW_FUNDS) {
                 //the first output contains all funds (input + rewards + fee)
-                if (nCredit + nReward > (MINIMUM_STAKE_AMOUNT + 100000*COIN)*2) {
-                    txNew.vout[1].nValue = (nCredit + nReward)/2;
-                    txNew.vout[2].nValue = (nCredit + nReward) - txNew.vout[1].nValue;
-                }
-            }*/
+                //if (nCredit + nReward > (MINIMUM_STAKE_AMOUNT + 100000*COIN)*2) {
+                    txNew.vout[1].nValue = 0;
+                    txNew.vout[2].nValue = (nCredit + nReward);
+                //}
+            }
 
             // Limit size
             unsigned int nBytes = ::GetSerializeSize(txNew, SER_NETWORK, PROTOCOL_VERSION);
@@ -4685,8 +4702,10 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 //create commitment
                 unsigned char zeroBlind[32];
                 memset(zeroBlind, 0, 32);
-                txNew.vout[i].commitment.clear();
-                CreateCommitment(zeroBlind, txNew.vout[i].nValue, txNew.vout[i].commitment);
+                if (txNew.vout[i].nValue > 0) {
+                    txNew.vout[i].commitment.clear();
+                    CreateCommitment(zeroBlind, txNew.vout[i].nValue, txNew.vout[i].commitment);
+                } 
             }
 
             // ECDSA sign
