@@ -428,14 +428,14 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
             stt == UNSTAKABLE_BALANCE_TOO_LOW_CONSOLIDATION_FAILED) {
             QMessageBox msgBox;
             if (stt == StakingStatusError::UNSTAKABLE_BALANCE_TOO_LOW) {
-                errorMessage = "Your balance is under staking threshold 400,000 DAPS, please consider to deposit more DAPS to this wallet in order to enable staking.";
+                errorMessage = "Your stakeable balance is under the threshold of 400 000 DAPS. Please deposit more DAPS into your account in order to enable staking.";
             } else if (stt == UNSTAKABLE_BALANCE_TOO_LOW_CONSOLIDATION_FAILED) {
                 errorMessage = "Your balance requires a consolidation transaction which incurs a fee of between  " + FormatMoney(minFee) + " to " + FormatMoney(maxFee) + " DAPS. However after that transaction fee, your balance will be below the staking threshold of 400 000 DAPS. Please deposit more DAPS into your account or reduce your reserved amount in order to enable staking.";
             } else if (stt == UNSTAKABLE_BALANCE_RESERVE_TOO_HIGH) {
                 errorMessage = "Your stakeable balance is under the threshold of 400 000 DAPS. This is due to your reserve balance being too high. Please deposit more DAPS into your account or reduce your reserved amount in order to enable staking.";
             } else {
                 CAmount totalFee = maxFee + pwalletMain->ComputeFee(1, 2, MAX_RING_SIZE);
-                errorMessage = "Your stakeable balance is under staking threshold 400,000 DAPS. This is due to your reserve balance " + FormatMoney(nReserveBalance) + " DAPS is too high. The wallet software has tried to consolidate your funds with the reserve balance but without success because of a consolidation fee of " + FormatMoney(totalFee) + " DAPS. Please wait around 10 minutes for the wallet to resolve the reserve to enable staking.";
+                errorMessage = "Your stakeable balance is under the threshold of 400 000 DAPS. This is due to your reserve balance of " + FormatMoney(nReserveBalance) + " DAPS being too high. The wallet software has tried to consolidate your funds with the reserve balance but without success because of a consolidation fee of " + FormatMoney(totalFee) + " DAPS. Please wait around 10 minutes for the wallet to resolve the reserve to enable staking.";
             }
         	QString msg = QString::fromStdString(errorMessage);
         	msgBox.setWindowTitle("Warning: Staking Issue");
