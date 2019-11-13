@@ -789,17 +789,19 @@ void OptionsPage::onShowMnemonic() {
             QMessageBox msgBox;
             msgBox.setWindowTitle("Mnemonic Recovery Phrase");
             msgBox.setIcon(QMessageBox::Information);
-            msgBox.setText("Passphrase entry cancelled. Wallet locked for security.");
+            msgBox.setText("Attempt to view Mnemonic Phrase failed or canceled. Wallet locked for security.");
             msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
             msgBox.exec();
+            LogPrintf("Attempt to view Mnemonic Phrase failed or canceled. Wallet locked for security.\n");
             return;
         } else {
             SecureString pass;
             model->setWalletLocked(false, pass);
+            LogPrintf("Attempt to view Mnemonic Phrase successful.\n");
         }
     } else {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Are You Sure?", "Are you sure you would like to view your Mnemonic Phrase?\nYou will be required to enter your passphrase. Failed or cancelled attempts will be logged.", QMessageBox::Yes|QMessageBox::No);
+        reply = QMessageBox::question(this, "Are You Sure?", "Are you sure you would like to view your Mnemonic Phrase?\nYou will be required to enter your passphrase. Failed or canceled attempts will be logged.", QMessageBox::Yes|QMessageBox::No);
         if (reply == QMessageBox::Yes) {
             model->setWalletLocked(true);
             WalletModel::UnlockContext ctx(model->requestUnlock(false));
@@ -807,16 +809,18 @@ void OptionsPage::onShowMnemonic() {
                 QMessageBox msgBox;
                 msgBox.setWindowTitle("Mnemonic Recovery Phrase");
                 msgBox.setIcon(QMessageBox::Information);
-                msgBox.setText("Passphrase entry cancelled. Wallet locked for security.");
+                msgBox.setText("Attempt to view Mnemonic Phrase failed or canceled. Wallet locked for security.");
                 msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
                 msgBox.exec();
+                LogPrintf("Attempt to view Mnemonic Phrase failed or canceled. Wallet locked for security.\n");
                 return;
             } else {
                 SecureString pass;
                 model->setWalletLocked(false, pass);
+                LogPrintf("Attempt to view Mnemonic Phrase successful.\n");
             }
         } else {
-            LogPrintf("Attempt to view Mnemonic Phrase cancelled.");
+            LogPrintf("Attempt to view Mnemonic Phrase canceled.\n");
             return;
         }
     }
