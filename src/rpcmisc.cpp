@@ -478,7 +478,7 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
             "  \"walletunlocked\": true|false,      (boolean) if the wallet is unlocked\n"
             "  \"mintablecoins\": true|false,       (boolean) if the wallet has mintable coins\n"
             "  \"enoughcoins\": true|false,         (boolean) if available coins are greater than reserve balance\n"
-            "  \"mnsync\": true|false,              (boolean) if masternode data is synced\n"
+            "  \"masternodes-synced\": true|false,  (boolean) if masternode data is synced\n"
             "  \"staking mode\": enabled|disabled,  (string) if staking is enabled or disabled\n"
             "  \"staking status\": active|inactive, (string) if staking is active or inactive\n"
             "}\n"
@@ -500,7 +500,7 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
         obj.push_back(Pair("mintablecoins", pwalletMain->MintableCoins()));
         obj.push_back(Pair("enoughcoins", nReserveBalance <= pwalletMain->GetBalance()));
     }
-    obj.push_back(Pair("mnsync", masternodeSync.IsSynced()));
+    obj.push_back(Pair("masternodes-synced", masternodeSync.IsSynced()));
 
     bool nStaking = false;
     if (mapHashedBlocks.count(chainActive.Tip()->nHeight))
