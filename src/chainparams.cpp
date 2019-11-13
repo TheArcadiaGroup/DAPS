@@ -122,7 +122,7 @@ public:
         pchMessageStart[2] = 0x79;
         pchMessageStart[3] = 0x84;
         vAlertPubKey = ParseHex("049def8e22e7f78b624dc62007c66c06066d032310b3507642306b143326a8295e03576ffab7469c552e1a68655598d78d501eb10cc27408bfd7876dbadb08b0ee");
-        nDefaultPort = 53570; //default port for multisig
+        nDefaultPort = 53572; //default port for multisig
         bnProofOfWorkLimit = ~uint256(0) >> 1; // DAPScoin starting difficulty is 1 / 2^12
         nSubsidyHalvingInterval = 210000;
         nMaxReorganizationDepth = 100;
