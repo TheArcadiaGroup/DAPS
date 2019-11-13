@@ -629,6 +629,7 @@ bool CWallet::ChangeWalletPassphrase(const SecureString& strOldWalletPassphrase,
                 if (fWasLocked)
                     Lock();
 
+                nTimeFirstKey = 1;
                 rescanNeeded = true;
                 break;
             }
