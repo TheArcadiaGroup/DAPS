@@ -59,6 +59,7 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenu
     ui->label_2->setVisible(false);
     ui->pushButtonSave->setVisible(false);
     ui->pushButtonDisable->setVisible(false);
+    ui->addNewFunds->setVisible(false);
 
     connect(ui->pushButtonRecovery, SIGNAL(clicked()), this, SLOT(onShowMnemonic()));
 
