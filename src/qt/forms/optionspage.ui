@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1042</width>
-    <height>670</height>
+    <width>843</width>
+    <height>533</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>1022</width>
-        <height>650</height>
+        <width>823</width>
+        <height>513</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -460,7 +460,7 @@
            </property>
           </widget>
          </item>
-         <item>
+         <item alignment="Qt::AlignHCenter">
           <widget class="QLabel" name="labelRecoveryDescription">
            <property name="enabled">
             <bool>true</bool>
@@ -477,7 +477,7 @@
             </font>
            </property>
            <property name="text">
-            <string>We strongly recommend you only view your Mnemonic Phrase in a secure environment safe from video cameras or any wandering eyes. You will be required to enter your passphrase to view it.</string>
+            <string>We strongly recommend you only view your Mnemonic Phrase in a secure environment safe from video cameras or any wandering eyes.</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
