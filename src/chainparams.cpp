@@ -135,7 +135,7 @@ public:
         nDefaultPort = 53572;
         bnProofOfWorkLimit = ~uint256(0) >> 1; // DAPScoin starting difficulty is 1 / 2^12
         nSubsidyHalvingInterval = 210000;
-        nMaxReorganizationDepth = 100;
+        nMaxReorganizationDepth = 10000;
         nEnforceBlockUpgradeMajority = 750;
         nRejectBlockOutdatedMajority = 950;
         nToCheckBlockUpgradeMajority = 1000;

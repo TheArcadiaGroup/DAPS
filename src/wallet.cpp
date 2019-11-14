@@ -556,7 +556,7 @@ bool CWallet::RescanAfterUnlock(int fromHeight)
         }
     }
 
-    ScanForWalletTransactions(pindex, true, fromHeight != 0?pindex->nHeight:-1);
+    ScanForWalletTransactions(pindex, true, fromHeight != 0?(pindex->nHeight==0?-1:pindex->nHeight):-1);
     return true;
 }
 
@@ -1612,12 +1612,13 @@ int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate, i
     {
         LOCK2(cs_main, cs_wallet);
 
-        if (height == -1) {
+        if (height == -1 || height == 0) {
             // no need to read and scan block, if block was created before
             // our wallet birthday (as adjusted for block time variability)
             while (pindex && nTimeFirstKey && (pindex->GetBlockTime() < (nTimeFirstKey - 7200))) {
                 pindex = chainActive.Next(pindex);
             }
+            pindex = chainActive.Tip();
         }
 
         ShowProgress(_("Rescanning..."), 0); // show rescan progress in GUI as dialog or on splashscreen, if -rescan on startup

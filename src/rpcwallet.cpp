@@ -3004,3 +3004,36 @@ UniValue revealmnemonicphrase(const UniValue& params, bool fHelp)
 
     return mPhrase;
 }
+
+UniValue addtransactiontowallet(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+                "addtransactiontowallet \n"
+                "\nReveal Mnemonic Phrase.\n"
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"Mnemonic Phrase\"    (string) mnemonic phrase\n"
+                "\nExamples:\n" +
+                HelpExampleCli("addtransactiontowallet", "") + HelpExampleCli("addtransactiontowallet", "\"\"") +
+                HelpExampleCli("addtransactiontowallet", "") + HelpExampleRpc("addtransactiontowallet", ""));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+    EnsureWalletIsUnlocked();
+    
+    uint256 hash = ParseHashV(params[0], "parameter 1");
+
+    CTransaction tx;
+    uint256 hashBlock = 0;
+    if (!GetTransaction(hash, tx, hashBlock, true))
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "No information available about transaction");
+    if (mapBlockIndex.count(hashBlock) < 1) {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "No information available about transaction");
+    }
+    CBlock b;
+    if (!ReadBlockFromDisk(b, mapBlockIndex[hashBlock])) {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "No information available about transaction");
+    }
+
+    pwalletMain->AddToWalletIfInvolvingMe(tx, &b, true);
+}
