@@ -120,10 +120,9 @@ RUN cd /BUILD/ && \
     mkdir -p $DESTDIR && \
     #files only
     find ./ -type f | \
-    #flatten
-    tar pcvf - --transform 's/.*\///g' --files-from=/dev/stdin | \
-    #compress
-    xz -9 - > $DESTDIR$BUILD_TARGET-v$VERSION.tar.xz
+    #zip
+    zip -j@ $DESTDIR$BUILD_TARGET-v$VERSION.zip -x *test* -x *dapscoin-poa-minerd* && \
+	if [ -f bin/dapscoin-poa-minerd* ]; then zip -j dapscoin-poa-minerd-$BUILD_TARGET.zip bin/dapscoin-poa-minerd*; fi
 
 RUN mkdir -p /codefresh/volume/out/bin/ && \
     cp -r /daps/bin/* /codefresh/volume/out/bin/ && \

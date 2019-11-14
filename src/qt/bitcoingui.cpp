@@ -1092,10 +1092,17 @@ void BitcoinGUI::setStakingStatus()
         stkStatus = pwalletMain->ReadStakingStatus();
     }
 
-    if (!stkStatus) {
+    if (!stkStatus || pwalletMain->stakingMode == StakingMode::STOPPED) {
         stakingState->setText(tr("Staking Disabled"));
         stakingState->setToolTip("Staking Disabled");
         stakingAction->setIcon(QIcon(":/icons/staking_inactive"));
+        return;
+    }
+
+    if (!masternodeSync.IsSynced()) {
+        stakingState->setText(tr("Syncing MN List..."));
+        stakingState->setToolTip("Syncing Masternode List");
+        stakingAction->setIcon(QIcon(":/icons/staking_waiting"));
         return;
     }
 

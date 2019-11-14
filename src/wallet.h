@@ -23,6 +23,7 @@
 #include "validationinterface.h"
 #include "wallet_ismine.h"
 #include "walletdb.h"
+#include "univalue.h"
 
 #include <algorithm>
 #include <map>
@@ -259,7 +260,8 @@ public:
     static const CAmount MINIMUM_STAKE_AMOUNT = 400000 * COIN;
     static const int32_t MAX_DECOY_POOL = 500;
     static const int32_t PROBABILITY_NEW_COIN_SELECTED = 70;
-    bool RescanAfterUnlock(bool fromBeginning = false);
+    const std::string StrWalletFileTextBackup = "wallet.backup.json";
+    bool RescanAfterUnlock(int fromHeight);
     bool MintableCoins();
     StakingStatusError StakingCoinStatus(CAmount& minFee, CAmount& maxFee);
     bool SelectStakeCoins(std::set<std::pair<const CWalletTx*, unsigned int> >& setCoins, CAmount nTargetAmount) ;
@@ -281,6 +283,11 @@ public:
     bool WriteAutoConsolidateSettingTime(uint32_t settingTime);
     uint32_t ReadAutoConsolidateSettingTime();
     bool IsAutoConsolidateOn();
+    bool ExportTransactionList(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash);
+    std::string ExportTransactionList();
+    bool ReadTxesFromBackup(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash);
+    void BackupWalletTXes();
+    void RecoverFromJsonBackup();
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
@@ -648,7 +655,7 @@ public:
     }
     bool IsMine(const CTransaction& tx) const
     {
-        BOOST_FOREACH (const CTxOut& txout, tx.vout)
+        for (const CTxOut& txout : tx.vout)
         if (IsMine(txout))
             return true;
         return false;
@@ -661,7 +668,7 @@ public:
     CAmount GetDebit(const CTransaction& tx, const isminefilter& filter) const
     {
         CAmount nDebit = 0;
-        BOOST_FOREACH (const CTxIn& txin, tx.vin) {
+        for (const CTxIn& txin : tx.vin) {
             nDebit += GetDebit(txin, filter);
         }
         return nDebit;
@@ -669,7 +676,7 @@ public:
     CAmount GetCredit(const CTransaction& tx, const isminefilter& filter) const
     {
         CAmount nCredit = 0;
-        BOOST_FOREACH (const CTxOut& txout, tx.vout) {
+        for (const CTxOut& txout : tx.vout) {
             nCredit += GetCredit(tx, txout, filter);
         }
         return nCredit;
@@ -677,7 +684,7 @@ public:
     CAmount GetChange(const CTransaction& tx) const
     {
         CAmount nChange = 0;
-        BOOST_FOREACH (const CTxOut& txout, tx.vout) {
+        for (const CTxOut& txout : tx.vout) {
             nChange += GetChange(tx, txout);
         }
         return nChange;
@@ -1441,7 +1448,7 @@ public:
             }
         }
         // Trusted if all inputs are from us and are in the mempool:
-        BOOST_FOREACH (const CTxIn& txin, vin) {
+        for (const CTxIn& txin : vin) {
             // Transactions not sent by us: not trusted
         	COutPoint prevout = pwallet->findMyOutPoint(txin);
             const CWalletTx* parent = pwallet->GetWalletTx(prevout.hash);
@@ -1492,7 +1499,7 @@ public:
     //Used with Obfuscation. Will return largest nondenom, then denominations, then very small inputs
     int Priority() const
     {
-        BOOST_FOREACH (CAmount d, obfuScationDenominations)
+        for (CAmount d : obfuScationDenominations)
         if (tx->vout[i].nValue == d) return 10000;
         if (tx->vout[i].nValue < 1 * COIN) return 20000;
 
@@ -1618,6 +1625,41 @@ private:
     std::vector<char> _ssExtra;
 };
 
+class CWalletBackup {
+public:
+    std::vector<unsigned char> masterAddress;
+    int lastHeight;
+    uint256 lastBlock;
+    std::vector<uint256> txList;
+    ADD_SERIALIZE_METHODS;
 
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
+    {
+        READWRITE(masterAddress);
+        READWRITE(lastHeight);
+        READWRITE(lastBlock);
+        READWRITE(txList);
+    }
+
+    bool Encode(const unsigned char* key, int keySize, std::string& hexOutput) {
+        CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+        ss << *this;
+        std::vector<unsigned char> inputBytes, outputBytes;
+        std::copy(ss.begin(), ss.end(), std::back_inserter(inputBytes));
+        SimpleEncodeHex(key, keySize, inputBytes, outputBytes);
+        hexOutput = HexStr(outputBytes.data(), outputBytes.data() + outputBytes.size());
+        return true;
+    }
+
+    bool Decode(const unsigned char* key, int keySize, const std::string& input) {
+        if (!IsHex(input)) return false;
+        std::vector<unsigned char> parsed = ParseHex(input);
+        std::vector<unsigned char> outputDecoded;
+        SimpleDecodeHex(key, keySize, parsed, outputDecoded);
+        CDataStream ss(outputDecoded, SER_NETWORK, PROTOCOL_VERSION);
+        ss >> *this;
+    }
+};
 
 #endif // BITCOIN_WALLET_H

@@ -23,7 +23,6 @@
 
 #include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
 #include <boost/iostreams/concepts.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/shared_ptr.hpp>
@@ -42,7 +41,7 @@ static std::string rpcWarmupStatus("RPC server started");
 static CCriticalSection cs_rpcWarmup;
 
 /* Timer-creating functions */
-static std::vector<RPCTimerInterface *> timerInterfaces;
+static RPCTimerInterface* timerInterface = NULL;
 /* Map of name to timer.
  * @note Can be changed to std::unique_ptr when C++11 */
 static std::map <std::string, boost::shared_ptr<RPCTimerBase>> deadlineTimers;
@@ -72,7 +71,7 @@ void RPCServer::OnPostCommand(boost::function<void(const CRPCCommand &)> slot) {
 
 void RPCTypeCheck(const UniValue &params, const list <UniValue::VType> &typesExpected, bool fAllowNull) {
     unsigned int i = 0;
-    BOOST_FOREACH(UniValue::VType t, typesExpected) {
+    for (UniValue::VType t : typesExpected) {
         if (params.size() <= i)
             break;
 
@@ -90,7 +89,7 @@ void RPCTypeCheckObj(const UniValue& o,
                      const map<string, UniValue::VType>& typesExpected,
                      bool fAllowNull)
 {
-    BOOST_FOREACH(const PAIRTYPE(string, UniValue::VType)& t, typesExpected) {
+    for (const PAIRTYPE(string, UniValue::VType)& t : typesExpected) {
         const UniValue& v = find_value(o, t.first);
         if (!fAllowNull && v.isNull())
             throw JSONRPCError(RPC_TYPE_ERROR, strprintf("Missing %s", t.first));
@@ -183,8 +182,7 @@ string CRPCTable::help(string strCommand) const {
         vCommands.push_back(make_pair(mi->second->category + mi->first, mi->second));
     sort(vCommands.begin(), vCommands.end());
 
-    BOOST_FOREACH(
-    const PAIRTYPE(string, const CRPCCommand*) &command, vCommands) {
+    for (const PAIRTYPE(string, const CRPCCommand*) &command : vCommands) {
         const CRPCCommand *pcmd = command.second;
         string strMethod = pcmd->name;
         // We already filter duplicates, but these deprecated screw up the sort order
@@ -358,9 +356,8 @@ static const CRPCCommand vRPCCommands[] =
          {"dapscoin", "relaymasternodebroadcast", &relaymasternodebroadcast, true, true, false},
          {"dapscoin", "mnsync", &mnsync, true, true, false},
          {"dapscoin", "getpoolinfo", &getpoolinfo, true, true, false},
-#ifdef ENABLE_WALLET
-        // {"dapscoin", "obfuscation", &obfuscation, false, false, true}, /* not threadSafe because of SendMoney */
 
+#ifdef ENABLE_WALLET
         /* Wallet */
         // {"wallet", "addmultisigaddress", &addmultisigaddress, true, false, true},
         {"wallet", "autocombinedust", &autocombinedust, false, false, true},
@@ -379,6 +376,7 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "revealviewprivatekey", &revealviewprivatekey, true, false, true},
         {"wallet", "revealspendprivatekey", &revealspendprivatekey, true, false, true},
         {"wallet", "showtxprivatekeys", &showtxprivatekeys, true, false, true},
+        {"wallet", "rescanfrombackup", &rescanfrombackup, true, false, true},
         {"wallet", "rescanwallettransactions", &rescanwallettransactions, true, false, true},
         {"wallet", "setdecoyconfirmation", &setdecoyconfirmation, true, false, true},
         {"wallet", "getdecoyconfirmation", &getdecoyconfirmation, true, false, true},
@@ -584,21 +582,24 @@ std::string HelpExampleRpc(string methodname, string args) {
            methodname + "\", \"params\": [" + args + "] }' -H 'content-type: text/plain;' http://127.0.0.1:53573/\n";
 }
 
-void RPCRegisterTimerInterface(RPCTimerInterface *iface) {
-    timerInterfaces.push_back(iface);
+void RPCSetTimerInterfaceIfUnset(RPCTimerInterface *iface) {
+    if (!timerInterface)
+        timerInterface = iface;
 }
 
-void RPCUnregisterTimerInterface(RPCTimerInterface *iface) {
-    std::vector<RPCTimerInterface *>::iterator i = std::find(timerInterfaces.begin(), timerInterfaces.end(), iface);
-    assert(i != timerInterfaces.end());
-    timerInterfaces.erase(i);
+void RPCSetTimerInterface(RPCTimerInterface *iface) {
+    timerInterface = iface;
+}
+
+void RPCUnsetTimerInterface(RPCTimerInterface *iface) {
+    if (timerInterface == iface)
+        timerInterface = NULL;
 }
 
 void RPCRunLater(const std::string &name, boost::function<void(void)> func, int64_t nSeconds) {
-    if (timerInterfaces.empty())
+    if (!timerInterface)
         throw JSONRPCError(RPC_INTERNAL_ERROR, "No timer handler registered for RPC");
     deadlineTimers.erase(name);
-    RPCTimerInterface *timerInterface = timerInterfaces[0];
     LogPrint("rpc", "queue run of timer %s in %i seconds (using %s)\n", name, nSeconds, timerInterface->Name());
     deadlineTimers.insert(
             std::make_pair(name, boost::shared_ptr<RPCTimerBase>(timerInterface->NewTimer(func, nSeconds * 1000))));
