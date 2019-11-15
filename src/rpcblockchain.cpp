@@ -980,3 +980,26 @@ UniValue getinvalid (const UniValue& params, bool fHelp)
     ret.push_back(obj);
     return ret;
 }
+
+UniValue changemaxreorg(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+            "changemaxreorg <value>\n"
+            "\nChange max reorganization.\n"
+            "\nArguments:\n"
+            "1. num   (numeric, required) the number of blocks\n"
+            "\nResult:\n"
+            "\nExamples:\n" +
+            HelpExampleCli("changemaxreorg", "100") + HelpExampleRpc("changemaxreorg", "100"));
+
+    int num = params[0].get_int();
+    if (num <= 5) 
+        throw runtime_error("Invalid number");
+    {
+        LOCK(cs_main);
+        Params().ChangeMaxReorg(num);
+    }
+
+    return NullUniValue;
+}
