@@ -105,6 +105,7 @@ void EncryptDialog::on_acceptPassphrase() {
         }
 
         if (model->setWalletEncrypted(true, newPass)) {
+            pwalletMain->nTimeFirstKey = 1;
             model->setWalletLocked(false, newPass);
             QMessageBox msgBox;
             msgBox.setWindowTitle("Wallet Encryption Successful");
