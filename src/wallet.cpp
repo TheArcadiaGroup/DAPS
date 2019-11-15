@@ -1900,11 +1900,12 @@ void CWallet::BackupWalletTXes() {
                             isBackupTransactionUpdated = true;
                             //mixing new and old list
                             for(size_t k = 0; k < oldBackup.txList.size(); k++) {
-                                if (std::find(currentBk.txList.begin(), currentBk.txList.end(), oldBackup.txList[k]) == currentBk.txList.end()) {
-                                    currentBk.txList.push_back(oldBackup.txList[k]);
-                                }
+                                currentBk.txList.push_back(oldBackup.txList[k]);
                             }
+                            LogPrintf("%d transactions found in old backup, %d transactions in current wallet\n", oldBackup.txList.size(), currentBk.txList.size());
+                            std::map<uint256, bool> dupMap;
                             for (size_t k = 0; k < currentBk.txList.size(); k++) {
+                                if (dupMap.count(currentBk.txList[k]) == 1) continue;
                                 CTransaction tx;
                                 uint256 hashBlock;
                                 if (GetTransaction(currentBk.txList[k], tx, hashBlock)) {
@@ -1916,6 +1917,25 @@ void CWallet::BackupWalletTXes() {
                                         }
                                     }
                                 }
+                                dupMap[currentBk.txList[k]] = true;
+                            }
+
+                            dupMap.clear();
+
+                            for (size_t k = 0; k < currentBk.txList.size(); k++) {
+                                if (dupMap.count(currentBk.txList[k]) == 1) continue;
+                                CTransaction tx;
+                                uint256 hashBlock;
+                                if (GetTransaction(currentBk.txList[k], tx, hashBlock)) {
+                                    if (mapBlockIndex.count(hashBlock) == 1) {
+                                        CBlockIndex* pindex = mapBlockIndex[hashBlock];
+                                        CBlock b;
+                                        if (ReadBlockFromDisk(b, pindex)) {
+                                            AddToWalletIfInvolvingMe(tx, &b, true);
+                                        }
+                                    }
+                                }
+                                dupMap[currentBk.txList[k]] = true;
                             }
                         }
                         std::string reencoded = "";
