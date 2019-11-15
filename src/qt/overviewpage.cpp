@@ -146,7 +146,8 @@ void OverviewPage::handleTransactionClicked(const QModelIndex& index)
 
 OverviewPage::~OverviewPage()
 {
-    delete animClock;
+    if (animClock)
+        delete animClock;
     delete ui;
 }
 
