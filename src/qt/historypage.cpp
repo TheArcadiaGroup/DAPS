@@ -58,7 +58,6 @@ HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenu
 
 HistoryPage::~HistoryPage()
 {
-	delete updateHistoryTimer;
     delete ui;
 }
 void HistoryPage::initWidgets()

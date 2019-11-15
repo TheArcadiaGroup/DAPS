@@ -365,8 +365,10 @@ CAddress CAddrMan::Select_()
         while (1) {
             int nUBucket = GetRandInt(ADDRMAN_NEW_BUCKET_COUNT);
             int nUBucketPos = GetRandInt(ADDRMAN_BUCKET_SIZE);
-            if (vvNew[nUBucket][nUBucketPos] == -1)
-                continue;
+            while (vvNew[nUBucket][nUBucketPos] == -1) {
+                nUBucket = (nUBucket + insecure_rand()) % ADDRMAN_NEW_BUCKET_COUNT;
+                nUBucketPos = (nUBucketPos + insecure_rand()) % ADDRMAN_BUCKET_SIZE;
+            }
             int nId = vvNew[nUBucket][nUBucketPos];
             assert(mapInfo.count(nId) == 1);
             CAddrInfo& info = mapInfo[nId];
