@@ -1950,6 +1950,35 @@ void CWallet::BackupWalletTXes() {
                                 }
                             }
 
+                            //scan from oldbackup height to current height
+                            CBlockIndex* pstart = chainActive[currentBk.lastHeight];
+                            if (chainActive[oldBackup.lastHeight]->GetBlockHash() == oldBackup.lastBlock) {
+                                pstart = chainActive[oldBackup.lastBlock];
+                            } else {
+                                pstart = chainActive[oldBackup.lastHeight - 100];
+                            }
+
+                            ShowProgress(_("Scanning for missing transactions..."), 0); // show rescan progress in GUI as dialog or on splashscreen, if -rescan on startup
+                            double dProgressStart = Checkpoints::GuessVerificationProgress(pstart, false);
+                            double dProgressTip = Checkpoints::GuessVerificationProgress(chainActive.Tip(), false);
+
+                            while (!IsLocked() && pstart && pstart->GetBlockHash() != currentBk.lastBlock) {
+                                if (pstart->nHeight % 100 == 0)
+                                    ShowProgress(_("Scanning for missing transactions..."), std::max(1, std::min(99, (int)((Checkpoints::GuessVerificationProgress(pstart, false) - dProgressStart) / (dProgressTip - dProgressStart) * 100))));
+
+                                CBlock block;
+                                ReadBlockFromDisk(block, pstart);
+                                for (CTransaction& tx : block.vtx) {
+                                    if (AddToWalletIfInvolvingMe(tx, &block, fUpdate))
+                                        ret++;
+                                }
+                                pstart = chainActive.Next(pstart);
+                                if (GetTime() >= nNow + 60) {
+                                    nNow = GetTime();
+                                    LogPrintf("Still rescanning. At block %d. Progress=%f\n", pstart->nHeight, Checkpoints::GuessVerificationProgress(pstart));
+                                }
+                            }
+
                         }
                         std::string reencoded = "";
                         currentBk.Encode(view.begin(), view.size(), reencoded);
