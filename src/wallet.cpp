@@ -1992,7 +1992,7 @@ void CWallet::BackupWalletTXes() {
                                 }
                             }
 
-                            currentBk.txList.insert(currentBk.txList.end(), sortedTxList.begin(), sortedTxist.end());
+                            currentBk.txList.insert(currentBk.txList.end(), sortedTxList.begin(), sortedTxList.end());
 
                         }
                         std::string reencoded = "";
