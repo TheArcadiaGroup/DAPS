@@ -1908,23 +1908,8 @@ void CWallet::BackupWalletTXes() {
                             }
                             LogPrintf("%d transactions found in old backup, %d transactions in current wallet\n", oldBackup.txList.size(), currentBk.txList.size());
                             std::map<uint256, bool> dupMap;
-                            for (size_t k = 0; k < currentBk.txList.size(); k++) {
-                                if (dupMap.count(currentBk.txList[k]) == 1) continue;
-                                CTransaction tx;
-                                uint256 hashBlock;
-                                if (GetTransaction(currentBk.txList[k], tx, hashBlock)) {
-                                    if (mapBlockIndex.count(hashBlock) == 1) {
-                                        CBlockIndex* pindex = mapBlockIndex[hashBlock];
-                                        CBlock b;
-                                        if (ReadBlockFromDisk(b, pindex)) {
-                                            AddToWalletIfInvolvingMe(tx, &b, true);
-                                        }
-                                    }
-                                }
-                                dupMap[currentBk.txList[k]] = true;
-                            }
-
-                            dupMap.clear();
+                            std::vector<uint256> sortedTxList;
+                            std::map<uint256, int> heightMap;
 
                             for (size_t k = 0; k < currentBk.txList.size(); k++) {
                                 if (dupMap.count(currentBk.txList[k]) == 1) continue;
@@ -1933,14 +1918,38 @@ void CWallet::BackupWalletTXes() {
                                 if (GetTransaction(currentBk.txList[k], tx, hashBlock)) {
                                     if (mapBlockIndex.count(hashBlock) == 1) {
                                         CBlockIndex* pindex = mapBlockIndex[hashBlock];
+                                        if (pindex) {
+                                            if (sortedTxList.empty()) {
+                                                sortedTxList.push_back(currentBk.txList[k]);
+                                                heightMap[currentBk.txList[k]] = pindex->nHeight;
+                                            } else {
+                                                size_t j = 0;
+                                                for(j = 0; j < sortedTxList.size(); j++) {
+                                                    if (pindex->nHeight < heightMap[sortedTxList[j]]) break;
+                                                }
+                                                sortedTxList.insert(sortedTxList.begin() + j, currentBk.txList[k]);
+                                                heightMap[currentBk.txList[k]] = pindex->nHeight;
+                                            }
+                                        }
+                                    }
+                                }
+                                dupMap[currentBk.txList[k]] = true;
+                            }
+                            
+                            for (size_t k = 0; k < sortedTxList.size(); k++) {
+                                CTransaction tx;
+                                uint256 hashBlock;
+                                if (GetTransaction(sortedTxList[k], tx, hashBlock)) {
+                                    if (mapBlockIndex.count(hashBlock) == 1) {
+                                        CBlockIndex* pindex = mapBlockIndex[hashBlock];
                                         CBlock b;
                                         if (ReadBlockFromDisk(b, pindex)) {
                                             AddToWalletIfInvolvingMe(tx, &b, true);
                                         }
                                     }
                                 }
-                                dupMap[currentBk.txList[k]] = true;
                             }
+
                         }
                         std::string reencoded = "";
                         currentBk.Encode(view.begin(), view.size(), reencoded);
