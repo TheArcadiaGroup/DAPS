@@ -5820,7 +5820,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint3
                         continue;
                     }
 
-                    if (vCoins.size() <= MAX_TX_INPUTS - 1) { //reserve 1 input for lowestLarger
+                    if (vCoins.size() <= MAX_TX_INPUTS - 35) { //reserve 1 input for lowestLarger
                         vCoins.push_back(COutput(pcoin, i, nDepth, true));
                         total += decodedAmount;
                     }
