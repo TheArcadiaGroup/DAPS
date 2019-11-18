@@ -1530,15 +1530,30 @@ bool AppInit2(bool isDaemon)
             CBlockLocator locator;
             if (walletdb.ReadBestBlock(locator)) {
                 pindexRescan = FindForkInGlobalIndex(chainActive, locator);
-            } else {
-                if (!walletdb.ReadScannedBlockHeight(height)) {
-                	if (height > chainActive.Height()) {
-                		pindexRescan = chainActive.Genesis();
-                	} else {
-                		pindexRescan = chainActive[height];
-                	}
-                } else
-                	pindexRescan = chainActive.Genesis();
+            } 
+            {
+                if (walletdb.ReadScannedBlockHeight(height)) {
+                    if (height > pindexRescan->nHeight) {
+                        if (height > chainActive.Height()) {
+                            pindexRescan = chainActive.Tip();
+                        } else {
+                            pindexRescan = chainActive[height];
+                        }
+                    }
+                } else {
+                    std::vector<uint256> txesHash;
+                    int lastHeight = 0;
+                    uint256 lastBlock;
+                    if (pwalletMain->ReadTxesFromBackup(txesHash, lastHeight, lastBlock)) {
+                        if (lastHeight > pindexRescan->nHeight) {
+                            if (lastHeight > chainActive.Height()) {
+                                pindexRescan = chainActive.Tip();
+                            } else {
+                                pindexRescan = chainActive[lastHeight];
+                            }
+                        }
+                    }
+                }
             }
         }
         if (chainActive.Tip() && chainActive.Tip() != pindexRescan) {

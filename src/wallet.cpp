@@ -36,6 +36,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/thread.hpp>
 #include "masternodeconfig.h"
+#include "univalue.h"
 
 
 using namespace std;
@@ -529,6 +530,19 @@ bool CWallet::RescanAfterUnlock(int fromHeight)
                             }
                         }
                     }
+                }
+            }
+
+            //READ from json backup
+            std::vector<uint256> txesHash;
+            int lastHeight = 0;
+            uint256 lastBlock;
+            ReadTxesFromBackup(txesHash, lastHeight, lastBlock);
+            if (lastHeight > pindex->nHeight) {
+                if (lastHeight > chainActive.Height()) {
+                    pindex = chainActive.Tip();
+                } else {
+                    pindex = chainActive[lastHeight];
                 }
             }
         }
@@ -1685,6 +1699,315 @@ set<uint256> CWalletTx::GetConflicts() const
         result.erase(myHash);
     }
     return result;
+}
+
+void CWallet::RecoverFromJsonBackup()
+{
+    if (IsLocked()) return;
+    LOCK2(cs_main, cs_wallet);
+    int lastScanned;
+    uint256 lastBlock;
+    std::vector<uint256> txsHashes;
+    if (!ReadTxesFromBackup(txsHashes, lastScanned, lastBlock)) {
+        throw runtime_error("No backup found");
+    }
+    int highestHeight = 0;
+    int numRecovered = 0;
+    for (size_t i = 0; i < txsHashes.size(); i++) {
+        CTransaction tx;
+        uint256 hashBlock;
+        if (GetTransaction(txsHashes[i], tx, hashBlock)) {
+            if (mapBlockIndex.count(hashBlock) == 1) {
+                CBlockIndex* pindex = mapBlockIndex[hashBlock];
+                CBlock b;
+                if (ReadBlockFromDisk(b, pindex)) {
+                    AddToWalletIfInvolvingMe(tx, &b, true);
+                    numRecovered++;
+                    if (pindex->nHeight > highestHeight) {
+                        highestHeight = pindex->nHeight;
+                    }
+                }
+            }
+        }
+    }
+
+    LogPrintf("Successfully recovered %d of %d transactions, from block %d\n", txsHashes.size(), numRecovered, lastScanned);
+
+    //continue scanned from block txsHashes
+    lastScanned = lastScanned - 100;
+    lastScanned = highestHeight > lastScanned?highestHeight:lastScanned;
+    if (chainActive.Height() < lastScanned) {
+        lastScanned = chainActive.Height();
+    }
+
+    ScanForWalletTransactions(chainActive[lastScanned], true, lastScanned);
+}
+
+bool CWallet::ReadTxesFromBackup(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash) 
+{
+    LOCK2(cs_main, cs_wallet);
+    if (IsLocked()) return false;
+    //Read wallet.backup.json
+    std::string sourcePathStr = GetDataDir().string();
+    sourcePathStr += "/" + StrWalletFileTextBackup;
+    std::string existingFileContent = "";
+    bool isFileExist = false;
+    {
+        isFileExist = static_cast<bool>(std::ifstream(sourcePathStr));
+    }
+    if (isFileExist)
+    {
+        string line;
+        std::ifstream src(sourcePathStr.c_str());
+        if (src.is_open())
+        {
+            while ( getline (src,line) )
+            {
+                existingFileContent += line + '\n';
+            }
+            src.close();
+        } else return false;; 
+    } else {
+        LogPrintf("Backup file does not exist\n");
+        return false;
+    } 
+
+    UniValue gWalletBackup;
+    gWalletBackup.read(existingFileContent);
+
+    std::string masterAddr;
+    ComputeStealthPublicAddress("masteraccount", masterAddr);
+    UniValue found = find_value(gWalletBackup, masterAddr);
+    if (found.getType() != UniValue::VOBJ) {
+        return false;
+    }
+
+    std::string encoded = found.get_str();
+    CWalletBackup wlbk;
+    CKey view;
+    myViewPrivateKey(view);
+    wlbk.Decode(view.begin(), view.size(), encoded);
+    txHashes = wlbk.txList;
+    lastScannedHeight = wlbk.lastHeight;
+    lastScannedBlockHash = wlbk.lastBlock;
+    LogPrintf("successfully Read %d transactions from backup file\n", txHashes.size());
+    return true;
+}
+
+bool CWallet::ExportTransactionList(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash) {
+    if (IsLocked()) return false;
+    LOCK2(cs_main, cs_wallet);
+    for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
+        txHashes.push_back(it->first);
+    }
+    CBlockIndex* pindexRescan = chainActive.Tip();
+    CWalletDB walletdb(strWalletFile);
+    CBlockLocator locator;
+    if (walletdb.ReadBestBlock(locator)) {
+        pindexRescan = FindForkInGlobalIndex(chainActive, locator);
+    } 
+
+    if (walletdb.ReadScannedBlockHeight(lastScannedHeight)) {
+        if (lastScannedHeight > chainActive.Height()) {
+            if (pindexRescan->nHeight < lastScannedHeight) pindexRescan = chainActive.Genesis();
+        } else {
+            if (pindexRescan->nHeight < lastScannedHeight) pindexRescan = chainActive[lastScannedHeight];
+        }
+    } else {
+        if (pindexRescan->nHeight < lastScannedHeight) pindexRescan = chainActive.Genesis();
+    }
+    lastScannedHeight = pindexRescan->nHeight;
+    lastScannedBlockHash = pindexRescan->GetBlockHash();
+    return true;
+}
+
+std::string CWallet::ExportTransactionList() {
+    LOCK2  (cs_main, cs_wallet);
+    std::vector<uint256> txes;
+    int lastScannedHeight = 0;
+    uint256 lastScannedBlockHash;
+    ExportTransactionList(txes, lastScannedHeight, lastScannedBlockHash);
+    CWalletBackup wlbk;
+    wlbk.lastHeight = lastScannedHeight;
+    wlbk.lastBlock = lastScannedBlockHash;
+    wlbk.txList = txes;
+    
+    std::string masterAddr;
+    ComputeStealthPublicAddress("masteraccount", masterAddr);
+    std::copy(masterAddr.data(), masterAddr.data() + masterAddr.size(), std::back_inserter(wlbk.masterAddress));
+
+    std::string encoded = "";
+    CKey view;
+    myViewPrivateKey(view);
+    wlbk.Encode(view.begin(), view.size(), encoded);
+
+    return encoded;
+}
+
+void CWallet::BackupWalletTXes() {
+    if (IsLocked()) return;
+    CKey view;
+    myViewPrivateKey(view);
+    static bool isBackupTransactionUpdated = false;
+    std::string encodedbWalletTxs = ExportTransactionList();
+    CWalletBackup currentBk;
+    currentBk.Decode(view.begin(), view.size(), encodedbWalletTxs);
+    //Read wallet.backup.json
+    std::string sourcePathStr = GetDataDir().string();
+    sourcePathStr += "/" + StrWalletFileTextBackup;
+    std::string existingFileContent = "";
+    bool isFileExist = false;
+    {
+        isFileExist = static_cast<bool>(std::ifstream(sourcePathStr));
+    }
+    if (isFileExist)
+    {
+        string line;
+        std::ifstream src(sourcePathStr.c_str());
+        if (src.is_open())
+        {
+            while ( getline (src,line) )
+            {
+                existingFileContent += line + '\n';
+            }
+            src.close();
+        } else return; 
+    } 
+    
+    std::string masterAddr;
+    ComputeStealthPublicAddress("masteraccount", masterAddr);    
+    
+    if (existingFileContent.empty()) {
+        UniValue parent(UniValue::VOBJ);
+        parent.push_back(Pair(masterAddr, encodedbWalletTxs));
+        existingFileContent = parent.write() + "\n";
+    } else {
+        UniValue gWalletBackup;
+        UniValue gWalletBackupNew(UniValue::VOBJ);
+        try {
+            gWalletBackup.read(existingFileContent);
+            std::vector<std::string> keys = gWalletBackup.getKeys();
+            bool isAdded = false;
+            for(size_t i = 0; i < keys.size(); i++) {
+                if (keys[i] == masterAddr) {
+                    std::string encodedBk0= find_value(gWalletBackup, keys[i]).get_str();
+                    CWalletBackup oldBackup;
+                    oldBackup.Decode(view.begin(), view.size(), encodedBk0);
+
+                    if (oldBackup.lastHeight < currentBk.lastHeight) {
+                        if (!isBackupTransactionUpdated) {
+                            isBackupTransactionUpdated = true;
+                            //mixing new and old list
+                            for(size_t k = 0; k < oldBackup.txList.size(); k++) {
+                                currentBk.txList.push_back(oldBackup.txList[k]);
+                            }
+                            LogPrintf("%d transactions found in old backup, %d transactions in current wallet\n", oldBackup.txList.size(), currentBk.txList.size());
+                            std::map<uint256, bool> dupMap;
+                            std::vector<uint256> sortedTxList;
+                            std::map<uint256, int> heightMap;
+
+                            for (size_t k = 0; k < currentBk.txList.size(); k++) {
+                                if (dupMap.count(currentBk.txList[k]) == 1) continue;
+                                CTransaction tx;
+                                uint256 hashBlock;
+                                if (GetTransaction(currentBk.txList[k], tx, hashBlock)) {
+                                    if (mapBlockIndex.count(hashBlock) == 1) {
+                                        CBlockIndex* pindex = mapBlockIndex[hashBlock];
+                                        if (pindex) {
+                                            if (sortedTxList.empty()) {
+                                                sortedTxList.push_back(currentBk.txList[k]);
+                                                heightMap[currentBk.txList[k]] = pindex->nHeight;
+                                            } else {
+                                                size_t j = 0;
+                                                for(j = 0; j < sortedTxList.size(); j++) {
+                                                    if (pindex->nHeight < heightMap[sortedTxList[j]]) break;
+                                                }
+                                                sortedTxList.insert(sortedTxList.begin() + j, currentBk.txList[k]);
+                                                heightMap[currentBk.txList[k]] = pindex->nHeight;
+                                            }
+                                        }
+                                    }
+                                }
+                                dupMap[currentBk.txList[k]] = true;
+                            }
+                            
+                            for (size_t k = 0; k < sortedTxList.size(); k++) {
+                                CTransaction tx;
+                                uint256 hashBlock;
+                                if (GetTransaction(sortedTxList[k], tx, hashBlock)) {
+                                    if (mapBlockIndex.count(hashBlock) == 1) {
+                                        CBlockIndex* pindex = mapBlockIndex[hashBlock];
+                                        CBlock b;
+                                        if (ReadBlockFromDisk(b, pindex)) {
+                                            AddToWalletIfInvolvingMe(tx, &b, true);
+                                        }
+                                    }
+                                }
+                            }
+
+                            //scan from oldbackup height to current height
+                            CBlockIndex* pstart = chainActive[currentBk.lastHeight];
+                            if (chainActive[oldBackup.lastHeight]->GetBlockHash() == oldBackup.lastBlock) {
+                                pstart = chainActive[oldBackup.lastBlock];
+                            } else {
+                                pstart = chainActive[oldBackup.lastHeight - 100];
+                            }
+
+                            ShowProgress(_("Scanning for missing transactions..."), 0); // show rescan progress in GUI as dialog or on splashscreen, if -rescan on startup
+                            double dProgressStart = Checkpoints::GuessVerificationProgress(pstart, false);
+                            double dProgressTip = Checkpoints::GuessVerificationProgress(chainActive.Tip(), false);
+
+                            while (!IsLocked() && pstart && pstart->GetBlockHash() != currentBk.lastBlock) {
+                                if (pstart->nHeight % 100 == 0)
+                                    ShowProgress(_("Scanning for missing transactions..."), std::max(1, std::min(99, (int)((Checkpoints::GuessVerificationProgress(pstart, false) - dProgressStart) / (dProgressTip - dProgressStart) * 100))));
+
+                                CBlock block;
+                                ReadBlockFromDisk(block, pstart);
+                                for (CTransaction& tx : block.vtx) {
+                                    if (AddToWalletIfInvolvingMe(tx, &block, fUpdate))
+                                        ret++;
+                                }
+                                pstart = chainActive.Next(pstart);
+                                if (GetTime() >= nNow + 60) {
+                                    nNow = GetTime();
+                                    LogPrintf("Still rescanning. At block %d. Progress=%f\n", pstart->nHeight, Checkpoints::GuessVerificationProgress(pstart));
+                                }
+                            }
+
+                        }
+                        std::string reencoded = "";
+                        currentBk.Encode(view.begin(), view.size(), reencoded);
+                        gWalletBackupNew.push_back(Pair(masterAddr, reencoded));
+                        isAdded = true;
+
+                        uint256 lastBlock = currentBk.lastBlock;
+                        if (mapBlockIndex.count(lastBlock) == 1) {
+                            CBlockLocator loc = chainActive.GetLocator(mapBlockIndex[lastBlock]);
+                            SetBestChain(loc);
+                        }
+                    } else {
+                        gWalletBackupNew.push_back(Pair(masterAddr, encodedBk0));
+                        isAdded = true;
+                    }
+                } else {
+                    UniValue val = find_value(gWalletBackup, keys[i]);
+                    gWalletBackupNew.push_back(Pair(keys[i], val));
+                }
+            }
+            if (!isAdded) {
+                gWalletBackupNew.push_back(Pair(masterAddr, encodedbWalletTxs));
+            }
+            existingFileContent = gWalletBackupNew.write() + "\n";
+        } catch (std::exception& e) {
+            LogPrintf("%s: failed to backup wallet transaction in json file, error=%s, existingFileContent=%s\n", __func__, e.what(), existingFileContent);
+            return;
+        }
+    } 
+    std::ofstream out(sourcePathStr);
+    if (out.is_open()) {
+        out << existingFileContent;
+        out.close();
+    }
 }
 
 void CWallet::ResendWalletTransactions()
@@ -4385,13 +4708,13 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             nReward = PoSBlockReward();
             txNew.vout[1].nValue = nCredit;
             txNew.vout[2].nValue = nReward;
-            /*if (stakingMode == STAKING_WITH_CONSOLIDATION || STAKING_WITH_CONSOLIDATION_WITH_STAKING_NEWW_FUNDS) {
+            if (stakingMode == STAKING_WITH_CONSOLIDATION || STAKING_WITH_CONSOLIDATION_WITH_STAKING_NEWW_FUNDS) {
                 //the first output contains all funds (input + rewards + fee)
-                if (nCredit + nReward > (MINIMUM_STAKE_AMOUNT + 100000*COIN)*2) {
-                    txNew.vout[1].nValue = (nCredit + nReward)/2;
-                    txNew.vout[2].nValue = (nCredit + nReward) - txNew.vout[1].nValue;
-                }
-            }*/
+                //if (nCredit + nReward > (MINIMUM_STAKE_AMOUNT + 100000*COIN)*2) {
+                    txNew.vout[1].nValue = 0;
+                    txNew.vout[2].nValue = (nCredit + nReward);
+                //}
+            }
 
             // Limit size
             unsigned int nBytes = ::GetSerializeSize(txNew, SER_NETWORK, PROTOCOL_VERSION);
@@ -4437,8 +4760,10 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 //create commitment
                 unsigned char zeroBlind[32];
                 memset(zeroBlind, 0, 32);
-                txNew.vout[i].commitment.clear();
-                CreateCommitment(zeroBlind, txNew.vout[i].nValue, txNew.vout[i].commitment);
+                if (txNew.vout[i].nValue > 0) {
+                    txNew.vout[i].commitment.clear();
+                    CreateCommitment(zeroBlind, txNew.vout[i].nValue, txNew.vout[i].commitment);
+                } 
             }
 
             // ECDSA sign

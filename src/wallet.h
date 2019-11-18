@@ -23,6 +23,7 @@
 #include "validationinterface.h"
 #include "wallet_ismine.h"
 #include "walletdb.h"
+#include "univalue.h"
 
 #include <algorithm>
 #include <map>
@@ -259,6 +260,7 @@ public:
     static const CAmount MINIMUM_STAKE_AMOUNT = 400000 * COIN;
     static const int32_t MAX_DECOY_POOL = 500;
     static const int32_t PROBABILITY_NEW_COIN_SELECTED = 70;
+    const std::string StrWalletFileTextBackup = "wallet.backup.json";
     bool RescanAfterUnlock(int fromHeight);
     bool MintableCoins();
     StakingStatusError StakingCoinStatus(CAmount& minFee, CAmount& maxFee);
@@ -281,6 +283,11 @@ public:
     bool WriteAutoConsolidateSettingTime(uint32_t settingTime);
     uint32_t ReadAutoConsolidateSettingTime();
     bool IsAutoConsolidateOn();
+    bool ExportTransactionList(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash);
+    std::string ExportTransactionList();
+    bool ReadTxesFromBackup(std::vector<uint256>& txHashes, int& lastScannedHeight, uint256& lastScannedBlockHash);
+    void BackupWalletTXes();
+    void RecoverFromJsonBackup();
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
@@ -1618,6 +1625,41 @@ private:
     std::vector<char> _ssExtra;
 };
 
+class CWalletBackup {
+public:
+    std::vector<unsigned char> masterAddress;
+    int lastHeight;
+    uint256 lastBlock;
+    std::vector<uint256> txList;
+    ADD_SERIALIZE_METHODS;
 
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
+    {
+        READWRITE(masterAddress);
+        READWRITE(lastHeight);
+        READWRITE(lastBlock);
+        READWRITE(txList);
+    }
+
+    bool Encode(const unsigned char* key, int keySize, std::string& hexOutput) {
+        CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+        ss << *this;
+        std::vector<unsigned char> inputBytes, outputBytes;
+        std::copy(ss.begin(), ss.end(), std::back_inserter(inputBytes));
+        SimpleEncodeHex(key, keySize, inputBytes, outputBytes);
+        hexOutput = HexStr(outputBytes.data(), outputBytes.data() + outputBytes.size());
+        return true;
+    }
+
+    bool Decode(const unsigned char* key, int keySize, const std::string& input) {
+        if (!IsHex(input)) return false;
+        std::vector<unsigned char> parsed = ParseHex(input);
+        std::vector<unsigned char> outputDecoded;
+        SimpleDecodeHex(key, keySize, parsed, outputDecoded);
+        CDataStream ss(outputDecoded, SER_NETWORK, PROTOCOL_VERSION);
+        ss >> *this;
+    }
+};
 
 #endif // BITCOIN_WALLET_H

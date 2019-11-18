@@ -226,5 +226,6 @@ void TraceThread(const char* name, Callable func)
 }
 
 bool PointHashingSuccessively(const CPubKey& pk, const unsigned char* tweak, unsigned char* out);
-
+bool SimpleEncodeHex(const unsigned char* key, int keySize, const std::vector<unsigned char>& input, std::vector<unsigned char>& encoded);
+bool SimpleDecodeHex(const unsigned char* key, int keySize, const std::vector<unsigned char>& encoded, std::vector<unsigned char>& output);
 #endif // BITCOIN_UTIL_H
