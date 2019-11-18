@@ -393,7 +393,7 @@ CNode *ConnectNode(CAddress addrConnect, const char *pszDest, bool obfuScationMa
              pszDest ? 0.0 : (double) (GetAdjustedTime() - addrConnect.nTime) / 3600.0);
 
     // Connect
-    SOCKET hSocket;
+    SOCKET hSocket = INVALID_SOCKET;
     bool proxyConnectionFailed = false;
     if (pszDest ? ConnectSocketByName(addrConnect, hSocket, pszDest, Params().GetDefaultPort(), nConnectTimeout,
                                       &proxyConnectionFailed) :
@@ -1268,8 +1268,7 @@ void static ProcessOneShot() {
     CAddress addr;
     CSemaphoreGrant grant(*semOutbound, true);
     if (grant) {
-        if (!OpenNetworkConnection(addr, &grant, strDest.c_str(), true))
-            AddOneShot(strDest);
+        OpenNetworkConnection(addr, &grant, strDest.c_str(), true);
     }
 }
 
@@ -1438,8 +1437,7 @@ void ThreadOpenAddedConnections() {
 }
 
 // if successful, this moves the passed grant to the constructed node
-bool
-OpenNetworkConnection(const CAddress &addrConnect, CSemaphoreGrant *grantOutbound, const char *pszDest, bool fOneShot) {
+void OpenNetworkConnection(const CAddress &addrConnect, CSemaphoreGrant *grantOutbound, const char *pszDest, bool fOneShot) {
     //
     // Initiate outbound network connection
     //
@@ -1448,24 +1446,21 @@ OpenNetworkConnection(const CAddress &addrConnect, CSemaphoreGrant *grantOutboun
         if (IsLocal(addrConnect) ||
             FindNode((CNetAddr) addrConnect) || CNode::IsBanned(addrConnect) ||
             FindNode(addrConnect.ToStringIPPort()))
-            return false;
+            return;
     } else if (FindNode(pszDest))
-        return false;
+        return;
 
     CNode *pnode = ConnectNode(addrConnect, pszDest);
     boost::this_thread::interruption_point();
 
     if (!pnode)
-        return false;
+        return;
     if (grantOutbound)
         grantOutbound->MoveTo(pnode->grantOutbound);
     pnode->fNetworkNode = true;
     if (fOneShot)
         pnode->fOneShot = true;
-
-    return true;
 }
-
 
 void ThreadMessageHandler() {
     boost::mutex condition_mutex;
