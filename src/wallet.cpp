@@ -4049,7 +4049,6 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
         } else {
             std::map<COutPoint, uint256> decoySet = userDecoysPool;
             decoySet.insert(coinbaseDecoysPool.begin(), coinbaseDecoysPool.end());
-            std::random_shuffle(decoySet.begin(), decoySet.end());
             if ((int)decoySet.size() >= ringSize * 5) {
                 while (numDecoys < ringSize) {
                     bool duplicated = false;
