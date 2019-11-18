@@ -1598,7 +1598,7 @@ int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate, i
     {
         LOCK2(cs_main, cs_wallet);
         if (pindexStart == chainActive.Genesis()) {
-            pindexStart = chainActive.Tip();
+            pindex = chainActive.Tip();
         } else if (height == -1) {
             // no need to read and scan block, if block was created before
             // our wallet birthday (as adjusted for block time variability)
