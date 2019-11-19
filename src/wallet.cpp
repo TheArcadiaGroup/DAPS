@@ -3134,7 +3134,12 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
                 if (!SelectCoins(true, estimateFee, ringSize, 2, nTotalValue, setCoins, nValueIn, coinControl, coin_type, useIX)) {
                     if (coin_type == ALL_COINS) {
                         if (nSpendableBalance < nTotalValue + estimateFee) {
-                            strFailReason = "Insufficient funds. Transaction requires a fee of " + ValueFromAmountToString(estimateFee);
+                            if (estimateFee > 0)
+                                strFailReason = "Insufficient funds. Transaction requires a fee of " + ValueFromAmountToString(estimateFee);
+                            else if (nReserveBalance <= nTotalValue)
+                                strFailReason = "Insufficient reserved funds! Your wallet is staking with a reserve balance of " + ValueFromAmountToString(nReserveBalance) + " less than the sending amount " + ValueFromAmountToString(nTotalValue);
+                        } else if (nTotalValue >= nReserveBalance) {
+                                strFailReason = "Insufficient reserved funds! Your wallet is staking with a reserve balance of " + ValueFromAmountToString(nReserveBalance) + " less than the sending amount " + ValueFromAmountToString(nTotalValue);  
                         } else if (setCoins.size() > MAX_TX_INPUTS) {
                             strFailReason = _("You have attempted to send more than 50 UTXOs in a single transaction. This is a rare occurrence, and to work around this limitation, please either lower the total amount of the transaction, or send two separate transactions with 50% of your total desired amount.");
                         } else if (nValueIn == 0) {
