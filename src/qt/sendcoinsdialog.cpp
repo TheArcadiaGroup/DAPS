@@ -23,6 +23,7 @@
 #include "utilmoneystr.h"
 #include "wallet.h"
 #include "2faconfirmdialog.h"
+#include "timedata.h"
 
 #include <regex>
 #include <QMessageBox>
@@ -75,7 +76,7 @@ void SendCoinsDialog::setModel(WalletModel* model)
     }
 }
 
-void SendCoinsDialog::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
+void SendCoinsDialog::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
                               const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance)
 {
     int status = model->getEncryptionStatus();
@@ -91,7 +92,7 @@ SendCoinsDialog::~SendCoinsDialog(){
 }
 
 void SendCoinsDialog::on_sendButton_clicked(){
-    if (!ui->entries->count()) 
+    if (!ui->entries->count())
         return;
 
     SendCoinsEntry* form = qobject_cast<SendCoinsEntry*>(ui->entries->itemAt(0)->widget());
@@ -153,7 +154,7 @@ void SendCoinsDialog::on_sendButton_clicked(){
 }
 
 CPartialTransaction SendCoinsDialog::sendTx() {
-    CWalletTx resultTx; 
+    CWalletTx resultTx;
     CPartialTransaction ptx;
     bool success = false;
     try {

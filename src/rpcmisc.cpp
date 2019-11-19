@@ -115,8 +115,19 @@ UniValue getinfo(const UniValue &params, bool fHelp) {
         nStaking = true;
     else if (mapHashedBlocks.count(chainActive.Tip()->nHeight - 1) && nLastCoinStakeSearchInterval)
         nStaking = true;
-    obj.push_back(Pair("staking mode", (pwalletMain->ReadStakingStatus() ? "enabled" : "disabled")));
-    obj.push_back(Pair("staking status", (nStaking ? "active" : "inactive")));
+    if (pwalletMain->IsLocked()) {
+        obj.push_back(Pair("staking mode", ("disabled")));
+        obj.push_back(Pair("staking status", ("inactive")));
+    } else {
+        obj.push_back(Pair("staking mode", (pwalletMain->ReadStakingStatus() ? "enabled" : "disabled")));
+        if (!masternodeSync.IsSynced()) {
+            obj.push_back(Pair("staking status", ("syncing masternode list")));
+        } else if (!pwalletMain->MintableCoins() && pwalletMain->stakingMode == StakingMode::STAKING_WITH_CONSOLIDATION) {
+            obj.push_back(Pair("staking status", ("delayed (waiting for 100 blocks)")));
+        } else {
+            obj.push_back(Pair("staking status", (nStaking ? "active (attempting to mint a block)" : "idle (waiting for next round)")));
+        }
+    }
     obj.push_back(Pair("errors", GetWarnings("statusbar")));
     return obj;
 }
@@ -228,7 +239,7 @@ public:
             obj.push_back(Pair("script", GetTxnOutputType(whichType)));
             obj.push_back(Pair("hex", HexStr(subscript.begin(), subscript.end())));
             UniValue a(UniValue::VARR);
-            BOOST_FOREACH (const CTxDestination& addr, addresses)
+            for (const CTxDestination& addr : addresses)
                 a.push_back(CBitcoinAddress(addr).ToString());
             obj.push_back(Pair("addresses", a));
             if (whichType == TX_MULTISIG)
@@ -473,7 +484,7 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
             "  \"walletunlocked\": true|false,      (boolean) if the wallet is unlocked\n"
             "  \"mintablecoins\": true|false,       (boolean) if the wallet has mintable coins\n"
             "  \"enoughcoins\": true|false,         (boolean) if available coins are greater than reserve balance\n"
-            "  \"mnsync\": true|false,              (boolean) if masternode data is synced\n"
+            "  \"masternodes-synced\": true|false,  (boolean) if masternode data is synced\n"
             "  \"staking mode\": enabled|disabled,  (string) if staking is enabled or disabled\n"
             "  \"staking status\": active|inactive, (string) if staking is active or inactive\n"
             "}\n"
@@ -495,16 +506,26 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
         obj.push_back(Pair("mintablecoins", pwalletMain->MintableCoins()));
         obj.push_back(Pair("enoughcoins", nReserveBalance <= pwalletMain->GetBalance()));
     }
-    obj.push_back(Pair("mnsync", masternodeSync.IsSynced()));
+    obj.push_back(Pair("masternodes-synced", masternodeSync.IsSynced()));
 
     bool nStaking = false;
     if (mapHashedBlocks.count(chainActive.Tip()->nHeight))
         nStaking = true;
     else if (mapHashedBlocks.count(chainActive.Tip()->nHeight - 1) && nLastCoinStakeSearchInterval)
         nStaking = true;
-    obj.push_back(Pair("staking mode", (pwalletMain->ReadStakingStatus() ? "enabled" : "disabled")));
-    obj.push_back(Pair("staking status", (nStaking ? "active" : "inactive")));
-
+    if (pwalletMain->IsLocked()) {
+        obj.push_back(Pair("staking mode", ("disabled")));
+        obj.push_back(Pair("staking status", ("inactive")));
+    } else {
+        obj.push_back(Pair("staking mode", (pwalletMain->ReadStakingStatus() ? "enabled" : "disabled")));
+        if (!masternodeSync.IsSynced()) {
+            obj.push_back(Pair("staking status", ("syncing masternode list")));
+        } else if (!pwalletMain->MintableCoins() && pwalletMain->stakingMode == StakingMode::STAKING_WITH_CONSOLIDATION) {
+            obj.push_back(Pair("staking status", ("delayed (waiting for 100 blocks)")));
+        } else {
+            obj.push_back(Pair("staking status", (nStaking ? "active (attempting to mint a block)" : "idle (waiting for next round)")));
+        }
+    }
     return obj;
 }
 #endif // ENABLE_WALLET
