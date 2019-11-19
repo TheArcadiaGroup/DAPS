@@ -5861,7 +5861,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint3
                             vCoins.push_back(lowestLarger);
                             total += currentLowestLargerAmount;
                         } else {
-                            LogPrintf("No set of UTXOs to combine into a stakaeble coin =>  autocombine any way if minimum UTXOs satisfied");
+                            LogPrintf("No set of UTXOs to combine into a stakaeble coin - autocombine any way if minimum UTXOs satisfied\n");
                             if (vCoins.size() < MIN_TX_INPUTS_FOR_SWEEPING) return false;
                         }
                     }
