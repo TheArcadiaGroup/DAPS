@@ -1171,7 +1171,7 @@ public:
         return 0;
     }
 
-    CAmount GetAvailableCredit(bool fUseCache = true) const
+    CAmount GetAvailableCredit(bool fUseCache = true, bool withLockedCoin = false) const
     {
         if (pwallet == 0)
             return 0;
@@ -1191,6 +1191,7 @@ public:
         for (unsigned int i = 0; i < vout.size(); i++) {
         	//dont count if output is in mempool
         	COutPoint outpoint(hashTx, i);
+            if (withLockedCoin && pwallet->IsCollateralized(outpoint)) continue;
         	if (pwallet->inSpendQueueOutpoints.count(outpoint) == 1) continue;
 
             if (!pwallet->IsSpent(hashTx, i)) {
