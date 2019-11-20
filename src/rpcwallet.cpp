@@ -1605,10 +1605,9 @@ UniValue gettransaction(const UniValue& params, bool fHelp)
 
     CAmount nCredit = wtx.GetCredit(filter);
     CAmount nDebit = wtx.GetDebit(filter);
-    CAmount nNet = nCredit - nDebit;
-    CAmount nFee = (wtx.IsFromMe(filter) ? wtx.GetValueOut() - nDebit : 0);
-
-    entry.push_back(Pair("amount", ValueFromAmount(nNet - nFee)));
+    CAmount nNet = (nCredit > nDebit)? (nCredit - nDebit):(nDebit - nCredit);
+    CAmount nFee = wtx.nTxFee;
+    entry.push_back(Pair("amount", ValueFromAmount(nNet)));
     if (wtx.IsFromMe(filter))
         entry.push_back(Pair("fee", ValueFromAmount(nFee)));
 
@@ -1696,7 +1695,7 @@ UniValue unlockwallet(const UniValue& params, bool fHelp)
             "\nArguments:\n"
             "1. \"passphrase\"     (string, required) The wallet passphrase\n"
             "2. timeout            (numeric, required) The time to keep the decryption key in seconds.\n"
-            "3. anonymizeonly      (boolean, optional, default=flase) If is true sending functions are disabled."
+            "3. anonymizeonly      (boolean, optional, default=false) If is true sending functions are disabled."
             "\nNote:\n"
             "Issuing the unlockwallet command while the wallet is already unlocked will set a new unlock\n"
             "time that overrides the old one. A timeout of \"0\" unlocks until the wallet is closed.\n"
@@ -3010,9 +3009,10 @@ UniValue showtxprivatekeys(const UniValue& params, bool fHelp) {
 UniValue rescanwallettransactions(const UniValue& params, bool fHelp) {
     if (fHelp || params.size() > 1)
         throw runtime_error(
-                "rescanwallettransactions \n"
+                "rescanwallettransactions \"block height\"\n"
                 "\nRescan wallet transaction.\n"
                 "\nArguments:\n"
+                "\nblock height: block height from which the chain will be rescanned\n"
                 "\nResult:\n"
                 "\"scanned wallet transaction\"    \n"
                 "\nExamples:\n" +
@@ -3028,19 +3028,13 @@ UniValue rescanwallettransactions(const UniValue& params, bool fHelp) {
     EnsureWalletIsUnlocked();
 
     int nHeight = 0;
-    CWalletDB walletdb(pwalletMain->strWalletFile);
-    walletdb.ReadScannedBlockHeight(nHeight);
-    if (nHeight >= chainActive.Height()) {
-    	nHeight = 0;
-    }
-    bool fromBeginning = false;
     if (params.size() == 1) {
-    	fromBeginning = true;
+    	nHeight = params[0].get_int();
     }
-    if (!pwalletMain->RescanAfterUnlock(fromBeginning)) {
-    	return "Wait for wallet to finish reimport/reindex";
+    if (!pwalletMain->RescanAfterUnlock(nHeight)) {
+    	return "Failed to rescan";
     }
-    return "Started rescanning from block " + std::to_string(nHeight);
+    return "Done";
 }
 
 UniValue computetxfee(const UniValue& params, bool fHelp)

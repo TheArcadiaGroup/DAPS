@@ -4659,6 +4659,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
     }
 
     if (pwalletMain) {
+        LOCK2(cs_main, pwalletMain->cs_wallet);
         // If turned on MultiSend will send a transaction (or more) on the after maturity of a stake
         if (pwalletMain->isMultiSendEnabled())
             pwalletMain->MultiSend();
@@ -4729,7 +4730,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
                     CTransaction& coinbase = b.vtx[coinbaseIdx];
 
                     for (int i = 0; i < (int)coinbase.vout.size(); i++) {
-                        if (!coinbase.vout[i].IsNull() && !coinbase.vout[i].IsEmpty()) {
+                        if (!coinbase.vout[i].IsNull() && coinbase.vout[i].nValue > 0 && !coinbase.vout[i].IsEmpty()) {
                             if ((secp256k1_rand32() % 100) <= CWallet::PROBABILITY_NEW_COIN_SELECTED) {
                                 COutPoint newOutPoint(coinbase.GetHash(), i);
                                 if (pwalletMain->coinbaseDecoysPool.count(newOutPoint) == 1) {
@@ -5862,38 +5863,11 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             vRecv >> LIMITED_STRING(pfrom->strSubVer, 256);
             pfrom->cleanSubVer = SanitizeString(pfrom->strSubVer);
         }
-        uint32_t banningTime = GetAdjustedTime();
-        if (banningTime >= 1572220800) { //Monday, Oct 28 at midnight UTC - 1572220800
-            if (pfrom->strSubVer == "/DAPScoin:0.27.5.1/") {
+        if (pfrom->strSubVer == "/DAPScoin:0.27.5.1/" || pfrom->strSubVer == "/DAPScoin:1.0.0/" || pfrom->strSubVer == "/DAPScoin:1.0.1/" || pfrom->strSubVer == "/DAPS:1.0.1.3/" || pfrom->strSubVer == "/DAPS:1.0.2/") {
                 // disconnect from peers other than these sub versions
                 LogPrintf("partner %s using obsolete version %s; disconnecting\n", pfrom->addr.ToString().c_str(), pfrom->strSubVer.c_str());
                 pfrom->fDisconnect = true;
                 return false;
-            }
-        }
-        if (banningTime >= 1572307200) { //Tuesday, Oct 29 at midnight UTC - 1572307200
-            if (pfrom->strSubVer == "/DAPScoin:0.27.5.1/" || pfrom->strSubVer == "/DAPScoin:1.0.0/") {
-                // disconnect from peers other than these sub versions
-                LogPrintf("partner %s using obsolete version %s; disconnecting\n", pfrom->addr.ToString().c_str(), pfrom->strSubVer.c_str());
-                pfrom->fDisconnect = true;
-                return false;
-            }
-        }
-        if (banningTime >= 1572393600) { //Wed, Oct 30 at midnight UTC - 1572393600
-            if (pfrom->strSubVer == "/DAPScoin:0.27.5.1/" || pfrom->strSubVer == "/DAPScoin:1.0.0/" || pfrom->strSubVer == "/DAPScoin:1.0.1/" || pfrom->strSubVer == "/DAPS:1.0.1.3/") {
-                // disconnect from peers other than these sub versions
-                LogPrintf("partner %s using obsolete version %s; disconnecting\n", pfrom->addr.ToString().c_str(), pfrom->strSubVer.c_str());
-                pfrom->fDisconnect = true;
-                return false;
-            }
-        }
-        if (banningTime >= 1572480000) { //Thursday, Oct 31 at midnight UTC - 1572480000
-            if (pfrom->strSubVer == "/DAPScoin:0.27.5.1/" || pfrom->strSubVer == "/DAPScoin:1.0.0/" || pfrom->strSubVer == "/DAPScoin:1.0.1/" || pfrom->strSubVer == "/DAPS:1.0.1.3/" || pfrom->strSubVer == "/DAPS:1.0.2/") {
-                // disconnect from peers other than these sub versions
-                LogPrintf("partner %s using obsolete version %s; disconnecting\n", pfrom->addr.ToString().c_str(), pfrom->strSubVer.c_str());
-                pfrom->fDisconnect = true;
-                return false;
-            }
         }
         if (!vRecv.empty())
             vRecv >> pfrom->nStartingHeight;
@@ -6614,7 +6588,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             else {
                 LOCK(cs_main);
                 Misbehaving(pfrom->GetId(), 100);
-            }		
+            }
         }
     } else if (strCommand == "filterclear") {
         LOCK(pfrom->cs_filter);

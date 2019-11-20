@@ -41,8 +41,8 @@ TwoFAQRDialog::TwoFAQRDialog(QWidget *parent) :
     connect(ui->btnNext, SIGNAL(clicked()), this, SLOT(accept()));
 	connect(ui->btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
 
-    ui->label->setVisible(false);
-    ui->label_2->setVisible(false);
+    ui->label->setVisible(true);
+    ui->label_2->setVisible(true);
     update();
 }
 
@@ -65,6 +65,7 @@ void TwoFAQRDialog::update()
     pubKey = newKey.GetPubKey();
 
     QString uri;
+    QString infoText;
     CBitcoinAddress address(pubKey.GetID());
     std::string addr = "";
     for (char c : address.ToString()) {
@@ -74,7 +75,8 @@ void TwoFAQRDialog::update()
     pwalletMain->Write2FASecret(addr);
 
     uri.sprintf("otpauth://totp/DAPS:QT%20Wallet?secret=%s&issuer=dapscoin&algorithm=SHA1&digits=6&period=30", addr.c_str());
-    ui->lblURI->setText(uri);
+    infoText = "Recovery Key: ";
+    ui->lblURI->setText(infoText + addr.c_str());
 
 #ifdef USE_QRCODE
     ui->lblQRCode->setText("");
