@@ -841,7 +841,7 @@ UniValue resyncfrom(const UniValue& params, bool fHelp)
         if (chainActive.Height() < height)
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid block height");
 
-        CBlockIndex* pblockindex = mapBlockIndex[height];
+        CBlockIndex* pblockindex = chainActive[height];
         InvalidateBlock(state, pblockindex);
     }
 
