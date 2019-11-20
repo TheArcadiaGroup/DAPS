@@ -220,6 +220,11 @@ public:
         vSeeds.push_back(CDNSSeedData("seed2.dapscoin.com", "seed2.dapscoin.com"));        // Single node address
         vSeeds.push_back(CDNSSeedData("seed3.dapscoin.com", "seed3.dapscoin.com"));        // Single node address
         vSeeds.push_back(CDNSSeedData("seed4.dapscoin.com", "seed4.dapscoin.com"));        // Single node address
+        vSeeds.push_back(CDNSSeedData("seed5.dapscoin.com", "seed5.dapscoin.com"));        // Single node address
+        vSeeds.push_back(CDNSSeedData("seed6.dapscoin.com", "seed6.dapscoin.com"));        // Single node address
+        vSeeds.push_back(CDNSSeedData("seed7.dapscoin.com", "seed7.dapscoin.com"));        // Single node address
+        vSeeds.push_back(CDNSSeedData("seed8.dapscoin.com", "seed8.dapscoin.com"));        // Single node address
+        vSeeds.push_back(CDNSSeedData("seed9.dapscoin.com", "seed9.dapscoin.com"));        // Single node address
         vSeeds.push_back(CDNSSeedData("seed.dapscoin-seeds.com", "seed.dapscoin-seeds.com"));        // Single node address
         vSeeds.push_back(CDNSSeedData("seed1.dapscoin-seeds.com", "seed1.dapscoin-seeds.com"));        // Single node address
         vSeeds.push_back(CDNSSeedData("seed2.dapscoin-seeds.com", "seed2.dapscoin-seeds.com"));        // Single node address
