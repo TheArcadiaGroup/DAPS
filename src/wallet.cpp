@@ -1085,6 +1085,10 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
             wtx.nTimeSmart = wtx.nTimeReceived;
             if (wtxIn.hashBlock != 0) {
                 if (mapBlockIndex.count(wtxIn.hashBlock)) {
+                    if (mapBlockIndex[wtxIn.hashBlock] != NULL) {
+                        wtx.nTimeReceived = mapBlockIndex[wtxIn.hashBlock]->nTime;
+                        wtx.nTimeSmart = wtx.nTimeReceived;
+                    }
                     int64_t latestNow = wtx.nTimeReceived;
                     int64_t latestEntry = 0;
                     {
