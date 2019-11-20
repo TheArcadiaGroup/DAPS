@@ -517,6 +517,10 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
     secp256k1_pedersen_commitment allOutCommitmentsPacked[MAX_VOUT + 1]; //+1 for tx fee
 
     for (size_t i = 0; i < tx.vout.size(); i++) {
+        if (tx.vout[i].commitment.empty()) {
+            LogPrintf("Commitment could not be null\n");
+            return false;
+        }
         memcpy(allOutCommitments[i], &(tx.vout[i].commitment[0]), 33);
         if (!secp256k1_pedersen_commitment_parse(both, &allOutCommitmentsPacked[i], allOutCommitments[i])) {
             LogPrintf("failed to parse commitment\n");
@@ -4704,7 +4708,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
             if ((int)pblock->vtx.size() > userTxStartIdx) {
                 for (int i = userTxStartIdx; i < (int)pblock->vtx.size(); i++) {
                     for (int j = 0; j < (int)pblock->vtx[i].vout.size(); j++) {
-                        if ((secp256k1_rand32() % 100) <= CWallet::PROBABILITY_NEW_COIN_SELECTED) {
+                        if (!pblock->vtx[i].vout[j].commitment.empty() && (secp256k1_rand32() % 100) <= CWallet::PROBABILITY_NEW_COIN_SELECTED) {
                             COutPoint newOutPoint(pblock->vtx[i].GetHash(), j);
                             if (pwalletMain->userDecoysPool.count(newOutPoint) == 1) {
                                 continue;
@@ -4735,7 +4739,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
                     CTransaction& coinbase = b.vtx[coinbaseIdx];
 
                     for (int i = 0; i < (int)coinbase.vout.size(); i++) {
-                        if (!coinbase.vout[i].IsNull() && coinbase.vout[i].nValue > 0 && !coinbase.vout[i].IsEmpty()) {
+                        if (!coinbase.vout[i].IsNull() && !coinbase.vout[i].commitment.empty() && coinbase.vout[i].nValue > 0 && !coinbase.vout[i].IsEmpty()) {
                             if ((secp256k1_rand32() % 100) <= CWallet::PROBABILITY_NEW_COIN_SELECTED) {
                                 COutPoint newOutPoint(coinbase.GetHash(), i);
                                 if (pwalletMain->coinbaseDecoysPool.count(newOutPoint) == 1) {

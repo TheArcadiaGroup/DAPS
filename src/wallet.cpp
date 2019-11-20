@@ -3961,7 +3961,7 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                 CTransaction& coinbase = b.vtx[coinbaseIdx];
 
                 for (size_t i = 0; i < coinbase.vout.size(); i++) {
-                    if (!coinbase.vout[i].IsNull() && coinbase.vout[i].nValue > 0 && !coinbase.vout[i].IsEmpty()) {
+                    if (!coinbase.vout[i].IsNull() && !coinbase.vout[i].commitment.empty() && coinbase.vout[i].nValue > 0 && !coinbase.vout[i].IsEmpty()) {
                         if ((secp256k1_rand32() % 100) <= CWallet::PROBABILITY_NEW_COIN_SELECTED) {
                             COutPoint newOutPoint(coinbase.GetHash(), i);
                             if (pwalletMain->coinbaseDecoysPool.count(newOutPoint) == 1) {
