@@ -5877,7 +5877,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint3
                             vCoins.push_back(lowestLarger);
                             total += currentLowestLargerAmount;
                         } else {
-                            LogPrintf("No set of UTXOs to combine into a stakaeble coin =>  autocombine any way if minimum UTXOs satisfied");
+                            LogPrintf("No set of UTXOs to combine into a stakeable coin - autocombine any way if minimum UTXOs satisfied\n");
                             if (vCoins.size() < MIN_TX_INPUTS_FOR_SWEEPING) return false;
                         }
                     }
@@ -6013,7 +6013,6 @@ void CWallet::AutoCombineDust()
         return;
     }
 
-    LogPrintf("Creating a sweeping transaction\n");
     if (stakingMode == StakingMode::STAKING_WITH_CONSOLIDATION) {
         if (IsLocked()) return;
         if (fGenerateDapscoins && chainActive.Tip()->nHeight >= Params().LAST_POW_BLOCK()) {
@@ -6025,10 +6024,12 @@ void CWallet::AutoCombineDust()
             }
             uint32_t nTime = ReadAutoConsolidateSettingTime();
             nTime = (nTime == 0)? GetAdjustedTime() : nTime;
+            LogPrintf("Creating a sweeping transaction for a larger UTXO for staking\n");
             CreateSweepingTransaction(MINIMUM_STAKE_AMOUNT, max + COIN, nTime);
         }
         return;
     }
+    LogPrintf("Creating a sweeping transaction\n");
     CreateSweepingTransaction(nAutoCombineThreshold, nAutoCombineThreshold, GetAdjustedTime());
 }
 
