@@ -6,7 +6,7 @@ ENV SRC_IMG=${SRC_PATH}:${OS_VERSION}
 
 #INSTALL COMMON ESSENTIAL
 RUN apt-get update && \
-    apt-get install build-essential libtool autotools-dev automake pkg-config bsdmainutils curl wget nsis libevent-dev python-setuptools patch -y --fix-missing
+    apt-get install build-essential libtool autotools-dev automake pkg-config bsdmainutils curl wget nsis libevent-dev python-setuptools patch zip -y --fix-missing
 
 #INSTALL POA MINER DEPENDENCIES
 RUN apt-get install libcurl4-openssl-dev libjansson-dev -y --fix-missing
