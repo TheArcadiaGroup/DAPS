@@ -523,7 +523,7 @@ static void OutputTxHex(CTransaction tx)
     entry.push_back(Pair("hex", strHex));
     entry.push_back(Pair("txid", strHexHash));
 
-    fprintf(stdout, "%s\n", strHex.c_str());
+    fprintf(stdout, "%s\n", entry.write(4).c_str());
 }
 
 static void OutputTx(const CTransaction& tx)

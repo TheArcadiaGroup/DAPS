@@ -386,6 +386,7 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "getbalance", &getbalance, false, false, true},
         {"wallet", "getbalances", &getbalances, false, false, true},
         {"wallet", "generateintegratedaddress", &generateintegratedaddress, true, false, false},
+        {"wallet", "generateintegratedfrommasteraddress", &generateintegratedfrommasteraddress, true, false, false},
         {"wallet", "readmasteraccount", &readmasteraccount, true, false, false},
         // {"wallet", "getnewaddress", &getnewaddress, true, false, true},
         // {"wallet", "getrawchangeaddress", &getrawchangeaddress, true, false, true},
