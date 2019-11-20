@@ -43,6 +43,7 @@ public:
         ThreadsScriptVerif,  // int
         DatabaseCache,       // int
         SpendZeroConfChange, // bool
+        HideOrphans,    // bool
         AnonymizeDapscoinAmount, //int
         ShowMasternodesTab,  // bool
         Listen,              // bool
@@ -80,6 +81,7 @@ private:
     int nDisplayUnit;
     QString strThirdPartyTxUrls;
     bool fCoinControlFeatures;
+    bool fHideOrphans;
     /* settings that were overriden by command-line */
     QString strOverriddenByCommandLine;
 
@@ -91,6 +93,7 @@ signals:
     void zeromintPercentageChanged(int);
     void preferredDenomChanged(int);
     void coinControlFeaturesChanged(bool);
+    void hideOrphansChanged(bool);
 };
 
 #endif // BITCOIN_QT_OPTIONSMODEL_H

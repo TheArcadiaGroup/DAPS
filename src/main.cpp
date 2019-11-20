@@ -4659,6 +4659,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
     }
 
     if (pwalletMain) {
+        LOCK2(cs_main, pwalletMain->cs_wallet);
         // If turned on MultiSend will send a transaction (or more) on the after maturity of a stake
         if (pwalletMain->isMultiSendEnabled())
             pwalletMain->MultiSend();
@@ -4729,7 +4730,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
                     CTransaction& coinbase = b.vtx[coinbaseIdx];
 
                     for (int i = 0; i < (int)coinbase.vout.size(); i++) {
-                        if (!coinbase.vout[i].IsNull() && !coinbase.vout[i].IsEmpty()) {
+                        if (!coinbase.vout[i].IsNull() && coinbase.vout[i].nValue > 0 && !coinbase.vout[i].IsEmpty()) {
                             if ((secp256k1_rand32() % 100) <= CWallet::PROBABILITY_NEW_COIN_SELECTED) {
                                 COutPoint newOutPoint(coinbase.GetHash(), i);
                                 if (pwalletMain->coinbaseDecoysPool.count(newOutPoint) == 1) {

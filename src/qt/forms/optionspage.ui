@@ -311,7 +311,7 @@
            <item>
             <widget class="QCheckBox" name="addNewFunds">
              <property name="toolTip">
-              <string>This may incur a small transaction consolidation fee each time you re-enable staking or restart the keychain wallet.</string>
+              <string>Enabling this will incur a minimum 1 DAPS fee each time you receive a new deposit that needs to be consolidated for staking.</string>
              </property>
              <property name="text">
               <string>Automatically add any new deposits received to your staked balance</string>
@@ -477,7 +477,7 @@
             </font>
            </property>
            <property name="text">
-            <string>We strongly recommend you only view your mnemonic phrase in a secure environment safe from video cameras or any wandering eyes.</string>
+            <string>We strongly recommend you only view your Mnemonic Phrase in a secure environment safe from video cameras or any wandering eyes. You will be required to enter your passphrase to view it.</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

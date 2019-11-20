@@ -429,7 +429,7 @@ bool CWallet::LoadMultiSig(const CScript& dest)
     return CCryptoKeyStore::AddMultiSig(dest);
 }
 
-bool CWallet::RescanAfterUnlock(bool fromBeginning)
+bool CWallet::RescanAfterUnlock(int fromHeight)
 {
     if (IsLocked()) {
         return false;
@@ -438,53 +438,52 @@ bool CWallet::RescanAfterUnlock(bool fromBeginning)
     if (fImporting || fReindex) {
         return false;
     }
-
-    //rescan from scanned position stored in database
-    int scannedHeight = 0;
-    CWalletDB(strWalletFile).ReadScannedBlockHeight(scannedHeight);
-    if (fromBeginning) scannedHeight = 0;
     CBlockIndex* pindex;
-    if (scannedHeight > chainActive.Height() || scannedHeight == 0) {
-        pindex = chainActive.Genesis();
-    } else {
-        pindex = chainActive[scannedHeight];
-    }
-
-    {
+    
+    if (fromHeight == 0) {
         LOCK2(cs_main, cs_wallet);
-        if (mapWallet.size() > 0) {
-            //looking for highest blocks
-            for (map<uint256, CWalletTx>::iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
-                CWalletTx* wtx = &((*it).second);
-                uint256 wtxid = (*it).first;
-                if (mapBlockIndex.count(wtx->hashBlock) == 1) {
-                    CBlockIndex* pForTx = mapBlockIndex[wtx->hashBlock];
-                    if (pForTx != NULL && pForTx->nHeight > pindex->nHeight) {
-                        if (chainActive.Contains(pForTx)) {
-                            pindex = pForTx;
+        //rescan from scanned position stored in database
+        int scannedHeight = 0;
+        CWalletDB(strWalletFile).ReadScannedBlockHeight(scannedHeight);
+        if (scannedHeight > chainActive.Height() || scannedHeight == 0) {
+            pindex = chainActive.Genesis();
+        } else {
+            pindex = chainActive[scannedHeight];
+        }
+
+        {
+            if (mapWallet.size() > 0) {
+                //looking for highest blocks
+                for (map<uint256, CWalletTx>::iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
+                    CWalletTx* wtx = &((*it).second);
+                    uint256 wtxid = (*it).first;
+                    if (mapBlockIndex.count(wtx->hashBlock) == 1) {
+                        CBlockIndex* pForTx = mapBlockIndex[wtx->hashBlock];
+                        if (pForTx != NULL && pForTx->nHeight > pindex->nHeight) {
+                            if (chainActive.Contains(pForTx)) {
+                                pindex = pForTx;
+                            }
                         }
                     }
                 }
             }
         }
+    } else {
+        LOCK2(cs_main, cs_wallet);
+        //scan from a specific block height
+        if (fromHeight > chainActive.Height()) {
+            pindex = chainActive[chainActive.Height()];
+        } else {
+            pindex = chainActive[fromHeight];
+        }
     }
 
-    ScanForWalletTransactions(pindex, true);
+    ScanForWalletTransactions(pindex, true, fromHeight != 0?pindex->nHeight:-1);
     return true;
 }
 
 bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool anonymizeOnly)
 {
-    SecureString strWalletPassphraseFinal;
-
-    if (!IsLocked()) {
-        fWalletUnlockAnonymizeOnly = anonymizeOnly;
-        return true;
-    }
-
-    strWalletPassphraseFinal = strWalletPassphrase;
-
-
     CCrypter crypter;
     CKeyingMaterial vMasterKey;
     bool rescanNeeded = false;
@@ -492,7 +491,7 @@ bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool anonymizeOnly
     {
         LOCK(cs_wallet);
         for (const MasterKeyMap::value_type& pMasterKey : mapMasterKeys) {
-            if (!crypter.SetKeyFromPassphrase(strWalletPassphraseFinal, pMasterKey.second.vchSalt, pMasterKey.second.nDeriveIterations, pMasterKey.second.nDerivationMethod))
+            if (!crypter.SetKeyFromPassphrase(strWalletPassphrase, pMasterKey.second.vchSalt, pMasterKey.second.nDeriveIterations, pMasterKey.second.nDerivationMethod))
                 return false;
             if (!crypter.Decrypt(pMasterKey.second.vchCryptedKey, vMasterKey))
                 continue; // try another master key
@@ -505,7 +504,7 @@ bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool anonymizeOnly
     }
 
     if (rescanNeeded) {
-        pwalletMain->RescanAfterUnlock();
+        pwalletMain->RescanAfterUnlock(0);
         walletUnlockCountStatus++;
         return true;
     }
@@ -552,6 +551,7 @@ bool CWallet::ChangeWalletPassphrase(const SecureString& strOldWalletPassphrase,
                 if (fWasLocked)
                     Lock();
 
+                nTimeFirstKey = 1;
                 rescanNeeded = true;
                 break;
             }
@@ -559,7 +559,7 @@ bool CWallet::ChangeWalletPassphrase(const SecureString& strOldWalletPassphrase,
     }
 
     if (rescanNeeded) {
-        pwalletMain->RescanAfterUnlock();
+        pwalletMain->RescanAfterUnlock(0);
         return true;
     }
 
@@ -1533,11 +1533,14 @@ int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate, i
     CBlockIndex* pindex = pindexStart;
     {
         LOCK2(cs_main, cs_wallet);
-
-        // no need to read and scan block, if block was created before
-        // our wallet birthday (as adjusted for block time variability)
-        while (pindex && nTimeFirstKey && (pindex->GetBlockTime() < (nTimeFirstKey - 7200))) {
-            pindex = chainActive.Next(pindex);
+        if (pindexStart == chainActive.Genesis()) {
+            pindex = chainActive.Tip();
+        } else if (height == -1) {
+            // no need to read and scan block, if block was created before
+            // our wallet birthday (as adjusted for block time variability)
+            while (pindex && nTimeFirstKey && (pindex->GetBlockTime() < (nTimeFirstKey - 7200))) {
+                pindex = chainActive.Next(pindex);
+            }
         }
 
         ShowProgress(_("Rescanning..."), 0); // show rescan progress in GUI as dialog or on splashscreen, if -rescan on startup
@@ -2365,13 +2368,15 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
                 coinLowestLarger = coin;
             }
         }
-
-        if (nTotalLower == nTargetValue + feeNeeded) {
-            for (unsigned int i = 0; i < vValue.size(); ++i) {
-                setCoinsRet.insert(vValue[i].second);
-                nValueRet += vValue[i].first;
+        
+        if (vValue.size() <= MAX_TX_INPUTS) {
+            if (nTotalLower == nTargetValue + feeNeeded) {
+                for (unsigned int i = 0; i < vValue.size(); ++i) {
+                    setCoinsRet.insert(vValue[i].second);
+                    nValueRet += vValue[i].first;
+                }
+                return true;
             }
-            return true;
         }
         if (nTotalLower < nTargetValue + feeNeeded) {
             if (coinLowestLarger.second.first == NULL) // there is no input larger than nTargetValue
@@ -2379,15 +2384,30 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
                 if (tryDenom == 0)
                     // we didn't look at denom yet, let's do it
                     continue;
-                else
+                else {
                     // we looked at everything possible and didn't find anything, no luck
                     return false;
+                }
             }
             setCoinsRet.insert(coinLowestLarger.second);
             nValueRet += coinLowestLarger.first;
             return true;
-        }
+        } else {
+            CAmount maxFee = ComputeFee(50, numOut, ringSize); 
+            if (vValue.size() <= MAX_TX_INPUTS) {
+                //putting all into the transaction
+                string s = "CWallet::SelectCoinsMinConf best subset: ";
+                for (unsigned int i = 0; i < vValue.size(); i++) {
+                    setCoinsRet.insert(vValue[i].second);
+                    nValueRet += vValue[i].first;
+                    s += FormatMoney(vValue[i].first) + " ";
+                }
+                LogPrintf("%s - total %s\n", s, FormatMoney(nValueRet));
+                return true;
+            } else {
 
+            }
+        }
         break;
     }
 
@@ -2566,7 +2586,7 @@ bool CWallet::SelectCoinsByDenominations(int nDenom, CAmount nValueMin, CAmount 
 
     vCoinsRet2.clear();
     vector<COutput> vCoins;
-    AvailableCoins(vCoins, true, NULL, ONLY_DENOMINATED);
+    AvailableCoins(vCoins, true, NULL, false, ONLY_DENOMINATED);
 
     std::random_shuffle(vCoins.rbegin(), vCoins.rend());
 
@@ -2686,7 +2706,7 @@ bool CWallet::SelectCoinsDark(CAmount nValueMin, CAmount nValueMax, std::vector<
     nValueRet = 0;
 
     vector<COutput> vCoins;
-    AvailableCoins(vCoins, true, coinControl, nObfuscationRoundsMin < 0 ? ONLY_NONDENOMINATED_NOT1000000IFMN : ONLY_DENOMINATED);
+    AvailableCoins(vCoins, true, coinControl, false, nObfuscationRoundsMin < 0 ? ONLY_NONDENOMINATED_NOT1000000IFMN : ONLY_DENOMINATED);
 
     set<pair<const CWalletTx*, unsigned int> > setCoinsRet2;
 
@@ -3086,7 +3106,12 @@ bool CWallet::CreateTransactionBulletProof(const CKey& txPrivDes, const CPubKey&
                 if (!SelectCoins(true, estimateFee, ringSize, 2, nTotalValue, setCoins, nValueIn, coinControl, coin_type, useIX)) {
                     if (coin_type == ALL_COINS) {
                         if (nSpendableBalance < nTotalValue + estimateFee) {
-                            strFailReason = "Insufficient funds. Transaction requires a fee of " + ValueFromAmountToString(estimateFee);
+                            if (estimateFee > 0)
+                                strFailReason = "Insufficient funds. Transaction requires a fee of " + ValueFromAmountToString(estimateFee);
+                            else if (nReserveBalance <= nTotalValue)
+                                strFailReason = "Insufficient reserved funds! Your wallet is staking with a reserve balance of " + ValueFromAmountToString(nReserveBalance) + " less than the sending amount " + ValueFromAmountToString(nTotalValue);
+                        } else if (nTotalValue >= nReserveBalance) {
+                                strFailReason = "Insufficient reserved funds! Your wallet is staking with a reserve balance of " + ValueFromAmountToString(nReserveBalance) + " less than the sending amount " + ValueFromAmountToString(nTotalValue);  
                         } else if (setCoins.size() > MAX_TX_INPUTS) {
                             strFailReason = _("You have attempted to send more than 50 UTXOs in a single transaction. This is a rare occurrence, and to work around this limitation, please either lower the total amount of the transaction, or send two separate transactions with 50% of your total desired amount.");
                         } else if (nValueIn == 0) {
@@ -3439,6 +3464,7 @@ bool CWallet::generateBulletProofAggregate(CTransaction& tx)
 
 bool CWallet::makeRingCT(CTransaction& wtxNew, int ringSize, std::string& strFailReason)
 {
+    LogPrintf("making ringCT, ringsize=%d\n", ringSize);
     int myIndex;
     if (!selectDecoysAndRealIndex(wtxNew, myIndex, ringSize)) {
         return false;
@@ -3889,6 +3915,7 @@ bool CWallet::MakeShnorrSignatureTxIn(CTxIn& txin, uint256 cts)
 
 bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringSize, bool genKeyImage)
 {
+    LogPrintf("Selecting coinbase decoys\n");
     if (coinbaseDecoysPool.size() <= 100) {
         for (int i = chainActive.Height() - Params().COINBASE_MATURITY(); i > 0; i--) {
             if (coinbaseDecoysPool.size() > 100) break;
@@ -3902,7 +3929,7 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                 CTransaction& coinbase = b.vtx[coinbaseIdx];
 
                 for (size_t i = 0; i < coinbase.vout.size(); i++) {
-                    if (!coinbase.vout[i].IsNull() && !coinbase.vout[i].IsEmpty()) {
+                    if (!coinbase.vout[i].IsNull() && coinbase.vout[i].nValue > 0 && !coinbase.vout[i].IsEmpty()) {
                         if ((secp256k1_rand32() % 100) <= CWallet::PROBABILITY_NEW_COIN_SELECTED) {
                             COutPoint newOutPoint(coinbase.GetHash(), i);
                             if (pwalletMain->coinbaseDecoysPool.count(newOutPoint) == 1) {
@@ -3922,7 +3949,6 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
             }
         }
     }
-
     //Choose decoys
     myIndex = -1;
     for (size_t i = 0; i < tx.vin.size(); i++) {
@@ -3966,6 +3992,7 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                 while (numDecoys < ringSize) {
                     bool duplicated = false;
                     map<COutPoint, uint256>::const_iterator it = std::next(coinbaseDecoysPool.begin(), secp256k1_rand32() % coinbaseDecoysPool.size());
+                    if (mapBlockIndex.count(it->second) < 1) continue;
                     CBlockIndex* atTheblock = mapBlockIndex[it->second];
                     if (!atTheblock || !chainActive.Contains(atTheblock)) continue;
                     if (!chainActive.Contains(atTheblock)) continue;
@@ -3986,6 +4013,7 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
             } else if ((int)coinbaseDecoysPool.size() >= ringSize) {
                 for (size_t j = 0; j < coinbaseDecoysPool.size(); j++) {
                     map<COutPoint, uint256>::const_iterator it = std::next(coinbaseDecoysPool.begin(), j);
+                    if (mapBlockIndex.count(it->second) < 1) continue;
                     CBlockIndex* atTheblock = mapBlockIndex[it->second];
                     if (!atTheblock || !chainActive.Contains(atTheblock)) continue;
                     if (!chainActive.Contains(atTheblock)) continue;
@@ -4006,6 +4034,7 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                 while (numDecoys < ringSize) {
                     bool duplicated = false;
                     map<COutPoint, uint256>::const_iterator it = std::next(decoySet.begin(), secp256k1_rand32() % decoySet.size());
+                    if (mapBlockIndex.count(it->second) < 1) continue;
                     CBlockIndex* atTheblock = mapBlockIndex[it->second];
                     if (!atTheblock || !chainActive.Contains(atTheblock)) continue;
                     if (!chainActive.Contains(atTheblock)) continue;
@@ -4026,6 +4055,7 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
             } else if ((int)decoySet.size() >= ringSize) {
                 for (size_t j = 0; j < decoySet.size(); j++) {
                     map<COutPoint, uint256>::const_iterator it = std::next(decoySet.begin(), j);
+                    if (mapBlockIndex.count(it->second) < 1) continue;
                     CBlockIndex* atTheblock = mapBlockIndex[it->second];
                     if (!atTheblock || !chainActive.Contains(atTheblock)) continue;
                     if (!chainActive.Contains(atTheblock)) continue;
@@ -4042,14 +4072,16 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
         }
     }
     myIndex = secp256k1_rand32() % (tx.vin[0].decoys.size() + 1) - 1;
-
+    
     for (size_t i = 0; i < tx.vin.size(); i++) {
         COutPoint prevout = tx.vin[i].prevout;
         inSpendQueueOutpointsPerSession.push_back(prevout);
     }
-
     if (myIndex != -1) {
         for (size_t i = 0; i < tx.vin.size(); i++) {
+            if (tx.vin[i].decoys.size() <= myIndex || tx.vin[i].decoys.size() != ringSize) {
+                throw runtime_error("Failed to annonymize the transaction, please wait about 10 minutes to re-create your transaction");
+            }
             COutPoint prevout = tx.vin[i].prevout;
             tx.vin[i].prevout = tx.vin[i].decoys[myIndex];
             tx.vin[i].decoys[myIndex] = prevout;
@@ -6803,6 +6835,7 @@ bool CWallet::CreateDirtyRawTransaction(const std::vector<COutPoint>& inputs,
 
 bool CWallet::SendToStealthAddress(const std::string& stealthAddr, const CAmount nValue, CWalletTx& wtxNew, bool fUseIX, int ringSize)
 {
+    LOCK2(cs_main, cs_wallet);
     // Check amount
     if (nValue <= 0)
         throw runtime_error("Invalid amount");
