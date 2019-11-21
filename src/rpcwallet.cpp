@@ -2457,6 +2457,10 @@ UniValue createprivacyaccount(const UniValue& params, bool fHelp)
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
     UniValue ret(UniValue::VOBJ);
+    if (pwalletMain->IsWatcherWallet()) {
+        ret.push_back(Pair("stealthaddress", pwalletMain->registeredAddress));
+        return ret;
+    }
     int i = 0;
     while (i < 10) {
         std::string viewAccountLabel = "viewaccount";
@@ -2507,34 +2511,37 @@ UniValue showstealthaddress(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
                            "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
     }
-
-    CWalletDB walletdb(pwalletMain->strWalletFile);
     UniValue ret(UniValue::VOBJ);
-    int i = 0;
-    while (i < 10) {
-        std::string viewAccountLabel = "viewaccount";
-        std::string spendAccountLabel = "spendaccount";
+    if (pwalletMain->IsWatcherWallet()) {
+        ret.push_back(Pair("stealthaddress", pwalletMain->registeredAddress));
+    } else {
+        CWalletDB walletdb(pwalletMain->strWalletFile);
+        int i = 0;
+        while (i < 10) {
+            std::string viewAccountLabel = "viewaccount";
+            std::string spendAccountLabel = "spendaccount";
 
-        CAccount viewAccount;
-        walletdb.ReadAccount(viewAccountLabel, viewAccount);
-        if (!viewAccount.vchPubKey.IsValid()) {
-            std::string viewAccountAddress = GetHDAccountAddress(viewAccountLabel, 0).ToString();
-        }
+            CAccount viewAccount;
+            walletdb.ReadAccount(viewAccountLabel, viewAccount);
+            if (!viewAccount.vchPubKey.IsValid()) {
+                std::string viewAccountAddress = GetHDAccountAddress(viewAccountLabel, 0).ToString();
+            }
 
-        CAccount spendAccount;
-        walletdb.ReadAccount(spendAccountLabel, spendAccount);
-        if (!spendAccount.vchPubKey.IsValid()) {
-            std::string spendAccountAddress = GetHDAccountAddress(spendAccountLabel, 1).ToString();
+            CAccount spendAccount;
+            walletdb.ReadAccount(spendAccountLabel, spendAccount);
+            if (!spendAccount.vchPubKey.IsValid()) {
+                std::string spendAccountAddress = GetHDAccountAddress(spendAccountLabel, 1).ToString();
+            }
+            if (viewAccount.vchPubKey.GetHex() == "" || spendAccount.vchPubKey.GetHex() == "") {
+                i++;
+                continue;
+            }
+            std::string stealthAddr;
+            if (pwalletMain->EncodeStealthPublicAddress(viewAccount.vchPubKey, spendAccount.vchPubKey, stealthAddr)) {
+                ret.push_back(Pair("stealthaddress", stealthAddr));
+            }
+            break;
         }
-        if (viewAccount.vchPubKey.GetHex() == "" || spendAccount.vchPubKey.GetHex() == "") {
-            i++;
-            continue;
-        }
-        std::string stealthAddr;
-        if (pwalletMain->EncodeStealthPublicAddress(viewAccount.vchPubKey, spendAccount.vchPubKey, stealthAddr)) {
-            ret.push_back(Pair("stealthaddress", stealthAddr));
-        }
-        break;
     }
     return ret;
 }
@@ -2560,11 +2567,20 @@ UniValue generateintegratedaddress(const UniValue& params, bool fHelp)
     UniValue ret(UniValue::VOBJ);
     uint64_t paymentID = 0;
     std::string address;
-    if (params.size() == 1) {
-        paymentID = params[0].get_int64();
-        address = pwalletMain->GenerateIntegratedAddressWithProvidedPaymentID("masteraccount", paymentID);
+    if (pwalletMain->IsWatcherWallet()) {
+        if (params.size() == 1) {
+            paymentID = params[0].get_int64();
+            pwalletMain->GenerateIntegratedAddressFromAddress(pwalletMain->registeredAddress, paymentID, false, address);
+        } else {
+            pwalletMain->GenerateIntegratedAddressFromAddress(pwalletMain->registeredAddress, paymentID, true, address);
+        }
     } else {
-        address = pwalletMain->GenerateIntegratedAddressWithRandomPaymentID("masteraccount", paymentID);
+        if (params.size() == 1) {
+            paymentID = params[0].get_int64();
+            address = pwalletMain->GenerateIntegratedAddressWithProvidedPaymentID("masteraccount", paymentID);
+        } else {
+            address = pwalletMain->GenerateIntegratedAddressWithRandomPaymentID("masteraccount", paymentID);
+        }
     }
     ret.push_back(Pair("integratedaddress", address));
     ret.push_back(Pair("paymentid", paymentID));
@@ -2736,6 +2752,9 @@ UniValue readmasteraccount(const UniValue& params, bool fHelp)
         //privacy wallet is not yet created
         throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
                            "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
+    }
+    if (pwalletMain->IsWatcherWallet()) {
+        return pwalletMain->registeredAddress;
     }
     std::string address;
     pwalletMain->ComputeStealthPublicAddress("masteraccount", address);
@@ -2977,7 +2996,9 @@ UniValue revealviewprivatekey(const UniValue& params, bool fHelp) {
     }
 
     EnsureWalletIsUnlocked();
-
+    if (pwalletMain->IsWatcherWallet()) {
+        return CBitcoinSecret(pwalletMain->registeredViewKey).ToString();
+    }
     CKey view;
     pwalletMain->myViewPrivateKey(view);
     return CBitcoinSecret(view).ToString();
@@ -3002,7 +3023,9 @@ UniValue revealspendprivatekey(const UniValue& params, bool fHelp) {
     }
 
     EnsureWalletIsUnlocked();
-
+    if (pwalletMain->IsWatcherWallet()) {
+        throw runtime_error("Private spend key not available");
+    }
     CKey spend;
     pwalletMain->mySpendPrivateKey(spend);
     return CBitcoinSecret(spend).ToString();

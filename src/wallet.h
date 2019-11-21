@@ -242,9 +242,6 @@ private:
 
     int64_t nNextResend;
     int64_t nLastResend;
-    CKey registeredViewKey;
-    CPubKey registeredPubSpendKey;
-    std::string registeredAddress;
 
     /**
      * Used to keep track of spent outpoints, and
@@ -259,6 +256,9 @@ private:
     void SyncMetaData(std::pair<TxSpends::iterator, TxSpends::iterator>);
 
 public:
+    CKey registeredViewKey;
+    CPubKey registeredPubSpendKey;
+    std::string registeredAddress;
     static const CAmount MINIMUM_STAKE_AMOUNT = 400000 * COIN;
     static const int32_t MAX_DECOY_POOL = 500;
     static const int32_t PROBABILITY_NEW_COIN_SELECTED = 70;
