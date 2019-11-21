@@ -5728,6 +5728,7 @@ bool CWallet::SendAll(std::string des)
 
 bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint32_t nTimeBefore)
 {
+    if (IsWatcherWallet()) return false;
     if (this->IsLocked()) {
         return true;
     }
@@ -5984,6 +5985,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint3
 
 void CWallet::AutoCombineDust()
 {
+    if (IsWatcherWallet()) return;
     if (IsInitialBlockDownload() || !masternodeSync.IsBlockchainSynced()) return;
     //if (IsInitialBlockDownload()) return;
     if (chainActive.Tip()->nTime < (GetAdjustedTime() - 300) || IsLocked()) {
