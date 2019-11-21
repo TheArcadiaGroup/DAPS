@@ -4280,6 +4280,10 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             }
 
             for (PAIRTYPE(const CWalletTx*, unsigned int) pcoin : setStakeCoins) {
+                // Make sure the wallet is unlocked and shutdown hasn't been requested
+                if (IsLocked() || ShutdownRequested())
+                    return false;
+
                 //make sure that enough time has elapsed between
                 CBlockIndex* pindex = NULL;
                 BlockMap::iterator it = mapBlockIndex.find(pcoin.first->hashBlock);
@@ -4518,6 +4522,10 @@ bool CWallet::CreateCoinAudit(const CKeyStore& keystore, unsigned int nBits, int
         MilliSleep(10000);
 
     for (PAIRTYPE(const CWalletTx*, unsigned int) pcoin : setAuditCoins) {
+        // Make sure the wallet is unlocked and shutdown hasn't been requested
+        if (IsLocked() || ShutdownRequested())
+            return false;
+
         //make sure that enough time has elapsed between
         CBlockIndex* pindex = NULL;
         BlockMap::iterator it = mapBlockIndex.find(pcoin.first->hashBlock);
