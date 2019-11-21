@@ -133,7 +133,6 @@ CPubKey CWallet::GenerateNewKey()
     AssertLockHeld(cs_wallet);                                 // mapKeyMetadata
     bool fCompressed = CanSupportFeature(FEATURE_COMPRPUBKEY); // default to compressed public keys if we want 0.6.0 wallets
 
-    RandAddSeedPerfmon();
     CKey secret;
     secret.MakeNewKey(fCompressed);
 
@@ -1022,6 +1021,10 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
             wtx.nTimeSmart = wtx.nTimeReceived;
             if (wtxIn.hashBlock != 0) {
                 if (mapBlockIndex.count(wtxIn.hashBlock)) {
+                    if (mapBlockIndex[wtxIn.hashBlock] != NULL) {
+                        wtx.nTimeReceived = mapBlockIndex[wtxIn.hashBlock]->nTime;
+                        wtx.nTimeSmart = wtx.nTimeReceived;
+                    }
                     int64_t latestNow = wtx.nTimeReceived;
                     int64_t latestEntry = 0;
                     {
@@ -3929,7 +3932,7 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                 CTransaction& coinbase = b.vtx[coinbaseIdx];
 
                 for (size_t i = 0; i < coinbase.vout.size(); i++) {
-                    if (!coinbase.vout[i].IsNull() && coinbase.vout[i].nValue > 0 && !coinbase.vout[i].IsEmpty()) {
+                    if (!coinbase.vout[i].IsNull() && !coinbase.vout[i].commitment.empty() && coinbase.vout[i].nValue > 0 && !coinbase.vout[i].IsEmpty()) {
                         if ((secp256k1_rand32() % 100) <= CWallet::PROBABILITY_NEW_COIN_SELECTED) {
                             COutPoint newOutPoint(coinbase.GetHash(), i);
                             if (pwalletMain->coinbaseDecoysPool.count(newOutPoint) == 1) {
@@ -5852,7 +5855,7 @@ bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint3
                             vCoins.push_back(lowestLarger);
                             total += currentLowestLargerAmount;
                         } else {
-                            LogPrintf("No set of UTXOs to combine into a stakaeble coin =>  autocombine any way if minimum UTXOs satisfied");
+                            LogPrintf("No set of UTXOs to combine into a stakeable coin - autocombine any way if minimum UTXOs satisfied\n");
                             if (vCoins.size() < MIN_TX_INPUTS_FOR_SWEEPING) return false;
                         }
                     }
@@ -5988,7 +5991,6 @@ void CWallet::AutoCombineDust()
         return;
     }
 
-    LogPrintf("Creating a sweeping transaction\n");
     if (stakingMode == StakingMode::STAKING_WITH_CONSOLIDATION) {
         if (IsLocked()) return;
         if (fGenerateDapscoins && chainActive.Tip()->nHeight >= Params().LAST_POW_BLOCK()) {
@@ -6000,10 +6002,12 @@ void CWallet::AutoCombineDust()
             }
             uint32_t nTime = ReadAutoConsolidateSettingTime();
             nTime = (nTime == 0)? GetAdjustedTime() : nTime;
+            LogPrintf("Creating a consolidation transaction for a larger UTXO for staking\n");
             CreateSweepingTransaction(MINIMUM_STAKE_AMOUNT, max + COIN, nTime);
         }
         return;
     }
+    LogPrintf("Creating a sweeping transaction\n");
     CreateSweepingTransaction(nAutoCombineThreshold, nAutoCombineThreshold, GetAdjustedTime());
 }
 
