@@ -2551,6 +2551,9 @@ void Misbehaving(NodeId pnode, int howmuch)
     if (state == NULL)
         return;
 
+    CAddress cAddr(state->address);
+    if (CNode::IsWhitelistedRange(cAddr)) return;
+
     state->nMisbehavior += howmuch;
     int banscore = GetArg("-banscore", 100);
     if (state->nMisbehavior >= banscore && state->nMisbehavior - howmuch < banscore) {
