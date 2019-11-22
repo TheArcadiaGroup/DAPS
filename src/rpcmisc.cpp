@@ -66,9 +66,10 @@ UniValue getinfo(const UniValue &params, bool fHelp) {
             "  \"keypoolsize\": xxxx,        (numeric) how many new keys are pre-generated\n"
             "  \"unlocked_until\": ttt,      (numeric) the timestamp in seconds since epoch (midnight Jan 1 1970 GMT) that the wallet is unlocked for transfers, or 0 if the wallet is locked\n"
             "  \"paytxfee\": x.xxxx,         (numeric) the transaction fee set in dapscoin/kb\n"
-            "  \"relayfee\": x.xxxx,         (numeric) minimum relay fee for non-free transactions in dapscoin/kb\n"
+            "  \"relayfee\": x.xxxx,         (numeric) minimum relay fee for non-free transactions in dapscoin/kb\n"//
+            /* disabled in multisig
             "  \"staking mode\": enabled|disabled,  (string) if staking is enabled or disabled\n"
-            "  \"staking status\": active|inactive, (string) if staking is active or inactive\n"
+            "  \"staking status\": active|inactive, (string) if staking is active or inactive\n"*/
             "  \"errors\": \"...\"           (string) any error messages\n"
             "}\n"
             "\nExamples:\n" +
@@ -110,13 +111,14 @@ UniValue getinfo(const UniValue &params, bool fHelp) {
     obj.push_back(Pair("paytxfee", ValueFromAmount(payTxFee.GetFeePerK())));
 #endif
     obj.push_back(Pair("relayfee", ValueFromAmount(::minRelayTxFee.GetFeePerK())));
+    /* disabled in multisig
     bool nStaking = false;
     if (mapHashedBlocks.count(chainActive.Tip()->nHeight))
         nStaking = true;
     else if (mapHashedBlocks.count(chainActive.Tip()->nHeight - 1) && nLastCoinStakeSearchInterval)
         nStaking = true;
     obj.push_back(Pair("staking mode", (pwalletMain->ReadStakingStatus() ? "enabled" : "disabled")));
-    obj.push_back(Pair("staking status", (nStaking ? "active" : "inactive")));
+    obj.push_back(Pair("staking status", (nStaking ? "active" : "inactive")));*/
     obj.push_back(Pair("errors", GetWarnings("statusbar")));
     return obj;
 }
