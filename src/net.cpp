@@ -1788,7 +1788,7 @@ void CExplicitNetCleanup::callCleanup() {
 
 void RelayTransaction(const CTransaction &tx) {
     CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
-    ss.reserve(10000);
+    ss.reserve(50000);
     ss << tx;
     RelayTransaction(tx, ss);
 }
