@@ -6829,11 +6829,20 @@ bool CWallet::RevealTxOutAmount(const CTransaction& tx, const CTxOut& out, CAmou
     uint256 mask = out.maskValue.mask;
     CKey decodedMask;
     ECDHInfo::Decode(mask.begin(), val.begin(), sharedSec, decodedMask, amount);
-    amountMap[out.scriptPubKey] = amount;
-    blindMap[out.scriptPubKey] = decodedMask;
-    blind.Set(blindMap[out.scriptPubKey].begin(), blindMap[out.scriptPubKey].end(), true);
-    //Do we need to reconstruct the private to spend the tx out put?
-    return true;
+    std::vector<unsigned char> commitment;
+    if (CreateCommitment(decodedMask.begin(), amount, commitment)) {
+        //make sure the amount and commitment are matched
+        if (commitment == out.commitment) {
+            amountMap[out.scriptPubKey] = amount;
+            blindMap[out.scriptPubKey] = decodedMask;
+            blind.Set(blindMap[out.scriptPubKey].begin(), blindMap[out.scriptPubKey].end(), true);
+            return true;
+        } else {
+            amount = 0;
+            amountMap[out.scriptPubKey] = amount;
+            return false;
+        }
+    }
 }
 
 bool CWallet::findCorrespondingPrivateKey(const CTxOut& txout, CKey& key) const
