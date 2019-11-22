@@ -16,7 +16,6 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <algorithm>
 #include <boost/assign/list_of.hpp>
@@ -601,7 +600,7 @@ void CObfuscationPool::CheckFinalTransaction()
         // sign a message
 
         int64_t sigTime = GetAdjustedTime();
-        std::string strMessage = txNew.GetHash().ToString() + boost::lexical_cast<std::string>(sigTime);
+        std::string strMessage = txNew.GetHash().ToString() + std::to_string(sigTime);
         std::string strError = "";
         std::vector<unsigned char> vchSig;
         CKey key2;
