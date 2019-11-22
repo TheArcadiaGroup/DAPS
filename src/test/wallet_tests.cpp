@@ -359,7 +359,8 @@ BOOST_AUTO_TEST_CASE(test_StealthSend)
     // check stealth sending on 0 balance wallet
     printf("Balance = %f, ReserveBalance = %f\n", pwalletMain->GetBalance() * 1.0f / COIN, nReserveBalance * 1.0f / COIN);
     try {
-        //ret = pwalletMain->SendToStealthAddress(stealthAddr, nAmount, wtx);
+        CPartialTransaction ptx;
+        ret = pwalletMain->SendToStealthAddress(ptx, stealthAddr, nAmount, wtx);
     } catch (std::exception& e) {
         ret = false;
     }
@@ -370,7 +371,8 @@ BOOST_AUTO_TEST_CASE(test_StealthSend)
     nReserveBalance = pwalletMain->GetBalance() - 90 * COIN;
     printf("Balance = %f, ReserveBalance = %f\n", pwalletMain->GetBalance() * 1.0f / COIN, nReserveBalance * 1.0f / COIN);
     try {
-        //ret = pwalletMain->SendToStealthAddress(stealthAddr, nAmount, wtx);
+        CPartialTransaction ptx;
+        ret = pwalletMain->SendToStealthAddress(ptx, stealthAddr, nAmount, wtx);
     } catch (std::exception& e) {
         ret = false;
     }
@@ -380,7 +382,8 @@ BOOST_AUTO_TEST_CASE(test_StealthSend)
     nReserveBalance = 0;
     printf("Balance = %f, ReserveBalance = %f\n", pwalletMain->GetBalance() * 1.0f / COIN, nReserveBalance * 1.0f / COIN);
     try {
-        //ret = pwalletMain->SendToStealthAddress(stealthAddr, nAmount, wtx);
+        CPartialTransaction ptx;
+        ret = pwalletMain->SendToStealthAddress(ptx, stealthAddr, nAmount, wtx);
     } catch (std::exception& e) {
         ret = false;
     }
