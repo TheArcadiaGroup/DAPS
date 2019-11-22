@@ -18,6 +18,7 @@
 #include <fstream>
 
 #include <boost/filesystem/operations.hpp>
+#include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
 
 #if 0
