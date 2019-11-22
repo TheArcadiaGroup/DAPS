@@ -34,4 +34,4 @@ void EnterMnemonics::on_next()
     } catch (std::exception& ex) {
        QMessageBox::warning(this, "Recovery phrase invalid", "Recovery phrase is invalid", QMessageBox::Ok);
     }
-}
+}
