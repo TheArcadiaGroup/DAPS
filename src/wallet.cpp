@@ -636,7 +636,7 @@ bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool anonymizeOnly
     }
 
     if (rescanNeeded) {
-        pwalletMain->RescanAfterUnlock(1);
+        pwalletMain->RescanAfterUnlock(0);
         walletUnlockCountStatus++;
         return true;
     }
@@ -683,6 +683,7 @@ bool CWallet::ChangeWalletPassphrase(const SecureString& strOldWalletPassphrase,
                 if (fWasLocked)
                     Lock();
 
+                nTimeFirstKey = 1;
                 rescanNeeded = true;
                 break;
             }
@@ -690,7 +691,7 @@ bool CWallet::ChangeWalletPassphrase(const SecureString& strOldWalletPassphrase,
     }
 
     if (rescanNeeded) {
-        pwalletMain->RescanAfterUnlock(1);
+        pwalletMain->RescanAfterUnlock(0);
         return true;
     }
 
