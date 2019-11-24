@@ -130,30 +130,6 @@ void SendCoinsDialog::on_sendButton_clicked(){
         return;
     }
 
-    bool nStaking = (nLastCoinStakeSearchInterval > 0);
-
-    if (nStaking) {
-        CAmount spendable = pwalletMain->GetSpendableBalance();
-        if (!(recipient.amount <= nReserveBalance && recipient.amount <= spendable)) {
-            if (recipient.amount > spendable) {
-                QMessageBox msgBox;
-                msgBox.setWindowTitle("Insufficient Spendable Funds!");
-                msgBox.setText("Insufficient spendable funds. Send with smaller amount or wait for your coins become mature");
-                msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
-                msgBox.setIcon(QMessageBox::Information);
-                msgBox.exec();
-            } else if (recipient.amount > nReserveBalance) {
-                QMessageBox msgBox;
-                msgBox.setWindowTitle("Insufficient Reserve Funds!");
-                msgBox.setText("Insufficient reserve funds. Send with smaller amount or turn off staking mode.");
-                msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
-                msgBox.setIcon(QMessageBox::Information);
-                msgBox.exec();
-            }
-            return;
-        }
-    }
-
     send_address = recipient.address;
     send_amount = recipient.amount;
     bool status = pwalletMain->Read2FA();

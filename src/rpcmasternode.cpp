@@ -22,85 +22,6 @@
 
 extern CAmount GetSeeSaw(const CAmount& blockValue, int nMasternodeCount, int nHeight);
 
-void SendMoney(const CTxDestination& address, CAmount nValue, CWalletTx& wtxNew, AvailableCoinsType coin_type = ALL_COINS)
-{
-    // Check amount
-    if (nValue <= 0)
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid amount");
-
-    if (nValue > pwalletMain->GetBalance())
-        throw JSONRPCError(RPC_WALLET_INSUFFICIENT_FUNDS, "Insufficient funds");
-
-    string strError;
-    if (pwalletMain->IsLocked()) {
-        strError = "Error: Wallet locked, unable to create transaction!";
-        LogPrintf("SendMoney() : %s", strError);
-        throw JSONRPCError(RPC_WALLET_ERROR, strError);
-    }
-
-    // Parse Dapscoin address
-    CScript scriptPubKey = GetScriptForDestination(address);
-
-    // Create and send the transaction
-    CReserveKey reservekey(pwalletMain);
-    CAmount nFeeRequired;
-    if (!pwalletMain->CreateTransaction(scriptPubKey, nValue, wtxNew, reservekey, nFeeRequired, strError, NULL, coin_type)) {
-        if (nValue + nFeeRequired > pwalletMain->GetBalance())
-            strError = strprintf("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds!", FormatMoney(nFeeRequired));
-        LogPrintf("SendMoney() : %s\n", strError);
-        throw JSONRPCError(RPC_WALLET_ERROR, strError);
-    }
-    if (!pwalletMain->CommitTransaction(wtxNew, reservekey))
-        throw JSONRPCError(RPC_WALLET_ERROR, "Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of multisig_wallet.dat and coins were spent in the copy but not marked as spent here.");
-}
-
-UniValue obfuscation(const UniValue& params, bool fHelp)
-{
-    throw runtime_error("Obfuscation is not supported any more.\n");
-
-    if (fHelp || params.size() == 0)
-        throw runtime_error(
-            "obfuscation <dapscoinaddress> <amount>\n"
-            "dapscoinaddress, reset, or auto (AutoDenominate)"
-            "<amount> is a real and will be rounded to the next 0.1" +
-            HelpRequiringPassphrase());
-
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with unlockwallet first.");
-
-    if (params[0].get_str() == "auto") {
-        if (fMasterNode)
-            return "ObfuScation is not supported from masternodes";
-
-        return "DoAutomaticDenominating " + (obfuScationPool.DoAutomaticDenominating() ? "successful" : ("failed: " + obfuScationPool.GetStatus()));
-    }
-
-    if (params[0].get_str() == "reset") {
-        obfuScationPool.Reset();
-        return "successfully reset obfuscation";
-    }
-
-    if (params.size() != 2)
-        throw runtime_error(
-            "obfuscation <dapscoinaddress> <amount>\n"
-            "dapscoinaddress, denominate, or auto (AutoDenominate)"
-            "<amount> is a real and will be rounded to the next 0.1" +
-            HelpRequiringPassphrase());
-
-    CBitcoinAddress address(params[0].get_str());
-    if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Dapscoin address");
-
-    // Amount
-    CAmount nAmount = AmountFromValue(params[1]);
-
-    // Wallet comments
-    CWalletTx wtx;
-    SendMoney(address.Get(), nAmount, wtx, ONLY_DENOMINATED);
-
-    return wtx.GetHash().GetHex();
-}
-
 UniValue getpoolinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
@@ -289,6 +210,7 @@ UniValue listmasternodes(const UniValue& params, bool fHelp)
             "    \"rank\": n,           (numeric) Masternode Rank (or 0 if not enabled)\n"
             "    \"txhash\": \"hash\",    (string) Collateral transaction hash\n"
             "    \"outidx\": n,         (numeric) Collateral transaction output index\n"
+            "    \"pubkey\": \"key\",   (string) Masternode public key used for message broadcasting\n"
             "    \"status\": s,         (string) Status (ENABLED/EXPIRED/REMOVE/etc)\n"
             "    \"addr\": \"addr\",      (string) Masternode DAPS address\n"
             "    \"version\": v,        (numeric) Masternode protocol version\n"
@@ -310,7 +232,7 @@ UniValue listmasternodes(const UniValue& params, bool fHelp)
         nHeight = pindex->nHeight;
     }
     std::vector<pair<int, CMasternode> > vMasternodeRanks = mnodeman.GetMasternodeRanks(nHeight);
-    BOOST_FOREACH (PAIRTYPE(int, CMasternode) & s, vMasternodeRanks) {
+    for (PAIRTYPE(int, CMasternode) & s : vMasternodeRanks) {
         UniValue obj(UniValue::VOBJ);
         std::string strVin = s.second.vin.prevout.ToStringShort();
         std::string strTxHash = s.second.vin.prevout.hash.ToString();
@@ -334,6 +256,7 @@ UniValue listmasternodes(const UniValue& params, bool fHelp)
             obj.push_back(Pair("network", strNetwork));
             obj.push_back(Pair("txhash", strTxHash));
             obj.push_back(Pair("outidx", (uint64_t)oIdx));
+            obj.push_back(Pair("pubkey", HexStr(mn->pubKeyMasternode)));
             obj.push_back(Pair("status", strStatus));
             obj.push_back(Pair("addr", CBitcoinAddress(mn->pubKeyCollateralAddress.GetID()).ToString()));
             std::string mnStealth(mn->vin.masternodeStealthAddress.begin(), mn->vin.masternodeStealthAddress.end());
@@ -553,7 +476,7 @@ UniValue startmasternode (const UniValue& params, bool fHelp)
 
         UniValue resultsObj(UniValue::VARR);
 
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             std::string errorMessage;
             int nIndex;
             if(!mne.castOutputIndex(nIndex))
@@ -607,7 +530,7 @@ UniValue startmasternode (const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             if (mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -689,7 +612,7 @@ UniValue getmasternodeoutputs (const UniValue& params, bool fHelp)
     vector<COutput> possibleCoins = activeMasternode.SelectCoinsMasternode();
 
     UniValue ret(UniValue::VARR);
-    BOOST_FOREACH (COutput& out, possibleCoins) {
+    for (COutput& out : possibleCoins) {
         UniValue obj(UniValue::VOBJ);
         obj.push_back(Pair("txhash", out.tx->GetHash().ToString()));
         obj.push_back(Pair("outputidx", out.i));
@@ -734,7 +657,7 @@ UniValue listmasternodeconf (const UniValue& params, bool fHelp)
 
     UniValue ret(UniValue::VARR);
 
-    BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+    for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
         int nIndex;
         if(!mne.castOutputIndex(nIndex))
             continue;
@@ -871,7 +794,7 @@ UniValue getmasternodewinners (const UniValue& params, bool fHelp)
             UniValue winner(UniValue::VARR);
             boost::char_separator<char> sep(",");
             boost::tokenizer< boost::char_separator<char> > tokens(strPayment, sep);
-            BOOST_FOREACH (const string& t, tokens) {
+            for (const string& t : tokens) {
                 UniValue addr(UniValue::VOBJ);
                 std::size_t pos = t.find(":");
                 std::string strAddress = t.substr(0,pos);
@@ -925,7 +848,7 @@ UniValue getmasternodescores (const UniValue& params, bool fHelp)
     if (params.size() == 1) {
         try {
             nLast = std::stoi(params[0].get_str());
-        } catch (const boost::bad_lexical_cast &) {
+        } catch (const std::invalid_argument&) {
             throw runtime_error("Exception on param 2");
         }
     }
@@ -935,7 +858,7 @@ UniValue getmasternodescores (const UniValue& params, bool fHelp)
     for (int nHeight = chainActive.Tip()->nHeight - nLast; nHeight < chainActive.Tip()->nHeight + 20; nHeight++) {
         uint256 nHigh = 0;
         CMasternode* pBestMasternode = NULL;
-        BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+        for (CMasternode& mn : vMasternodes) {
             uint256 n = mn.CalculateScore(1, nHeight - 100);
             if (n > nHigh) {
                 nHigh = n;
@@ -1117,7 +1040,7 @@ UniValue createmasternodebroadcast(const UniValue & params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             if(mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -1160,7 +1083,7 @@ UniValue createmasternodebroadcast(const UniValue & params, bool fHelp)
 
         UniValue resultsObj(UniValue::VARR);
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             std::string errorMessage;
 
             CTxIn vin = CTxIn(uint256S(mne.getTxHash()), uint32_t(atoi(mne.getOutputIndex().c_str())));

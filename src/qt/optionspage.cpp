@@ -59,6 +59,7 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenu
     ui->label_2->setVisible(false);
     ui->pushButtonSave->setVisible(false);
     ui->pushButtonDisable->setVisible(false);
+    ui->addNewFunds->setVisible(false);
 
     connect(ui->pushButtonRecovery, SIGNAL(clicked()), this, SLOT(onShowMnemonic()));
 
@@ -335,7 +336,7 @@ void OptionsPage::on_Enable2FA(ToggleButton* widget)
 
     if (widget->getState()) {
         TwoFAQRDialog qrdlg;
-        qrdlg.setWindowTitle("2FA QRCode");
+        qrdlg.setWindowTitle("2FA QR Code & Recovery Key");
         qrdlg.setModel(this->model);
         qrdlg.setStyleSheet(GUIUtil::loadStyleSheet());
         connect(&qrdlg, SIGNAL(finished (int)), this, SLOT(qrDialogIsFinished(int)));
@@ -439,7 +440,7 @@ void OptionsPage::enable2FA() {
         value.sprintf("%c", chrlist[5]);
         ui->code_6->setText(value);
     }
-     
+
     int period = pwalletMain->Read2FAPeriod();
     typeOf2FA = NONE2FA;
     if (period == 1) {
@@ -503,7 +504,7 @@ void OptionsPage::on_week() {
     codedlg.setWindowTitle("2FA Code Verification");
     codedlg.setStyleSheet(GUIUtil::loadStyleSheet());
     connect(&codedlg, SIGNAL(finished (int)), this, SLOT(confirmDialogIsFinished(int)));
-    codedlg.exec();   
+    codedlg.exec();
 }
 
 void OptionsPage::on_month() {
