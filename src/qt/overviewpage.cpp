@@ -146,7 +146,8 @@ void OverviewPage::handleTransactionClicked(const QModelIndex& index)
 
 OverviewPage::~OverviewPage()
 {
-    delete animClock;
+    if (animClock)
+        delete animClock;
     delete timer;
     delete timerBlockHeightLabel;
     delete ui;
@@ -185,6 +186,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
         ui->labelBalance_2->setText("Locked; Hidden");
         ui->labelBalance->setText("Locked; Hidden");
         ui->labelUnconfirmed->setText("Locked; Hidden");
+        ui->btnLockUnlock->setStyleSheet("border-image: url(:/images/lock) 0 0 0 0 stretch stretch; width: 20px;");
     } else {
         if (stkStatus && !nLastCoinStakeSearchInterval) {
             ui->labelBalance_2->setText("Enabling Staking...");
@@ -196,6 +198,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
             ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nSpendableDisplayed, false, BitcoinUnits::separatorAlways));
         }
         ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
+        ui->btnLockUnlock->setStyleSheet("border-image: url(:/images/unlock) 0 0 0 0 stretch stretch; width: 30px;");
     }
     QFont font = ui->labelBalance_2->font();
     font.setPointSize(15);
