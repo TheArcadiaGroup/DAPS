@@ -33,7 +33,6 @@
 #include "init.h"
 #include "main.h"
 #include "rpcserver.h"
-#include "scheduler.h"
 #include "ui_interface.h"
 #include "util.h"
 
@@ -212,9 +211,6 @@ signals:
     void runawayException(const QString& message);
 
 private:
-    boost::thread_group threadGroup;
-    CScheduler scheduler;
-
     /// Flag indicating a restart
     bool execute_restart;
 
@@ -305,7 +301,7 @@ void BitcoinCore::initialize()
 
     try {
         qDebug() << __func__ << ": Running AppInit2 in thread";
-        int rv = AppInit2(threadGroup, scheduler, false);
+        int rv = AppInit2(false);
         emit initializeResult(rv);
     } catch (std::exception& e) {
         handleRunawayException(&e);
@@ -320,8 +316,7 @@ void BitcoinCore::restart(QStringList args)
         execute_restart = false;
         try {
             qDebug() << __func__ << ": Running Restart in thread";
-            Interrupt(threadGroup);
-            threadGroup.join_all();
+            Interrupt();
             PrepareShutdown();
             qDebug() << __func__ << ": Shutdown finished";
             emit shutdownResult(1);
@@ -341,8 +336,7 @@ void BitcoinCore::shutdown()
 {
     try {
         qDebug() << __func__ << ": Running Shutdown in thread";
-        Interrupt(threadGroup);
-        threadGroup.join_all();
+        Interrupt();
         Shutdown();
         qDebug() << __func__ << ": Shutdown finished";
         emit shutdownResult(1);
@@ -508,19 +502,6 @@ void BitcoinApplication::initializeResult(int retval)
             }
 
             walletModel = new WalletModel(pwalletMain, optionsModel);
-
-            if (walletModel->getEncryptionStatus() == WalletModel::Locked) {
-                UnlockDialog unlockdlg;
-                unlockdlg.setWindowTitle("Unlock Keychain Wallet");
-                unlockdlg.setModel(walletModel);
-                unlockdlg.setStyleSheet(GUIUtil::loadStyleSheet());
-                unlockdlg.setWindowFlags(Qt::WindowStaysOnTopHint);
-                if (unlockdlg.exec() != QDialog::Accepted)
-                    QApplication::quit();
-                walletUnlocked = true;
-                emit requestedRegisterNodeSignal();
-            }
-
             window->addWallet(BitcoinGUI::DEFAULT_WALLET, walletModel);
             window->setCurrentWallet(BitcoinGUI::DEFAULT_WALLET);
         }
@@ -542,6 +523,17 @@ void BitcoinApplication::initializeResult(int retval)
             window, SLOT(message(QString, QString, unsigned int)));
         QTimer::singleShot(100, paymentServer, SLOT(uiReady()));
         if (pwalletMain) {
+            if (walletModel->getEncryptionStatus() == WalletModel::Locked) {
+                UnlockDialog unlockdlg;
+                unlockdlg.setWindowTitle("Unlock Keychain Wallet");
+                unlockdlg.setModel(walletModel);
+                unlockdlg.setStyleSheet(GUIUtil::loadStyleSheet());
+                unlockdlg.setWindowFlags(Qt::WindowStaysOnTopHint);
+                if (unlockdlg.exec() != QDialog::Accepted)
+                    QApplication::quit();
+                walletUnlocked = true;
+                emit requestedRegisterNodeSignal();
+            }
         	if (!walletUnlocked && walletModel->getEncryptionStatus() == WalletModel::Unencrypted) {
         		if (!walletModel->isMultiSigSetup()) {
         			while(!pwalletMain->isMultisigSetupFinished) {
