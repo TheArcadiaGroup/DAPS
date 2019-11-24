@@ -298,7 +298,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(cosignAction);
 
-    keyImageSyncAction = new QAction(QIcon(":/icons/send"), tr("&   Sync\nKeyImage"), this);
+    keyImageSyncAction = new QAction(QIcon(":/icons/send"), tr("&Sync\nKeyImage"), this);
     keyImageSyncAction->setIconText("    &Sync\n    KeyImage");
     keyImageSyncAction->setToolTip("Sync KeyImage");
     keyImageSyncAction->setCheckable(true);
