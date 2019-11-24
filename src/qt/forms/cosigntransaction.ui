@@ -71,7 +71,7 @@
           <string>Your current spendable balance</string>
          </property>
          <property name="text">
-          <string notr="true">123.456 DAPS</string>
+          <string notr="true">0 DAPS</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
