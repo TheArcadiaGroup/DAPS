@@ -69,7 +69,6 @@ private:
     void addTableData(std::map<QString, QString>);
     void updateTableData(CWallet *wallet);
     void updateAddressBookData(CWallet *wallet);
-    QTimer* updateHistoryTimer;
 
 public slots:
     void on_cellClicked(int row, int column);

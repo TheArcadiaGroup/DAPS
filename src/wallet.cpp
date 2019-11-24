@@ -197,7 +197,6 @@ CPubKey CWallet::GenerateNewKey()
     AssertLockHeld(cs_wallet);                                 // mapKeyMetadata
     bool fCompressed = CanSupportFeature(FEATURE_COMPRPUBKEY); // default to compressed public keys if we want 0.6.0 wallets
 
-    RandAddSeedPerfmon();
     CKey secret;
     secret.MakeNewKey(fCompressed);
 
@@ -1160,6 +1159,10 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
             wtx.nTimeSmart = wtx.nTimeReceived;
             if (wtxIn.hashBlock != 0) {
                 if (mapBlockIndex.count(wtxIn.hashBlock)) {
+                    if (mapBlockIndex[wtxIn.hashBlock] != NULL) {
+                        wtx.nTimeReceived = mapBlockIndex[wtxIn.hashBlock]->nTime;
+                        wtx.nTimeSmart = wtx.nTimeReceived;
+                    }
                     int64_t latestNow = wtx.nTimeReceived;
                     int64_t latestEntry = 0;
                     {
@@ -5712,14 +5715,14 @@ bool CWallet::GetDestData(const CTxDestination& dest, const std::string& key, st
     return false;
 }
 
-bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint32_t time) {
+bool CWallet::CreateSweepingTransaction(CAmount target, CAmount threshold, uint32_t nTimeBefore) {
     //disable this functuonality in multisig
     return true;
 }
 
 void CWallet::AutoCombineDust()
 {
-    //disabled for multisigwallet
+    //disabled for multiwallet
 }
 
 bool CWallet::estimateStakingConsolidationFees(CAmount& minFee, CAmount& maxFee) {

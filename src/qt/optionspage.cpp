@@ -520,14 +520,47 @@ void OptionsPage::on_month() {
 void OptionsPage::onShowMnemonic() {
     int status = model->getEncryptionStatus();
     if (status == WalletModel::Locked || status == WalletModel::UnlockedForAnonymizationOnly) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("Mnemonic Recovery Phrase");
-        msgBox.setIcon(QMessageBox::Information);
-        msgBox.setText("Please unlock the keychain wallet with your passphrase before attempting to view your Mnemonic Recovery Phrase.");
-        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
-        msgBox.exec();
-        return;
+        WalletModel::UnlockContext ctx(model->requestUnlock(false));
+        if (!ctx.isValid()) {
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Mnemonic Recovery Phrase");
+            msgBox.setIcon(QMessageBox::Information);
+            msgBox.setText("Attempt to view Mnemonic Phrase failed or canceled. Wallet locked for security.");
+            msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+            msgBox.exec();
+            LogPrintf("Attempt to view Mnemonic Phrase failed or canceled. Wallet locked for security.\n");
+            return;
+        } else {
+            SecureString pass;
+            model->setWalletLocked(false, pass);
+            LogPrintf("Attempt to view Mnemonic Phrase successful.\n");
+        }
+    } else {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Are You Sure?", "Are you sure you would like to view your Mnemonic Phrase?\nYou will be required to enter your passphrase. Failed or canceled attempts will be logged.", QMessageBox::Yes|QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            model->setWalletLocked(true);
+            WalletModel::UnlockContext ctx(model->requestUnlock(false));
+            if (!ctx.isValid()) {
+                QMessageBox msgBox;
+                msgBox.setWindowTitle("Mnemonic Recovery Phrase");
+                msgBox.setIcon(QMessageBox::Information);
+                msgBox.setText("Attempt to view Mnemonic Phrase failed or canceled. Wallet locked for security.");
+                msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+                msgBox.exec();
+                LogPrintf("Attempt to view Mnemonic Phrase failed or canceled. Wallet locked for security.\n");
+                return;
+            } else {
+                SecureString pass;
+                model->setWalletLocked(false, pass);
+                LogPrintf("Attempt to view Mnemonic Phrase successful.\n");
+            }
+        } else {
+            LogPrintf("Attempt to view Mnemonic Phrase canceled.\n");
+            return;
+        }
     }
+
     CHDChain hdChainCurrent;
     if (!pwalletMain->GetDecryptedHDChain(hdChainCurrent))
         return;
@@ -558,11 +591,10 @@ void OptionsPage::setAutoConsolidate(int state) {
         return;
     }
     LOCK(pwalletMain->cs_wallet);
-    //Insert Function Here
     saveConsolidationSettingTime(ui->addNewFunds->isChecked());
 }
 
 void OptionsPage::saveConsolidationSettingTime(bool autoConsolidate)
 {
-    //disabled for multisigwallet
+    //disabled
 }
