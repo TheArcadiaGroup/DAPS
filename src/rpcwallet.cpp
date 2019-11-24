@@ -3094,9 +3094,10 @@ UniValue showtxprivatekeys(const UniValue& params, bool fHelp) {
 UniValue rescanwallettransactions(const UniValue& params, bool fHelp) {
     if (fHelp || params.size() > 1)
         throw runtime_error(
-                "rescanwallettransactions \n"
+                "rescanwallettransactions \"block height\"\n"
                 "\nRescan wallet transaction.\n"
                 "\nArguments:\n"
+                "\nblock height: block height from which the chain will be rescanned\n"
                 "\nResult:\n"
                 "\"scanned wallet transaction\"    \n"
                 "\nExamples:\n" +
@@ -3112,19 +3113,13 @@ UniValue rescanwallettransactions(const UniValue& params, bool fHelp) {
     EnsureWalletIsUnlocked();
 
     int nHeight = 0;
-    CWalletDB walletdb(pwalletMain->strWalletFile);
-    walletdb.ReadScannedBlockHeight(nHeight);
-    if (nHeight >= chainActive.Height()) {
-    	nHeight = 0;
-    }
-    bool fromBeginning = false;
     if (params.size() == 1) {
-    	fromBeginning = true;
+        nHeight = params[0].get_int();
     }
-    if (!pwalletMain->RescanAfterUnlock(fromBeginning)) {
-    	return "Wait for wallet to finish reimport/reindex";
+    if (!pwalletMain->RescanAfterUnlock(nHeight)) {
+        return "Failed to rescan";
     }
-    return "Started rescanning from block " + std::to_string(nHeight);
+    return "Done";
 }
 
 UniValue revealmnemonicphrase(const UniValue& params, bool fHelp)
