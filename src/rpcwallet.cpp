@@ -1637,7 +1637,7 @@ UniValue backupwallet(const UniValue& params, bool fHelp)
     if (!BackupWallet(*pwalletMain, strDest))
         throw JSONRPCError(RPC_WALLET_ERROR, "Error: Wallet backup failed!");
 
-    return NullUniValue;
+    return "Done";
 }
 
 
