@@ -818,7 +818,7 @@ UniValue invalidateblock(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_DATABASE_ERROR, state.GetRejectReason());
     }
 
-    return NullUniValue;
+    return "Done";
 }
 
 UniValue reconsiderblock(const UniValue& params, bool fHelp)
@@ -855,7 +855,7 @@ UniValue reconsiderblock(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_DATABASE_ERROR, state.GetRejectReason());
     }
 
-    return NullUniValue;
+    return "Done";
 }
 
 UniValue getinvalid (const UniValue& params, bool fHelp)
