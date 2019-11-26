@@ -80,6 +80,7 @@ public slots:
     void walletUpgrade();
     void walletReindex();
     void walletResync();
+    void walletBootstrap();
 
     void reject();
     void message(int category, const QString& message, bool html = false);

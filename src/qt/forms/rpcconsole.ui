@@ -1272,33 +1272,20 @@
        <property name="horizontalSpacing">
         <number>12</number>
        </property>
-       <item row="9" column="2">
-        <widget class="QLabel" name="label_repair_reindex_command">
+       <item row="4" column="3">
+        <widget class="QLabel" name="label_repair_salvage">
          <property name="text">
-          <string notr="true">-reindex:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0" colspan="2">
-        <widget class="QPushButton" name="btn_rescan">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>23</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Rescan blockchain files</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="3">
-        <widget class="QLabel" name="label_repair_reindex">
-         <property name="text">
-          <string>Rebuild block chain index from current blk000??.dat files.</string>
+          <string>Attempt to recover private keys from a corrupt wallet.dat.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <widget class="QLabel" name="label_repair_zap1_command">
+         <property name="text">
+          <string notr="true">-zapwallettxes=1:</string>
          </property>
         </widget>
        </item>
@@ -1315,15 +1302,8 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="2">
-        <widget class="QLabel" name="label_repair_upgrade_command">
-         <property name="text">
-          <string notr="true">-upgradewallet:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0" colspan="2">
-        <widget class="QPushButton" name="btn_zapwallettxes2">
+       <item row="6" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_zapwallettxes1">
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -1331,14 +1311,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Recover transactions 2</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="2">
-        <widget class="QLabel" name="label_repair_zap1_command">
-         <property name="text">
-          <string notr="true">-zapwallettxes=1:</string>
+          <string>Recover transactions 1</string>
          </property>
         </widget>
        </item>
@@ -1358,8 +1331,8 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0" colspan="2">
-        <widget class="QPushButton" name="btn_salvagewallet">
+       <item row="10" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_resync">
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -1367,14 +1340,20 @@
           </size>
          </property>
          <property name="text">
-          <string>Salvage wallet</string>
+          <string>Delete local Blockchain Folders</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="2">
-        <widget class="QLabel" name="label_repair_zap2_command">
+       <item row="5" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_rescan">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>23</height>
+          </size>
+         </property>
          <property name="text">
-          <string notr="true">-zapwallettxes=2:</string>
+          <string>Rescan blockchain files</string>
          </property>
         </widget>
        </item>
@@ -1385,23 +1364,37 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="3">
-        <widget class="QLabel" name="label_repair_rescan">
+       <item row="10" column="3">
+        <widget class="QLabel" name="label_repair_resync">
          <property name="text">
-          <string>Rescan the block chain for missing wallet transactions.</string>
+          <string>Deletes all local blockchain folders so the wallet synchronizes from scratch.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="4" column="3">
-        <widget class="QLabel" name="label_repair_salvage">
+       <item row="9" column="3">
+        <widget class="QLabel" name="label_repair_reindex">
          <property name="text">
-          <string>Attempt to recover private keys from a corrupt wallet.dat.</string>
+          <string>Rebuild block chain index from current blk000??.dat files.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="2">
+        <widget class="QLabel" name="label_repair_upgrade_command">
+         <property name="text">
+          <string notr="true">-upgradewallet:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="2">
+        <widget class="QLabel" name="label_repair_bootstrap_command">
+         <property name="text">
+          <string>N/A</string>
          </property>
         </widget>
        </item>
@@ -1415,18 +1408,8 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="3">
-        <widget class="QLabel" name="label_repair_zap1">
-         <property name="text">
-          <string>Recover transactions from blockchain (keep meta-data, e.g. account owner).</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0" colspan="2">
-        <widget class="QPushButton" name="btn_zapwallettxes1">
+       <item row="4" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_salvagewallet">
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -1434,14 +1417,90 @@
           </size>
          </property>
          <property name="text">
-          <string>Recover transactions 1</string>
+          <string>Salvage wallet</string>
          </property>
         </widget>
        </item>
-       <item row="10" column="2">
-        <widget class="QLabel" name="label_repair_resync_command">
+       <item row="5" column="3">
+        <widget class="QLabel" name="label_repair_rescan">
          <property name="text">
-          <string>-resync:</string>
+          <string>Rescan the block chain for missing wallet transactions.</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="2">
+        <widget class="QLabel" name="label_repair_reindex_command">
+         <property name="text">
+          <string notr="true">-reindex:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="4">
+        <widget class="QLabel" name="label_repair_header">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Wallet repair options.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="2">
+        <widget class="QLabel" name="label_repair_zap2_command">
+         <property name="text">
+          <string notr="true">-zapwallettxes=2:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0">
+        <spacer name="verticalSpacer_repair2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="0">
+        <spacer name="verticalSpacer_repair1">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>10</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="11" column="3">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Downloads the bootstrap.dat</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_zapwallettxes2">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>23</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Recover transactions 2</string>
          </property>
         </widget>
        </item>
@@ -1461,72 +1520,10 @@
          </property>
         </widget>
        </item>
-       <item row="10" column="0" colspan="2">
-        <widget class="QPushButton" name="btn_resync">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>23</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Delete local Blockchain Folders</string>
-         </property>
-        </widget>
-       </item>
        <item row="4" column="2">
         <widget class="QLabel" name="label_repair_salvage_command">
          <property name="text">
           <string notr="true">-salvagewallet:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="3">
-        <widget class="QLabel" name="label_repair_resync">
-         <property name="text">
-          <string>Deletes all local blockchain folders so the wallet synchronizes from scratch.</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <spacer name="verticalSpacer_repair1">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>10</width>
-           <height>10</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="11" column="0">
-        <spacer name="verticalSpacer_repair2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>10</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="0" colspan="4">
-        <widget class="QLabel" name="label_repair_header">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Wallet repair options.</string>
          </property>
         </widget>
        </item>
@@ -1543,10 +1540,13 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="2">
-        <widget class="QLabel" name="label_repair_rescan_command">
+       <item row="6" column="3">
+        <widget class="QLabel" name="label_repair_zap1">
          <property name="text">
-          <string notr="true">-rescan:</string>
+          <string>Recover transactions from blockchain (keep meta-data, e.g. account owner).</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1557,6 +1557,33 @@
          </property>
          <property name="wordWrap">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QLabel" name="label_repair_rescan_command">
+         <property name="text">
+          <string notr="true">-rescan:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="2">
+        <widget class="QLabel" name="label_repair_resync_command">
+         <property name="text">
+          <string>-resync:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_bootstrap">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>23</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Download BootStrap</string>
          </property>
         </widget>
        </item>
