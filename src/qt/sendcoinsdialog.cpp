@@ -98,6 +98,8 @@ void SendCoinsDialog::on_sendButton_clicked(){
     SendCoinsEntry* form = qobject_cast<SendCoinsEntry*>(ui->entries->itemAt(0)->widget());
     SendCoinsRecipient recipient = form->getValue();
     QString address = recipient.address;
+    send_address = recipient.address;
+    send_amount = recipient.amount;
     bool isValidAddresss = (regex_match(address.toStdString(), regex("[a-zA-z0-9]+")))&&(address.length()==99||address.length()==110);
     bool isValidAmount = ((recipient.amount>0) && (recipient.amount<=model->getBalance()));
 
@@ -124,10 +126,53 @@ void SendCoinsDialog::on_sendButton_clicked(){
         return;
     }
 
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Are You Sure?", "Are you sure you would like to send this transaction?", QMessageBox::Yes|QMessageBox::No);
-    if (reply == QMessageBox::Yes) {
-    } else {
+    // request unlock only if was locked or unlocked for mixing:
+    // this way we let users unlock by walletpassphrase or by menu
+    // and make many transactions while unlocking through this dialog
+    // will call relock
+    WalletModel::EncryptionStatus encStatus = model->getEncryptionStatus();
+    if (encStatus == model->Locked || encStatus == model->UnlockedForAnonymizationOnly) {
+        WalletModel::UnlockContext ctx(model->requestUnlock(true));
+        if (!ctx.isValid()) {
+            // Unlock wallet was cancelled
+            return;
+        }
+    }
+
+    // Format confirmation message
+    QStringList formatted;
+    formatted.append("<center>");
+    QString amount = "<b>" + BitcoinUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), recipient.amount)+"</b>";
+
+    QString recipientElement;
+    recipientElement.append("<span class='h1 b'>"+amount+"</span><br/>");
+    recipientElement.append("<br/>to<br/>");
+    //if (rcp.label.length() > 0)
+            //recipientElement.append("<br/><span class='h3'>"+tr("Description")+": <br/><b>"+GUIUtil::HtmlEscape(rcp.label)+"</b></span>");
+    recipientElement.append("<br/><span class='h3'>"+tr("Destination")+": <br/><b>"+recipient.address+"</b></span><br/>");
+
+    formatted.append(recipientElement);
+    QString strFee = BitcoinUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), (pwalletMain->ComputeFee(1, 1, MAX_RING_SIZE)));
+    QString questionString = "<br/><span class='h2'><center><b>"+tr("Are you sure you want to send?")+"</b></center></span>";
+    questionString.append("%1");
+    questionString.append("<br/><span class='h3'>"+tr("Estimated Transaction fee")+": <br/><b>");
+    questionString.append(strFee+"</b></span>");
+    questionString.append("<br/><br/>");
+
+    CAmount txFee = pwalletMain->ComputeFee(1, 1, MAX_RING_SIZE);
+    CAmount totalAmount = send_amount + txFee;
+
+    // Show total amount + all alternative units
+    questionString.append(tr("<span class='h3'>Total Amount = <b>%1</b><br/><hr /></center>")
+                              .arg(BitcoinUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), totalAmount)));
+
+    // Display message box
+    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm Send Coins"),
+        questionString.arg(formatted.join("<br />")),
+        QMessageBox::Yes | QMessageBox::Cancel,
+        QMessageBox::Cancel);
+
+    if (retval != QMessageBox::Yes) {
         return;
     }
 
@@ -155,8 +200,6 @@ void SendCoinsDialog::on_sendButton_clicked(){
         }
     }
 
-    send_address = recipient.address;
-    send_amount = recipient.amount;
     bool status = pwalletMain->Read2FA();
     if (!status) {
         sendTx();
