@@ -1383,6 +1383,28 @@ bool AppInit2(bool isDaemon)
                 if (fRet) {
                     fReindex = true;
                     fRequestShutdown = false;
+
+                    filesystem::path blocksDir = GetDataDir() / "blocks";
+                    filesystem::path chainstateDir = GetDataDir() / "chainstate";
+                    
+                    // We delete in 4 individual steps in case one of the folder is missing already
+                    try {
+                        if (filesystem::exists(blocksDir)){
+                            boost::filesystem::remove_all(blocksDir);
+                            LogPrintf("-resync: folder deleted: %s\n", blocksDir.string().c_str());
+                        }
+
+                        if (filesystem::exists(chainstateDir)){
+                            boost::filesystem::remove_all(chainstateDir);
+                            LogPrintf("-resync: folder deleted: %s\n", chainstateDir.string().c_str());
+                        }
+                        
+                        boost::filesystem::create_directories(blocksDir);
+                        boost::filesystem::create_directories(chainstateDir);
+                    } catch (boost::filesystem::filesystem_error& error) {
+                        LogPrintf("Failed to delete blockchain folders %s\n", error.what());
+                    }
+                    
                 } else {
                     LogPrintf("Aborted block database rebuild. Exiting.\n");
                     return false;
