@@ -86,6 +86,7 @@ SendCoinsDialog::SendCoinsDialog(QWidget* parent) : QDialog(parent, Qt::WindowSy
     ui->splitBlockLineEdit->setVisible(false);
     ui->labelBlockSize->setVisible(false);
     ui->labelBlockSizeText->setVisible(false);
+    ui->labelCoinControlInsuffFunds->setVisible(false);
 }
 
 void SendCoinsDialog::setClientModel(ClientModel* clientModel)
