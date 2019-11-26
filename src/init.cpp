@@ -162,14 +162,15 @@ public:
 static CCoinsViewDB* pcoinsdbview = NULL;
 static CCoinsViewErrorCatcher* pcoinscatcher = NULL;
 
-void Interrupt(boost::thread_group& threadGroup)
+static boost::thread_group threadGroup;
+static CScheduler scheduler;
+void Interrupt()
 {
     InterruptHTTPServer();
     InterruptHTTPRPC();
     InterruptRPC();
     InterruptREST();
     InterruptTorControl();
-    threadGroup.interrupt_all();
 }
 
 /** Preparing steps before shutting down or restarting the wallet */
@@ -203,6 +204,11 @@ void PrepareShutdown()
     DumpBudgets();
     DumpMasternodePayments();
     UnregisterNodeSignals(GetNodeSignals());
+
+    // After everything has been shut down, but before things get flushed, stop the
+    // CScheduler/checkqueue threadGroup
+    threadGroup.interrupt_all();
+    threadGroup.join_all();
 
     if (fFeeEstimatesInitialized) {
         boost::filesystem::path est_path = GetDataDir() / FEE_ESTIMATES_FILENAME;
@@ -658,7 +664,8 @@ bool InitSanityCheck(void)
 
     return true;
 }
-bool AppInitServers(boost::thread_group& threadGroup)
+
+bool AppInitServers()
 {
     RPCServer::OnStopped(&OnRPCStopped);
     RPCServer::OnPreCommand(&OnRPCPreCommand);
@@ -678,7 +685,7 @@ bool AppInitServers(boost::thread_group& threadGroup)
 /** Initialize dapscoin.
  *  @pre Parameters should be parsed and config file should be read.
  */
-bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDaemon)
+bool AppInit2(bool isDaemon)
 {
 // ********************************************************* Step 1: setup
 #ifdef _MSC_VER
@@ -995,7 +1002,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
      */
     if (fServer) {
         uiInterface.InitMessage.connect(SetRPCWarmupStatus);
-        if (!AppInitServers(threadGroup))
+        if (!AppInitServers())
             return InitError(_("Unable to start HTTP server. See debug log for details."));
     }
 
@@ -1178,12 +1185,12 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
     if (proxyArg != "" && proxyArg != "0") {
         CService proxyAddr;
         if (!Lookup(proxyArg.c_str(), proxyAddr, 9050, fNameLookup)) {
-            return InitError(strprintf(_("Invalid -proxy address or hostname: '%s'"), proxyArg));
+            return InitError(strprintf(_("Lookup(): Invalid -proxy address or hostname: '%s'"), proxyArg));
         }
 
         proxyType addrProxy = proxyType(proxyAddr, proxyRandomize);
         if (!addrProxy.IsValid())
-            return InitError(strprintf(_("Invalid -proxy address or hostname: '%s'"), proxyArg));
+            return InitError(strprintf(_("isValid(): Invalid -proxy address or hostname: '%s'"), proxyArg));
 
         SetProxy(NET_IPV4, addrProxy);
         SetProxy(NET_IPV6, addrProxy);
@@ -1267,30 +1274,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
 
     fReindex = GetBoolArg("-reindex", false);
 
-    // Upgrading to 0.8; hard-link the old blknnnn.dat files into /blocks/
-    filesystem::path blocksDir = GetDataDir() / "blocks";
-    if (!filesystem::exists(blocksDir)) {
-        filesystem::create_directories(blocksDir);
-        bool linked = false;
-        for (unsigned int i = 1; i < 10000; i++) {
-            filesystem::path source = GetDataDir() / strprintf("blk%04u.dat", i);
-            if (!filesystem::exists(source)) break;
-            filesystem::path dest = blocksDir / strprintf("blk%05u.dat", i - 1);
-            try {
-                filesystem::create_hard_link(source, dest);
-                LogPrintf("Hardlinked %s -> %s\n", source.string(), dest.string());
-                linked = true;
-            } catch (filesystem::filesystem_error& e) {
-                // Note: hardlink creation failing is not a disaster, it just means
-                // blocks will get re-downloaded from peers.
-                LogPrintf("Error hardlinking blk%04u.dat : %s\n", i, e.what());
-                break;
-            }
-        }
-        if (linked) {
-            fReindex = true;
-        }
-    }
+    // Create blocks directory if it doesn't already exist
+    boost::filesystem::create_directories(GetDataDir() / "blocks");
 
     // cache size calculations
     size_t nTotalCache = (GetArg("-dbcache", nDefaultDbCache) << 20);
@@ -1398,6 +1383,28 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
                 if (fRet) {
                     fReindex = true;
                     fRequestShutdown = false;
+
+                    filesystem::path blocksDir = GetDataDir() / "blocks";
+                    filesystem::path chainstateDir = GetDataDir() / "chainstate";
+                    
+                    // We delete in 4 individual steps in case one of the folder is missing already
+                    try {
+                        if (filesystem::exists(blocksDir)){
+                            boost::filesystem::remove_all(blocksDir);
+                            LogPrintf("-resync: folder deleted: %s\n", blocksDir.string().c_str());
+                        }
+
+                        if (filesystem::exists(chainstateDir)){
+                            boost::filesystem::remove_all(chainstateDir);
+                            LogPrintf("-resync: folder deleted: %s\n", chainstateDir.string().c_str());
+                        }
+                        
+                        boost::filesystem::create_directories(blocksDir);
+                        boost::filesystem::create_directories(chainstateDir);
+                    } catch (boost::filesystem::filesystem_error& error) {
+                        LogPrintf("Failed to delete blockchain folders %s\n", error.what());
+                    }
+                    
                 } else {
                     LogPrintf("Aborted block database rebuild. Exiting.\n");
                     return false;

@@ -287,6 +287,7 @@ static const CRPCCommand vRPCCommands[] =
         {"blockchain", "getblockcount", &getblockcount, true, false, false},
         {"blockchain", "getblock", &getblock, true, false, false},
         {"blockchain", "getblockhash", &getblockhash, true, false, false},
+        {"blockchain", "resyncfrom", &resyncfrom, true, false, false},
         {"blockchain", "getblockheader", &getblockheader, false, false, false},
         {"blockchain", "getchaintips", &getchaintips, true, false, false},
         {"blockchain", "getdifficulty", &getdifficulty, true, false, false},
@@ -296,8 +297,8 @@ static const CRPCCommand vRPCCommands[] =
         {"blockchain", "gettxout", &gettxout, true, false, false},
         {"blockchain", "gettxoutsetinfo", &gettxoutsetinfo, true, false, false},
         {"blockchain", "verifychain", &verifychain, true, false, false},
-        // {"blockchain", "invalidateblock", &invalidateblock, true, true, false},
-        // {"blockchain", "reconsiderblock", &reconsiderblock, true, true, false},
+        {"blockchain", "invalidateblock", &invalidateblock, true, true, false},
+        {"blockchain", "reconsiderblock", &reconsiderblock, true, true, false},
         {"getinvalid", "getinvalid", &getinvalid, true, true, false},
 
         /* Mining */
