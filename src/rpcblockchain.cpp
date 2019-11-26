@@ -821,6 +821,41 @@ UniValue invalidateblock(const UniValue& params, bool fHelp)
     return "Done";
 }
 
+UniValue resyncfrom(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+            "resyncfrom \"block height\"\n"
+            "\nPermanently marks a block as invalid, as if it violated a consensus rule.\n"
+            "\nArguments:\n"
+            "1. height   (numeric, required) the hash of the block to mark as invalid\n"
+            "\nResult:\n"
+            "\nExamples:\n" +
+            HelpExampleCli("resyncfrom", "\"height\"") + HelpExampleRpc("resyncfrom", "\"100000\""));
+
+    int height = params[0].get_int();
+    CValidationState state;
+
+    {
+        LOCK(cs_main);
+        if (chainActive.Height() < height)
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid block height");
+
+        CBlockIndex* pblockindex = chainActive[height];
+        InvalidateBlock(state, pblockindex);
+    }
+
+    if (state.IsValid()) {
+        ActivateBestChain(state);
+    }
+
+    if (!state.IsValid()) {
+        throw JSONRPCError(RPC_DATABASE_ERROR, state.GetRejectReason());
+    }
+
+    return NullUniValue;
+}
+
 UniValue reconsiderblock(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
