@@ -22,7 +22,7 @@ RUN apt-get autoremove -y
 #INSTALL COMMON ESSENTIAL
 RUN apt-get update -y
 RUN apt-get install build-essential libtool autotools-dev automake pkg-config bsdmainutils curl wget nsis libevent-dev python-setuptools patch zip -y --fix-missing
-RUN apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libqrencode-dev -y
+RUN apt-get install libqt5gui5 libboost-all-dev libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libqrencode-dev -y
 #INSTALL POA MINER DEPENDENCIES
 RUN apt-get install libcurl4-openssl-dev libjansson-dev -y --fix-missing
 
