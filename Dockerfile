@@ -20,9 +20,9 @@ RUN apt-get update
 
 RUN apt-get autoremove -y
 #INSTALL COMMON ESSENTIAL
-RUN apt-get update && \
-    apt-get install build-essential libtool autotools-dev automake pkg-config bsdmainutils curl wget nsis libevent-dev python-setuptools patch zip -y --fix-missing
-
+RUN apt-get update -y
+RUN apt-get install build-essential libtool autotools-dev automake pkg-config bsdmainutils curl wget nsis libevent-dev python-setuptools patch zip -y --fix-missing
+RUN apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libqrencode-dev -y
 #INSTALL POA MINER DEPENDENCIES
 RUN apt-get install libcurl4-openssl-dev libjansson-dev -y --fix-missing
 
@@ -37,9 +37,16 @@ RUN cd /DAPSCoin/ && mkdir -p /BUILD/bin/
 # RUN export BDB_LIB_PATH="/usr/local/BerkeleyDB.4.8/lib"
 # RUN ln -s /usr/local/BerkeleyDB.4.8/lib/libdb-4.8.so /usr/lib/libdb-4.8.so
 # RUN ln -s /usr/local/BerkeleyDB.4.8/lib/libdb_cxx-4.8.so /usr/lib/libdb_cxx-4.8.so
-RUN add-apt-repository --yes ppa:bitcoin/bitcoin
+RUN cp /etc/apt/sources.list /etc/apt/sources.list.bak
+RUN wget https://launchpad.net/~bitcoin-abc/+archive/ubuntu/ppa/+files/libdb4.8_4.8.30-xenial4_amd64.deb
+RUN dpkg -i libdb4.8_4.8.30-xenial4_amd64.deb
+RUN wget https://launchpad.net/~bitcoin-abc/+archive/ubuntu/ppa/+files/libdb4.8-dev_4.8.30-xenial4_amd64.deb
+RUN dpkg -i libdb4.8-dev_4.8.30-xenial4_amd64.deb
+RUN wget https://launchpad.net/~bitcoin-abc/+archive/ubuntu/ppa/+files/libdb4.8++_4.8.30-xenial4_amd64.deb
+RUN dpkg -i libdb4.8++_4.8.30-xenial4_amd64.deb
+RUN wget https://launchpad.net/~bitcoin-abc/+archive/ubuntu/ppa/+files/libdb4.8++-dev_4.8.30-xenial4_amd64.deb
+RUN dpkg -i libdb4.8++-dev_4.8.30-xenial4_amd64.deb
 RUN apt-get update -y
-RUN apt-get install -y libdb4.8-dev libdb4.8++-dev -y
 RUN cd /DAPSCoin/ && chmod +x /DAPSCoin/autogen.sh
 RUN cd /DAPSCoin/ && ./autogen.sh 
 RUN cd /DAPSCoin/ && CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ CPPFLAGS="-I/usr/local/BerkeleyDB.4.8/include -O2" LDFLAGS="-L/usr/local/BerkeleyDB.4.8/lib"
