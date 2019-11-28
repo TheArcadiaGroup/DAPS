@@ -1016,17 +1016,17 @@ UniValue getinvalid (const UniValue& params, bool fHelp)
     return ret;
 }
 
-UniValue changemaxreorg(const UniValue& params, bool fHelp)
+UniValue setmaxreorgdepth(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
         throw runtime_error(
-            "changemaxreorg <value>\n"
-            "\nChange max reorganization.\n"
+            "setmaxreorgdepth <value>\n"
+            "\nSet max reorganization depth to a value.\n"
             "\nArguments:\n"
             "1. num   (numeric, required) the number of blocks\n"
             "\nResult:\n"
             "\nExamples:\n" +
-            HelpExampleCli("changemaxreorg", "100") + HelpExampleRpc("changemaxreorg", "100"));
+            HelpExampleCli("setmaxreorgdepth", "100") + HelpExampleRpc("setmaxreorgdepth", "100"));
 
     int num = params[0].get_int();
     if (num <= 5) 
