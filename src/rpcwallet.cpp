@@ -2937,7 +2937,7 @@ UniValue rescan(const UniValue& params, bool fHelp) {
                 "\"scanned wallet transactions\"    \n"
                 "\nExamples:\n" +
                 HelpExampleCli("rescan", "") + HelpExampleCli("rescan", "\"\"") +
-                HelpExampleCli("rescan", "") + HelpExampleRpc("rescan", ""));
+                HelpExampleRpc("rescan", ""));
 
     if (!pwalletMain) {
         //privacy wallet is already created
@@ -2958,14 +2958,14 @@ UniValue rescanwallettransactions(const UniValue& params, bool fHelp) {
     if (fHelp || params.size() != 1)
         throw runtime_error(
                 "rescanwallettransactions \"block height\"\n"
-                "\nRescan wallet transaction.\n"
+                "\nRescan wallet transactions from a certain block height.\n"
                 "\nArguments:\n"
                 "\nblock height: block height from which the chain will be rescanned\n"
                 "\nResult:\n"
-                "\"scanned wallet transaction\"    \n"
+                "\"scanned wallet transactions\"    \n"
                 "\nExamples:\n" +
                 HelpExampleCli("rescanwallettransactions", "") + HelpExampleCli("rescanwallettransactions", "\"\"") +
-                HelpExampleCli("rescanwallettransactions", "") + HelpExampleRpc("rescanwallettransactions", ""));
+                HelpExampleRpc("rescanwallettransactions", ""));
 
     if (!pwalletMain) {
         //privacy wallet is already created
