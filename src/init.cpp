@@ -54,6 +54,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/foreach.hpp>
 #include <boost/interprocess/sync/file_lock.hpp>
 #include <boost/thread.hpp>
 #include <openssl/crypto.h>
@@ -161,14 +162,15 @@ public:
 static CCoinsViewDB* pcoinsdbview = NULL;
 static CCoinsViewErrorCatcher* pcoinscatcher = NULL;
 
-void Interrupt(boost::thread_group& threadGroup)
+static boost::thread_group threadGroup;
+static CScheduler scheduler;
+void Interrupt()
 {
     InterruptHTTPServer();
     InterruptHTTPRPC();
     InterruptRPC();
     InterruptREST();
     InterruptTorControl();
-    threadGroup.interrupt_all();
 }
 
 /** Preparing steps before shutting down or restarting the wallet */
@@ -202,6 +204,11 @@ void PrepareShutdown()
     DumpBudgets();
     DumpMasternodePayments();
     UnregisterNodeSignals(GetNodeSignals());
+
+    // After everything has been shut down, but before things get flushed, stop the
+    // CScheduler/checkqueue threadGroup
+    threadGroup.interrupt_all();
+    threadGroup.join_all();
 
     if (fFeeEstimatesInitialized) {
         boost::filesystem::path est_path = GetDataDir() / FEE_ESTIMATES_FILENAME;
@@ -624,7 +631,7 @@ void ThreadImport(std::vector<boost::filesystem::path> vImportFiles)
     }
 
     // -loadblock=
-    BOOST_FOREACH (boost::filesystem::path& path, vImportFiles) {
+    for (boost::filesystem::path& path : vImportFiles) {
         FILE* file = fopen(path.string().c_str(), "rb");
         if (file) {
             CImportingNow imp;
@@ -657,7 +664,8 @@ bool InitSanityCheck(void)
 
     return true;
 }
-bool AppInitServers(boost::thread_group& threadGroup)
+
+bool AppInitServers()
 {
     RPCServer::OnStopped(&OnRPCStopped);
     RPCServer::OnPreCommand(&OnRPCPreCommand);
@@ -677,7 +685,7 @@ bool AppInitServers(boost::thread_group& threadGroup)
 /** Initialize dapscoin.
  *  @pre Parameters should be parsed and config file should be read.
  */
-bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDaemon)
+bool AppInit2(bool isDaemon)
 {
 // ********************************************************* Step 1: setup
 #ifdef _MSC_VER
@@ -994,7 +1002,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
      */
     if (fServer) {
         uiInterface.InitMessage.connect(SetRPCWarmupStatus);
-        if (!AppInitServers(threadGroup))
+        if (!AppInitServers())
             return InitError(_("Unable to start HTTP server. See debug log for details."));
     }
 
@@ -1144,7 +1152,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
     
     if (mapArgs.count("-onlynet")) {
         std::set<enum Network> nets;
-        BOOST_FOREACH (std::string snet, mapMultiArgs["-onlynet"]) {
+        for (std::string snet : mapMultiArgs["-onlynet"]) {
             enum Network net = ParseNetwork(snet);
             if (net == NET_UNROUTABLE)
                 return InitError(strprintf(_("Unknown network specified in -onlynet: '%s'"), snet));
@@ -1158,7 +1166,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
     }
 
     if (mapArgs.count("-whitelist")) {
-        BOOST_FOREACH (const std::string& net, mapMultiArgs["-whitelist"]) {
+        for (const std::string& net : mapMultiArgs["-whitelist"]) {
             CSubNet subnet(net);
             if (!subnet.IsValid())
                 return InitError(strprintf(_("Invalid netmask specified in -whitelist: '%s'"), net));
@@ -1177,12 +1185,12 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
     if (proxyArg != "" && proxyArg != "0") {
         CService proxyAddr;
         if (!Lookup(proxyArg.c_str(), proxyAddr, 9050, fNameLookup)) {
-            return InitError(strprintf(_("Invalid -proxy address or hostname: '%s'"), proxyArg));
+            return InitError(strprintf(_("Lookup(): Invalid -proxy address or hostname: '%s'"), proxyArg));
         }
 
         proxyType addrProxy = proxyType(proxyAddr, proxyRandomize);
         if (!addrProxy.IsValid())
-            return InitError(strprintf(_("Invalid -proxy address or hostname: '%s'"), proxyArg));
+            return InitError(strprintf(_("isValid(): Invalid -proxy address or hostname: '%s'"), proxyArg));
 
         SetProxy(NET_IPV4, addrProxy);
         SetProxy(NET_IPV6, addrProxy);
@@ -1218,13 +1226,13 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
     bool fBound = false;
     if (fListen) {
         if (mapArgs.count("-bind") || mapArgs.count("-whitebind")) {
-            BOOST_FOREACH (std::string strBind, mapMultiArgs["-bind"]) {
+            for (std::string strBind : mapMultiArgs["-bind"]) {
                 CService addrBind;
                 if (!Lookup(strBind.c_str(), addrBind, GetListenPort(), false))
                     return InitError(strprintf(_("Cannot resolve -bind address: '%s'"), strBind));
                 fBound |= Bind(addrBind, (BF_EXPLICIT | BF_REPORT_ERROR));
             }
-            BOOST_FOREACH (std::string strBind, mapMultiArgs["-whitebind"]) {
+            for (std::string strBind : mapMultiArgs["-whitebind"]) {
                 CService addrBind;
                 if (!Lookup(strBind.c_str(), addrBind, 0, false))
                     return InitError(strprintf(_("Cannot resolve -whitebind address: '%s'"), strBind));
@@ -1243,7 +1251,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
     }
 
     if (mapArgs.count("-externalip")) {
-        BOOST_FOREACH (string strAddr, mapMultiArgs["-externalip"]) {
+        for (string strAddr : mapMultiArgs["-externalip"]) {
             CService addrLocal(strAddr, GetListenPort(), fNameLookup);
             if (!addrLocal.IsValid())
                 return InitError(strprintf(_("Cannot resolve -externalip address: '%s'"), strAddr));
@@ -1251,7 +1259,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
         }
     }
 
-    BOOST_FOREACH (string strDest, mapMultiArgs["-seednode"])
+    for (string strDest : mapMultiArgs["-seednode"])
         AddOneShot(strDest);
 
 #if ENABLE_ZMQ
@@ -1266,30 +1274,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
 
     fReindex = GetBoolArg("-reindex", false);
 
-    // Upgrading to 0.8; hard-link the old blknnnn.dat files into /blocks/
-    filesystem::path blocksDir = GetDataDir() / "blocks";
-    if (!filesystem::exists(blocksDir)) {
-        filesystem::create_directories(blocksDir);
-        bool linked = false;
-        for (unsigned int i = 1; i < 10000; i++) {
-            filesystem::path source = GetDataDir() / strprintf("blk%04u.dat", i);
-            if (!filesystem::exists(source)) break;
-            filesystem::path dest = blocksDir / strprintf("blk%05u.dat", i - 1);
-            try {
-                filesystem::create_hard_link(source, dest);
-                LogPrintf("Hardlinked %s -> %s\n", source.string(), dest.string());
-                linked = true;
-            } catch (filesystem::filesystem_error& e) {
-                // Note: hardlink creation failing is not a disaster, it just means
-                // blocks will get re-downloaded from peers.
-                LogPrintf("Error hardlinking blk%04u.dat : %s\n", i, e.what());
-                break;
-            }
-        }
-        if (linked) {
-            fReindex = true;
-        }
-    }
+    // Create blocks directory if it doesn't already exist
+    boost::filesystem::create_directories(GetDataDir() / "blocks");
 
     // cache size calculations
     size_t nTotalCache = (GetArg("-dbcache", nDefaultDbCache) << 20);
@@ -1306,7 +1292,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
     nCoinCacheSize = nTotalCache / 300; // coins in memory require around 300 bytes
 
     bool fLoaded = false;
-    while (!fLoaded) {
+    while (!fLoaded && !ShutdownRequested()) {
         bool fReset = fReindex;
         std::string strLoadError;
 
@@ -1329,9 +1315,13 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
                 if (fReindex)
                     pblocktree->WriteReindexing(true);
 
+                // End loop if shutdown was requested
+                if (ShutdownRequested()) break;
+
                 uiInterface.InitMessage(_("Loading block index..."));
                 string strBlockIndexError = "";
                 if (!LoadBlockIndex(strBlockIndexError)) {
+                    if (ShutdownRequested()) break;
                     strLoadError = _("Error loading block database");
                     strLoadError = strprintf("%s : %s", strLoadError, strBlockIndexError);
                     break;
@@ -1384,7 +1374,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
             fLoaded = true;
         } while (false);
 
-        if (!fLoaded) {
+        if (!fLoaded && !ShutdownRequested()) {
             // first suggest a reindex
             if (!fReset) {
                 bool fRet = uiInterface.ThreadSafeMessageBox(
@@ -1393,6 +1383,28 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
                 if (fRet) {
                     fReindex = true;
                     fRequestShutdown = false;
+
+                    filesystem::path blocksDir = GetDataDir() / "blocks";
+                    filesystem::path chainstateDir = GetDataDir() / "chainstate";
+                    
+                    // We delete in 4 individual steps in case one of the folder is missing already
+                    try {
+                        if (filesystem::exists(blocksDir)){
+                            boost::filesystem::remove_all(blocksDir);
+                            LogPrintf("-resync: folder deleted: %s\n", blocksDir.string().c_str());
+                        }
+
+                        if (filesystem::exists(chainstateDir)){
+                            boost::filesystem::remove_all(chainstateDir);
+                            LogPrintf("-resync: folder deleted: %s\n", chainstateDir.string().c_str());
+                        }
+                        
+                        boost::filesystem::create_directories(blocksDir);
+                        boost::filesystem::create_directories(chainstateDir);
+                    } catch (boost::filesystem::filesystem_error& error) {
+                        LogPrintf("Failed to delete blockchain folders %s\n", error.what());
+                    }
+                    
                 } else {
                     LogPrintf("Aborted block database rebuild. Exiting.\n");
                     return false;
@@ -1406,7 +1418,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
     // As LoadBlockIndex can take several minutes, it's possible the user
     // requested to kill the GUI during the last operation. If so, exit.
     // As the program has not fully started yet, Shutdown() is possibly overkill.
-    if (fRequestShutdown) {
+    if (ShutdownRequested()) {
         LogPrintf("Shutdown requested. Exiting.\n");
         return false;
     }
@@ -1540,7 +1552,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
 
             // Restore wallet transaction metadata after -zapwallettxes=1
             if (GetBoolArg("-zapwallettxes", false) && GetArg("-zapwallettxes", "1") != "2") {
-                BOOST_FOREACH (const CWalletTx& wtxOld, vWtx) {
+                for (const CWalletTx& wtxOld : vWtx) {
                     uint256 hash = wtxOld.GetHash();
                     std::map<uint256, CWalletTx>::iterator mi = pwalletMain->mapWallet.find(hash);
                     if (mi != pwalletMain->mapWallet.end()) {
@@ -1576,7 +1588,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
 
     std::vector<boost::filesystem::path> vImportFiles;
     if (mapArgs.count("-loadblock")) {
-        BOOST_FOREACH (string strFile, mapMultiArgs["-loadblock"])
+        for (string strFile : mapMultiArgs["-loadblock"])
             vImportFiles.push_back(strFile);
     }
     threadGroup.create_thread(boost::bind(&ThreadImport, vImportFiles));
@@ -1682,10 +1694,10 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
         LOCK(pwalletMain->cs_wallet);
         LogPrintf("Locking Masternodes:\n");
         uint256 mnTxHash;
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             LogPrintf("  %s %s\n", mne.getTxHash(), mne.getOutputIndex());
             mnTxHash.SetHex(mne.getTxHash());
-            COutPoint outpoint = COutPoint(mnTxHash, boost::lexical_cast<unsigned int>(mne.getOutputIndex()));
+            COutPoint outpoint = COutPoint(mnTxHash, (unsigned int) std::stoul(mne.getOutputIndex().c_str()));
             pwalletMain->LockCoin(outpoint);
         }
     }
@@ -1727,6 +1739,11 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
     obfuScationPool.InitCollateralAddress();
 
     threadGroup.create_thread(boost::bind(&ThreadCheckObfuScationPool));
+
+    if (ShutdownRequested()) {
+        LogPrintf("Shutdown requested. Exiting.\n");
+        return false;
+    }
 
     // ********************************************************* Step 11: start node
 
@@ -1779,6 +1796,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, bool isDa
             LogPrintf("Starting staking\n");
             threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "stakemint", &ThreadStakeMinter));
         }
+        //read decoy confirmation min
+        pwalletMain->DecoyConfirmationMinimum = GetArg("-decoyconfirm", 15);
     }
 #endif
 

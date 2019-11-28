@@ -17,7 +17,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget* parent, WalletModel* model) : QDialog(parent),
+AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget* parent, WalletModel* model) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                                                            ui(new Ui::AskPassphraseDialog),
                                                                                            mode(mode),
                                                                                            model(model),
@@ -48,8 +48,8 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget* parent, WalletModel
         setWindowTitle(tr("Encrypt Wallet"));
         break;
     case UnlockAnonymize:
-        ui->anonymizationCheckBox->setChecked(true);
-        ui->anonymizationCheckBox->show();
+        ui->anonymizationCheckBox->setChecked(false);
+        ui->anonymizationCheckBox->hide();
     case Unlock: // Ask passphrase
         ui->warningLabel->setText(tr("This operation needs your wallet passphrase to unlock the wallet."));
         ui->passLabel2->hide();

@@ -100,10 +100,12 @@ public:
     virtual RPCTimerBase* NewTimer(boost::function<void(void)>& func, int64_t millis) = 0;
 };
 
-/** Register factory function for timers */
-void RPCRegisterTimerInterface(RPCTimerInterface *iface);
-/** Unregister factory function for timers */
-void RPCUnregisterTimerInterface(RPCTimerInterface *iface);
+/** Set factory function for timers */
+void RPCSetTimerInterface(RPCTimerInterface *iface);
+/** Set factory function for timers, but only if unset */
+void RPCSetTimerInterfaceIfUnset(RPCTimerInterface *iface);
+/** Unset factory function for timers */
+void RPCUnsetTimerInterface(RPCTimerInterface *iface);
 
 /**
 * Run func nSeconds from now.
@@ -210,6 +212,7 @@ extern UniValue estimatefee(const UniValue& params, bool fHelp);
 extern UniValue estimatepriority(const UniValue& params, bool fHelp);
 
 extern UniValue generateintegratedaddress(const UniValue& params, bool fHelp); // in rpcwallet.cpp
+extern UniValue readmasteraccount(const UniValue& params, bool fHelp); // in rpcwallet.cpp
 extern UniValue getnewaddress(const UniValue& params, bool fHelp); // in rpcwallet.cpp
 extern UniValue getaccountaddress(const UniValue& params, bool fHelp);
 extern UniValue getrawchangeaddress(const UniValue& params, bool fHelp);
@@ -249,6 +252,8 @@ extern UniValue revealviewprivatekey(const UniValue& params, bool fHelp);
 extern UniValue revealspendprivatekey(const UniValue& params, bool fHelp);
 extern UniValue showtxprivatekeys(const UniValue& params, bool fHelp);
 extern UniValue rescanwallettransactions(const UniValue& params, bool fHelp);
+extern UniValue setdecoyconfirmation(const UniValue& params, bool fHelp);
+extern UniValue getdecoyconfirmation(const UniValue& params, bool fHelp);
 extern UniValue decodestealthaddress(const UniValue& params, bool fHelp);
 extern UniValue sendtostealthaddress(const UniValue& params, bool fHelp);
 extern UniValue createprivacysubaddress(const UniValue& params, bool fHelp);
@@ -280,6 +285,7 @@ extern UniValue settxfee(const UniValue& params, bool fHelp);
 extern UniValue getmempoolinfo(const UniValue& params, bool fHelp);
 extern UniValue getrawmempool(const UniValue& params, bool fHelp);
 extern UniValue getblockhash(const UniValue& params, bool fHelp);
+extern UniValue resyncfrom(const UniValue& params, bool fHelp);
 extern UniValue getblock(const UniValue& params, bool fHelp);
 extern UniValue getblockheader(const UniValue& params, bool fHelp);
 extern UniValue getfeeinfo(const UniValue& params, bool fHelp);
@@ -291,7 +297,6 @@ extern UniValue invalidateblock(const UniValue& params, bool fHelp);
 extern UniValue reconsiderblock(const UniValue& params, bool fHelp);
 extern UniValue getinvalid(const UniValue& params, bool fHelp);
 
-extern UniValue obfuscation(const UniValue& params, bool fHelp); // in rpcmasternode.cpp
 extern UniValue getpoolinfo(const UniValue& params, bool fHelp);
 extern UniValue masternode(const UniValue& params, bool fHelp);
 extern UniValue listmasternodes(const UniValue& params, bool fHelp);

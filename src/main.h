@@ -175,15 +175,6 @@ extern CBlockIndex* pindexBestHeader;
 /** Minimum disk space required - used in CheckDiskSpace() */
 static const uint64_t nMinDiskSpace = 52428800;
 
-/** Register a wallet to receive updates from core */
-void RegisterValidationInterface(CValidationInterface* pwalletIn);
-/** Unregister a wallet from core */
-void UnregisterValidationInterface(CValidationInterface* pwalletIn);
-/** Unregister all wallets from core */
-void UnregisterAllValidationInterfaces();
-/** Push an updated transaction to all registered wallets */
-void SyncWithWallets(const CTransaction& tx, const CBlock* pblock = NULL);
-
 /** Register with a network node to receive its signals */
 void RegisterNodeSignals(CNodeSignals& nodeSignals);
 /** Unregister a network node */
@@ -240,10 +231,6 @@ bool SendMessages(CNode* pto, bool fSendTrickle);
 /** Run an instance of the script checking thread */
 void ThreadScriptCheck();
 
-// ***TODO*** probably not the right place for these 2
-/** Check whether a block hash satisfies the proof-of-work requirement specified by nBits */
-bool CheckProofOfWork(uint256 hash, unsigned int nBits);
-
 /** Check whether we are doing an initial block download (synchronizing from disk or network) */
 bool IsInitialBlockDownload();
 /** Format a string that describes several potential problems detected by the core */
@@ -254,8 +241,6 @@ bool GetTransaction(const uint256& hash, CTransaction& tx, uint256& hashBlock, b
 
 bool CheckHaveInputs(const CCoinsViewCache& view, const CTransaction& tx);
 
-bool DisconnectBlocksAndReprocess(int blocks);
-
 // ***TODO***
 double ConvertBitsToDouble(unsigned int nBits);
 int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount = 0);
@@ -265,6 +250,8 @@ bool ActivateBestChain(CValidationState& state, CBlock* pblock = NULL, bool fAlr
 CAmount GetBlockValue(const CBlockIndex *ptip);
 CAmount TeamRewards(const CBlockIndex *ptip);
 CAmount PoSBlockReward();
+
+void RemoveInvalidTransactionsFromMempool();
 
 /** Create a new block index entry for a given block hash */
 CBlockIndex* InsertBlockIndex(uint256 hash);
@@ -287,6 +274,8 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
 bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransaction& tx, bool fLimitFree, bool* pfMissingInputs, bool fRejectInsaneFee = false, bool isDSTX = false);
 
 bool IsKeyImageSpend1(const std::string& kiHex, const uint256& againsHash);
+bool CheckKeyImageSpendInMainChain(const std::string& kiHex, int& confirmations);
+
 double GetPriority(const CTransaction& tx, int nHeight);
 
 bool IsKeyImageSpend2(const std::string&, const uint256& bh);

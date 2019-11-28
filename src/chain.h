@@ -16,9 +16,6 @@
 
 #include <vector>
 
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
-
 struct CDiskBlockPos {
     int nFile;
     unsigned int nPos;
@@ -440,9 +437,9 @@ public:
         hashNext = uint256();
     }
 
-    explicit CDiskBlockIndex(CBlockIndex* pindex) : CBlockIndex(*pindex)
+    explicit CDiskBlockIndex(const CBlockIndex* pindex) : CBlockIndex(*pindex)
     {
-        hashPrev = (pprev ? pprev->GetBlockHash() : uint256());
+        hashPrev = (pprev ? pprev->GetBlockHash() : uint256(0));
         if (IsProofOfAudit()) {
 			hashPoAMerkleRoot = pindex->hashPoAMerkleRoot;
 			minedHash = pindex->minedHash;

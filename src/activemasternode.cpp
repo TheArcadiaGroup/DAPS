@@ -212,7 +212,7 @@ bool CActiveMasternode::SendMasternodePing(std::string& errorMessage)
 
         LogPrint("masternode", "dseep - relaying from active mn, %s \n", vin.ToString().c_str());
         LOCK(cs_vNodes);
-        BOOST_FOREACH (CNode* pnode, vNodes)
+        for (CNode* pnode : vNodes)
             pnode->PushMessage("dseep", vin, vchMasterNodeSignature, masterNodeSignatureTime, false);
 
         /*
@@ -320,7 +320,7 @@ bool CActiveMasternode::CreateBroadcast(CTxIn vin, CService service, CKey keyCol
         return false;
     }
     LOCK(cs_vNodes);
-    BOOST_FOREACH (CNode* pnode, vNodes)
+    for (CNode* pnode : vNodes)
     pnode->PushMessage("dsee", vin, service, vchMasterNodeSignature, masterNodeSignatureTime, pubKeyCollateralAddress, pubKeyMasternode, -1, -1, masterNodeSignatureTime, PROTOCOL_VERSION, donationAddress, donationPercantage);
 
     return true;
@@ -356,7 +356,7 @@ bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secr
         }
 
         bool found = false;
-        BOOST_FOREACH (COutput& out, possibleCoins) {
+        for (COutput& out : possibleCoins) {
             if (out.tx->GetHash() == txHash && out.i == outputIndex) {
                 selectedOutput = &out;
                 found = true;
@@ -472,32 +472,37 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
     // Temporary unlock MN coins from masternode.conf
     if (GetBoolArg("-mnconflock", true)) {
         uint256 mnTxHash;
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
-            mnTxHash.SetHex(mne.getTxHash());
+        {
+            LOCK2(cs_main, pwalletMain->cs_wallet);
+            for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
+                mnTxHash.SetHex(mne.getTxHash());
 
-            int nIndex;
-            if(!mne.castOutputIndex(nIndex))
-                continue;
+                int nIndex;
+                if(!mne.castOutputIndex(nIndex))
+                    continue;
 
-            COutPoint outpoint = COutPoint(mnTxHash, nIndex);
-            confLockedCoins.push_back(outpoint);
-            pwalletMain->UnlockCoin(outpoint);
+                COutPoint outpoint = COutPoint(mnTxHash, nIndex);
+                confLockedCoins.push_back(outpoint);
+                pwalletMain->UnlockCoin(outpoint);
+            }
         }
     }
 
     // Retrieve all possible outputs
-    pwalletMain->AvailableCoins(vCoins, true, NULL, false, AvailableCoinsType::ONLY_1000000);
+    {
+        LOCK2(cs_main, pwalletMain->cs_wallet);
+        pwalletMain->AvailableCoins(vCoins, true, NULL, false, AvailableCoinsType::ONLY_1000000);
+        // Lock MN coins from masternode.conf back if they where temporary unlocked
+        if (!confLockedCoins.empty()) {
+            for (COutPoint outpoint : confLockedCoins)
+                pwalletMain->LockCoin(outpoint);
+        }
 
-    // Lock MN coins from masternode.conf back if they where temporary unlocked
-    if (!confLockedCoins.empty()) {
-        BOOST_FOREACH (COutPoint outpoint, confLockedCoins)
-            pwalletMain->LockCoin(outpoint);
-    }
-
-    // Filter
-    BOOST_FOREACH (const COutput& out, vCoins) {
-        if (pwalletMain->getCTxOutValue(*out.tx, out.tx->vout[out.i]) == 1000000 * COIN) { //exactly
-            filteredCoins.push_back(out);
+        // Filter
+        for (const COutput& out : vCoins) {
+            if (pwalletMain->getCTxOutValue(*out.tx, out.tx->vout[out.i]) == 1000000 * COIN) { //exactly
+                filteredCoins.push_back(out);
+            }
         }
     }
     return filteredCoins;

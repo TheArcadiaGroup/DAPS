@@ -22,8 +22,9 @@
 #include <QScrollBar>
 #include <QTextDocument>
 #include <QStylePainter>
+#include <QDesktopWidget>
 
-ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent),
+ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                           ui(new Ui::ReceiveCoinsDialog),
                                                           // m_SizeGrip(this),
                                                           model(0)
@@ -71,8 +72,6 @@ static inline int64_t roundint64(double d)
 
 CAmount ReceiveCoinsDialog::getValidatedAmount() {
     double dAmount = ui->reqAmount->text().toDouble();
-    if (dAmount < 0.0 || dAmount > Params().MAX_MONEY)
-        throw runtime_error("Invalid amount, amount should be < 2.1B DAPS");
     CAmount nAmount = roundint64(dAmount * COIN);
     return nAmount;
 }
@@ -90,29 +89,42 @@ void ReceiveCoinsDialog::setModel(WalletModel* model)
 }
 
 void ReceiveCoinsDialog::loadAccount() {
+    QRect rec = QApplication::desktop()->availableGeometry();
+    int screenWidth = rec.width();
+    QString addr;
+
     //Set reqAddress as the master stealth address
     std::vector<std::string> addrList, accountList;
     CWallet* wl = model->getCWallet();
     QList<QString> stringsList;
     wl->AllMyPublicAddresses(addrList, accountList);
     for(size_t i = 0; i < addrList.size(); i++) {
+        if (accountList[i] == "masteraccount") continue;
         bool isDuplicate = false;
+            if (screenWidth <= 1280) {
+                //(truncated for screen with less availableGeometry than 1280px)
+                addr = QString(accountList[i].c_str()) + " - " + QString(addrList[i].substr(0, 30).c_str()) + "..." + QString(addrList[i].substr(addrList[i].length() - 30, 30).c_str());
+            } else {
+                addr = QString(accountList[i].c_str()) + " - " + QString(addrList[i].c_str());
+            }
         for (size_t i = 0; i < (size_t)ui->reqAddress->count(); i++) {
-            if (ui->reqAddress->itemText(i).contains(QString(addrList[i].c_str()), Qt::CaseSensitive)) {
+            if (stringsList.contains(QString(addrList[i].substr(0, 30).c_str()) + "..." + QString(addrList[i].substr(addrList[i].length() - 30, 30).c_str()))) {
                 isDuplicate = true;
                 break;
             }
         }
         if (!isDuplicate) {
-
-            stringsList.append(QString(accountList[i].c_str()) + " - " + QString(addrList[i].substr(0, 30).c_str()) + "..." + 
-                QString(addrList[i].substr(addrList[i].length() - 30, 30).c_str()));
+            stringsList.append(addr);
         }
     }
     ui->reqAddress->addItems(stringsList);
     //Set lineEditAddress to Master Account address for copy to clipboard
-    ui->lineEditAddress->setText(QString(addrList[0].substr(0, 30).c_str()) + "..." + 
-                QString(addrList[0].substr(addrList[0].length() - 30, 30).c_str()));
+    if (screenWidth <= 1024) {
+        //(truncated for screen with less availableGeometry than 1024px)
+        ui->lineEditAddress->setText(QString(addrList[0].substr(0, 30).c_str()) + "..." + QString(addrList[0].substr(addrList[0].length() - 30, 30).c_str()));
+    } else {
+        ui->lineEditAddress->setText(QString(addrList[0].c_str()));
+    }
 }
 
 ReceiveCoinsDialog::~ReceiveCoinsDialog()
@@ -141,6 +153,16 @@ void ReceiveCoinsDialog::updateDisplayUnit()
 
 void ReceiveCoinsDialog::on_receiveButton_clicked()
 {
+    double dAmount = ui->reqAmount->text().toDouble();
+    if (dAmount < 0.0 || dAmount > Params().MAX_MONEY) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Invalid Amount");
+        msgBox.setText("Invalid amount entered. Please enter an amount less than 2.1B DAPS.");
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
+        return;
+    }
     if (!model || !model->getOptionsModel() || !model->getAddressTableModel() || !model->getRecentRequestsTableModel())
         return;
 

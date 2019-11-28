@@ -130,8 +130,14 @@ static inline int64_t roundint64(double d)
 
 CAmount SendCoinsEntry::getValidatedAmount() {
     double dAmount = ui->payAmount->text().toDouble();
-    if (dAmount < 0.0 || dAmount > Params().MAX_MONEY)
-        throw runtime_error("Invalid amount, amount should be < 2.1B DAPS");
+    if (dAmount < 0.0 || dAmount > Params().MAX_MONEY) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Invalid Amount");
+        msgBox.setText("Invalid amount entered. Please enter an amount less than 2.1B DAPS.");
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
+    }
     CAmount nAmount = roundint64(dAmount * COIN);
     return nAmount;
 }

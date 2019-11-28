@@ -259,7 +259,7 @@ public:
     static const CAmount MINIMUM_STAKE_AMOUNT = 400000 * COIN;
     static const int32_t MAX_DECOY_POOL = 500;
     static const int32_t PROBABILITY_NEW_COIN_SELECTED = 70;
-    bool RescanAfterUnlock(bool fromBeginning = false);
+    bool RescanAfterUnlock(int fromHeight);
     bool MintableCoins();
     StakingStatusError StakingCoinStatus(CAmount& minFee, CAmount& maxFee);
     bool SelectStakeCoins(std::set<std::pair<const CWalletTx*, unsigned int> >& setCoins, CAmount nTargetAmount) ;
@@ -268,6 +268,7 @@ public:
     bool SelectCoinsDarkDenominated(CAmount nTargetValue, std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet) ;
     bool HasCollateralInputs(bool fOnlyConfirmed = true);
     bool IsCollateralAmount(CAmount nInputAmount) const;
+    bool IsMasternodeController();
     int CountInputsWithAmount(CAmount nInputAmount);
     bool checkPassPhraseRule(const char *pass);
     COutPoint findMyOutPoint(const CTxIn& txin) const;
@@ -277,6 +278,9 @@ public:
     bool estimateStakingConsolidationFees(CAmount& min, CAmount& max);
     static int MaxTxSizePerTx();
     std::string GetTransactionType(const CTransaction& tx);
+    bool WriteAutoConsolidateSettingTime(uint32_t settingTime);
+    uint32_t ReadAutoConsolidateSettingTime();
+    bool IsAutoConsolidateOn();
     /*
      * Main wallet lock.
      * This lock protects all the fields added by CWallet
@@ -317,7 +321,7 @@ public:
     //Auto Combine Inputs
     bool fCombineDust;
     CAmount nAutoCombineThreshold;
-    bool CreateSweepingTransaction(CAmount target, CAmount threshold);
+    bool CreateSweepingTransaction(CAmount target, CAmount threshold, uint32_t nTimeBefore);
     bool SendAll(std::string des);
     CWallet()
     {
@@ -384,6 +388,11 @@ public:
     }
 
     mutable std::map<uint256, CWalletTx> mapWallet;
+    std::list<CAccountingEntry> laccentries;
+
+    typedef std::pair<CWalletTx*, CAccountingEntry*> TxPair;
+    typedef std::multimap<int64_t, TxPair > TxItems;
+    TxItems wtxOrdered;
 
     int64_t nOrderPosNext;
     std::map<uint256, int> mapRequestCount;
@@ -401,6 +410,7 @@ public:
     int64_t nTimeFirstKey;
 
     StakingMode stakingMode = STOPPED;
+    int64_t DecoyConfirmationMinimum = 15;
 
     mutable std::map<std::string, CKeyImage> outpointToKeyImages;
     std::map<std::string, bool> keyImagesSpends;
@@ -410,8 +420,10 @@ public:
     std::vector<COutPoint> inSpendQueueOutpointsPerSession;
     mutable std::map<CScript, CAmount> amountMap;
     mutable std::map<CScript, CKey> blindMap;
-    mutable std::vector<COutPoint> userDecoysPool;	//used in transaction spending user transaction
-    mutable std::vector<COutPoint> coinbaseDecoysPool; //used in transction spending coinbase
+    mutable std::map<COutPoint, uint256> userDecoysPool;	//used in transaction spending user transaction
+    mutable std::map<COutPoint, uint256> coinbaseDecoysPool; //used in transction spending coinbase
+
+    CAmount dirtyCachedBalance = 0;
 
     const CWalletTx* GetWalletTx(const uint256& hash) const;
 
@@ -510,6 +522,7 @@ public:
     bool EncryptWallet(const SecureString& strWalletPassphrase);
 
     void GetKeyBirthTimes(std::map<CKeyID, int64_t>& mapKeyBirth) const;
+    unsigned int ComputeTimeSmart(const CWalletTx& wtx) const;
 
     /**
      * Increment the next transaction order id
@@ -517,17 +530,6 @@ public:
      */
     int64_t IncOrderPosNext(CWalletDB* pwalletdb = NULL);
 
-    typedef std::pair<CWalletTx*, CAccountingEntry*> TxPair;
-    typedef std::multimap<int64_t, TxPair> TxItems;
-
-    std::vector<map<uint256, CWalletTx>::const_iterator> notAbleToSpend;
-
-    /**
-     * Get the wallet's activity log
-     * @return multimap of ordered transactions and accounting entries
-     * @warning Returned pointers are *only* valid within the scope of passed acentries
-     */
-    TxItems OrderedTxItems(std::list<CAccountingEntry>& acentries, std::string strAccount = "");
 
     void MarkDirty();
     bool AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet = false);
@@ -585,6 +587,7 @@ public:
                            CAmount &nFeeRet, std::string &strFailReason, const CCoinControl *coinControl = NULL,
                            AvailableCoinsType coin_type = ALL_COINS, bool useIX = false, CAmount nFeePay = 0);
     bool CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey, std::string strCommand = "tx");
+    bool AddAccountingEntry(const CAccountingEntry&, CWalletDB & pwalletdb);
     std::string PrepareObfuscationDenominate(int minRounds, int maxRounds);
     int GenerateObfuscationOutputs(int nTotalValue, std::vector<CTxOut>& vout);
     bool CreateCollateralTransaction(CMutableTransaction& txCollateral, std::string& strReason);
@@ -641,7 +644,7 @@ public:
     }
     bool IsMine(const CTransaction& tx) const
     {
-        BOOST_FOREACH (const CTxOut& txout, tx.vout)
+        for (const CTxOut& txout : tx.vout)
         if (IsMine(txout))
             return true;
         return false;
@@ -654,7 +657,7 @@ public:
     CAmount GetDebit(const CTransaction& tx, const isminefilter& filter) const
     {
         CAmount nDebit = 0;
-        BOOST_FOREACH (const CTxIn& txin, tx.vin) {
+        for (const CTxIn& txin : tx.vin) {
             nDebit += GetDebit(txin, filter);
         }
         return nDebit;
@@ -662,7 +665,7 @@ public:
     CAmount GetCredit(const CTransaction& tx, const isminefilter& filter) const
     {
         CAmount nCredit = 0;
-        BOOST_FOREACH (const CTxOut& txout, tx.vout) {
+        for (const CTxOut& txout : tx.vout) {
             nCredit += GetCredit(tx, txout, filter);
         }
         return nCredit;
@@ -670,7 +673,7 @@ public:
     CAmount GetChange(const CTransaction& tx) const
     {
         CAmount nChange = 0;
-        BOOST_FOREACH (const CTxOut& txout, tx.vout) {
+        for (const CTxOut& txout : tx.vout) {
             nChange += GetChange(tx, txout);
         }
         return nChange;
@@ -1300,7 +1303,7 @@ public:
             }
 
             // Add masternode collaterals which are handled likc locked coins
-            if (fMasterNode && pwallet->getCTxOutValue(*this, vout[i]) == 1000000 * COIN) {
+             else if (fMasterNode && pwallet->getCTxOutValue(*this, vout[i]) == 1000000 * COIN) {
                 nCredit += pwallet->GetCredit(*this, txout, ISMINE_SPENDABLE);
             }
 
@@ -1434,7 +1437,7 @@ public:
             }
         }
         // Trusted if all inputs are from us and are in the mempool:
-        BOOST_FOREACH (const CTxIn& txin, vin) {
+        for (const CTxIn& txin : vin) {
             // Transactions not sent by us: not trusted
         	COutPoint prevout = pwallet->findMyOutPoint(txin);
             const CWalletTx* parent = pwallet->GetWalletTx(prevout.hash);
@@ -1485,7 +1488,7 @@ public:
     //Used with Obfuscation. Will return largest nondenom, then denominations, then very small inputs
     int Priority() const
     {
-        BOOST_FOREACH (CAmount d, obfuScationDenominations)
+        for (CAmount d : obfuScationDenominations)
         if (tx->vout[i].nValue == d) return 10000;
         if (tx->vout[i].nValue < 1 * COIN) return 20000;
 

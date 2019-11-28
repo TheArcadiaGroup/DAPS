@@ -41,16 +41,6 @@ bool CMasternodeSync::IsBlockchainSynced()
     }
     lastProcess = GetTime();
 
-    if (!fBlockchainSynced && vNodes.size() >= 1){
-    	int highestCount = 0;
-    	for (CNode* node : vNodes)
-    		if (node->nStartingHeight>highestCount)
-    			highestCount = node->nStartingHeight;
-    	if (highestCount <= chainActive.Height()) {
-    		fBlockchainSynced = true;
-    	}
-    }
-
     if (fBlockchainSynced) return true;
 
     if (fImporting || fReindex) return false;
@@ -226,7 +216,7 @@ void CMasternodeSync::ClearFulfilledRequest()
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
-    BOOST_FOREACH (CNode* pnode, vNodes) {
+    for (CNode* pnode : vNodes) {
         pnode->ClearFulfilledRequest("mnsync");
         pnode->ClearFulfilledRequest("mnwsync");
         pnode->ClearFulfilledRequest("busync");
@@ -266,7 +256,7 @@ void CMasternodeSync::Process()
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
-    BOOST_FOREACH (CNode* pnode, vNodes) {
+    for (CNode* pnode : vNodes) {
         if (Params().NetworkID() == CBaseChainParams::REGTEST) {
             if (RequestedMasternodeAttempt < 4) {
                 mnodeman.DsegUpdate(pnode);

@@ -18,7 +18,7 @@
 
 CCriticalSection cs_masternodes;
 
-MasternodeList::MasternodeList(QWidget* parent) : QDialog(parent),
+MasternodeList::MasternodeList(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                   ui(new Ui::MasternodeList),
                                                   clientModel(0),
                                                   // m_SizeGrip(this),
@@ -90,7 +90,7 @@ void MasternodeList::StartAlias(std::string strAlias)
         std::string strStatusHtml;
         strStatusHtml += "<center>Alias: " + strAlias;
 
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             if (mne.getAlias() == strAlias) {
                 std::string strError;
                 CMasternodeBroadcast mnb;
@@ -125,7 +125,7 @@ void MasternodeList::StartAll(std::string strCommand)
         int nCountFailed = 0;
         std::string strFailedHtml;
 
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             std::string strError;
             CMasternodeBroadcast mnb;
 
@@ -187,7 +187,7 @@ void MasternodeList::updateMyMasternodeInfo(QString strAlias, QString strAddr, C
     QTableWidgetItem* addrItem = new QTableWidgetItem(pmn ? QString::fromStdString(pmn->addr.ToString()) : strAddr);
     QTableWidgetItem* statusItem = new QTableWidgetItem(QString::fromStdString(pmn ? pmn->GetStatus() : "MISSING"));
     GUIUtil::DHMSTableWidgetItem* activeSecondsItem = new GUIUtil::DHMSTableWidgetItem(pmn ? (pmn->lastPing.sigTime - pmn->sigTime) : 0);
-    QTableWidgetItem* lastSeenItem = new QTableWidgetItem(QString::fromStdString(DateTimeStrFormat("%Y-%m-%d %H:%M", pmn ? pmn->lastPing.sigTime : 0)));
+    QTableWidgetItem* lastSeenItem = new QTableWidgetItem(QString::fromStdString(pmn ? DateTimeStrFormat("%Y-%m-%d %H:%M",  pmn->lastPing.sigTime) : ""));
     QTableWidgetItem* pubkeyItem = new QTableWidgetItem(QString::fromStdString(pmn ? pmn->pubKeyCollateralAddress.GetHex() : ""));
 
     ui->tableWidgetMyMasternodes->setItem(nNewRow, 0, aliasItem);
@@ -211,7 +211,7 @@ void MasternodeList::updateMyNodeList(bool fForce)
         nTimeMyListUpdated = GetTime();
 
         ui->tableWidgetMyMasternodes->setSortingEnabled(false);
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             int nIndex;
             if(!mne.castOutputIndex(nIndex))
                 continue;
