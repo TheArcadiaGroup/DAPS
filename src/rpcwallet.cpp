@@ -2927,6 +2927,32 @@ UniValue showtxprivatekeys(const UniValue& params, bool fHelp) {
     return ret;
 }
 
+UniValue rescan(const UniValue& params, bool fHelp) {
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+                "rescan\n"
+                "\nRescan wallet transactions from the first block.\n"
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"scanned wallet transactions\"    \n"
+                "\nExamples:\n" +
+                HelpExampleCli("rescan", "") + HelpExampleCli("rescan", "\"\"") +
+                HelpExampleCli("rescan", "") + HelpExampleRpc("rescan", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
+    }
+
+    EnsureWalletIsUnlocked();
+
+    int nHeight = 1;
+    if (!pwalletMain->RescanAfterUnlock(nHeight)) {
+        return "Failed to rescan";
+    }
+    return "Done";
+}
 
 UniValue rescanwallettransactions(const UniValue& params, bool fHelp) {
     if (fHelp || params.size() != 1)
