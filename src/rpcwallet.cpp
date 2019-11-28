@@ -2929,7 +2929,7 @@ UniValue showtxprivatekeys(const UniValue& params, bool fHelp) {
 
 
 UniValue rescanwallettransactions(const UniValue& params, bool fHelp) {
-    if (fHelp || params.size() > 1)
+    if (fHelp || params.size() != 1)
         throw runtime_error(
                 "rescanwallettransactions \"block height\"\n"
                 "\nRescan wallet transaction.\n"
