@@ -53,6 +53,7 @@ HistoryPage::HistoryPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenu
     connectWidgets();
     updateTableData(pwalletMain);
     updateAddressBookData(pwalletMain);
+    connect(ui->refreshButton, SIGNAL(clicked()), this, SLOT(refreshButton_clicked()));
 }
 
 
@@ -208,12 +209,7 @@ void HistoryPage::updateTableData()
 void HistoryPage::updateTableData(CWallet* wallet)
 {
 	if (!wallet) return;
-    TRY_LOCK(cs_main, lockMain);
-    if (!lockMain)
-        return;
-    TRY_LOCK(pwalletMain->cs_wallet, lockWallet);
-    if (!lockWallet)
-        return;
+	LOCK2(cs_main, pwalletMain->cs_wallet);
     {
         if (!wallet || wallet->IsLocked()) return;
         ui->tableView->setSortingEnabled(false);
@@ -387,3 +383,8 @@ void HistoryPage::txalert(QString a, int b, CAmount c, QString d, QString e, QSt
     // ui->tableView->viewport()->update();
     //updateTableData(pwalletMain);
 }
+
+void HistoryPage::refreshButton_clicked() {
+    updateTableData(pwalletMain);
+}
+
