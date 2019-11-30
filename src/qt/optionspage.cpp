@@ -112,9 +112,14 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenu
     connect(timerStakingToggleSync, SIGNAL(timeout()), this, SLOT(setStakingToggle()));
     timerStakingToggleSync->start(10000);
 
-    if (pwalletMain) {
-        bool isConsolidatedOn = pwalletMain->IsAutoConsolidateOn();
-        ui->addNewFunds->setChecked(isConsolidatedOn);
+    if (!pwalletMain->IsMasternodeController()) {
+        if (pwalletMain) {
+            bool isConsolidatedOn = pwalletMain->IsAutoConsolidateOn();
+            ui->addNewFunds->setChecked(isConsolidatedOn);
+        }
+    } else {
+        ui->addNewFunds->setChecked(false);
+        ui->addNewFunds->setEnabled(false);
     }
     connect(ui->addNewFunds, SIGNAL(stateChanged(int)), this, SLOT(setAutoConsolidate(int)));
 }
