@@ -54,6 +54,5 @@ RUN cd /DAPSCoin/; chmod +x /DAPSCoin/autogen.sh; ./autogen.sh
 RUN chmod 777 /DAPSCoin/share/genbuild.sh
 RUN chmod 777 /DAPSCoin/src/leveldb/*
 RUN cd /DAPSCoin/; CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --prefix=/; make  
-RUN cp /DAPSCoin/src/dapscoin* /DAPSCoin/BUILD/bin/
 
 CMD /bin/bash -c "trap: TERM INT; sleep infinity & wait"
