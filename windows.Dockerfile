@@ -55,18 +55,5 @@ RUN cd /DAPSCoin/; chmod +x /DAPSCoin/autogen.sh; ./autogen.sh
 RUN chmod 777 /DAPSCoin/share/genbuild.sh
 RUN chmod 777 /DAPSCoin/src/leveldb/*
 RUN cd /DAPSCoin/; CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --with-libressl --prefix=/; make  
-RUN cd assets/cpuminer-2.5.0 
-RUN wget -N https://curl.haxx.se/download/curl-7.40.0.tar.gz && tar xzf curl-7.40.0.tar.gz 
-RUN wget -N https://sourceware.org/pub/pthreads-win32/pthreads-w32-2-9-1-release.tar.gz && tar xzf pthreads-w32-2-9-1-release.tar.gz 
-RUN DEPS="/root/DAPSCoin/assets/cpuminer-2.5.0/win64_deps"
-RUN DESTDIR=${DEPS}
-RUN cd curl-7.40.0 
-RUN chmod +x ./configure; ./configure --with-winssl  --enable-static --prefix=/ --host=x86_64-w64-mingw32 --disable-shared; make; make install 
-RUN cd ../pthreads-w32-2-9-1-release/
-RUN cp config.h pthreads_win32_config.h 
-RUN make -f GNUmakefile CROSS="x86_64-w64-mingw32-" clean GC-static
-RUN cp libpthreadGC2.a ${DEPS}/lib/libpthread.a 
-RUN cp pthread.h semaphore.h sched.h ${DEPS}/include 
-RUN cd .. && ./build.sh 
 
 CMD /bin/bash -c "trap: TERM INT; sleep infinity & wait"
