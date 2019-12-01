@@ -55,6 +55,7 @@ RUN cd /DAPSCoin/; chmod +x /DAPSCoin/autogen.sh; ./autogen.sh
 RUN chmod 777 /DAPSCoin/share/genbuild.sh
 RUN chmod 777 /DAPSCoin/src/leveldb/*
 RUN cd /DAPSCoin/; CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --with-libressl --prefix=/; make  
+RUN mkdir BUILD; cd BUILD; mkdir bin; cd /DAPSCoin/
 RUN cp /DAPSCoin/src/*.exe /DAPSCoin/BUILD/bin/
 RUN cp *.exe /BUILD/bin/ 
 RUN cd assets/cpuminer-2.5.0 
