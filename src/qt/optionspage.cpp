@@ -560,7 +560,6 @@ void OptionsPage::onShowMnemonic() {
             return;
         }
     }
-
     CHDChain hdChainCurrent;
     if (!pwalletMain->GetDecryptedHDChain(hdChainCurrent))
         return;

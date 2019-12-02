@@ -148,8 +148,6 @@ OverviewPage::~OverviewPage()
 {
     if (animClock)
         delete animClock;
-    delete timer;
-    delete timerBlockHeightLabel;
     delete ui;
 }
 
@@ -544,6 +542,7 @@ void OverviewPage::unlockDialogIsFinished(int result) {
         ui->labelBalance_2->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getBalance(), false, BitcoinUnits::separatorAlways));
         ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getSpendableBalance(), false, BitcoinUnits::separatorAlways));
         ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, walletModel->getUnconfirmedBalance(), false, BitcoinUnits::separatorAlways));
+        pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
     }
 }
 
@@ -553,6 +552,7 @@ void OverviewPage::lockDialogIsFinished(int result) {
         ui->labelBalance_2->setText("Locked; Hidden");
         ui->labelBalance->setText("Locked; Hidden");
         ui->labelUnconfirmed->setText("Locked; Hidden");
+        pwalletMain->stakingMode = StakingMode::STOPPED;
     }
 }
 

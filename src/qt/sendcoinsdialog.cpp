@@ -23,6 +23,7 @@
 #include "utilmoneystr.h"
 #include "wallet.h"
 #include "2faconfirmdialog.h"
+#include "timedata.h"
 
 #include <regex>
 #include <QMessageBox>

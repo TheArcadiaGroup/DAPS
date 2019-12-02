@@ -741,8 +741,8 @@ void CObfuscationPool::ChargeFees()
 
     if (state == POOL_STATUS_SIGNING) {
         // who didn't sign?
-        for (const CObfuScationEntry &v : entries) {
-            for (const CTxDSIn &s : v.sev) {
+        for (const CObfuScationEntry v : entries) {
+            for (const CTxDSIn s : v.sev) {
                 if (!s.fHasSig && r > target) {
                     LogPrintf("CObfuscationPool::ChargeFees -- found uncooperative node (didn't sign). charging fees.\n");
 
@@ -1254,8 +1254,8 @@ bool CObfuscationPool::SignFinalTransaction(CTransaction& finalTransactionNew, C
     vector<CTxIn> sigs;
 
     //make sure my inputs/outputs are present, otherwise refuse to sign
-    for (const CObfuScationEntry e : entries) {
-        for (const CTxDSIn s : e.sev) {
+    for (const CObfuScationEntry &e : entries) {
+        for (const CTxDSIn &s : e.sev) {
             /* Sign my transaction and all outputs */
             int mine = -1;
             CScript prevPubKey = CScript();
