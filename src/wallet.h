@@ -909,6 +909,10 @@ public:
     bool CoSignTransaction(CPartialTransaction& partial);
     bool CoSignPartialTransaction(CPartialTransaction& tx);
     bool generatePKeyImageAlphaListFromPartialTx(const CPartialTransaction& tx, CListPKeyImageAlpha& l);
+    bool HasPendingTx() const
+    {
+        return CWalletDB(strWalletFile).ReadHasWaitingTx();
+    }
     void AddComputedPrivateKey(const CTxOut& out);
     bool IsMultisigSetup() const {
     	MyMultisigViewKey();

@@ -258,6 +258,7 @@ void WalletView::gotoCoSignPage()
 
 void WalletView::gotoKeyImageSyncPage()
 {
+    keyImageSyncPage->updateKeyImageButtons();
     setCurrentWidget(keyImageSyncPage);
 }
 

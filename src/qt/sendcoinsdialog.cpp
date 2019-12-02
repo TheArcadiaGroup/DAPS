@@ -179,6 +179,8 @@ CPartialTransaction SendCoinsDialog::sendTx() {
         ssData << ptx;
         std::string hex = HexStr(ssData.begin(), ssData.end());
         ui->hexCode->setText(QString::fromStdString(hex));
+        CWalletDB(pwalletMain->strWalletFile).WritePendingForSigningTx(ptx);
+        CWalletDB(pwalletMain->strWalletFile).WriteHasWaitingTx(true);
 
         QMessageBox msgBox;
         msgBox.setWindowTitle("Transaction Initialized");

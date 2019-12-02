@@ -35,9 +35,11 @@ public:
     void setClientModel(ClientModel* clientModel);
     void setModel(WalletModel* model);
     bool fSplitBlock;
+    void updateKeyImageButtons();
 
 private slots:
     void generateKeyImageHex();
+    void syncKeyImages();
     void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
                                  const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance);
 

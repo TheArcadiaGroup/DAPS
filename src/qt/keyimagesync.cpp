@@ -40,7 +40,7 @@ KeyImageSync::KeyImageSync(QWidget* parent) : QDialog(parent),
                                                     model(0)
 {
     ui->setupUi(this);
-    connect(ui->syncKeyImageButton, SIGNAL(clicked()), this, SLOT(generateKeyImageHex()));
+    connect(ui->syncKeyImageButton, SIGNAL(clicked()), this, SLOT(syncKeyImages()));
 }
 
 void KeyImageSync::setClientModel(ClientModel* clientModel)
@@ -73,6 +73,40 @@ void KeyImageSync::setBalance(const CAmount& balance, const CAmount& unconfirmed
 
 KeyImageSync::~KeyImageSync(){
     delete ui;
+}
+
+void KeyImageSync::updateKeyImageButtons()
+{
+    ui->syncKeyImageButton->setEnabled(false);
+    ui->generateKeyImage->setEnabled(false);
+    if (pwalletMain) {
+        if (pwalletMain->HasPendingTx()) {
+            ui->syncKeyImageButton->setEnabled(true);
+        } else {
+            ui->generateKeyImage->setEnabled(true);
+        }
+    }
+}
+
+void KeyImageSync::syncKeyImages()
+{
+	std::string hexCode = ui->hexCode->toPlainText().toStdString();
+	if (!IsHex(hexCode)) return;
+	vector<unsigned char> partialTxHex(ParseHex(hexCode));
+	CDataStream ssdata(partialTxHex, SER_NETWORK, PROTOCOL_VERSION);
+	CPartialTransaction ptx;
+	try {
+		ssdata >> ptx;
+	} catch (const std::exception&) {
+		return;
+	}
+	CListPKeyImageAlpha keyImageAlpha;
+	model->getCWallet()->generatePKeyImageAlphaListFromPartialTx(ptx, keyImageAlpha);
+	CDataStream ssWritedata(SER_NETWORK, PROTOCOL_VERSION);
+	ssWritedata << keyImageAlpha;
+	std::string hex = HexStr(ssWritedata.begin(), ssWritedata.end());
+	ui->signedHex->setText(QString::fromStdString(hex));
+	ui->signedHex->setReadOnly(true);
 }
 
 void KeyImageSync::generateKeyImageHex()
