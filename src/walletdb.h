@@ -29,6 +29,7 @@ class CMasterKey;
 class CScript;
 class CWallet;
 class CWalletTx;
+struct CPartialTransaction;
 class uint160;
 class uint256;
 
@@ -126,6 +127,11 @@ public:
 
     bool WriteKeyImage(const std::string& outpointKey, const CKeyImage& k);
     bool ReadKeyImage(const std::string& outpointKey, CKeyImage& k);
+
+    bool WriteHasWaitingTx(const bool& hasWaitingTx);
+    bool ReadHasWaitingTx(bool& hasWaitingTx);
+    bool WritePendingForSigningTx(const CPartialTransaction& ptx);
+    bool ReadPendingForSigningTx(CPartialTransaction& ptx);
 
     bool WriteKey(const CPubKey& vchPubKey, const CPrivKey& vchPrivKey, const CKeyMetadata& keyMeta);
     bool WriteCryptedKey(const CPubKey& vchPubKey, const std::vector<unsigned char>& vchCryptedSecret, const CKeyMetadata& keyMeta);

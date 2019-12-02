@@ -820,6 +820,7 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
         const uint256& wtxid = it->second;
         std::map<uint256, CWalletTx>::const_iterator mit = mapWallet.find(wtxid);
         if (mit != mapWallet.end() && int(mit->second.GetDepthInMainChain()) > int(0)) {
+            LogPrintf("Tx:%s is spent by tx %s\n", hash.GetHex(), wtxid.GetHex());
             keyImagesSpends[keyImageHex] = true;
             return true; // Spent
         }
@@ -871,10 +872,24 @@ std::string CWallet::GetTransactionType(const CTransaction& tx)
 
 void CWallet::AddToSpends(const uint256& wtxid)
 {
-    assert(mapWallet.count(wtxid));
+    if (mapWallet.count(wtxid) < 1) return;
     CWalletTx& thisTx = mapWallet[wtxid];
     if (thisTx.IsCoinBase()) // Coinbases don't spend anything!
         return;
+    
+    {
+        int myIndex = findMultisigInputIndex(thisTx.vin[0]);
+        if (myIndex != -2) {
+            for(size_t i = 1; i < thisTx.vin.size(); i++) {
+                if (myIndex != findMultisigInputIndex(thisTx.vin[i])) {
+                    myIndex = -2;
+                    break;
+                }
+            }
+        }
+
+        if (myIndex == -2) return;
+    }
     for (const CTxIn& txin : thisTx.vin) {
         CKeyImage ki = txin.keyImage;
         COutPoint prevout = findMyOutPoint(txin);
@@ -1124,6 +1139,9 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
     }
 
     CWalletDB db(strWalletFile);
+    CAmount totalOut = 0;
+    //as a rule, a multisig transaction will always has an output for the wallet itself
+    //if the tx is from the wallet, it must have a change to be able to recognize as tx for the multisig wallet
     for (size_t i = 0; i < wtxIn.vout.size(); i++) {
     	std::string outpoint = hash.GetHex() + std::to_string(i);
     	if (outpointToKeyImages.count(outpoint) == 1 && outpointToKeyImages[outpoint].IsValid()) continue;
@@ -1138,12 +1156,32 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
     	if (IsMine(wtxIn.vout[i])) {
     			//outpointToKeyImages[outpoint] = ki;
     	}
+        if (!fFromLoadWallet) totalOut += getCTxOutValue(wtxIn, wtxIn.vout[i]);
+    }
+
+    LogPrintf("Tx:%s, total out=%d\n", hash.GetHex(), totalOut);
+    if (!fFromLoadWallet && totalOut == 0) return false;
+
+    bool isTxFromMe = false;
+    {
+        int myIndex = findMultisigInputIndex(wtxIn.vin[0]);
+        if (myIndex != -2) {
+            for(size_t i = 1; i < wtxIn.vin.size(); i++) {
+                if (myIndex != findMultisigInputIndex(wtxIn.vin[i])) {
+                    myIndex = -2;
+                    break;
+                }
+            }
+        }
+
+        if (myIndex != -2) isTxFromMe = true;
+        LogPrintf("Tx:%s, index=%d\n", hash.GetHex(), myIndex);
     }
 
     if (fFromLoadWallet) {
         mapWallet[hash] = wtxIn;
         mapWallet[hash].BindWallet(this);
-        AddToSpends(hash);
+        if (isTxFromMe) AddToSpends(hash);
     } else {
         LOCK(cs_wallet);
         // Inserts only if not already there, returns tx inserted or tx found
@@ -1197,7 +1235,7 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
                         wtxIn.GetHash().ToString(),
                         wtxIn.hashBlock.ToString());
             }
-            AddToSpends(hash);
+            if (isTxFromMe) AddToSpends(hash);
         }
 
         bool fUpdated = false;
@@ -1325,6 +1363,7 @@ COutPoint CWallet::findMyOutPoint(const CTxIn& txin) const
 {
 	int myIndex = findMultisigInputIndex(txin);
 	COutPoint outpoint;
+    if (myIndex == -2) return outpoint;
 	if (myIndex == -1) {
 		outpoint = txin.prevout;
 	} else {
@@ -3222,7 +3261,7 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
 
                 CAmount nChange = nValueIn - nValue - nFeeRet;
 
-                if (nChange >= 0) {
+                if (nChange > 0) {
                     // Fill a vout to ourself
                     CScript scriptChange;
                     scriptChange = GetScriptForDestination(coinControl->receiver);
@@ -3258,11 +3297,11 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
                         txNew.vout.insert(position, newTxOut);
                     }
                 } else {
-                    if (nSpendableBalance > nValueIn) {
+                    /*if (nSpendableBalance > nValueIn) {
                         continue;
-                    }
-                    ret = false;
-                    break;
+                    }*/
+                    strFailReason = _("Transaction amount too high to create a change");
+    	            return false;
                 }
 
                 // Fill vin
@@ -3619,7 +3658,7 @@ int CWallet::findMultisigInputIndex(const CTransaction& tx) const {
 	int myIndex = findMultisigInputIndex(tx.vin[0]);
     for (size_t i = 1; i < tx.vin.size(); i++) {
         if (myIndex != findMultisigInputIndex(tx.vin[i])) {
-            throw runtime_error("Ill-formated transaction!");
+            return -2;
         }
     }
 }
@@ -3633,7 +3672,8 @@ int CWallet::findMultisigInputIndex(const CTxIn& txin) const {
 			myIndex = i;
 		}
 	}
-	if (numMatch >= 2) throw runtime_error("Transaction should not select decoys as one of its UTXOs. Ill-formated transaction!");
+	if (numMatch >= 2) return -2;
+    if (myIndex == -1 && !IsMine(txin.prevout)) return -2; 
 	return myIndex;
 }
 
@@ -5056,7 +5096,7 @@ void CWallet::ScanWalletKeyImages()
     for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
         const CWalletTx wtxIn = it->second;
         uint256 hash = wtxIn.GetHash();
-        AddToSpends(hash);
+        //AddToSpends(hash);
     }
 }
 

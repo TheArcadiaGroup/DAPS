@@ -126,8 +126,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>830</width>
-        <height>27</height>
+        <width>824</width>
+        <height>34</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -153,6 +153,13 @@
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
           <layout class="QHBoxLayout" name="horizontalLayoutSend_2">
+           <item>
+            <widget class="QPushButton" name="generateKeyImage">
+             <property name="text">
+              <string>Generate Key Image</string>
+             </property>
+            </widget>
+           </item>
            <item>
             <spacer name="horizontalSpacerSendL_2">
              <property name="orientation">
