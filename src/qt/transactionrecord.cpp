@@ -104,11 +104,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
         bool involvesWatchAddress = false;
         isminetype fAllFromMe = ISMINE_SPENDABLE;
         for (const CTxIn& txin : wtx.vin) {
-            if (wallet->IsMine(txin)) {
-                fAllFromMeDenom = fAllFromMeDenom && wallet->IsDenominated(txin);
+            if (wallet->IsMine(wtx, txin)) {
+                fAllFromMeDenom = fAllFromMeDenom && wallet->IsDenominated(wtx, txin);
                 nFromMe++;
             }
-            isminetype mine = wallet->IsMine(txin);
+            isminetype mine = wallet->IsMine(wtx, txin);
             if (mine & ISMINE_WATCH_ONLY) involvesWatchAddress = true;
             if (fAllFromMe > mine) fAllFromMe = mine;
         }

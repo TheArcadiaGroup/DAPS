@@ -198,6 +198,24 @@ void SendCoinsDialog::dialogIsFinished(int result) {
    }
 }
 
+void SendCoinsDialog::FillExistingTxHexCode() {
+    if (pwalletMain) {
+        if (pwalletMain->HasPendingTx()) {
+            ui->sendButton->setEnabled(false);
+            ui->label_2->setText("Hex code of an existing transaction to be co-signed");
+            CPartialTransaction ptx;
+            CWalletDB(pwalletMain->strWalletFile).ReadPendingForSigningTx(ptx);
+            CDataStream ssData(SER_NETWORK, PROTOCOL_VERSION);
+            ssData << ptx;
+            std::string hex = HexStr(ssData.begin(), ssData.end());
+            ui->hexCode->setText(QString::fromStdString(hex));
+        } else {
+            ui->sendButton->setEnabled(true);
+            ui->label_2->setText("Hex code generated for the transaction");
+        }
+    }
+}
+
 SendCoinsEntry* SendCoinsDialog::addEntry()
 {
     SendCoinsEntry* entry = new SendCoinsEntry(this);

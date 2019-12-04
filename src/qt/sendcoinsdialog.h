@@ -39,6 +39,7 @@ public:
     void setClientModel(ClientModel* clientModel);
     void setModel(WalletModel* model);
     bool fSplitBlock;
+    void FillExistingTxHexCode();
 
 public slots:
     SendCoinsEntry* addEntry();

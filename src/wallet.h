@@ -275,7 +275,7 @@ struct CListPKeyImageAlpha {
 class CWallet : public CCryptoKeyStore, public CValidationInterface
 {
 private:
-    bool SelectCoins(bool needFee, CAmount& estimatedFee, int ringSize, int numOut, const CAmount& nTargetValue, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, const CCoinControl* coinControl = NULL, AvailableCoinsType coin_type = ALL_COINS, bool useIX = true) ;
+    bool SelectCoins(bool needFee, CAmount& estimatedFee, int ringSize, int numOut, const CAmount& nTargetValue, std::vector<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, const CCoinControl* coinControl = NULL, AvailableCoinsType coin_type = ALL_COINS, bool useIX = true) ;
     //it was public bool SelectCoins(int64_t nTargetValue, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoinsRet, int64_t& nValueRet, const CCoinControl *coinControl = NULL, AvailableCoinsType coin_type=ALL_COINS, bool useIX = true) const;
 
     CWalletDB* pwalletdbEncryption;
@@ -317,7 +317,7 @@ public:
     bool IsMasternodeController();
     int CountInputsWithAmount(CAmount nInputAmount);
     bool checkPassPhraseRule(const char *pass);
-    COutPoint findMyOutPoint(const CTxIn& txin) const;
+    COutPoint findMyOutPoint(const CTransaction& tx, const CTxIn& txin) const;
     bool SelectCoinsCollateral(std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet);
     static int ComputeTxSize(size_t numIn, size_t numOut, size_t ringSize);
     void resetPendingOutPoints();
@@ -434,6 +434,7 @@ public:
     }
 
     mutable std::map<uint256, CWalletTx> mapWallet;
+    mutable std::map<uint256, int> myIndexMap;  //-1 => prevout, -2 means tx not from me
     mutable std::map<uint256, CPartialTransaction> mapPartialTxes;
 
     int64_t nOrderPosNext;
@@ -488,7 +489,7 @@ public:
 
     void AvailableCoins(std::vector<COutput>& vCoins, bool fOnlyConfirmed = true, const CCoinControl* coinControl = NULL, bool fIncludeZeroValue = false, AvailableCoinsType nCoinType = ALL_COINS, bool fUseIX = false);
     std::map<CBitcoinAddress, std::vector<COutput> > AvailableCoinsByAddress(bool fConfirmed = true, CAmount maxCoinValue = 0);
-    bool SelectCoinsMinConf(bool needFee, CAmount& estimatedFee, int ringSize, int numOut, const CAmount& nTargetValue, int nConfMine, int nConfTheirs, std::vector<COutput> vCoins, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet);
+    bool SelectCoinsMinConf(bool needFee, CAmount& estimatedFee, int ringSize, int numOut, const CAmount& nTargetValue, int nConfMine, int nConfTheirs, std::vector<COutput> vCoins, std::vector<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet);
 
     /// Get 1000DASH output and keys which can be used for the Masternode
     bool GetMasternodeVinAndKeys(CTxIn& txinRet, CPubKey& pubKeyRet, CKey& keyRet, std::string strTxHash = "", std::string strOutputIndex = "");
@@ -502,7 +503,6 @@ public:
     void UnlockCoin(COutPoint& output);
     void UnlockAllCoins();
     void ListLockedCoins(std::vector<COutPoint>& vOutpts);
-    CAmount GetTotalValue(std::vector<CTxIn> vCoins);
 
     //  keystore implementation
     // Generate a new key
@@ -629,17 +629,29 @@ public:
                            CReserveKey& reservekey,
                            CAmount& nFeeRet,
                            std::string& strFailReason,
+                           int& ringSize,
+                           std::vector<pair<const CWalletTx*, unsigned int> >& setCoins,
+                           CAmount nValueIn,
+                           CAmount estimateFee,
                            const CCoinControl* coinControl = NULL,
                            AvailableCoinsType coin_type = ALL_COINS,
                            bool useIX = false,
-                           CAmount nFeePay = 0, int ringSize = 6, bool tomyself = false);
+                           CAmount nFeePay = 0, bool tomyself = false);
 
     bool CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey& txPrivDes, const CPubKey &recipientViewKey, CScript scriptPubKey, const CAmount &nValue,
                                       CWalletTx &wtxNew, CReserveKey &reservekey, CAmount &nFeeRet,
-                                      std::string &strFailReason, const CCoinControl *coinControl = NULL,
+                                      std::string &strFailReason,
+                                      int& ringSize, 
+                                      std::vector<pair<const CWalletTx*, unsigned int> >& setCoins,
+                                      CAmount nValueIn,
+                                      CAmount estimateFee,
+                                      const CCoinControl *coinControl = NULL,
                                       AvailableCoinsType coin_type = ALL_COINS, bool useIX = false,
-                                      CAmount nFeePay = 0, int ringSize = 6, bool tomyself = false);
+                                      CAmount nFeePay = 0, bool tomyself = false);
 
+    uint256 ComputeSortedSelectedOutPointHash(vector<pair<const CWalletTx*, unsigned int>>& setCoins) const;
+    uint256 ComputeSortedSelectedOutPointHash(vector<pair<uint256, unsigned int>>& setCoins) const;
+    
     int ComputeFee(size_t numIn, size_t numOut, size_t ringSize);
     CAmount ComputeReserveUTXOAmount();
     bool CreateTransaction(CScript scriptPubKey, const CAmount &nValue, CWalletTx &wtxNew, CReserveKey &reservekey,
@@ -649,7 +661,6 @@ public:
     std::string PrepareObfuscationDenominate(int minRounds, int maxRounds);
     int GenerateObfuscationOutputs(int nTotalValue, std::vector<CTxOut>& vout);
     bool CreateCollateralTransaction(CMutableTransaction& txCollateral, std::string& strReason);
-    bool ConvertList(std::vector<CTxIn> vCoins, std::vector<int64_t>& vecAmounts);
     bool CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int64_t nSearchInterval, CMutableTransaction& txNew, unsigned int& nTxNewTime);
     bool CreateCoinAudit(const CKeyStore& keystore, unsigned int nBits, int64_t nSearchInterval, CMutableTransaction& txNew, unsigned int& nTxNewTime);
     bool MultiSend();
@@ -680,13 +691,13 @@ public:
     // respect current settings
     int GetInputObfuscationRounds(CTxIn in) const;
 
-    bool IsDenominated(const CTxIn& txin) const;
+    bool IsDenominated(const CTransaction& tx, const CTxIn& txin) const;
     bool IsDenominated(const CTransaction& tx) const;
 
     bool IsDenominatedAmount(CAmount nInputAmount) const;
 
-    isminetype IsMine(const CTxIn& txin) const;
-    CAmount GetDebit(const CTxIn& txin, const isminefilter& filter) const;
+    isminetype IsMine(const CTransaction& tx, const CTxIn& txin) const;
+    CAmount GetDebit(const CTransaction& tx, const CTxIn& txin, const isminefilter& filter) const;
     isminetype IsMine(const CTxOut& txout) const
     {
         return ::IsMine(*this, txout.scriptPubKey);
@@ -716,7 +727,7 @@ public:
     {
         CAmount nDebit = 0;
         for (const CTxIn& txin : tx.vin) {
-            nDebit += GetDebit(txin, filter);
+            nDebit += GetDebit(tx, txin, filter);
         }
         return nDebit;
     }
@@ -940,7 +951,7 @@ private:
     CPubKey SumOfAllPubKeys(std::vector<CPubKey>& l) const;
     int findMultisigInputIndex(const CPartialTransaction& tx) const;
     int findMultisigInputIndex(const CTransaction& tx) const;
-    int findMultisigInputIndex(const CTxIn& txin) const;
+    int findMultisigInputIndex(const CTransaction& tx, const CTxIn& txin) const;
     int walletIdxCache = 0;
     bool isMatchMyKeyImage(const CKeyImage& ki, const COutPoint& out);
     void ScanWalletKeyImages();
@@ -1400,7 +1411,7 @@ public:
         uint256 hashTx = GetHash();
         for (unsigned int i = 0; i < vout.size(); i++) {
             const CTxIn vin = CTxIn(hashTx, i);
-            if (pwallet->IsSpent(hashTx, i) || !pwallet->IsDenominated(vin)) continue;
+            if (pwallet->IsSpent(hashTx, i) || !pwallet->IsDenominated(*this, vin)) continue;
         }
 
         nAnonymizedCreditCached = nCredit;
@@ -1592,7 +1603,7 @@ public:
         // Trusted if all inputs are from us and are in the mempool:
         for (const CTxIn& txin : vin) {
             // Transactions not sent by us: not trusted
-        	COutPoint prevout = pwallet->findMyOutPoint(txin);
+        	COutPoint prevout = pwallet->findMyOutPoint(*this, txin);
             const CWalletTx* parent = pwallet->GetWalletTx(prevout.hash);
             if (parent == NULL)
                 return false;

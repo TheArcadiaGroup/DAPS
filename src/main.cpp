@@ -3173,7 +3173,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
                 }
                 pblocktree->WriteKeyImage(keyImage.GetHex(), bh);
                 if (pwalletMain != NULL && !pwalletMain->IsLocked()) {
-                    if (pwalletMain->GetDebit(in, ISMINE_ALL)) {
+                    if (pwalletMain->GetDebit(tx, in, ISMINE_ALL)) {
                         pwalletMain->keyImagesSpends[keyImage.GetHex()] = true;
                     }
                     pwalletMain->pendingKeyImages.remove(keyImage.GetHex());
@@ -4745,7 +4745,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
             {
                 LOCK(pwalletMain->cs_wallet);
                 if (pblock->IsProofOfStake()) {
-                    if (pwalletMain->IsMine(pblock->vtx[1].vin[0])) {
+                    if (pwalletMain->IsMine(pblock->vtx[1], pblock->vtx[1].vin[0])) {
                         pwalletMain->mapWallet.erase(pblock->vtx[1].GetHash());
                     }
                 }

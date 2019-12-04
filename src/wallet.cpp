@@ -762,7 +762,7 @@ set<uint256> CWallet::GetConflicts(const uint256& txid) const
     std::pair<TxSpends::const_iterator, TxSpends::const_iterator> range;
 
     for (const CTxIn& txin : wtx.vin) {
-        COutPoint prevout = findMyOutPoint(txin);
+        COutPoint prevout = findMyOutPoint(wtx, txin);
         if (mapTxSpends.count(prevout) <= 1)
             continue; // No conflict if zero or one spends
         range = mapTxSpends.equal_range(prevout);
@@ -852,7 +852,7 @@ std::string CWallet::GetTransactionType(const CTransaction& tx)
     bool fToMe = false;
     bool fAllToMe = true;
     for(size_t i = 0; i < tx.vin.size(); i++) {
-        if (!IsMine(tx.vin[i])) {
+        if (!IsMine(tx, tx.vin[i])) {
             fAllFromMe = false;
             break;
         }
@@ -877,22 +877,9 @@ void CWallet::AddToSpends(const uint256& wtxid)
     if (thisTx.IsCoinBase()) // Coinbases don't spend anything!
         return;
     
-    {
-        int myIndex = findMultisigInputIndex(thisTx.vin[0]);
-        if (myIndex != -2) {
-            for(size_t i = 1; i < thisTx.vin.size(); i++) {
-                if (myIndex != findMultisigInputIndex(thisTx.vin[i])) {
-                    myIndex = -2;
-                    break;
-                }
-            }
-        }
-
-        if (myIndex == -2) return;
-    }
     for (const CTxIn& txin : thisTx.vin) {
         CKeyImage ki = txin.keyImage;
-        COutPoint prevout = findMyOutPoint(txin);
+        COutPoint prevout = findMyOutPoint(thisTx, txin);
         if (!prevout.IsNull() && isMatchMyKeyImage(ki, prevout)) {
             AddToSpends(prevout, wtxid);
             continue;
@@ -1162,26 +1149,10 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
     LogPrintf("Tx:%s, total out=%d\n", hash.GetHex(), totalOut);
     if (!fFromLoadWallet && totalOut == 0) return false;
 
-    bool isTxFromMe = false;
-    {
-        int myIndex = findMultisigInputIndex(wtxIn.vin[0]);
-        if (myIndex != -2) {
-            for(size_t i = 1; i < wtxIn.vin.size(); i++) {
-                if (myIndex != findMultisigInputIndex(wtxIn.vin[i])) {
-                    myIndex = -2;
-                    break;
-                }
-            }
-        }
-
-        if (myIndex != -2) isTxFromMe = true;
-        LogPrintf("Tx:%s, index=%d\n", hash.GetHex(), myIndex);
-    }
-
     if (fFromLoadWallet) {
         mapWallet[hash] = wtxIn;
         mapWallet[hash].BindWallet(this);
-        if (isTxFromMe) AddToSpends(hash);
+        AddToSpends(hash);
     } else {
         LOCK(cs_wallet);
         // Inserts only if not already there, returns tx inserted or tx found
@@ -1235,7 +1206,7 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
                         wtxIn.GetHash().ToString(),
                         wtxIn.hashBlock.ToString());
             }
-            if (isTxFromMe) AddToSpends(hash);
+            AddToSpends(hash);
         }
 
         bool fUpdated = false;
@@ -1325,7 +1296,7 @@ void CWallet::SyncTransaction(const CTransaction& tx, const CBlock* pblock)
     // available of the outputs it spends. So force those to be
     // recomputed, also:
     for (const CTxIn& txin : tx.vin) {
-        COutPoint prevout = findMyOutPoint(txin);
+        COutPoint prevout = findMyOutPoint(tx, txin);
         if (mapWallet.count(prevout.hash))
             mapWallet[prevout.hash].MarkDirty();
     }
@@ -1344,11 +1315,12 @@ void CWallet::EraseFromWallet(const uint256& hash)
 }
 
 
-isminetype CWallet::IsMine(const CTxIn& txin) const
+isminetype CWallet::IsMine(const CTransaction& tx, const CTxIn& txin) const
 {
+    if (IsLocked()) return ISMINE_NO;
     {
         LOCK(cs_wallet);
-        COutPoint prevout = findMyOutPoint(txin);
+        COutPoint prevout = findMyOutPoint(tx, txin);
         map<uint256, CWalletTx>::const_iterator mi = mapWallet.find(prevout.hash);
         if (mi != mapWallet.end()) {
             const CWalletTx& prev = (*mi).second;
@@ -1359,9 +1331,9 @@ isminetype CWallet::IsMine(const CTxIn& txin) const
     return ISMINE_NO;
 }
 
-COutPoint CWallet::findMyOutPoint(const CTxIn& txin) const
+COutPoint CWallet::findMyOutPoint(const CTransaction& tx, const CTxIn& txin) const
 {
-	int myIndex = findMultisigInputIndex(txin);
+	int myIndex = findMultisigInputIndex(tx, txin);
 	COutPoint outpoint;
     if (myIndex == -2) return outpoint;
 	if (myIndex == -1) {
@@ -1374,12 +1346,12 @@ COutPoint CWallet::findMyOutPoint(const CTxIn& txin) const
 	return outpoint;
 }
 
-CAmount CWallet::GetDebit(const CTxIn& txin, const isminefilter& filter) const
+CAmount CWallet::GetDebit(const CTransaction& tx, const CTxIn& txin, const isminefilter& filter) const
 {
     {
         LOCK(cs_wallet);
         if (txin.prevout.IsNull()) return 0;
-        COutPoint prevout = findMyOutPoint(txin);
+        COutPoint prevout = findMyOutPoint(tx, txin);
         map<uint256, CWalletTx>::const_iterator mi = mapWallet.find(prevout.hash);
         if (mi != mapWallet.end()) {
             const CWalletTx& prev = (*mi).second;
@@ -1451,7 +1423,7 @@ int CWallet::GetRealInputObfuscationRounds(CTxIn in, int rounds) const
         bool fDenomFound = false;
         // only denoms here so let's look up
         for (CTxIn in2 : wtx->vin) {
-            if (IsMine(in2)) {
+            if (IsMine(*wtx, in2)) {
                 int n = GetRealInputObfuscationRounds(in2, rounds + 1);
                 // denom found, find the shortest chain or initially assign nShortest with the first found value
                 if (n >= 0 && (n < nShortest || nShortest == -10)) {
@@ -1478,11 +1450,11 @@ int CWallet::GetInputObfuscationRounds(CTxIn in) const
     return realObfuscationRounds > 0 ? 0 : realObfuscationRounds;
 }
 
-bool CWallet::IsDenominated(const CTxIn& txin) const
+bool CWallet::IsDenominated(const CTransaction& tx, const CTxIn& txin) const
 {
     {
         LOCK(cs_wallet);
-        COutPoint prevout = findMyOutPoint(txin);
+        COutPoint prevout = findMyOutPoint(tx, txin);
         map<uint256, CWalletTx>::const_iterator mi = mapWallet.find(prevout.hash);
         if (mi != mapWallet.end()) {
             const CWalletTx& prev = (*mi).second;
@@ -1499,7 +1471,7 @@ bool CWallet::IsDenominated(const CTransaction& tx) const
     */
     bool ret = true;
     for (const CTxIn& txin : tx.vin) {
-        if (!IsDenominated(txin)) {
+        if (!IsDenominated(tx, txin)) {
             ret = false;
         }
     }
@@ -2112,7 +2084,7 @@ double CWallet::GetAverageAnonymizedRounds()
             for (unsigned int i = 0; i < pcoin->vout.size(); i++) {
                 CTxIn vin = CTxIn(hash, i);
 
-                if (IsSpent(hash, i) || IsMine(pcoin->vout[i]) != ISMINE_SPENDABLE || !IsDenominated(vin)) continue;
+                if (IsSpent(hash, i) || IsMine(pcoin->vout[i]) != ISMINE_SPENDABLE || !IsDenominated(*pcoin, vin)) continue;
 
                 int rounds = GetInputObfuscationRounds(vin);
                 fTotal += (float)rounds;
@@ -2144,7 +2116,7 @@ CAmount CWallet::GetNormalizedAnonymizedBalance()
             for (unsigned int i = 0; i < pcoin->vout.size(); i++) {
                 CTxIn vin = CTxIn(hash, i);
 
-                if (IsSpent(hash, i) || IsMine(pcoin->vout[i]) != ISMINE_SPENDABLE || !IsDenominated(vin)) continue;
+                if (IsSpent(hash, i) || IsMine(pcoin->vout[i]) != ISMINE_SPENDABLE || !IsDenominated(*pcoin, vin)) continue;
                 if (pcoin->GetDepthInMainChain() < 0) continue;
             }
         }
@@ -2483,7 +2455,7 @@ bool CWallet::MintableCoins()
     return false;
 }
 
-bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize, int numOut, const CAmount& nTargetValue, int nConfMine, int nConfTheirs, vector<COutput> vCoins, set<pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet)
+bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize, int numOut, const CAmount& nTargetValue, int nConfMine, int nConfTheirs, vector<COutput> vCoins, std::vector<pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet)
 {
     setCoinsRet.clear();
     nValueRet = 0;
@@ -2527,7 +2499,7 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
             }
             if (n == nTargetValue + feeForOneInput) {
                 setCoinsRet.clear();
-                setCoinsRet.insert(coin.second);
+                setCoinsRet.push_back(coin.second);
                 nValueRet = coin.first;
                 feeNeeded = feeForOneInput;
                 return true;
@@ -2542,7 +2514,7 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
         if (vValue.size() <= MAX_TX_INPUTS) {
             if (nTotalLower == nTargetValue + feeNeeded) {
                 for (unsigned int i = 0; i < vValue.size(); ++i) {
-                    setCoinsRet.insert(vValue[i].second);
+                    setCoinsRet.push_back(vValue[i].second);
                     nValueRet += vValue[i].first;
                 }
                 return true;
@@ -2559,7 +2531,7 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
                     return false;
                 }
             }
-            setCoinsRet.insert(coinLowestLarger.second);
+            setCoinsRet.push_back(coinLowestLarger.second);
             nValueRet += coinLowestLarger.first;
             return true;
         } else {
@@ -2568,7 +2540,7 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
                 //putting all into the transaction
                 string s = "CWallet::SelectCoinsMinConf best subset: ";
                 for (unsigned int i = 0; i < vValue.size(); i++) {
-                    setCoinsRet.insert(vValue[i].second);
+                    setCoinsRet.push_back(vValue[i].second);
                     nValueRet += vValue[i].first;
                     s += FormatMoney(vValue[i].first) + " ";
                 }
@@ -2585,7 +2557,7 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
         //putting all into the transaction
         string s = "CWallet::SelectCoinsMinConf best subset: ";
         for (unsigned int i = 0; i < vValue.size(); i++) {
-            setCoinsRet.insert(vValue[i].second);
+            setCoinsRet.push_back(vValue[i].second);
             nValueRet += vValue[i].first;
             s += FormatMoney(vValue[i].first) + " ";
         }
@@ -2604,7 +2576,7 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
     if (nValueRet < nTargetValue + feeNeeded) {
         nValueRet = 0;
         for (unsigned int i = 0; i < vValue.size(); i++) {
-            setCoinsRet.insert(vValue[i].second);
+            setCoinsRet.push_back(vValue[i].second);
         }
         return false; //transaction too large
     }
@@ -2618,13 +2590,13 @@ bool CWallet::SelectCoinsMinConf(bool needFee, CAmount& feeNeeded, int ringSize,
     //                                   or the next bigger coin is closer), return the bigger coin
     if (coinLowestLarger.second.first &&
         ((nBest != nTargetValue + feeNeeded && nBest < nTargetValue + feeNeeded) || coinLowestLarger.first <= nBest)) {
-        setCoinsRet.insert(coinLowestLarger.second);
+        setCoinsRet.push_back(coinLowestLarger.second);
         nValueRet += coinLowestLarger.first;
     } else {
         string s = "CWallet::SelectCoinsMinConf best subset: ";
         for (unsigned int i = 0; i < vValue.size(); i++) {
             if (vfBest[i]) {
-                setCoinsRet.insert(vValue[i].second);
+                setCoinsRet.push_back(vValue[i].second);
                 nValueRet += vValue[i].first;
                 s += FormatMoney(vValue[i].first) + " ";
             }
@@ -2647,7 +2619,7 @@ void CWallet::resetPendingOutPoints()
                 for (std::map<uint256, CTxMemPoolEntry>::const_iterator it = mempool.mapTx.begin(); it != mempool.mapTx.end(); ++it) {
                     const CTransaction& tx = it->second.GetTx();
                     for (size_t i = 0; i < tx.vin.size(); i++) {
-                        COutPoint prevout = findMyOutPoint(tx.vin[i]);
+                        COutPoint prevout = findMyOutPoint(tx, tx.vin[i]);
                         if (prevout.hash.IsNull()) {
                             break;
                         } else {
@@ -2660,7 +2632,7 @@ void CWallet::resetPendingOutPoints()
     }
 }
 
-bool CWallet::SelectCoins(bool needFee, CAmount& estimatedFee, int ringSize, int numOut, const CAmount& nTargetValue, set<pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, const CCoinControl* coinControl, AvailableCoinsType coin_type, bool useIX)
+bool CWallet::SelectCoins(bool needFee, CAmount& estimatedFee, int ringSize, int numOut, const CAmount& nTargetValue, std::vector<pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, const CCoinControl* coinControl, AvailableCoinsType coin_type, bool useIX)
 {
     // Note: this function should never be used for "always free" tx types like dstx
     vector<COutput> vCoins;
@@ -2729,7 +2701,7 @@ bool CWallet::SelectCoins(bool needFee, CAmount& estimatedFee, int ringSize, int
             }
 
             nValueRet += getCOutPutValue(out);
-            setCoinsRet.insert(make_pair(out.tx, out.i));
+            setCoinsRet.push_back(make_pair(out.tx, out.i));
         }
         return (nValueRet >= nTargetValue);
     }
@@ -2951,7 +2923,7 @@ int CWallet::CountInputsWithAmount(CAmount nInputAmount)
 
                     if (getCOutPutValue(out) != nInputAmount) continue;
                     if (!IsDenominatedAmount(getCTxOutValue(*pcoin, pcoin->vout[i]))) continue;
-                    if (IsSpent(out.tx->GetHash(), i) || IsMine(pcoin->vout[i]) != ISMINE_SPENDABLE || !IsDenominated(vin)) continue;
+                    if (IsSpent(out.tx->GetHash(), i) || IsMine(pcoin->vout[i]) != ISMINE_SPENDABLE || !IsDenominated(*pcoin, vin)) continue;
 
                     nTotal++;
                 }
@@ -3068,22 +3040,6 @@ bool CWallet::GetBudgetSystemCollateralTX(CWalletTx& tx, uint256 hash, bool useI
 }
 
 
-bool CWallet::ConvertList(std::vector<CTxIn> vCoins, std::vector<CAmount>& vecAmounts)
-{
-    for (CTxIn i : vCoins) {
-        COutPoint prevout = findMyOutPoint(i);
-        if (mapWallet.count(prevout.hash)) {
-            CWalletTx& wtx = mapWallet[prevout.hash];
-            if (prevout.n < wtx.vout.size()) {
-                vecAmounts.push_back(getCTxOutValue(wtx, wtx.vout[prevout.n]));
-            }
-        } else {
-            LogPrintf("ConvertList -- Couldn't find transaction\n");
-        }
-    }
-    return true;
-}
-
 bool CWallet::CreateCommitment(const CAmount val, CKey& blind, std::vector<unsigned char>& commitment)
 {
     blind.MakeNewKey(true);
@@ -3136,12 +3092,24 @@ int CWallet::ComputeFee(size_t numIn, size_t numOut, size_t ringSize)
 
 bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey& txPrivDes, const CPubKey &recipientViewKey, CScript scriptPubKey, const CAmount &nValue,
                                            CWalletTx &wtxNew, CReserveKey &reservekey, CAmount &nFeeRet,
-                                           std::string &strFailReason, const CCoinControl *coinControl,
+                                           std::string &strFailReason, 
+                                           int& ringSize, 
+                                           std::vector<pair<const CWalletTx*, unsigned int> >& setCoins, 
+                                           CAmount nValueIn, 
+                                           CAmount estimateFee,
+                                           const CCoinControl *coinControl,
                                            AvailableCoinsType coin_type, bool useIX,
-                                           CAmount nFeePay, int ringSize, bool sendtoMyself) {
+                                           CAmount nFeePay, bool sendtoMyself) {
     vector<pair<CScript, CAmount> > vecSend;
     vecSend.push_back(make_pair(scriptPubKey, nValue));
-    return CreateTransactionBulletProof(ptx, txPrivDes, recipientViewKey, vecSend, wtxNew, reservekey, nFeeRet, strFailReason, coinControl, coin_type, useIX, nFeePay, ringSize, sendtoMyself);
+    return CreateTransactionBulletProof(ptx, txPrivDes, recipientViewKey, 
+                                        vecSend, wtxNew, reservekey, 
+                                        nFeeRet, strFailReason, 
+                                        ringSize, 
+                                        setCoins, 
+                                        nValueIn, 
+                                        estimateFee,
+                                        coinControl, coin_type, useIX, nFeePay, sendtoMyself);
 }
 bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey& txPrivDes,
                                     const CPubKey& recipientViewKey,
@@ -3150,16 +3118,15 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
                                   CReserveKey& reservekey,
                                   CAmount& nFeeRet,
                                   std::string& strFailReason,
+                                  int& ringSize,
+                                  vector<pair<const CWalletTx*, unsigned int> >& setCoins,
+                                  CAmount nValueIn,
+                                  CAmount estimateFee,
                                   const CCoinControl* coinControl,
                                   AvailableCoinsType coin_type,
                                   bool useIX,
-                                  CAmount nFeePay, int ringSize, bool tomyself)
+                                  CAmount nFeePay, bool tomyself)
 {
-    unsigned char rand_seed[16];
-    memcpy(rand_seed, txPrivDes.begin(), 16);
-    secp256k1_rand_seed(rand_seed);
-    ringSize = MIN_RING_SIZE + secp256k1_rand32() % (MAX_RING_SIZE - MIN_RING_SIZE + 1);
-
     //Currently we only allow transaction with one or two recipients
     //If two, the second recipient is a change output
     if (vecSend.size() > 1) {
@@ -3223,41 +3190,6 @@ bool CWallet::CreateTransactionBulletProof(CPartialTransaction& ptx, const CKey&
                 }
 
                 if (!ret) break;
-
-                // Choose coins to use
-                set<pair<const CWalletTx*, unsigned int> > setCoins;
-                CAmount nValueIn = 0;
-                CAmount estimateFee;
-                if (!SelectCoins(true, estimateFee, ringSize, 2, nTotalValue, setCoins, nValueIn, coinControl, coin_type, useIX)) {
-                    if (coin_type == ALL_COINS) {
-                        if (nSpendableBalance < nTotalValue + estimateFee) {
-                            if (estimateFee > 0)
-                                strFailReason = "Insufficient funds. Transaction requires a fee of " + ValueFromAmountToString(estimateFee);
-                            else if (nReserveBalance <= nTotalValue)
-                                strFailReason = "Insufficient reserved funds! Your wallet is staking with a reserve balance of " + ValueFromAmountToString(nReserveBalance) + " less than the sending amount " + ValueFromAmountToString(nTotalValue);
-                        } else if (nTotalValue >= nReserveBalance) {
-                                strFailReason = "Insufficient reserved funds! Your wallet is staking with a reserve balance of " + ValueFromAmountToString(nReserveBalance) + " less than the sending amount " + ValueFromAmountToString(nTotalValue);  
-                        } else if (setCoins.size() > MAX_TX_INPUTS) {
-                            strFailReason = _("You have attempted to send more than 50 UTXOs in a single transaction. This is a rare occurrence, and to work around this limitation, please either lower the total amount of the transaction, or send two separate transactions with 50% of your total desired amount.");
-                        } else if (nValueIn == 0) {
-                            strFailReason = _("You have attempted to send more than 50 UTXOs in a single transaction. This is a rare occurrence, and to work around this limitation, please either lower the total amount of the transaction, or send two separate transactions with 50% of your total desired amount.");
-                        }
-                    } else if (coin_type == ONLY_NOT1000000IFMN) {
-                        strFailReason = _("Unable to locate enough funds for this transaction that are not equal 10000 DAPS.");
-                    } else if (coin_type == ONLY_NONDENOMINATED_NOT1000000IFMN) {
-                        strFailReason = _("Unable to locate enough Obfuscation non-denominated funds for this transaction that are not equal 1000000 DAPS.");
-                    } else {
-                        strFailReason = _("Unable to locate enough Obfuscation denominated funds for this transaction.");
-                        strFailReason += " " + _("Obfuscation uses exact denominated amounts to send funds, you might simply need to anonymize some more coins.");
-                    }
-
-                    if (useIX) {
-                        strFailReason += " " + _("SwiftX requires inputs with at least 6 confirmations, you might need to wait a few minutes and try again.");
-                    }
-
-                    ret = false;
-                    break;
-                }
 
                 CAmount nChange = nValueIn - nValue - nFeeRet;
 
@@ -3413,7 +3345,7 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, CAmount> >& vecSend,
                 }
 
                 // Choose coins to use
-                set<pair<const CWalletTx*, unsigned int> > setCoins;
+                std::vector<pair<const CWalletTx*, unsigned int> > setCoins;
                 CAmount nValueIn = 0;
                 CAmount estimatedFee = 0;
                 if (!SelectCoins(true, estimatedFee, 10, 2, nTotalValue, setCoins, nValueIn, coinControl, coin_type, useIX)) {
@@ -3651,19 +3583,15 @@ bool CWallet::generateCommitmentAndEncode(CPartialTransaction& wtxNew)
 }
 
 int CWallet::findMultisigInputIndex(const CPartialTransaction& tx) const {
-	return findMultisigInputIndex(tx.vin[0]);
+	return findMultisigInputIndex(tx.ToTransaction(), tx.vin[0]);
 }
 
 int CWallet::findMultisigInputIndex(const CTransaction& tx) const {
-	int myIndex = findMultisigInputIndex(tx.vin[0]);
-    for (size_t i = 1; i < tx.vin.size(); i++) {
-        if (myIndex != findMultisigInputIndex(tx.vin[i])) {
-            return -2;
-        }
-    }
+	return findMultisigInputIndex(tx, tx.vin[0]);
 }
 
-int CWallet::findMultisigInputIndex(const CTxIn& txin) const {
+int CWallet::findMultisigInputIndex(const CTransaction& tx, const CTxIn& txin) const {
+    if (myIndexMap.count(tx.GetHash()) == 1) return myIndexMap[tx.GetHash()];
 	int myIndex = -1;
 	int numMatch = 0;
 	for(size_t i = 0; i < txin.decoys.size(); i++) {
@@ -3672,9 +3600,40 @@ int CWallet::findMultisigInputIndex(const CTxIn& txin) const {
 			myIndex = i;
 		}
 	}
-	if (numMatch >= 2) return -2;
-    if (myIndex == -1 && !IsMine(txin.prevout)) return -2; 
-	return myIndex;
+	if (numMatch >= 2) {
+        myIndexMap[tx.GetHash()] = -2;
+        return -2;
+    }
+    
+    std::vector<pair<uint256, unsigned int>> setCoins;
+
+    for(size_t i = 0; i < tx.vin.size(); i++) {
+        if (myIndex == -1) {
+            if (!IsMine(tx.vin[i].prevout)) {
+                myIndexMap[tx.GetHash()] = -2;
+                return -2;
+            }
+            setCoins.push_back(make_pair(tx.vin[i].prevout.hash, tx.vin[i].prevout.n));
+        } else {
+			if (!IsMine(tx.vin[i].decoys[myIndex])) {
+                myIndexMap[tx.GetHash()] = -2;
+                return -2;
+            }
+            setCoins.push_back(make_pair(tx.vin[i].decoys[myIndex].hash, tx.vin[i].decoys[myIndex].n));
+		}
+	}
+    uint256 h = ComputeSortedSelectedOutPointHash(setCoins);
+    CKey privateTx;
+    privateTx.Set(h.begin(), h.end(), true);
+    CPubKey txPub = privateTx.GetPubKey();
+    for(size_t i = 0; i < tx.vout.size(); i++) {
+        if (txPub.Raw() == tx.vout[i].txPub) {
+            myIndexMap[tx.GetHash()] = myIndex;
+            return myIndex;
+        }
+    }
+    myIndexMap[tx.GetHash()] = -2;
+	return -2;
 }
 
 uint256 CWallet::generateHashOfAllIns(const CPartialTransaction& tx)
@@ -4905,7 +4864,7 @@ bool CWallet::CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey, std:
                 set<uint256> updated_hahes;
                 for (const CTxIn& txin : wtxNew.vin) {
                     // notify only once
-                    COutPoint prevout = findMyOutPoint(txin);
+                    COutPoint prevout = findMyOutPoint(wtxNew, txin);
                     if (updated_hahes.find(prevout.hash) != updated_hahes.end()) continue;
 
                     CWalletTx& coin = mapWallet[prevout.hash];
@@ -4938,24 +4897,6 @@ CAmount CWallet::GetMinimumFee(unsigned int nTxBytes, unsigned int nConfirmTarge
 {
     CAmount nFeeNeeded = payTxFee.GetFee(nTxBytes);
     return nFeeNeeded;
-}
-
-CAmount CWallet::GetTotalValue(std::vector<CTxIn> vCoins)
-{
-    CAmount nTotalValue = 0;
-    CWalletTx wtx;
-    for (CTxIn i : vCoins) {
-        COutPoint prevout = findMyOutPoint(i);
-        if (mapWallet.count(prevout.hash)) {
-            CWalletTx& wtx = mapWallet[prevout.hash];
-            if (prevout.n < wtx.vout.size()) {
-                nTotalValue += wtx.vout[prevout.n].nValue;
-            }
-        } else {
-            LogPrintf("GetTotalValue -- Couldn't find transaction\n");
-        }
-    }
-    return nTotalValue;
 }
 
 string CWallet::PrepareObfuscationDenominate(int minRounds, int maxRounds)
@@ -5471,7 +5412,7 @@ set<set<CTxDestination> > CWallet::GetAddressGroupings()
             // group all input addresses with each other
             for (CTxIn txin : pcoin->vin) {
                 CTxDestination address;
-                if (!IsMine(txin)) /* If this input isn't mine, ignore it */
+                if (!IsMine(*pcoin, txin)) /* If this input isn't mine, ignore it */
                     continue;
                 if (!ExtractDestination(mapWallet[txin.prevout.hash].vout[txin.prevout.n].scriptPubKey, address))
                     continue;
@@ -6346,6 +6287,36 @@ bool CWallet::DecodeStealthAddress(const std::string& stealth, CPubKey& pubViewK
     return true;
 }
 
+uint256 CWallet::ComputeSortedSelectedOutPointHash(vector<pair<const CWalletTx*, unsigned int>>& setCoins) const
+{
+    CDataStream cds(SER_NETWORK, PROTOCOL_VERSION);
+    for(size_t i = 0; i < setCoins.size(); i++) {
+        uint256 wtxid = setCoins[i].first->GetHash();
+        cds << wtxid;
+        cds << setCoins[i].second;
+    }
+    CKey view = MyMultisigViewKey();
+    std::vector<unsigned char> viewRaw;
+    std::copy(view.begin(), view.end(), std::back_inserter(viewRaw));
+    cds << viewRaw;
+    return Hash(cds.begin(), cds.end());
+}
+
+uint256 CWallet::ComputeSortedSelectedOutPointHash(vector<pair<uint256, unsigned int>>& setCoins) const
+{
+    CDataStream cds(SER_NETWORK, PROTOCOL_VERSION);
+    for(size_t i = 0; i < setCoins.size(); i++) {
+        uint256 wtxid = setCoins[i].first;
+        cds << wtxid;
+        cds << setCoins[i].second;
+    }
+    CKey view = MyMultisigViewKey();
+    std::vector<unsigned char> viewRaw;
+    std::copy(view.begin(), view.end(), std::back_inserter(viewRaw));
+    cds << viewRaw;
+    return Hash(cds.begin(), cds.end());
+}
+
 bool computeStealthDestination(const CKey& secret, const CPubKey& pubViewKey, const CPubKey& pubSpendKey, CPubKey& des)
 {
     //generate transaction destination: P = Hs(rA)G+B, A = view pub, B = spend pub, r = secret
@@ -6435,10 +6406,41 @@ bool CWallet::SendToStealthAddress(CPartialTransaction& ptx, const std::string& 
         throw runtime_error("Stealth address mal-formatted");
     }
 
+    LOCK2(cs_main, cs_wallet);
+    CAmount nTotalValue = nValue;
+    CAmount nSpendableBalance = GetSpendableBalance();
+
+    // Choose coins to use
+    std::vector<pair<const CWalletTx*, unsigned int> > setCoins;
+    CAmount nValueIn = 0;
+    CAmount estimateFee = 0;
+    ringSize = MIN_RING_SIZE + secp256k1_rand32() % (MAX_RING_SIZE - MIN_RING_SIZE + 1);
+    bool ret = true;
+    if (!SelectCoins(true, estimateFee, ringSize, 2, nTotalValue, setCoins, nValueIn, NULL, ALL_COINS, fUseIX)) {
+        if (nSpendableBalance < nTotalValue + estimateFee) {
+            if (estimateFee > 0)
+                strError = "Insufficient funds. Transaction requires a fee of " + ValueFromAmountToString(estimateFee);
+            else if (nReserveBalance <= nTotalValue)
+                strError = "Insufficient reserved funds! Your wallet is staking with a reserve balance of " + ValueFromAmountToString(nReserveBalance) + " less than the sending amount " + ValueFromAmountToString(nTotalValue);
+            else if (nTotalValue >= nReserveBalance) {
+                strError = "Insufficient reserved funds! Your wallet is staking with a reserve balance of " + ValueFromAmountToString(nReserveBalance) + " less than the sending amount " + ValueFromAmountToString(nTotalValue);  
+            } else if (setCoins.size() > MAX_TX_INPUTS) {
+                strError = _("You have attempted to send more than 50 UTXOs in a single transaction. This is a rare occurrence, and to work around this limitation, please either lower the total amount of the transaction, or send two separate transactions with 50% of your total desired amount.");
+            } else if (nValueIn == 0) {
+                strError = _("You have attempted to send more than 50 UTXOs in a single transaction. This is a rare occurrence, and to work around this limitation, please either lower the total amount of the transaction, or send two separate transactions with 50% of your total desired amount.");
+            }
+        } 
+        ret = false;
+    }
+
+    if (!ret) {
+        throw runtime_error(strError);
+    }
+
     // Generate transaction public key
+    uint256 generatedSecret = ComputeSortedSelectedOutPointHash(setCoins);
     CKey secret;
-    secret.MakeNewKey(true);
-    SetMinVersion(FEATURE_COMPRPUBKEY);
+    secret.Set(generatedSecret.begin(), generatedSecret.end(), true);
     wtxNew.txPrivM.Set(secret.begin(), secret.end(), true);
 
     wtxNew.hasPaymentID = 0;
@@ -6457,8 +6459,9 @@ bool CWallet::SendToStealthAddress(CPartialTransaction& ptx, const std::string& 
     CKey multiSigView = MyMultisigViewKey();
     CPubKey multiSigPubSpend = GetMultisigPubSpendKey();
     CPubKey changeDes;
+    uint256 secretChangeHash = Hash(generatedSecret.begin(), generatedSecret.end());
     CKey secretChange;
-    secretChange.MakeNewKey(true);
+    secretChange.Set(secretChangeHash.begin(), secretChangeHash.end(), true);
     computeStealthDestination(secretChange, multiSigView.GetPubKey(), multiSigPubSpend, changeDes);
     CBitcoinAddress changeAddress(changeDes.GetID());
     CCoinControl control;
@@ -6466,8 +6469,14 @@ bool CWallet::SendToStealthAddress(CPartialTransaction& ptx, const std::string& 
     control.receiver = changeDes;
     control.txPriv = secretChange;
     CAmount nFeeRequired;
-    if (!pwalletMain->CreateTransactionBulletProof(ptx, secret, pubViewKey, scriptPubKey, nValue, wtxNew, reservekey,
-                                                   nFeeRequired, strError, &control, ALL_COINS, fUseIX, (CAmount)0, 6, tomyself)) {
+    if (!pwalletMain->CreateTransactionBulletProof(ptx, secret, pubViewKey, scriptPubKey, 
+                                                    nValue, wtxNew, reservekey,
+                                                    nFeeRequired, strError, 
+                                                    ringSize, 
+                                                    setCoins, 
+                                                    nValueIn, 
+                                                    estimateFee,
+                                                    &control, ALL_COINS, fUseIX, (CAmount)0, tomyself)) {
         if (nValue + nFeeRequired > pwalletMain->GetBalance())
             strError = strprintf("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds!, nfee=%d, nValue=%d", FormatMoney(nFeeRequired), nFeeRequired, nValue);
         LogPrintf("SendToStealthAddress() : Not enough! %s\n", strError);

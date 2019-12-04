@@ -248,6 +248,7 @@ void WalletView::gotoOptionsPage()
 
 void WalletView::gotoSendCoinsPage(QString addr)
 {
+    sendCoinsPage->FillExistingTxHexCode();
     setCurrentWidget(sendCoinsPage);
 }
 
