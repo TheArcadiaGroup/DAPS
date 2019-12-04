@@ -37,6 +37,7 @@ public:
     void setClientModel(ClientModel* clientModel);
     void setModel(WalletModel* model);
     bool fSplitBlock;
+    void UpdateLabels();
 
 private:
     Ui::CoSignTransaction* ui;

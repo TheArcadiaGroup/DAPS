@@ -75,6 +75,15 @@ CoSignTransaction::~CoSignTransaction(){
     delete ui;
 }
 
+void CoSignTransaction::UpdateLabels() {
+    ui->label_3->setText("Enter long code of transaction to be signed");
+    if (pwalletMain) {
+        if (pwalletMain->HasPendingTx()) {
+            ui->label_3->setText("You have a pending transaction, please enter the synchronized key images \nfrom your co-signers here to co-sign the pending transaction.");
+        }
+    }
+}
+
 void CoSignTransaction::cosignTransaction()
 {
     std::string hexPartial = ui->hexCode->toPlainText().trimmed().toStdString();

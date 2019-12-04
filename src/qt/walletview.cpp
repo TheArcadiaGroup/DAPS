@@ -254,6 +254,7 @@ void WalletView::gotoSendCoinsPage(QString addr)
 
 void WalletView::gotoCoSignPage()
 {
+    cosignPage->UpdateLabels();
     setCurrentWidget(cosignPage);
 }
 
