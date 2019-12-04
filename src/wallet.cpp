@@ -4042,6 +4042,7 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 		}
 		CKeyImage full = SumOfAllPubKeys(partialKeyImages);
 		memcpy(allKeyImages[i], full.begin(), 33);
+        wtxNew.vin[i].keyImage.Set(allKeyImages[i], allKeyImages[i] + 33);
 	}
 
 	//2. compute key image for additional
@@ -4385,6 +4386,9 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 }
 
 //this function assumes that all keyimages are full now
+//for other signer
+//compute S'[j][PI] = ALPHAs[j] - c*spendkey => add it to S[j][PI]
+//compute S'[wtx.vin.size()][PI] = ALPHAs[wtx.vin.size()] - c*wtx.vin.size()*spendkey => add it to S[wtx.vin.size()][PI]
 bool CWallet::CoSignPartialTransaction(CPartialTransaction& tx)
 {
 	const size_t MAX_VIN = 32;
@@ -4418,9 +4422,8 @@ bool CWallet::CoSignPartialTransaction(CPartialTransaction& tx)
 	secp256k1_ec_privkey_tweak_add(decodedCPI, tx.encodedC_PI.begin());
 
 	//the actual signing part which compute S[j][PI]
-	//compute S[j][PI] = alpha_j - c_pi * x_j, x_j = private key of the multisig = ECDH + sum of all signer private spend key
-	//S[j][PI] = sumof(alpha_j(signer) - c_pi*(sum of signer private key)) - ECDH*c_pi
-	//each signer provides its part of alpha_j and c_pi* private key
+	//compute S'[j][PI] = ALPHAs[j] - c*spendkey => add it to S[j][PI]
+    //compute S'[wtx.vin.size()][PI] = ALPHAs[wtx.vin.size()] - c*wtx.vin.size()*spendkey => add it to S[wtx.vin.size()][PI]
 	CKey mySpend;
 	mySpendPrivateKey(mySpend);
     LogPrintf("Computing S\n");
@@ -4454,6 +4457,9 @@ bool CWallet::CoSignPartialTransaction(CPartialTransaction& tx)
 	unsigned char cx[32];
 	memcpy(cx, decodedCPI, 32);
 	if (!secp256k1_ec_privkey_tweak_mul(cx, mySpend.begin()))
+		throw runtime_error("Cannot compute EC mul");
+    uint256 times(tx.vin.size());
+    if (!secp256k1_ec_privkey_tweak_mul(cx, times.begin()))
 		throw runtime_error("Cannot compute EC mul");
 	const unsigned char *sumArray[2];
 	sumArray[0] = alpha.begin();
