@@ -3868,6 +3868,8 @@ CKeyImage CWallet::generatePartialAdditionalKeyImage(const CPartialTransaction& 
  * 6. The last signer put all full key images, c, S[i][j] to the transaction as the signature*/
 bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::vector<CListPKeyImageAlpha> ls, std::string& strFailReason)
 {
+    CKey mySpend;
+	mySpendPrivateKey(mySpend);
 	const size_t MAX_VIN = 32;
 	const size_t MAX_DECOYS = 13;	//padding 1 for safety reasons
 	const size_t MAX_VOUT = 5;
@@ -3987,14 +3989,6 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 		}
 	}
 
-    //commitment to tx fee, blind = 0
-	unsigned char txFeeBlind[32];
-	memset(txFeeBlind, 0, 32);
-	if (!secp256k1_pedersen_commit(both, &allOutCommitmentsPacked[wtxNew.vout.size()], txFeeBlind, wtxNew.nTxFee, &secp256k1_generator_const_h, &secp256k1_generator_const_g)) {
-		//strFailReason = _("Cannot parse the commitment for transaction fee");
-		return null;
-	}
-
 	//additional ring pubkey member in the ring = ADPUB = Sum of All input public keys + sum of all input commitments - sum of all output commitments = every signer can compute
 	for (int j = 0; j < (int)wtxNew.vin[0].decoys.size() + 1; j++) {
 		//if (j != PI) {
@@ -4032,7 +4026,7 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 		CKey temp = GeneratePartialKey(myOutpoint);
         CTransaction inTx =  mapWallet[myOutpoint.hash];
         CPubKey pub;
-        if (!ExtractPubKey(inTx.vout[myOutpoint.n], pub)) {
+        if (!ExtractPubKey(inTx.vout[myOutpoint.n].scriptPubKey, pub)) {
             throw runtime_error("Failed to extract public key");
         }
 		unsigned char HSPubTemp[33];
@@ -4062,7 +4056,7 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	//K2 = (all HSs (ECDH))* ADDPUB ==> easy to compute
 	//K3 = (all partial private keys)*ADDPUB = wtxNew.vin.size() * (sum of all additional partial key images)
 
-    CPubKey ADDPUB = allInPubKeys[wtxNew.vin.size()];
+    CPubKey ADDPUB(allInPubKeys[wtxNew.vin.size()][PI], allInPubKeys[wtxNew.vin.size()][PI] + 33);
     LogPrintf("%s:ADDPUB=%s\n", __func__, ADDPUB.GetHex());
 	std::vector<CPubKey> allK2s;
 
@@ -4093,7 +4087,7 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 
 		CKey k2 = GeneratePartialKey(inTx.vout[myOutpoint.n]);
         unsigned char k2ADDPUB[33];
-        PointHashingSuccessively(ADDPUB, k2.begin(), ksADDPUB);
+        PointHashingSuccessively(ADDPUB, k2.begin(), k2ADDPUB);
 		allK2s.push_back(CPubKey(k2ADDPUB, k2ADDPUB + 33));
 	}
 
@@ -4292,9 +4286,91 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 
 	//add ECDH to S[j][PI]
     //S[j][PI] = ALPHA - c * x[j]
-    //
+    //MONOSIG
+    //compute S[j][PI] = alpha_j - c_pi * x_j, x_j = private key corresponding to key image I
 
-	//i for decoy index => PI
+    //MULTISIG
+    //Each signer has a list of wtx.vin.size() ALPHAs[0..wtx.vin.size()]
+    //for j = 0..wtx.vin.size()
+    //S[j][PI] = Sum of (all ALPHA[j] of all signers) - c*xj, xj = private key for key image at j
+    //j=0..wtx.vin.size()-1, xj=H(multisigview*txPub) + sum of spend keys of all signers
+    //x[wtx.vin.size()] = (sum of all inputs H(ECDH)) + wtx.vin.size()*(sum of all signers spend keys) + (sum of all input blinds) - sum of all output blinds
+
+    //For tx initiator:
+    //j=0..wtx.vin.size()-1
+    //S[j][PI] = ALPHAs[j] - c*H(multisigview*txPub) - c*spendkey
+    //S[wtx.vin.size()][PI] = ALPHAs[wtx.vin.size()] - c*(sum of all inputs H(ECDH)) - c*((sum of all input blinds) - (sum of all output blinds)) - c*wtx.vin.size()*spendkey
+	
+    //for other signer
+    //compute S'[j][PI] = ALPHAs[j] - c*spendkey => add it to S[j][PI]
+    //compute S'[wtx.vin.size()][PI] = ALPHAs[wtx.vin.size()] - c*wtx.vin.size()*spendkey => add it to S[wtx.vin.size()][PI]
+    
+    for(size_t j = 0; j < wtxNew.vin.size(); j++) {
+        COutPoint myOutpoint;
+		if (myIndex == -1) {
+			myOutpoint = wtxNew.vin[j].prevout;
+		} else {
+			myOutpoint = wtxNew.vin[j].decoys[myIndex];
+		}
+        unsigned char alpha[32];
+        const unsigned char *sumArray[3];
+	    GenerateAlphaFromOutpoint(myOutpoint, alpha);
+        sumArray[0] = alpha;
+
+        CKey hs = GeneratePartialKey(myOutpoint);
+        unsigned char ch[32];
+        memcpy(ch, CI[PI], 32);
+        if (!secp256k1_ec_privkey_tweak_mul(ch, hs.begin()))
+			throw runtime_error("Cannot compute EC mul");
+        sumArray[1] = ch;
+        
+        unsigned char cx[32];
+		memcpy(cx, CI[PI], 32);
+		if (!secp256k1_ec_privkey_tweak_mul(cx, mySpend.begin()))
+			throw runtime_error("Cannot compute EC mul");
+		sumArray[2] = cx;
+		if (!secp256k1_pedersen_blind_sum(GetContext(), SIJ[j][PI], sumArray, 3, 1)) throw runtime_error("Cannot compute EC mul");
+    }
+
+    const unsigned char *sumArray[wtxNew.vin.size() + 3];
+    CKey additionalPartialAlpha = generateAdditionalPartialAlpha(wtxNew);
+    sumArray[0] = additionalPartialAlpha.begin();
+    for(size_t j = 0; j < wtxNew.vin.size(); j++) {
+        COutPoint myOutpoint;
+		if (myIndex == -1) {
+			myOutpoint = wtxNew.vin[j].prevout;
+		} else {
+			myOutpoint = wtxNew.vin[j].decoys[myIndex];
+		}
+
+        CKey hs = GeneratePartialKey(myOutpoint);
+        unsigned char ch[32];
+        memcpy(ch, CI[PI], 32);
+        if (!secp256k1_ec_privkey_tweak_mul(ch, hs.begin()))
+			throw runtime_error("Cannot compute EC mul");
+        sumArray[j + 1] = ch;
+    }
+
+    unsigned char coutSum[32];
+    memcpy(coutSum, CI[PI], 32);
+    if (!secp256k1_ec_privkey_tweak_mul(coutSum, outSum))
+	    throw runtime_error("Cannot compute EC mul");
+    sumArray[wtxNew.vin.size() + 1] = coutSum;
+
+    uint256 times(wtxNew.vin.size());
+    unsigned char cspendkey[32];
+    memcpy(cspendkey, CI[PI], 32);
+    if (!secp256k1_ec_privkey_tweak_mul(cspendkey, times.begin()))
+	    throw runtime_error("Cannot compute EC mul");
+
+    if (!secp256k1_ec_privkey_tweak_mul(cspendkey, mySpend.begin()))
+		throw runtime_error("Cannot compute EC mul");
+    
+    sumArray[wtxNew.vin.size() + 2] = cspendkey;
+
+    if (!secp256k1_pedersen_blind_sum(GetContext(), SIJ[wtxNew.vin.size()][PI], sumArray, wtxNew.vin.size() + 3, 1)) throw runtime_error("Cannot compute EC mul");
+    
+    //i for decoy index => PI
 	for (int i = 0; i < (int)wtxNew.vin[0].decoys.size() + 1; i++) {
 		std::vector<uint256> S_column;
 		for (int j = 0; j < (int)wtxNew.vin.size() + 1; j++) {
