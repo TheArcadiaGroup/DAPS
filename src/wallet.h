@@ -936,6 +936,7 @@ public:
     void WriteScreenIndex(int index) const;
     int ReadScreenIndex() const;
     bool IsCollateralized(const COutPoint& outpoint);
+    bool finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::vector<CListPKeyImageAlpha> ls, std::string& failReason);
 private:
     void GeneratePKeyImageAlpha(const COutPoint& op, CPKeyImageAlpha&) ;
     bool encodeStealthBase58(const std::vector<unsigned char>& raw, std::string& stealth);
@@ -946,7 +947,6 @@ private:
     bool selectDecoysAndRealIndex(CPartialTransaction& tx, int& myIndex, int ringSize);
     bool IsMine(const COutPoint outpoint) const;
     bool makeRingCT(CPartialTransaction& wtxNew, int ringSize, std::string& strFailReason);
-    bool finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::vector<CListPKeyImageAlpha> ls, std::string& failReason);
     CKeyImage generatePartialAdditionalKeyImage(const CPartialTransaction& wtxNew);
     CPubKey SumOfAllPubKeys(std::vector<CPubKey>& l) const;
     int findMultisigInputIndex(const CPartialTransaction& tx) const;

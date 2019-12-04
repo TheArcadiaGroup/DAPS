@@ -86,38 +86,109 @@ void CoSignTransaction::UpdateLabels() {
 
 void CoSignTransaction::cosignTransaction()
 {
-    std::string hexPartial = ui->hexCode->toPlainText().trimmed().toStdString();
-	if (!IsHex(hexPartial)) return;
-    
-    vector<unsigned char> partialTxData(ParseHex(hexPartial));
-	CDataStream ssdata(partialTxData, SER_NETWORK, PROTOCOL_VERSION);
-	CPartialTransaction partialTx;
-	try {
-		ssdata >> partialTx;
-	} catch (const std::exception&) {
-		return;
-	}
-    if (!pwalletMain->CoSignPartialTransaction(partialTx)) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("Transaction co-sining failed");
-        msgBox.setText("Failed to cosign transaction.\n\n");
-        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
-        msgBox.setIcon(QMessageBox::Warning);
-        msgBox.exec();
-		return;
-    }
+    if (!pwalletMain->HasPendingTx()) {
+        std::string hexPartial = ui->hexCode->toPlainText().trimmed().toStdString();
+        if (!IsHex(hexPartial)) return;
+        
+        vector<unsigned char> partialTxData(ParseHex(hexPartial));
+        CDataStream ssdata(partialTxData, SER_NETWORK, PROTOCOL_VERSION);
+        CPartialTransaction partialTx;
+        try {
+            ssdata >> partialTx;
+        } catch (const std::exception&) {
+            return;
+        }
+        try {
+            pwalletMain->CoSignPartialTransaction(partialTx);
+        } catch (const std::exception& err) {
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Transaction co-sining failed");
+            msgBox.setText(err.what());
+            msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.exec();
+            return;
+        }
 
-    CDataStream dex(SER_NETWORK, PROTOCOL_VERSION);
-    dex << partialTx;
-    std::string hex = HexStr(dex.begin(), dex.end());
-    ui->signedHex->setReadOnly(true);
-    ui->signedHex->setText(QString::fromStdString(hex));
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("Transaction Signed");
-    msgBox.setText("Multisignature transaction CoSigned by you. You can copy the hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");
-    msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
-    msgBox.setIcon(QMessageBox::Information);
-    msgBox.exec();
+        CDataStream dex(SER_NETWORK, PROTOCOL_VERSION);
+        dex << partialTx;
+        std::string hex = HexStr(dex.begin(), dex.end());
+        ui->signedHex->setReadOnly(true);
+        ui->signedHex->setText(QString::fromStdString(hex));
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Transaction Signed");
+        msgBox.setText("Multisignature transaction CoSigned by you. You can copy the hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.exec();
+    } else {
+        QMessageBox msgBox;
+        //Read all partial key images
+        QString text = ui->hexCode->toPlainText().trimmed();
+        QStringList l = text.split("\n");
+        if (l.size() != pwalletMain->ReadNumSigners() - 1) {
+            msgBox.setWindowTitle("Transaction Signed");
+            msgBox.setText(QString("The number of key images is not match with the number of cosigners."));
+            msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.exec();
+            return;
+        } else {
+            std::vector<CListPKeyImageAlpha> list;
+            for(size_t i = 0; i < l.size(); i++) {
+                std::string str = l.at(i).trimmed().toStdString();
+                if (!IsHex(str)) {
+                    msgBox.setWindowTitle("Transaction Signed");
+                    msgBox.setText(QString("Key images for signing not valid."));
+                    msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+                    msgBox.setIcon(QMessageBox::Warning);
+                    msgBox.exec();
+                    return;
+                } 
+                CListPKeyImageAlpha clpia;
+                vector<unsigned char> partialTxData(ParseHex(str));
+                CDataStream ssdata(partialTxData, SER_NETWORK, PROTOCOL_VERSION);
+                try {
+                    ssdata >> clpia;
+                } catch (const std::exception&) {
+                    msgBox.setWindowTitle("Transaction Signed");
+                    msgBox.setText(QString("Key images for signing not valid."));
+                    msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+                    msgBox.setIcon(QMessageBox::Warning);
+                    msgBox.exec();
+                    return;
+                }
+                list.push_back(clpia);
+            }
+            CPartialTransaction ptx;
+            std::string failReason;
+            try {
+                CWalletDB(pwalletMain->strWalletFile).ReadPendingForSigningTx(ptx);
+                pwalletMain->finishRingCTAfterKeyImageSynced(ptx, list, failReason);
+            } catch (const std::exception& err) {
+                QMessageBox msgBox;
+                msgBox.setWindowTitle("Transaction co-sining failed");
+                msgBox.setText(err.what());
+                msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+                msgBox.setIcon(QMessageBox::Warning);
+                msgBox.exec();
+                return;
+            }
+
+            CDataStream dex(SER_NETWORK, PROTOCOL_VERSION);
+            dex << ptx;
+            std::string hex = HexStr(dex.begin(), dex.end());
+            ui->signedHex->setReadOnly(true);
+            ui->signedHex->setText(QString::fromStdString(hex));
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Transaction Signed");
+            msgBox.setText("Multisignature transaction CoSigned by you. You can copy the hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");
+            msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+            msgBox.setIcon(QMessageBox::Information);
+            msgBox.exec();
+            return;
+        }
+    }
 }
 
 
