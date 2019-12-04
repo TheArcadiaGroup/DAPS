@@ -3010,6 +3010,7 @@ UniValue importmnemonicphrase(const UniValue& params, bool fHelp)
     for (unsigned int i = 0; i < params.size(); i++) {
         phrase += params[i].get_str() + " ";
     }
+    phrase.erase(std::find_if(phrase.rbegin(), phrase.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), phrase.end());
 
     try {
         pwalletMain->GenerateNewHDChain(&phrase);
