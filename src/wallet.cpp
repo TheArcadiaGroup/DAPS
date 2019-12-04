@@ -3553,9 +3553,8 @@ bool CWallet::makeRingCT(CPartialTransaction& wtxNew, int ringSize, std::string&
     	return false;//maximum decoys = 15
     }
 
-    CPartialTransaction ptx(wtxNew);
-    generateCommitmentAndEncode(ptx);
-    if (!makeRingCT(ptx, ringSize, strFailReason, myIndex)) {
+    generateCommitmentAndEncode(wtxNew);
+    if (!makeRingCT(wtxNew, ringSize, strFailReason, myIndex)) {
     	strFailReason = _("Fail to make partial ring CT");
     	return false;
     }
@@ -3639,7 +3638,9 @@ int CWallet::findMultisigInputIndex(const CTransaction& tx, const CTxIn& txin) c
 uint256 CWallet::generateHashOfAllIns(const CPartialTransaction& tx)
 {
 	uint256 ret;
+    LogPrintf("%s: looking for my index\n", __func__);
 	int myIndex = findMultisigInputIndex(tx);
+    LogPrintf("%s: myIndex = %d\n", __func__, myIndex);
 
 	for (size_t j = 0; j < tx.vin.size(); j++) {
 		COutPoint myOutpoint;
@@ -3657,6 +3658,7 @@ uint256 CWallet::generateHashOfAllIns(const CPartialTransaction& tx)
 bool CWallet::generatePKeyImageAlphaListFromPartialTx(const CPartialTransaction& tx, CListPKeyImageAlpha& l)
 {
 	int myIndex = findMultisigInputIndex(tx);
+    if (myIndex < -1) throw runtime_error("Failed to find index of the multisignature transaction");
 
 	for (size_t j = 0; j < tx.vin.size(); j++) {
 		COutPoint myOutpoint;
@@ -3719,14 +3721,14 @@ CPubKey CWallet::SumOfAllPubKeys(std::vector<CPubKey>& l) const
 	return ret;
 }
 
-CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction wtxNew)
+CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction& wtxNew)
 {
 	const size_t MAX_VIN = 32;
 	const size_t MAX_DECOYS = 13;	//padding 1 for safety reasons
 	const size_t MAX_VOUT = 5;
 	int myIndex = findMultisigInputIndex(wtxNew);
 	secp256k1_context2 *both = GetContext();
-
+    LogPrintf("%s: myindex = %d\n", __func__, myIndex);
 	//all in pubkeys + an additional public generated from commitments
 	unsigned char allInPubKeys[MAX_VIN + 1][MAX_DECOYS + 1][33];
 	unsigned char allInCommitments[MAX_VIN][MAX_DECOYS + 1][33];
@@ -3744,6 +3746,7 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction wtxNew)
 	//collecting all output commimtments including transaction fees with commitment with 0 blind
 	secp256k1_pedersen_commitment allOutCommitmentsPacked[MAX_VOUT + 1]; //+1 for tx fee
 	for (size_t i = 0; i < wtxNew.vout.size(); i++) {
+        if (wtxNew.vout[i].commitment.empty()) throw runtime_error("Commitment empty");
 		memcpy(&(allOutCommitments[i][0]), &(wtxNew.vout[i].commitment[0]), 33);
 		if (!secp256k1_pedersen_commitment_parse(both, &allOutCommitmentsPacked[i], allOutCommitments[i])) {
 			//strFailReason = _("Cannot parse the commitment for inputs");
@@ -3758,7 +3761,7 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction wtxNew)
 		//strFailReason = _("Cannot parse the commitment for transaction fee");
 		return null;
 	}
-
+    LogPrintf("Computed commitment for tx fee\n");
 	//filling the additional pubkey elements for decoys: allInPubKeys[wtxNew.vin.size()][..]
 	//allInPubKeys[wtxNew.vin.size()][j] = sum of allInPubKeys[..][j] + sum of allInCommitments[..][j] - sum of allOutCommitments
 	const secp256k1_pedersen_commitment *outCptr[MAX_VOUT + 1];
@@ -3773,6 +3776,7 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction wtxNew)
 		} else {
 			myOutpoint = wtxNew.vin[j].decoys[myIndex];
 		}
+        LogPrintf("Reading tx hash %s\n", myOutpoint.hash.GetHex());
 		CTransaction& inTx = mapWallet[myOutpoint.hash];
 
 		CPubKey tempPubKey;
@@ -3780,7 +3784,7 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction wtxNew)
 		memcpy(allInPubKeys[j][PI], tempPubKey.begin(), 33);
 		memcpy(allInCommitments[j][PI], &(inTx.vout[myOutpoint.n].commitment[0]), 33);
 	}
-
+    LogPrintf("Extracting all decoy pubkeys and commitments\n");
 	//extract all decoy public keys and commitments
 	for (int i = 0; i < (int)wtxNew.vin.size(); i++) {
 		std::vector<COutPoint> decoysForIn;
@@ -3806,6 +3810,7 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction wtxNew)
 		}
 	}
 
+    LogPrintf("Compute input pubkeys\n");
 	secp256k1_pedersen_commitment allInCommitmentsPacked[MAX_VIN][MAX_DECOYS + 1];
 
 	secp256k1_pedersen_commitment inPubKeysToCommitments[MAX_VIN][MAX_DECOYS + 1];
@@ -3815,6 +3820,7 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction wtxNew)
 		}
 	}
 
+    LogPrintf("Parsing commitment for inputs\n");
 	//additional pubkey member in the ring = ADPUB = Sum of All input public keys + sum of all input commitments - sum of all output commitments = every signer can compute
 	int j = PI;
 	const secp256k1_pedersen_commitment *inCptr[MAX_VIN * 2];
@@ -3837,6 +3843,7 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction wtxNew)
 		throw runtime_error("Cannot covert from commitment to public key");
 
 	CPubKey ADDPUB(allInPubKeys[wtxNew.vin.size()][PI], allInPubKeys[wtxNew.vin.size()][PI] + 33);
+    LogPrintf("%s:ADDPUB=%s\n", __func__, ADDPUB.GetHex());
 	return ADDPUB;
 }
 
@@ -4015,8 +4022,13 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 			myOutpoint = wtxNew.vin[i].decoys[myIndex];
 		}
 		CKey temp = GeneratePartialKey(myOutpoint);
+        CTransaction inTx =  mapWallet[myOutpoint.hash];
+        CPubKey pub;
+        if (!ExtractPubKey(inTx.vout[myOutpoint.n], pub)) {
+            throw runtime_error("Failed to extract public key");
+        }
 		unsigned char HSPubTemp[33];
-		PointHashingSuccessively(temp.GetPubKey(), temp.begin(), HSPubTemp);
+		PointHashingSuccessively(pub, temp.begin(), HSPubTemp);
 
 		std::vector<CKeyImage> partialKeyImages;
 
@@ -4042,6 +4054,8 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	//K2 = (all HSs (ECDH))* ADDPUB ==> easy to compute
 	//K3 = (all partial private keys)*ADDPUB = wtxNew.vin.size() * (sum of all additional partial key images)
 
+    CPubKey ADDPUB = allInPubKeys[wtxNew.vin.size()];
+    LogPrintf("%s:ADDPUB=%s\n", __func__, ADDPUB.GetHex());
 	std::vector<CPubKey> allK2s;
 
 	//step 2.1: collect all input blinds
@@ -4070,7 +4084,9 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 		myBlindsIdx++;
 
 		CKey k2 = GeneratePartialKey(inTx.vout[myOutpoint.n]);
-		allK2s.push_back(k2.GetPubKey());
+        unsigned char k2ADDPUB[33];
+        PointHashingSuccessively(ADDPUB, k2.begin(), ksADDPUB);
+		allK2s.push_back(CPubKey(k2ADDPUB, k2ADDPUB + 33));
 	}
 
 	//collecting output commitment blinding factors
@@ -4086,16 +4102,14 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 
 	//compute K1
 	CKey newBlind;
-
 	unsigned char outSum[32];
 	if (!secp256k1_pedersen_blind_sum(both, outSum, (const unsigned char * const *)bptr, totalCommits, npositive))
 		throw runtime_error("Cannot compute pedersen blind sum");
 
-	newBlind.Set(outSum, outSum + 32, true);
-	CPubKey newBlindPub = newBlind.GetPubKey();
+	//newBlind.Set(outSum, outSum + 32, true);
 	CKeyImage K1;
 	unsigned char K1data[33];
-	PointHashingSuccessively(newBlindPub, outSum, K1data);
+	PointHashingSuccessively(ADDPUB, outSum, K1data);
 	K1.Set(K1data, K1data + 33);
 	//compute K2
 	CKeyImage K2 = SumOfAllPubKeys(allK2s);

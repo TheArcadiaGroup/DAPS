@@ -960,7 +960,7 @@ private:
     CKey GeneratePartialKey(const COutPoint& out);
     CKey GeneratePartialKey(const CTxOut& out);
     void generateAdditionalPartialAlpha(const CPartialTransaction& tx, CPKeyImageAlpha& combo, const uint256& hashOfInOuts);
-    CPubKey generateAdditonalPubKey(const CPartialTransaction wtxNew);
+    CPubKey generateAdditonalPubKey(const CPartialTransaction& wtxNew);
     CKey generateAdditionalPartialAlpha(const CPartialTransaction& tx);
     uint256 generateHashOfAllIns(const CPartialTransaction& tx);
 };

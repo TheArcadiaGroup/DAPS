@@ -620,9 +620,11 @@ struct CPartialTransaction
     }
 
     void copyFrom(const CPartialTransaction& ptx) {
+    	//*const_cast<std::vector<CKeyImage>*>(&keyImages) = tx.keyImages;
+    	//*const_cast<std::vector<std::vector<CTxIn>>*>(&decoys) = tx.decoys;
     	this->nVersion = ptx.nVersion;
-    	this->vin = ptx.vin;
-    	this->vout = ptx.vout;
+    	*const_cast<std::vector<CTxIn>*>(&vin) = ptx.vin;
+    	*const_cast<std::vector<CTxOut>*>(&vout) = ptx.vout;
     	this->nLockTime = ptx.nLockTime;
     	this->hasPaymentID = ptx.hasPaymentID;
     	this->paymentID = ptx.paymentID;

@@ -41,6 +41,7 @@ KeyImageSync::KeyImageSync(QWidget* parent) : QDialog(parent),
 {
     ui->setupUi(this);
     connect(ui->syncKeyImageButton, SIGNAL(clicked()), this, SLOT(syncKeyImages()));
+	connect(ui->generateKeyImage, SIGNAL(clicked()), this, SLOT(generateKeyImageHex()));
 }
 
 void KeyImageSync::setClientModel(ClientModel* clientModel)
@@ -90,6 +91,7 @@ void KeyImageSync::updateKeyImageButtons()
 
 void KeyImageSync::syncKeyImages()
 {
+	LOCK2(cs_main, pwalletMain->cs_wallet);
 	std::string hexCode = ui->hexCode->toPlainText().toStdString();
 	if (!IsHex(hexCode)) return;
 	vector<unsigned char> partialTxHex(ParseHex(hexCode));
@@ -111,6 +113,7 @@ void KeyImageSync::syncKeyImages()
 
 void KeyImageSync::generateKeyImageHex()
 {
+	LOCK2(cs_main, pwalletMain->cs_wallet);
 	std::string hexCode = ui->hexCode->toPlainText().toStdString();
 	if (!IsHex(hexCode)) return;
 	vector<unsigned char> partialTxHex(ParseHex(hexCode));
@@ -122,7 +125,17 @@ void KeyImageSync::generateKeyImageHex()
 		return;
 	}
 	CListPKeyImageAlpha keyImageAlpha;
-	model->getCWallet()->generatePKeyImageAlphaListFromPartialTx(ptx, keyImageAlpha);
+	try {
+		model->getCWallet()->generatePKeyImageAlphaListFromPartialTx(ptx, keyImageAlpha);
+	} catch (const std::exception& err) {
+		QMessageBox msgBox;
+        msgBox.setWindowTitle("Error");
+        msgBox.setText(QString(err.what()));
+        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.exec();
+        return;
+	}
 	CDataStream ssWritedata(SER_NETWORK, PROTOCOL_VERSION);
 	ssWritedata << keyImageAlpha;
 	std::string hex = HexStr(ssWritedata.begin(), ssWritedata.end());
