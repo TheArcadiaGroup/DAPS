@@ -3987,6 +3987,14 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 		}
 	}
 
+    //commitment to tx fee, blind = 0
+	unsigned char txFeeBlind[32];
+	memset(txFeeBlind, 0, 32);
+	if (!secp256k1_pedersen_commit(both, &allOutCommitmentsPacked[wtxNew.vout.size()], txFeeBlind, wtxNew.nTxFee, &secp256k1_generator_const_h, &secp256k1_generator_const_g)) {
+		//strFailReason = _("Cannot parse the commitment for transaction fee");
+		return null;
+	}
+
 	//additional ring pubkey member in the ring = ADPUB = Sum of All input public keys + sum of all input commitments - sum of all output commitments = every signer can compute
 	for (int j = 0; j < (int)wtxNew.vin[0].decoys.size() + 1; j++) {
 		//if (j != PI) {
@@ -4283,6 +4291,8 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	memcpy(wtxNew.encodedC_PI.begin(), encodedCPI, 32);
 
 	//add ECDH to S[j][PI]
+    //S[j][PI] = ALPHA - c * x[j]
+    //
 
 	//i for decoy index => PI
 	for (int i = 0; i < (int)wtxNew.vin[0].decoys.size() + 1; i++) {
