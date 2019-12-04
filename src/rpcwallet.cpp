@@ -2987,3 +2987,38 @@ UniValue revealmnemonicphrase(const UniValue& params, bool fHelp)
 
     return mPhrase;
 }
+
+UniValue importmnemonicphrase(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 24)
+        throw runtime_error(
+                "importmnemonicphrase \n"
+                "\nImport Mnemonic Phrase.\n"
+                "\nArguments:\n"
+                "\"24 word Mnemonic Phrase\"    (string) mnemonic phrase\n"
+                "\nResult:\n"
+                "\"successful import.\"          (bool) true/false\n"
+                "\nExamples:\n" +
+                HelpExampleCli("importmnemonicphrase", "") + HelpExampleCli("importmnemonicphrase", "\"\"") +
+                HelpExampleCli("importmnemonicphrase", "") + HelpExampleRpc("importmnemonicphrase", ""));
+
+    EnsureWalletIsUnlocked();
+
+    std::string phrase;
+    UniValue newParams(UniValue::VARR);
+    // forward params but skip command
+    for (unsigned int i = 0; i < params.size(); i++) {
+        phrase += params[i].get_str() + " ";
+    }
+
+    try {
+        pwalletMain->GenerateNewHDChain(&phrase);
+        CBlockLocator loc = chainActive.GetLocator(chainActive[0]);
+        pwalletMain->SetBestChain(loc);
+        CWalletDB(pwalletMain->strWalletFile).WriteScannedBlockHeight(0); //reschedule to rescan entire chain to recover all funds and history
+    } catch (std::exception& ex) {
+        throw JSONRPCError(RPC_WALLET_ERROR,
+                           "Error: Recovery phrase is invalid. Please try again and double check all words.");
+    }
+    return "Done";
+}
