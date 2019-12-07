@@ -254,7 +254,6 @@ struct CListPKeyImageAlpha {
 	CKeyImage partialAdditionalKeyImage;
 	uint256 hashOfAllInputOutpoints;
 	ADD_SERIALIZE_METHODS;
-
 	template <typename Stream, typename Operation>
 	inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
 	{
@@ -599,6 +598,7 @@ public:
     void ReacceptWalletTransactions();
     void ResendWalletTransactions();
     CAmount GetBalance();
+    bool ReadKeyImage(const COutPoint& out, CKeyImage& ki);
     CAmount GetSpendableBalance();
     CAmount GetLockedCoins() const;
     CAmount GetUnlockedCoins() const;

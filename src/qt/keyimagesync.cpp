@@ -41,6 +41,7 @@ KeyImageSync::KeyImageSync(QWidget* parent) : QDialog(parent),
 {
     ui->setupUi(this);
     connect(ui->syncKeyImageButton, SIGNAL(clicked()), this, SLOT(syncKeyImages()));
+	ui->syncKeyImageButton->setVisible(false);
 	connect(ui->generateKeyImage, SIGNAL(clicked()), this, SLOT(generateKeyImageHex()));
 }
 
@@ -141,6 +142,13 @@ void KeyImageSync::generateKeyImageHex()
 	std::string hex = HexStr(ssWritedata.begin(), ssWritedata.end());
 	ui->signedHex->setText(QString::fromStdString(hex));
 	ui->signedHex->setReadOnly(true);
+
+	QMessageBox msgBox;
+    msgBox.setWindowTitle("Information");
+    msgBox.setText("Hex code created! Please send it to the transaction creator for him to start co-signing the transaction");
+    msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.exec();
 }
 
 

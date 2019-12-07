@@ -86,6 +86,8 @@ void CoSignTransaction::UpdateLabels() {
 
 void CoSignTransaction::cosignTransaction()
 {
+    if (!pwalletMain) return;
+    LOCK2(cs_main, pwalletMain->cs_wallet);
     if (!pwalletMain->HasPendingTx()) {
         std::string hexPartial = ui->hexCode->toPlainText().trimmed().toStdString();
         if (!IsHex(hexPartial)) return;
@@ -109,18 +111,35 @@ void CoSignTransaction::cosignTransaction()
             msgBox.exec();
             return;
         }
-
-        CDataStream dex(SER_NETWORK, PROTOCOL_VERSION);
-        dex << partialTx;
-        std::string hex = HexStr(dex.begin(), dex.end());
-        ui->signedHex->setReadOnly(true);
-        ui->signedHex->setText(QString::fromStdString(hex));
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("Transaction Signed");
-        msgBox.setText("Multisignature transaction CoSigned by you. You can copy the hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");
-        msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
-        msgBox.setIcon(QMessageBox::Information);
-        msgBox.exec();
+        CTransaction convertedTx = partialTx.ToTransaction();
+        CValidationState state;
+        if (!AcceptToMemoryPool(mempool, state, convertedTx, false, NULL, false)) {
+            CDataStream dex(SER_NETWORK, PROTOCOL_VERSION);
+            dex << partialTx;
+            std::string hex = HexStr(dex.begin(), dex.end());
+            ui->signedHex->setReadOnly(true);
+            ui->signedHex->setText(QString::fromStdString(hex));
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Transaction Signed");
+            msgBox.setText("Multisignature transaction CoSigned by you. You can copy the hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");
+            msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+            msgBox.setIcon(QMessageBox::Information);
+            msgBox.exec();
+        } else {
+            CDataStream dex(SER_NETWORK, PROTOCOL_VERSION);
+            dex << convertedTx;
+            std::string hex = HexStr(dex.begin(), dex.end());
+            ui->signedHex->setReadOnly(true);
+            ui->signedHex->setText(QString::fromStdString(hex));
+            
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Transaction Sent");
+            msgBox.setText(QString("Multisignature transaction CoSigned by you and sent. Here's transaction ID ") + QString(convertedTx.GetHash().GetHex().c_str()));
+            msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
+            msgBox.setIcon(QMessageBox::Information);
+            msgBox.exec();
+        }
+        
     } else {
         QMessageBox msgBox;
         //Read all partial key images
@@ -174,7 +193,6 @@ void CoSignTransaction::cosignTransaction()
                 msgBox.exec();
                 return;
             }
-
             CDataStream dex(SER_NETWORK, PROTOCOL_VERSION);
             dex << ptx;
             std::string hex = HexStr(dex.begin(), dex.end());

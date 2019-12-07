@@ -553,6 +553,7 @@ struct CPartialTransaction
     std::vector<uint256> hashesOfSignedSecrets;
     uint256 selectedUTXOHash;
     uint256 encodedC_PI;
+    std::vector<std::vector<unsigned char>> blinds;
 
     CPartialTransaction() {};
     CPartialTransaction(const CTransaction& tx)
@@ -571,8 +572,12 @@ struct CPartialTransaction
     	//*const_cast<std::vector<std::vector<CTxIn>>*>(&decoys) = tx.decoys;
     	nTxFee = tx.nTxFee;
     	ntxFeeKeyImage = tx.ntxFeeKeyImage;
+        for(int i = 0; i < tx.vout.size(); i++) {
+            std::vector<unsigned char> blind;
+            std::copy(tx.vout[i].maskValue.inMemoryRawBind.begin(), tx.vout[i].maskValue.inMemoryRawBind.end(), std::back_inserter(blind));
+            blinds.push_back(blind);
+        }
     }
-
     CTransaction ToTransaction() const {
     	CTransaction tx;
     	*const_cast<int*>(&tx.nVersion) = nVersion;
@@ -617,6 +622,7 @@ struct CPartialTransaction
         READWRITE(hashesOfSignedSecrets);
         READWRITE(selectedUTXOHash);
         READWRITE(encodedC_PI);
+        READWRITE(blinds);
     }
 
     void copyFrom(const CPartialTransaction& ptx) {
@@ -637,6 +643,7 @@ struct CPartialTransaction
     	this->hashesOfSignedSecrets = ptx.hashesOfSignedSecrets;
     	this->selectedUTXOHash = ptx.selectedUTXOHash;
     	this->encodedC_PI = ptx.encodedC_PI;
+    	this->blinds = ptx.blinds;
     }
 };
 

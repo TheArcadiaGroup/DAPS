@@ -827,7 +827,9 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
     }
 
     std::string outString = outpoint.hash.GetHex() + std::to_string(outpoint.n);
-    CKeyImage ki = outpointToKeyImages[outString];
+    CKeyImage ki;
+    ReadKeyImage(COutPoint(hash, n), ki);
+    LogPrintf("%s: outString %s = %s\n", __func__, outString, ki.GetHex());
     if (IsKeyImageSpend1(ki.GetHex(), uint256())) {
         return true;
     }
@@ -1114,6 +1116,15 @@ void CWallet::MarkDirty()
     }
 }
 
+bool CWallet::ReadKeyImage(const COutPoint& out, CKeyImage& ki) {
+    std::string outpoint = out.hash.GetHex() + std::to_string(out.n);
+    if (outpointToKeyImages.count(outpoint) == 1) {
+        ki = outpointToKeyImages[outpoint];
+        return true;
+    }
+    return CWalletDB(strWalletFile).ReadKeyImage(outpoint, ki);
+}
+
 bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
 {
     uint256 hash = wtxIn.GetHash();
@@ -1126,7 +1137,6 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
     }
 
     CWalletDB db(strWalletFile);
-    CAmount totalOut = 0;
     //as a rule, a multisig transaction will always has an output for the wallet itself
     //if the tx is from the wallet, it must have a change to be able to recognize as tx for the multisig wallet
     for (size_t i = 0; i < wtxIn.vout.size(); i++) {
@@ -1143,11 +1153,7 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
     	if (IsMine(wtxIn.vout[i])) {
     			//outpointToKeyImages[outpoint] = ki;
     	}
-        if (!fFromLoadWallet) totalOut += getCTxOutValue(wtxIn, wtxIn.vout[i]);
     }
-
-    LogPrintf("Tx:%s, total out=%d\n", hash.GetHex(), totalOut);
-    if (!fFromLoadWallet && totalOut == 0) return false;
 
     if (fFromLoadWallet) {
         mapWallet[hash] = wtxIn;
@@ -1736,6 +1742,7 @@ CKey CWallet::generateAdditionalPartialAlpha(const CPartialTransaction& tx)
 	CKey mySpend;
 	mySpendPrivateKey(mySpend);
 	uint256 alpha = Hash(mySpend.begin(), mySpend.end(), hashOfInOuts.begin(), hashOfInOuts.end());
+    LogPrintf("%s: additional alpha = %s\n", __func__, alpha.GetHex());
 	CKey alphaKey;
 	alphaKey.Set(alpha.begin(), alpha.end(), true);
 	return alphaKey;
@@ -1745,6 +1752,7 @@ void CWallet::generateAdditionalPartialAlpha(const CPartialTransaction& tx, CPKe
 	CKey mySpend;
 	mySpendPrivateKey(mySpend);
 	uint256 alpha = Hash(mySpend.begin(), mySpend.end(), hashOfInOuts.begin(), hashOfInOuts.end());
+    LogPrintf("%s: additional alpha = %s\n", __func__, alpha.GetHex());
 	CKey alphaKey;
 	alphaKey.Set(alpha.begin(), alpha.end(), true);
 	CPubKey alphaPub = alphaKey.GetPubKey();
@@ -1752,6 +1760,7 @@ void CWallet::generateAdditionalPartialAlpha(const CPartialTransaction& tx, CPKe
 	unsigned char rij[33];
 
 	CPubKey ADDPUB = generateAdditonalPubKey(tx);
+    LogPrintf("%s: ADDPUB = %s\n", __func__, ADDPUB.GetHex());
 
 	PointHashingSuccessively(ADDPUB, alphaKey.begin(), rij);
 	combo.RIJ.Set(rij, rij + 33);
@@ -1775,6 +1784,7 @@ void CWallet::GeneratePKeyImageAlpha(const COutPoint& op, CPKeyImageAlpha& combo
 	if (!ExtractPubKey(txout.scriptPubKey, destKey)) {
 		throw runtime_error("cannot extract public key from destination script");
 	}
+    LogPrintf("%s: destKey = %s, tx = %s\n", __func__, destKey.GetHex(), op.hash.GetHex());
 	PointHashingSuccessively(destKey, alpha, rij);
 	combo.RIJ.Set(rij, rij + 33);
 	combo.ki = GeneratePartialKeyImage(op);
@@ -1798,6 +1808,7 @@ void CWallet::GenerateAlphaFromOutpoint(const COutPoint& op, unsigned char* alph
 	memcpy(data + 32, h.begin(), 32);
 	uint256 hash = Hash(data, data + 64);
 	memcpy(alpha, hash.begin(), 32);
+    LogPrintf("%s: alpha (%s,%d) = %s\n", __func__, op.hash.GetHex(), op.n, HexStr(alpha, alpha + 32));
 }
 
 CKeyImage CWallet::GeneratePartialKeyImage(const COutPoint& out)
@@ -2280,8 +2291,6 @@ bool CWallet::AvailableCoins(const uint256 wtxid, const CWalletTx* pcoin, vector
 
             isminetype mine = IsMine(pcoin->vout[i]);
             if (mine == ISMINE_NO)
-                continue;
-            if (mine == ISMINE_WATCH_ONLY)
                 continue;
             if (IsLockedCoin(wtxid, i) && nCoinType != ONLY_1000000)
                 continue;
@@ -3527,6 +3536,7 @@ bool CWallet::GenerateBulletProofForStaking(CTransaction& tx)
 
 bool CWallet::makeRingCT(CPartialTransaction& wtxNew, int ringSize, std::string& strFailReason)
 {
+    LOCK2(cs_main, cs_wallet);
     LogPrintf("making ringCT, ringsize=%d\n", ringSize);
     int myIndex;
     if (!selectDecoysAndRealIndex(wtxNew, myIndex, ringSize)) {
@@ -3590,49 +3600,76 @@ int CWallet::findMultisigInputIndex(const CTransaction& tx) const {
 }
 
 int CWallet::findMultisigInputIndex(const CTransaction& tx, const CTxIn& txin) const {
+    LOCK2(cs_main, cs_wallet);
     if (myIndexMap.count(tx.GetHash()) == 1) return myIndexMap[tx.GetHash()];
-	int myIndex = -1;
-	int numMatch = 0;
-	for(size_t i = 0; i < txin.decoys.size(); i++) {
-		if (IsMine(txin.decoys[i])) {
-			numMatch++;
-			myIndex = i;
-		}
-	}
-	if (numMatch >= 2) {
-        myIndexMap[tx.GetHash()] = -2;
-        return -2;
-    }
-    
+    int ret = -2;
     std::vector<pair<uint256, unsigned int>> setCoins;
 
     for(size_t i = 0; i < tx.vin.size(); i++) {
-        if (myIndex == -1) {
-            if (!IsMine(tx.vin[i].prevout)) {
-                myIndexMap[tx.GetHash()] = -2;
-                return -2;
-            }
-            setCoins.push_back(make_pair(tx.vin[i].prevout.hash, tx.vin[i].prevout.n));
-        } else {
-			if (!IsMine(tx.vin[i].decoys[myIndex])) {
-                myIndexMap[tx.GetHash()] = -2;
-                return -2;
-            }
-            setCoins.push_back(make_pair(tx.vin[i].decoys[myIndex].hash, tx.vin[i].decoys[myIndex].n));
-		}
+        setCoins.push_back(make_pair(tx.vin[i].prevout.hash, tx.vin[i].prevout.n));
 	}
-    uint256 h = ComputeSortedSelectedOutPointHash(setCoins);
-    CKey privateTx;
-    privateTx.Set(h.begin(), h.end(), true);
-    CPubKey txPub = privateTx.GetPubKey();
-    for(size_t i = 0; i < tx.vout.size(); i++) {
-        if (txPub.Raw() == tx.vout[i].txPub) {
-            myIndexMap[tx.GetHash()] = myIndex;
-            return myIndex;
+    {
+        uint256 h = ComputeSortedSelectedOutPointHash(setCoins);
+        CKey privateTx;
+        privateTx.Set(h.begin(), h.end(), true);
+        CPubKey txPub = privateTx.GetPubKey();
+        for(size_t i = 0; i < tx.vout.size(); i++) {
+            if (txPub.Raw() == tx.vout[i].txPub) {
+                myIndexMap[tx.GetHash()] = -1;
+                ret = -1;
+                break;
+            }
         }
     }
-    myIndexMap[tx.GetHash()] = -2;
-	return -2;
+    CWalletDB db(strWalletFile);
+    if (ret == -1) {
+        for(size_t i = 0; i < tx.vin.size(); i++) {
+            if (tx.vin[i].keyImage.IsValid()) {
+                std::string outString = tx.vin[i].prevout.hash.GetHex() + std::to_string(tx.vin[i].prevout.n);
+                outpointToKeyImages[outString] = tx.vin[i].keyImage;
+                db.WriteKeyImage(outString, tx.vin[i].keyImage);
+                if (mapWallet.count(tx.vin[i].prevout.hash) == 1) {
+                    mapWallet[tx.vin[i].prevout.hash].MarkDirty();
+                }
+            }
+        }
+        return ret;
+    }
+
+    for(size_t k = 0; k < tx.vin[0].decoys.size(); k++) {
+        setCoins.clear();
+        for(size_t i = 0; i < tx.vin.size(); i++) {
+            setCoins.push_back(make_pair(tx.vin[i].decoys[k].hash, tx.vin[i].decoys[k].n));
+        }
+        uint256 h = ComputeSortedSelectedOutPointHash(setCoins);
+        CKey privateTx;
+        privateTx.Set(h.begin(), h.end(), true);
+        CPubKey txPub = privateTx.GetPubKey();
+        for(size_t i = 0; i < tx.vout.size(); i++) {
+            if (txPub.Raw() == tx.vout[i].txPub) {
+                myIndexMap[tx.GetHash()] = k;
+                ret = k;
+                break;
+            }
+        }
+        if (ret != -2) {
+            break;
+        }
+    }
+
+    if (ret >= 0) {
+        for(size_t i = 0; i < tx.vin.size(); i++) {
+            if (tx.vin[i].keyImage.IsValid()) {
+                std::string outString = tx.vin[i].decoys[ret].hash.GetHex() + std::to_string(tx.vin[i].decoys[ret].n);
+                outpointToKeyImages[outString] = tx.vin[i].keyImage;
+                db.WriteKeyImage(outString, tx.vin[i].keyImage);
+                if (mapWallet.count(tx.vin[i].decoys[ret].hash) == 1) {
+                    mapWallet[tx.vin[i].decoys[ret].hash].MarkDirty();
+                }
+            }
+        }
+    }
+	return ret;
 }
 
 uint256 CWallet::generateHashOfAllIns(const CPartialTransaction& tx)
@@ -3657,6 +3694,7 @@ uint256 CWallet::generateHashOfAllIns(const CPartialTransaction& tx)
 
 bool CWallet::generatePKeyImageAlphaListFromPartialTx(const CPartialTransaction& tx, CListPKeyImageAlpha& l)
 {
+    LOCK2(cs_main, cs_wallet);
 	int myIndex = findMultisigInputIndex(tx);
     if (myIndex < -1) throw runtime_error("Failed to find index of the multisignature transaction");
 
@@ -3672,6 +3710,10 @@ bool CWallet::generatePKeyImageAlphaListFromPartialTx(const CPartialTransaction&
 		GeneratePKeyImageAlpha(myOutpoint, combo);
 		uint256 opHash = myOutpoint.GetHash();
 		l.partialAlphas.push_back(combo);
+        LogPrintf("%s:combo.outPointHash = %s\n", __func__, combo.outPointHash.GetHex());
+        LogPrintf("%s:combo.lij = %s\n", __func__, combo.LIJ.GetHex());
+        LogPrintf("%s:combo.rij = %s\n", __func__, combo.RIJ.GetHex());
+        LogPrintf("%s:combo.ki = %s\n", __func__, combo.ki.GetHex());
 	}
 
 	l.hashOfAllInputOutpoints = generateHashOfAllIns(tx);
@@ -3679,6 +3721,10 @@ bool CWallet::generatePKeyImageAlphaListFromPartialTx(const CPartialTransaction&
 	CPKeyImageAlpha additional;
 	generateAdditionalPartialAlpha(tx, additional, l.hashOfAllInputOutpoints);
 	l.partialAlphas.push_back(additional);
+    LogPrintf("%s:additional.outPointHash = %s\n", __func__, additional.outPointHash.GetHex());
+    LogPrintf("%s:additional.lij = %s\n", __func__, additional.LIJ.GetHex());
+    LogPrintf("%s:additional.rij = %s\n", __func__, additional.RIJ.GetHex());
+    LogPrintf("%s:additional.ki = %s\n", __func__, additional.ki.GetHex());
 
 	l.partialAdditionalKeyImage = generatePartialAdditionalKeyImage(tx);
 }
@@ -3723,6 +3769,7 @@ CPubKey CWallet::SumOfAllPubKeys(std::vector<CPubKey>& l) const
 
 CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction& wtxNew)
 {
+    LOCK2(cs_main, cs_wallet);
 	const size_t MAX_VIN = 32;
 	const size_t MAX_DECOYS = 13;	//padding 1 for safety reasons
 	const size_t MAX_VOUT = 5;
@@ -3849,12 +3896,15 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction& wtxNew)
 
 CKeyImage CWallet::generatePartialAdditionalKeyImage(const CPartialTransaction& wtxNew)
 {
+    LOCK2(cs_main, cs_wallet);
 	CPubKey ADDPUB = generateAdditonalPubKey(wtxNew);
+    LogPrintf("%s: ADDPUB = %s\n", __func__, ADDPUB.GetHex());
 	CKey mySpend;
 	mySpendPrivateKey(mySpend);
 	unsigned char retRaw[33];
 	PointHashingSuccessively(ADDPUB, mySpend.begin(), retRaw);
-	CKeyImage ret(retRaw, retRaw);
+	CKeyImage ret(retRaw, retRaw + 33);
+    LogPrintf("%s: additional partial key image = %s\n", __func__, ret.GetHex());
 	return ret;
 }
 
@@ -3868,6 +3918,7 @@ CKeyImage CWallet::generatePartialAdditionalKeyImage(const CPartialTransaction& 
  * 6. The last signer put all full key images, c, S[i][j] to the transaction as the signature*/
 bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::vector<CListPKeyImageAlpha> ls, std::string& strFailReason)
 {
+    LOCK2(cs_main, cs_wallet);
     CKey mySpend;
 	mySpendPrivateKey(mySpend);
 	const size_t MAX_VIN = 32;
@@ -3883,14 +3934,12 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 
 	size_t numSigner = comboKeys.comboKeys.size();
 	if (ls.size() != numSigner) {
-		strFailReason = _("Num Signers not match");
-		return false;
+		throw runtime_error("Num Signers not match");
 	}
 
 	for (size_t i = 0; i < ls.size(); i++) {
 		if (ls[i].partialAlphas.size() != wtxNew.vin.size() + 1) {
-			strFailReason = _("Alpha list size not match");
-			return false;
+			throw runtime_error("Alpha list size not match");
 		}
 	}
 
@@ -3920,8 +3969,7 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	for (size_t i = 0; i < wtxNew.vout.size(); i++) {
 		memcpy(&(allOutCommitments[i][0]), &(wtxNew.vout[i].commitment[0]), 33);
 		if (!secp256k1_pedersen_commitment_parse(both, &allOutCommitmentsPacked[i], allOutCommitments[i])) {
-			strFailReason = _("Cannot parse the commitment for inputs");
-			return false;
+			throw runtime_error("Cannot parse the commitment for inputs");
 		}
 	}
 
@@ -3929,8 +3977,7 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	unsigned char txFeeBlind[32];
 	memset(txFeeBlind, 0, 32);
 	if (!secp256k1_pedersen_commit(both, &allOutCommitmentsPacked[wtxNew.vout.size()], txFeeBlind, wtxNew.nTxFee, &secp256k1_generator_const_h, &secp256k1_generator_const_g)) {
-		strFailReason = _("Cannot parse the commitment for transaction fee");
-		return false;
+		throw runtime_error("Cannot parse the commitment for transaction fee");
 	}
 
 	//filling the additional pubkey elements for decoys: allInPubKeys[wtxNew.vin.size()][..]
@@ -3967,12 +4014,11 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 				CTransaction txPrev;
 				uint256 hashBlock;
 				if (!GetTransaction(decoysForIn[j].hash, txPrev, hashBlock)) {
-					return false;
+					throw runtime_error("Failed to read decoys");
 				}
 				CPubKey extractedPub;
 				if (!ExtractPubKey(txPrev.vout[decoysForIn[j].n].scriptPubKey, extractedPub)) {
-					strFailReason = _("Cannot extract public key from script pubkey");
-					return false;
+					throw runtime_error("Cannot extract public key from script pubkey");
 				}
 				memcpy(allInPubKeys[i][j], extractedPub.begin(), 33);
 				memcpy(allInCommitments[i][j], &(txPrev.vout[decoysForIn[j].n].commitment[0]), 33);
@@ -3995,8 +4041,7 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 			const secp256k1_pedersen_commitment *inCptr[MAX_VIN * 2];
 			for (int k = 0; k < (int)wtxNew.vin.size(); k++) {
 				if (!secp256k1_pedersen_commitment_parse(both, &allInCommitmentsPacked[k][j], allInCommitments[k][j])) {
-					strFailReason = _("Cannot parse the commitment for inputs");
-					return false;
+					throw runtime_error("Cannot parse the commitment for inputs");
 				}
 				inCptr[k] = &allInCommitmentsPacked[k][j];
 			}
@@ -4031,6 +4076,7 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
         }
 		unsigned char HSPubTemp[33];
 		PointHashingSuccessively(pub, temp.begin(), HSPubTemp);
+        LogPrintf("Extracted pubkey:%s\n", pub.GetHex());
 
 		std::vector<CKeyImage> partialKeyImages;
 
@@ -4043,6 +4089,7 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 		CKeyImage full = SumOfAllPubKeys(partialKeyImages);
 		memcpy(allKeyImages[i], full.begin(), 33);
         wtxNew.vin[i].keyImage.Set(allKeyImages[i], allKeyImages[i] + 33);
+        LogPrintf("Key image %d = %s\n", i, wtxNew.vin[i].keyImage.GetHex());
 	}
 
 	//2. compute key image for additional
@@ -4056,6 +4103,7 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	//K1 = (all input blinds - all output blinds)*ADDPUB => easy to compute
 	//K2 = (all HSs (ECDH))* ADDPUB ==> easy to compute
 	//K3 = (all partial private keys)*ADDPUB = wtxNew.vin.size() * (sum of all additional partial key images)
+    //private key of K3 = wtxNew.vin.size()*(sum of all co-signer private spend keys)
 
     CPubKey ADDPUB(allInPubKeys[wtxNew.vin.size()][PI], allInPubKeys[wtxNew.vin.size()][PI] + 33);
     LogPrintf("%s:ADDPUB=%s\n", __func__, ADDPUB.GetHex());
@@ -4079,11 +4127,11 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 		if (!CreateCommitment(&myBlinds[myBlindsIdx][0], tempAmount, recomputedCommitment))
 			throw runtime_error("Cannot create pedersen commitment");
 		if (recomputedCommitment != inTx.vout[myOutpoint.n].commitment) {
-			strFailReason = _("Input commitments are not correct");
-			return false;
+			throw runtime_error("Input commitments are not correct");
 		}
 
 		bptr[myBlindsIdx] = myBlinds[myBlindsIdx];
+        LogPrintf("%s: myBlinds=%s, myBlindsIdx=%d\n", __func__, HexStr(myBlinds[myBlindsIdx], myBlinds[myBlindsIdx] + 32), myBlindsIdx);
 		myBlindsIdx++;
 
 		CKey k2 = GeneratePartialKey(inTx.vout[myOutpoint.n]);
@@ -4093,14 +4141,23 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	}
 
 	//collecting output commitment blinding factors
+    if (wtxNew.blinds.size() != wtxNew.vout.size()) {
+        throw runtime_error("ill-formated partial transaction");
+    }
+    int blindIdx = 0;
 	for(CTxOut& out: wtxNew.vout) {
 		if (!out.IsEmpty()) {
-			if (out.maskValue.inMemoryRawBind.IsValid()) {
-				memcpy(&myBlinds[myBlindsIdx][0], out.maskValue.inMemoryRawBind.begin(), 32);
-			}
+			if (!wtxNew.blinds[blindIdx].empty()) {
+                LogPrintf("inMemoryRawBind is valid\n");
+				memcpy(&myBlinds[myBlindsIdx][0], wtxNew.blinds[blindIdx].data(), 32);
+			} else {
+                LogPrintf("inMemoryRawBind is invalid\n");
+            }
 			bptr[myBlindsIdx] = &myBlinds[myBlindsIdx][0];
+            LogPrintf("%s: myBlinds=%s, myBlindsIdx=%d\n", __func__, HexStr(myBlinds[myBlindsIdx], myBlinds[myBlindsIdx] + 32), myBlindsIdx);
 			myBlindsIdx++;
 		}
+        blindIdx++;
 	}
 
 	//compute K1
@@ -4108,6 +4165,7 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	unsigned char outSum[32];
 	if (!secp256k1_pedersen_blind_sum(both, outSum, (const unsigned char * const *)bptr, totalCommits, npositive))
 		throw runtime_error("Cannot compute pedersen blind sum");
+    LogPrintf("%s: outSum=%s, myBlindsIdx=%d\n", __func__, HexStr(outSum, outSum + 32), myBlindsIdx);
 
 	//newBlind.Set(outSum, outSum + 32, true);
 	CKeyImage K1;
@@ -4119,24 +4177,33 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 
 	//compute K3
 	//K3 = (all partial private keys)*ADDPUB = wtxNew.vin.size() * (sum of all additional partial key images)
-	std::vector<CPubKey> allK3s;
 	std::vector<CPubKey> subAllK3s;
 	for(size_t i = 0; i < ls.size(); i++) {
+        LogPrintf("%s: partialAdditionalKeyImage = %s, i = %d\n", __func__, ls[i].partialAdditionalKeyImage.GetHex(), i);
 		subAllK3s.push_back(ls[i].partialAdditionalKeyImage);
 	}
-	for(size_t i = 0; i < wtxNew.vin.size(); i++) {
-		allK3s.insert(allK3s.end(), subAllK3s.begin(), subAllK3s.end());
-	}
-
-	CKeyImage K3 = SumOfAllPubKeys(allK3s);
+	// for(size_t i = 0; i < wtxNew.vin.size(); i++) {
+	// 	allK3s.insert(allK3s.end(), subAllK3s.begin(), subAllK3s.end());
+	// }
+    CKeyImage subK3 = SumOfAllPubKeys(subAllK3s);
+            LogPrintf("SubK3 = %s\n", subK3.GetHex());
+    std::vector<CPubKey> allPubK3s;
+    for(int i = 0; i < wtxNew.vin.size(); i++) {
+        allPubK3s.push_back(subK3);
+    }
+	CKeyImage K3 = SumOfAllPubKeys(allPubK3s);
 
 	std::vector<CKeyImage> k1k2k3;
 	k1k2k3.push_back(K1);
+        LogPrintf("K1 = %s\n", K1.GetHex());
 	k1k2k3.push_back(K2);
+        LogPrintf("K2 = %s\n", K2.GetHex());
 	k1k2k3.push_back(K3);
+        LogPrintf("K3 = %s\n", K3.GetHex());
 	CPubKey sum = SumOfAllPubKeys(k1k2k3);
 	memcpy(allKeyImages[wtxNew.vin.size()], sum.begin(), 33);
-
+    wtxNew.ntxFeeKeyImage.Set(sum.begin(), sum.end());
+    LogPrintf("Additonal key image = %s\n", wtxNew.ntxFeeKeyImage.GetHex());
 
 	unsigned char SIJ[MAX_VIN + 1][MAX_DECOYS + 1][32];
 	unsigned char LIJ[MAX_VIN + 1][MAX_DECOYS + 1][33];
@@ -4147,17 +4214,21 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	//generating LIJ and RIJ at PI: LIJ[j][PI], RIJ[j][PI], j=0..wtxNew.vin.size()
 	for (size_t j = 0; j < wtxNew.vin.size() + 1; j++) {
 		std::vector<CPubKey> allLIJs, allRIJs;
-
+        LogPrintf("%s: ls.size() = %d\n", __func__, ls.size());
 		for(int k = 0; k < ls.size(); k++) {
 			allLIJs.push_back(ls[k].partialAlphas[j].LIJ);
+            LogPrintf("%s: partialAlphas L %d %d = %s\n", __func__, k, j, HexStr(ls[k].partialAlphas[j].LIJ.begin(), ls[k].partialAlphas[j].LIJ.end()));
 			allRIJs.push_back(ls[k].partialAlphas[j].RIJ);
+            LogPrintf("%s: partialAlphas R %d %d = %s\n", __func__, k, j, HexStr(ls[k].partialAlphas[j].RIJ.begin(), ls[k].partialAlphas[j].RIJ.end()));
 		}
 
 		CPubKey LIJ_PI = SumOfAllPubKeys(allLIJs);
 		CPubKey RIJ_PI = SumOfAllPubKeys(allRIJs);
 
 		memcpy(LIJ[j][PI], LIJ_PI.begin(), 33);
-		memcpy(RIJ[j][PI], RIJ_PI.begin(), 33);
+        LogPrintf("%s: L %d %d = %s\n", __func__, j, PI, HexStr(LIJ[j][PI], LIJ[j][PI] + 33));
+		memcpy(RIJ[j][PI], RIJ_PI.begin(), 33);        
+        LogPrintf("%s: R %d %d = %s\n", __func__, j, PI, HexStr(RIJ[j][PI], RIJ[j][PI] + 33));
 	}
 
 	//filling LIJ & RIJ at [j][PI], additional LIJ, RIJ
@@ -4199,8 +4270,10 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	uint256 temppi1 = Hash(tempForHash, tempForHash + 2 * (wtxNew.vin.size() + 1) * 33 + 32);
 	if (PI_interator == 0) {
 		memcpy(CI[0], temppi1.begin(), 32);
+        LogPrintf("%s: C %d = %s\n", __func__, 0, HexStr(CI[0], CI[0] + 32));
 	} else {
 		memcpy(CI[PI_interator], temppi1.begin(), 32);
+        LogPrintf("%s: C %d = %s\n", __func__, PI_interator, HexStr(CI[PI_interator], CI[PI_interator] + 32));
 	}
 
 	while (PI_interator != PI) {
@@ -4209,21 +4282,19 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 			unsigned char CP[33];
 			memcpy(CP, allInPubKeys[j][PI_interator], 33);
 			if (!secp256k1_ec_pubkey_tweak_mul(CP, 33, CI[PI_interator])) {
-				strFailReason = _("Cannot compute LIJ for ring signature in secp256k1_ec_pubkey_tweak_mul");
-				return false;
+				throw runtime_error("Cannot compute LIJ for ring signature in secp256k1_ec_pubkey_tweak_mul");
 			}
 			if (!secp256k1_ec_pubkey_tweak_add(CP, 33, SIJ[j][PI_interator])) {
-				strFailReason = _("Cannot compute LIJ for ring signature in secp256k1_ec_pubkey_tweak_add");
-				return false;
+				throw runtime_error("Cannot compute LIJ for ring signature in secp256k1_ec_pubkey_tweak_add");
 			}
 			memcpy(LIJ[j][PI_interator], CP, 33);
+            LogPrintf("%s: L %d %d = %s\n", __func__, j, PI_interator, HexStr(LIJ[j][PI_interator], LIJ[j][PI_interator] + 33));
 
 			//compute RIJ
 			//first compute CI * I
 			memcpy(RIJ[j][PI_interator], allKeyImages[j], 33);
 			if (!secp256k1_ec_pubkey_tweak_mul(RIJ[j][PI_interator], 33, CI[PI_interator])) {
-				strFailReason = _("Cannot compute RIJ for ring signature in secp256k1_ec_pubkey_tweak_mul");
-				return false;
+				throw runtime_error("Cannot compute RIJ for ring signature in secp256k1_ec_pubkey_tweak_mul");
 			}
 
 			//compute S*H(P)
@@ -4248,8 +4319,9 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 				throw  runtime_error("Cannot compute sum of commitments");
 			size_t tempLength;
 			if (!secp256k1_pedersen_commitment_to_serialized_pubkey(&sum, RIJ[j][PI_interator], &tempLength)) {
-				strFailReason = _("Cannot compute two elements and serialize it to pubkey");
+				throw runtime_error("Cannot compute two elements and serialize it to pubkey");
 			}
+            LogPrintf("%s: R %d %d = %s\n", __func__, j, PI_interator, HexStr(RIJ[j][PI_interator], RIJ[j][PI_interator] + 33));
 		}
 
 		PI_interator++;
@@ -4274,9 +4346,11 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 		memcpy(tempForHashPtr, ctsHash.begin(), 32);
 		uint256 ciHashTmp = Hash(tempForHash, tempForHash + 2 * (wtxNew.vin.size() + 1) * 33 + 32);
 		memcpy(CI[ciIdx], ciHashTmp.begin(), 32);
+        LogPrintf("%s: C %d = %s\n", __func__, ciIdx, HexStr(CI[ciIdx], CI[ciIdx] + 32));
 	}
 
 	memcpy(wtxNew.c.begin(), CI[0], 32);
+    LogPrintf("%s: C = %s\n", __func__, HexStr(CI[PI], CI[PI] + 32));
 
 	//encode C[PI]
 	CKey multiView = MyMultisigViewKey();
@@ -4333,9 +4407,10 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 		if (!secp256k1_pedersen_blind_sum(GetContext(), SIJ[j][PI], sumArray, 3, 1)) throw runtime_error("Cannot compute EC mul");
     }
 
-    const unsigned char *sumArray[wtxNew.vin.size() + 3];
+    const unsigned char *sumArray[4];
     CKey additionalPartialAlpha = generateAdditionalPartialAlpha(wtxNew);
     sumArray[0] = additionalPartialAlpha.begin();
+    unsigned char sumOfECDHMultipliedByC[32];
     for(size_t j = 0; j < wtxNew.vin.size(); j++) {
         COutPoint myOutpoint;
 		if (myIndex == -1) {
@@ -4349,27 +4424,35 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
         memcpy(ch, CI[PI], 32);
         if (!secp256k1_ec_privkey_tweak_mul(ch, hs.begin()))
 			throw runtime_error("Cannot compute EC mul");
-        sumArray[j + 1] = ch;
+        
+        if (j == 0) {
+            memcpy(sumOfECDHMultipliedByC, ch, 32);
+        } else {
+            if (!secp256k1_ec_privkey_tweak_add(sumOfECDHMultipliedByC, ch))
+			    throw runtime_error("Cannot compute EC mul");
+        }
     }
+
+    sumArray[1] = sumOfECDHMultipliedByC;
 
     unsigned char coutSum[32];
     memcpy(coutSum, CI[PI], 32);
     if (!secp256k1_ec_privkey_tweak_mul(coutSum, outSum))
 	    throw runtime_error("Cannot compute EC mul");
-    sumArray[wtxNew.vin.size() + 1] = coutSum;
+    sumArray[2] = coutSum;
 
-    uint256 times(wtxNew.vin.size());
     unsigned char cspendkey[32];
-    memcpy(cspendkey, CI[PI], 32);
-    if (!secp256k1_ec_privkey_tweak_mul(cspendkey, times.begin()))
-	    throw runtime_error("Cannot compute EC mul");
+    if (!MultiplyScalar(cspendkey, CI[PI], wtxNew.vin.size()))
+        throw runtime_error("Cannot compute EC mul");
+    
+    LogPrintf("%s: cspendkey=%s\n", __func__, HexStr(cspendkey, cspendkey + 32));
 
     if (!secp256k1_ec_privkey_tweak_mul(cspendkey, mySpend.begin()))
 		throw runtime_error("Cannot compute EC mul");
     
-    sumArray[wtxNew.vin.size() + 2] = cspendkey;
+    sumArray[3] = cspendkey;
 
-    if (!secp256k1_pedersen_blind_sum(GetContext(), SIJ[wtxNew.vin.size()][PI], sumArray, wtxNew.vin.size() + 3, 1)) throw runtime_error("Cannot compute EC mul");
+    if (!secp256k1_pedersen_blind_sum(GetContext(), SIJ[wtxNew.vin.size()][PI], sumArray, 4, 1)) throw runtime_error("Cannot compute EC mul");
     
     //i for decoy index => PI
 	for (int i = 0; i < (int)wtxNew.vin[0].decoys.size() + 1; i++) {
@@ -4381,7 +4464,11 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 		}
 		wtxNew.S.push_back(S_column);
 	}
-	wtxNew.ntxFeeKeyImage.Set(allKeyImages[wtxNew.vin.size()], allKeyImages[wtxNew.vin.size()] + 33);
+	//wtxNew.ntxFeeKeyImage.Set(allKeyImages[wtxNew.vin.size()], allKeyImages[wtxNew.vin.size()] + 33);
+
+    for(size_t i = 0; i < wtxNew.vout.size(); i++) {
+        wtxNew.vout[i].nValue = 0;
+    }
 	return true;
 }
 
@@ -4391,6 +4478,8 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 //compute S'[wtx.vin.size()][PI] = ALPHAs[wtx.vin.size()] - c*wtx.vin.size()*spendkey => add it to S[wtx.vin.size()][PI]
 bool CWallet::CoSignPartialTransaction(CPartialTransaction& tx)
 {
+    if (IsLocked()) throw runtime_error("Wallet is locked");
+    LOCK2(cs_main, cs_wallet);
 	const size_t MAX_VIN = 32;
 	const size_t MAX_DECOYS = 13;	//padding 1 for safety reasons
 	const size_t MAX_VOUT = 5;
@@ -4420,6 +4509,7 @@ bool CWallet::CoSignPartialTransaction(CPartialTransaction& tx)
 	memcpy(decodedCPI, multiView.begin(), 32);
 	secp256k1_ec_privkey_negate2(GetContext(), decodedCPI);
 	secp256k1_ec_privkey_tweak_add(decodedCPI, tx.encodedC_PI.begin());
+    LogPrintf("%s: C = %s\n", __func__, HexStr(decodedCPI, decodedCPI + 32));
 
 	//the actual signing part which compute S[j][PI]
 	//compute S'[j][PI] = ALPHAs[j] - c*spendkey => add it to S[j][PI]
@@ -4455,12 +4545,11 @@ bool CWallet::CoSignPartialTransaction(CPartialTransaction& tx)
 	CKey alpha = generateAdditionalPartialAlpha(tx);
 
 	unsigned char cx[32];
-	memcpy(cx, decodedCPI, 32);
-	if (!secp256k1_ec_privkey_tweak_mul(cx, mySpend.begin()))
+	if (!MultiplyScalar(cx, decodedCPI, tx.vin.size()))
 		throw runtime_error("Cannot compute EC mul");
-    uint256 times(tx.vin.size());
-    if (!secp256k1_ec_privkey_tweak_mul(cx, times.begin()))
+    if (!secp256k1_ec_privkey_tweak_mul(cx, mySpend.begin()))
 		throw runtime_error("Cannot compute EC mul");
+    
 	const unsigned char *sumArray[2];
 	sumArray[0] = alpha.begin();
 	sumArray[1] = cx;

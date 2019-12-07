@@ -80,6 +80,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                 CTxDestination address;
                 sub.idx = parts.size(); // sequence number
                 sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
+                sub.address = CBitcoinAddress(address).ToString();
                 if (ExtractDestination(txout.scriptPubKey, address) && IsMine(*wallet, address)) {
                     // Received by DAPS Address
                     sub.credit = IsMine(*wallet, address) ? wallet->getCTxOutValue(wtx, txout) : 0;
@@ -88,7 +89,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                 } else {
                     // Received by IP connection (deprecated features), or a multisignature or other non-simple transaction
                     sub.type = TransactionRecord::RecvFromOther;
-                    sub.address = mapValue["from"];
+                    sub.address = CBitcoinAddress(address).ToString();
                 }
                 if (wtx.IsCoinBase() || wtx.IsCoinAudit()) {
                     // Generated

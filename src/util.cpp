@@ -830,6 +830,18 @@ bool PointHashingSuccessively(const CPubKey& pk, const unsigned char* tweak, uns
     return true;
 }
 
+bool MultiplyScalar(unsigned char* ret, const unsigned char* input, int times)
+{
+    if (!ret || !input) return false;
+    memcpy(ret, input, 32);
+    for(int i = 1; i < times; i++) {
+        if (!secp256k1_ec_privkey_tweak_add(ret, input)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool SetupNetworking()
 {
 #ifdef WIN32

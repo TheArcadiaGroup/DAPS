@@ -125,10 +125,18 @@ void SendCoinsDialog::on_sendButton_clicked(){
     }
 
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Are You Sure?", "Are you sure you would like to send this transaction?", QMessageBox::Yes|QMessageBox::No);
-    if (reply == QMessageBox::Yes) {
+    if (!pwalletMain->HasPendingTx()) {
+        reply = QMessageBox::question(this, "Are You Sure?", "Are you sure you would like to send this transaction?", QMessageBox::Yes|QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+        } else {
+            return;
+        }
     } else {
-        return;
+        reply = QMessageBox::question(this, "Are You Sure?", "You have a pending transaction that needs to be processed before making another transaction, would like cancel the pending transaction and make another one?", QMessageBox::Yes|QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+        } else {
+            return;
+        }
     }
 
     send_address = recipient.address;
@@ -201,7 +209,6 @@ void SendCoinsDialog::dialogIsFinished(int result) {
 void SendCoinsDialog::FillExistingTxHexCode() {
     if (pwalletMain) {
         if (pwalletMain->HasPendingTx()) {
-            ui->sendButton->setEnabled(false);
             ui->label_2->setText("Hex code of an existing transaction to be co-signed");
             CPartialTransaction ptx;
             CWalletDB(pwalletMain->strWalletFile).ReadPendingForSigningTx(ptx);

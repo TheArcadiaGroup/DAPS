@@ -226,5 +226,6 @@ void TraceThread(const char* name, Callable func)
 }
 
 bool PointHashingSuccessively(const CPubKey& pk, const unsigned char* tweak, unsigned char* out);
+bool MultiplyScalar(unsigned char* ret, const unsigned char* input, int times);
 
 #endif // BITCOIN_UTIL_H
