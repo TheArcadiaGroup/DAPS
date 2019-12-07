@@ -576,7 +576,6 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
     //verification
     unsigned char C[32];
     memcpy(C, tx.c.begin(), 32);
-    LogPrintf("%s: C %d = %s\n", __func__, 0, HexStr(C, C + 32));
     for (size_t j = 0; j < tx.vin[0].decoys.size() + 1; j++) {
         for (size_t i = 0; i < tx.vin.size() + 1; i++) {
             //compute LIJ, RIJ
@@ -593,7 +592,6 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
             }
 
             memcpy(LIJ[i][j], P, 33);
-            LogPrintf("%s: L %d %d = %s\n", __func__, i, j, HexStr(LIJ[i][j], LIJ[i][j] + 33));
             //compute RIJ
             unsigned char sh[33];
             CPubKey pkij;
@@ -642,9 +640,7 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
 
         uint256 temppi1 = Hash(tempForHash, tempForHash + 2 * (tx.vin.size() + 1) * 33 + 32);
         memcpy(C, temppi1.begin(), 32);
-        LogPrintf("%s: C %d = %s\n", __func__, j, HexStr(C, C + 32));
     }
-    LogPrintf("Verifying\n");
     return HexStr(tx.c.begin(), tx.c.end()) == HexStr(C, C + 32);
 }
 

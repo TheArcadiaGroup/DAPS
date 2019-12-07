@@ -820,7 +820,6 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
         const uint256& wtxid = it->second;
         std::map<uint256, CWalletTx>::const_iterator mit = mapWallet.find(wtxid);
         if (mit != mapWallet.end() && int(mit->second.GetDepthInMainChain()) > int(0)) {
-            LogPrintf("Tx:%s is spent by tx %s\n", hash.GetHex(), wtxid.GetHex());
             keyImagesSpends[keyImageHex] = true;
             return true; // Spent
         }
@@ -829,7 +828,6 @@ bool CWallet::IsSpent(const uint256& hash, unsigned int n)
     std::string outString = outpoint.hash.GetHex() + std::to_string(outpoint.n);
     CKeyImage ki;
     ReadKeyImage(COutPoint(hash, n), ki);
-    LogPrintf("%s: outString %s = %s\n", __func__, outString, ki.GetHex());
     if (IsKeyImageSpend1(ki.GetHex(), uint256())) {
         return true;
     }
@@ -3675,9 +3673,7 @@ int CWallet::findMultisigInputIndex(const CTransaction& tx, const CTxIn& txin) c
 uint256 CWallet::generateHashOfAllIns(const CPartialTransaction& tx)
 {
 	uint256 ret;
-    LogPrintf("%s: looking for my index\n", __func__);
 	int myIndex = findMultisigInputIndex(tx);
-    LogPrintf("%s: myIndex = %d\n", __func__, myIndex);
 
 	for (size_t j = 0; j < tx.vin.size(); j++) {
 		COutPoint myOutpoint;
@@ -3710,10 +3706,6 @@ bool CWallet::generatePKeyImageAlphaListFromPartialTx(const CPartialTransaction&
 		GeneratePKeyImageAlpha(myOutpoint, combo);
 		uint256 opHash = myOutpoint.GetHash();
 		l.partialAlphas.push_back(combo);
-        LogPrintf("%s:combo.outPointHash = %s\n", __func__, combo.outPointHash.GetHex());
-        LogPrintf("%s:combo.lij = %s\n", __func__, combo.LIJ.GetHex());
-        LogPrintf("%s:combo.rij = %s\n", __func__, combo.RIJ.GetHex());
-        LogPrintf("%s:combo.ki = %s\n", __func__, combo.ki.GetHex());
 	}
 
 	l.hashOfAllInputOutpoints = generateHashOfAllIns(tx);
@@ -3721,10 +3713,6 @@ bool CWallet::generatePKeyImageAlphaListFromPartialTx(const CPartialTransaction&
 	CPKeyImageAlpha additional;
 	generateAdditionalPartialAlpha(tx, additional, l.hashOfAllInputOutpoints);
 	l.partialAlphas.push_back(additional);
-    LogPrintf("%s:additional.outPointHash = %s\n", __func__, additional.outPointHash.GetHex());
-    LogPrintf("%s:additional.lij = %s\n", __func__, additional.LIJ.GetHex());
-    LogPrintf("%s:additional.rij = %s\n", __func__, additional.RIJ.GetHex());
-    LogPrintf("%s:additional.ki = %s\n", __func__, additional.ki.GetHex());
 
 	l.partialAdditionalKeyImage = generatePartialAdditionalKeyImage(tx);
 }
@@ -3775,7 +3763,6 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction& wtxNew)
 	const size_t MAX_VOUT = 5;
 	int myIndex = findMultisigInputIndex(wtxNew);
 	secp256k1_context2 *both = GetContext();
-    LogPrintf("%s: myindex = %d\n", __func__, myIndex);
 	//all in pubkeys + an additional public generated from commitments
 	unsigned char allInPubKeys[MAX_VIN + 1][MAX_DECOYS + 1][33];
 	unsigned char allInCommitments[MAX_VIN][MAX_DECOYS + 1][33];
@@ -3808,7 +3795,6 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction& wtxNew)
 		//strFailReason = _("Cannot parse the commitment for transaction fee");
 		return null;
 	}
-    LogPrintf("Computed commitment for tx fee\n");
 	//filling the additional pubkey elements for decoys: allInPubKeys[wtxNew.vin.size()][..]
 	//allInPubKeys[wtxNew.vin.size()][j] = sum of allInPubKeys[..][j] + sum of allInCommitments[..][j] - sum of allOutCommitments
 	const secp256k1_pedersen_commitment *outCptr[MAX_VOUT + 1];
@@ -3823,7 +3809,6 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction& wtxNew)
 		} else {
 			myOutpoint = wtxNew.vin[j].decoys[myIndex];
 		}
-        LogPrintf("Reading tx hash %s\n", myOutpoint.hash.GetHex());
 		CTransaction& inTx = mapWallet[myOutpoint.hash];
 
 		CPubKey tempPubKey;
@@ -3831,7 +3816,6 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction& wtxNew)
 		memcpy(allInPubKeys[j][PI], tempPubKey.begin(), 33);
 		memcpy(allInCommitments[j][PI], &(inTx.vout[myOutpoint.n].commitment[0]), 33);
 	}
-    LogPrintf("Extracting all decoy pubkeys and commitments\n");
 	//extract all decoy public keys and commitments
 	for (int i = 0; i < (int)wtxNew.vin.size(); i++) {
 		std::vector<COutPoint> decoysForIn;
@@ -3857,7 +3841,6 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction& wtxNew)
 		}
 	}
 
-    LogPrintf("Compute input pubkeys\n");
 	secp256k1_pedersen_commitment allInCommitmentsPacked[MAX_VIN][MAX_DECOYS + 1];
 
 	secp256k1_pedersen_commitment inPubKeysToCommitments[MAX_VIN][MAX_DECOYS + 1];
@@ -3867,7 +3850,6 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction& wtxNew)
 		}
 	}
 
-    LogPrintf("Parsing commitment for inputs\n");
 	//additional pubkey member in the ring = ADPUB = Sum of All input public keys + sum of all input commitments - sum of all output commitments = every signer can compute
 	int j = PI;
 	const secp256k1_pedersen_commitment *inCptr[MAX_VIN * 2];
@@ -3890,7 +3872,6 @@ CPubKey CWallet::generateAdditonalPubKey(const CPartialTransaction& wtxNew)
 		throw runtime_error("Cannot covert from commitment to public key");
 
 	CPubKey ADDPUB(allInPubKeys[wtxNew.vin.size()][PI], allInPubKeys[wtxNew.vin.size()][PI] + 33);
-    LogPrintf("%s:ADDPUB=%s\n", __func__, ADDPUB.GetHex());
 	return ADDPUB;
 }
 
@@ -3898,13 +3879,11 @@ CKeyImage CWallet::generatePartialAdditionalKeyImage(const CPartialTransaction& 
 {
     LOCK2(cs_main, cs_wallet);
 	CPubKey ADDPUB = generateAdditonalPubKey(wtxNew);
-    LogPrintf("%s: ADDPUB = %s\n", __func__, ADDPUB.GetHex());
 	CKey mySpend;
 	mySpendPrivateKey(mySpend);
 	unsigned char retRaw[33];
 	PointHashingSuccessively(ADDPUB, mySpend.begin(), retRaw);
 	CKeyImage ret(retRaw, retRaw + 33);
-    LogPrintf("%s: additional partial key image = %s\n", __func__, ret.GetHex());
 	return ret;
 }
 
@@ -4076,7 +4055,6 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
         }
 		unsigned char HSPubTemp[33];
 		PointHashingSuccessively(pub, temp.begin(), HSPubTemp);
-        LogPrintf("Extracted pubkey:%s\n", pub.GetHex());
 
 		std::vector<CKeyImage> partialKeyImages;
 
@@ -4089,7 +4067,6 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 		CKeyImage full = SumOfAllPubKeys(partialKeyImages);
 		memcpy(allKeyImages[i], full.begin(), 33);
         wtxNew.vin[i].keyImage.Set(allKeyImages[i], allKeyImages[i] + 33);
-        LogPrintf("Key image %d = %s\n", i, wtxNew.vin[i].keyImage.GetHex());
 	}
 
 	//2. compute key image for additional
@@ -4106,7 +4083,6 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
     //private key of K3 = wtxNew.vin.size()*(sum of all co-signer private spend keys)
 
     CPubKey ADDPUB(allInPubKeys[wtxNew.vin.size()][PI], allInPubKeys[wtxNew.vin.size()][PI] + 33);
-    LogPrintf("%s:ADDPUB=%s\n", __func__, ADDPUB.GetHex());
 	std::vector<CPubKey> allK2s;
 
 	//step 2.1: collect all input blinds
@@ -4131,7 +4107,6 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 		}
 
 		bptr[myBlindsIdx] = myBlinds[myBlindsIdx];
-        LogPrintf("%s: myBlinds=%s, myBlindsIdx=%d\n", __func__, HexStr(myBlinds[myBlindsIdx], myBlinds[myBlindsIdx] + 32), myBlindsIdx);
 		myBlindsIdx++;
 
 		CKey k2 = GeneratePartialKey(inTx.vout[myOutpoint.n]);
@@ -4148,13 +4123,10 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	for(CTxOut& out: wtxNew.vout) {
 		if (!out.IsEmpty()) {
 			if (!wtxNew.blinds[blindIdx].empty()) {
-                LogPrintf("inMemoryRawBind is valid\n");
 				memcpy(&myBlinds[myBlindsIdx][0], wtxNew.blinds[blindIdx].data(), 32);
 			} else {
-                LogPrintf("inMemoryRawBind is invalid\n");
             }
 			bptr[myBlindsIdx] = &myBlinds[myBlindsIdx][0];
-            LogPrintf("%s: myBlinds=%s, myBlindsIdx=%d\n", __func__, HexStr(myBlinds[myBlindsIdx], myBlinds[myBlindsIdx] + 32), myBlindsIdx);
 			myBlindsIdx++;
 		}
         blindIdx++;
@@ -4165,7 +4137,6 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	unsigned char outSum[32];
 	if (!secp256k1_pedersen_blind_sum(both, outSum, (const unsigned char * const *)bptr, totalCommits, npositive))
 		throw runtime_error("Cannot compute pedersen blind sum");
-    LogPrintf("%s: outSum=%s, myBlindsIdx=%d\n", __func__, HexStr(outSum, outSum + 32), myBlindsIdx);
 
 	//newBlind.Set(outSum, outSum + 32, true);
 	CKeyImage K1;
@@ -4179,14 +4150,12 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	//K3 = (all partial private keys)*ADDPUB = wtxNew.vin.size() * (sum of all additional partial key images)
 	std::vector<CPubKey> subAllK3s;
 	for(size_t i = 0; i < ls.size(); i++) {
-        LogPrintf("%s: partialAdditionalKeyImage = %s, i = %d\n", __func__, ls[i].partialAdditionalKeyImage.GetHex(), i);
 		subAllK3s.push_back(ls[i].partialAdditionalKeyImage);
 	}
 	// for(size_t i = 0; i < wtxNew.vin.size(); i++) {
 	// 	allK3s.insert(allK3s.end(), subAllK3s.begin(), subAllK3s.end());
 	// }
     CKeyImage subK3 = SumOfAllPubKeys(subAllK3s);
-            LogPrintf("SubK3 = %s\n", subK3.GetHex());
     std::vector<CPubKey> allPubK3s;
     for(int i = 0; i < wtxNew.vin.size(); i++) {
         allPubK3s.push_back(subK3);
@@ -4195,15 +4164,11 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 
 	std::vector<CKeyImage> k1k2k3;
 	k1k2k3.push_back(K1);
-        LogPrintf("K1 = %s\n", K1.GetHex());
 	k1k2k3.push_back(K2);
-        LogPrintf("K2 = %s\n", K2.GetHex());
 	k1k2k3.push_back(K3);
-        LogPrintf("K3 = %s\n", K3.GetHex());
 	CPubKey sum = SumOfAllPubKeys(k1k2k3);
 	memcpy(allKeyImages[wtxNew.vin.size()], sum.begin(), 33);
     wtxNew.ntxFeeKeyImage.Set(sum.begin(), sum.end());
-    LogPrintf("Additonal key image = %s\n", wtxNew.ntxFeeKeyImage.GetHex());
 
 	unsigned char SIJ[MAX_VIN + 1][MAX_DECOYS + 1][32];
 	unsigned char LIJ[MAX_VIN + 1][MAX_DECOYS + 1][33];
@@ -4214,21 +4179,16 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	//generating LIJ and RIJ at PI: LIJ[j][PI], RIJ[j][PI], j=0..wtxNew.vin.size()
 	for (size_t j = 0; j < wtxNew.vin.size() + 1; j++) {
 		std::vector<CPubKey> allLIJs, allRIJs;
-        LogPrintf("%s: ls.size() = %d\n", __func__, ls.size());
 		for(int k = 0; k < ls.size(); k++) {
 			allLIJs.push_back(ls[k].partialAlphas[j].LIJ);
-            LogPrintf("%s: partialAlphas L %d %d = %s\n", __func__, k, j, HexStr(ls[k].partialAlphas[j].LIJ.begin(), ls[k].partialAlphas[j].LIJ.end()));
 			allRIJs.push_back(ls[k].partialAlphas[j].RIJ);
-            LogPrintf("%s: partialAlphas R %d %d = %s\n", __func__, k, j, HexStr(ls[k].partialAlphas[j].RIJ.begin(), ls[k].partialAlphas[j].RIJ.end()));
 		}
 
 		CPubKey LIJ_PI = SumOfAllPubKeys(allLIJs);
 		CPubKey RIJ_PI = SumOfAllPubKeys(allRIJs);
 
 		memcpy(LIJ[j][PI], LIJ_PI.begin(), 33);
-        LogPrintf("%s: L %d %d = %s\n", __func__, j, PI, HexStr(LIJ[j][PI], LIJ[j][PI] + 33));
 		memcpy(RIJ[j][PI], RIJ_PI.begin(), 33);        
-        LogPrintf("%s: R %d %d = %s\n", __func__, j, PI, HexStr(RIJ[j][PI], RIJ[j][PI] + 33));
 	}
 
 	//filling LIJ & RIJ at [j][PI], additional LIJ, RIJ
@@ -4270,10 +4230,8 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	uint256 temppi1 = Hash(tempForHash, tempForHash + 2 * (wtxNew.vin.size() + 1) * 33 + 32);
 	if (PI_interator == 0) {
 		memcpy(CI[0], temppi1.begin(), 32);
-        LogPrintf("%s: C %d = %s\n", __func__, 0, HexStr(CI[0], CI[0] + 32));
 	} else {
 		memcpy(CI[PI_interator], temppi1.begin(), 32);
-        LogPrintf("%s: C %d = %s\n", __func__, PI_interator, HexStr(CI[PI_interator], CI[PI_interator] + 32));
 	}
 
 	while (PI_interator != PI) {
@@ -4350,7 +4308,6 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
 	}
 
 	memcpy(wtxNew.c.begin(), CI[0], 32);
-    LogPrintf("%s: C = %s\n", __func__, HexStr(CI[PI], CI[PI] + 32));
 
 	//encode C[PI]
 	CKey multiView = MyMultisigViewKey();
@@ -4445,8 +4402,6 @@ bool CWallet::finishRingCTAfterKeyImageSynced(CPartialTransaction& wtxNew, std::
     if (!MultiplyScalar(cspendkey, CI[PI], wtxNew.vin.size()))
         throw runtime_error("Cannot compute EC mul");
     
-    LogPrintf("%s: cspendkey=%s\n", __func__, HexStr(cspendkey, cspendkey + 32));
-
     if (!secp256k1_ec_privkey_tweak_mul(cspendkey, mySpend.begin()))
 		throw runtime_error("Cannot compute EC mul");
     
@@ -4485,16 +4440,13 @@ bool CWallet::CoSignPartialTransaction(CPartialTransaction& tx)
 	const size_t MAX_VOUT = 5;
 	unsigned char SIJ[MAX_VIN + 1][MAX_DECOYS + 1][32];
 
-    LogPrintf("Copying S\n");
 	for (size_t i = 0; i < tx.vin[0].decoys.size() + 1; i++) {
 		std::vector<uint256> S_column = tx.S[i];
-        LogPrintf("Copying column %d\n", i);
 		for (size_t j = 0; j < tx.vin.size() + 1; j++) {
 			memcpy(SIJ[j][i], S_column[j].begin(), 32);
 		}
 	}
 
-    LogPrintf("Looking for multisig index\n");
 	int myIndex = findMultisigInputIndex(tx);
 	int myRealIndex = 0;
 	if (myIndex != -1) {
@@ -4509,7 +4461,6 @@ bool CWallet::CoSignPartialTransaction(CPartialTransaction& tx)
 	memcpy(decodedCPI, multiView.begin(), 32);
 	secp256k1_ec_privkey_negate2(GetContext(), decodedCPI);
 	secp256k1_ec_privkey_tweak_add(decodedCPI, tx.encodedC_PI.begin());
-    LogPrintf("%s: C = %s\n", __func__, HexStr(decodedCPI, decodedCPI + 32));
 
 	//the actual signing part which compute S[j][PI]
 	//compute S'[j][PI] = ALPHAs[j] - c*spendkey => add it to S[j][PI]
@@ -4540,7 +4491,6 @@ bool CWallet::CoSignPartialTransaction(CPartialTransaction& tx)
 		secp256k1_ec_privkey_tweak_add(SIJ[j][PI], s);
 		memcpy(tx.S[PI][j].begin(), SIJ[j][PI], 32);
 	}
-    LogPrintf("Compute alpha\n");
 	unsigned char s[32], temp[32];
 	CKey alpha = generateAdditionalPartialAlpha(tx);
 
@@ -5046,9 +4996,6 @@ bool CWallet::CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey, std:
             // duration of this scope.  This is the only place where this optimization
             // maybe makes sense; please don't do it anywhere else.
             CWalletDB* pwalletdb = fFileBacked ? new CWalletDB(strWalletFile, "r") : NULL;
-
-            // Take key pair from key pool so it won't be used again
-            reservekey.KeepKey();
 
             // Add tx to wallet, because if it has change it's also ours,
             // otherwise just for transaction history.

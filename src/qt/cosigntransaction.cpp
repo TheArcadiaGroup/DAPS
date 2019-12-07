@@ -112,8 +112,9 @@ void CoSignTransaction::cosignTransaction()
             return;
         }
         CTransaction convertedTx = partialTx.ToTransaction();
-        CValidationState state;
-        if (!AcceptToMemoryPool(mempool, state, convertedTx, false, NULL, false)) {
+        CWalletTx wtx(pwalletMain, convertedTx);
+        CReserveKey rsv(pwalletMain);
+        if (!pwalletMain->CommitTransaction(wtx, rsv)) {
             CDataStream dex(SER_NETWORK, PROTOCOL_VERSION);
             dex << partialTx;
             std::string hex = HexStr(dex.begin(), dex.end());
@@ -121,7 +122,7 @@ void CoSignTransaction::cosignTransaction()
             ui->signedHex->setText(QString::fromStdString(hex));
             QMessageBox msgBox;
             msgBox.setWindowTitle("Transaction Signed");
-            msgBox.setText("Multisignature transaction CoSigned by you. You can copy the hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");
+            msgBox.setText("Multisignatu\re transaction CoSigned by you. You can copy the hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");
             msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
             msgBox.setIcon(QMessageBox::Information);
             msgBox.exec();
@@ -131,7 +132,7 @@ void CoSignTransaction::cosignTransaction()
             std::string hex = HexStr(dex.begin(), dex.end());
             ui->signedHex->setReadOnly(true);
             ui->signedHex->setText(QString::fromStdString(hex));
-            
+
             QMessageBox msgBox;
             msgBox.setWindowTitle("Transaction Sent");
             msgBox.setText(QString("Multisignature transaction CoSigned by you and sent. Here's transaction ID ") + QString(convertedTx.GetHash().GetHex().c_str()));
@@ -147,7 +148,7 @@ void CoSignTransaction::cosignTransaction()
         QStringList l = text.split("\n");
         if (l.size() != pwalletMain->ReadNumSigners() - 1) {
             msgBox.setWindowTitle("Transaction Signed");
-            msgBox.setText(QString("The number of key images is not match with the number of cosigners."));
+            msgBox.setText(QString("The number of key images code is not match with the number of cosigners."));
             msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
             msgBox.setIcon(QMessageBox::Warning);
             msgBox.exec();
