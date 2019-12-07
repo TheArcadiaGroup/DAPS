@@ -3597,6 +3597,47 @@ int CWallet::findMultisigInputIndex(const CTransaction& tx) const {
 	return findMultisigInputIndex(tx, tx.vin[0]);
 }
 
+uint256 CWallet::readPendingTxPriv() const {
+    if (HasPendingTx()) {
+        CWalletDB db(strWalletFile);
+        CPartialTransaction tx;
+        if (db.ReadPendingForSigningTx(tx)) {
+            std::vector<pair<uint256, unsigned int>> setCoins;
+            for(size_t i = 0; i < tx.vin.size(); i++) {
+                setCoins.push_back(make_pair(tx.vin[i].prevout.hash, tx.vin[i].prevout.n));
+            }
+            {
+                uint256 h = ComputeSortedSelectedOutPointHash(setCoins);
+                CKey privateTx;
+                privateTx.Set(h.begin(), h.end(), true);
+                CPubKey txPub = privateTx.GetPubKey();
+                for(size_t i = 0; i < tx.vout.size(); i++) {
+                    if (txPub.Raw() == tx.vout[i].txPub) {
+                        return h;
+                    }
+                }
+            }
+
+            for(size_t k = 0; k < tx.vin[0].decoys.size(); k++) {
+                setCoins.clear();
+                for(size_t i = 0; i < tx.vin.size(); i++) {
+                    setCoins.push_back(make_pair(tx.vin[i].decoys[k].hash, tx.vin[i].decoys[k].n));
+                }
+                uint256 h = ComputeSortedSelectedOutPointHash(setCoins);
+                CKey privateTx;
+                privateTx.Set(h.begin(), h.end(), true);
+                CPubKey txPub = privateTx.GetPubKey();
+                for(size_t i = 0; i < tx.vout.size(); i++) {
+                    if (txPub.Raw() == tx.vout[i].txPub) {
+                        return h;
+                    }
+                }
+            }
+        }
+    } 
+    return uint256(0);
+}
+
 int CWallet::findMultisigInputIndex(const CTransaction& tx, const CTxIn& txin) const {
     LOCK2(cs_main, cs_wallet);
     if (myIndexMap.count(tx.GetHash()) == 1) return myIndexMap[tx.GetHash()];
@@ -3606,8 +3647,10 @@ int CWallet::findMultisigInputIndex(const CTransaction& tx, const CTxIn& txin) c
     for(size_t i = 0; i < tx.vin.size(); i++) {
         setCoins.push_back(make_pair(tx.vin[i].prevout.hash, tx.vin[i].prevout.n));
 	}
+    uint256 h;
+    uint256 pendingPriv = readPendingTxPriv();
     {
-        uint256 h = ComputeSortedSelectedOutPointHash(setCoins);
+        h = ComputeSortedSelectedOutPointHash(setCoins);
         CKey privateTx;
         privateTx.Set(h.begin(), h.end(), true);
         CPubKey txPub = privateTx.GetPubKey();
@@ -3628,6 +3671,9 @@ int CWallet::findMultisigInputIndex(const CTransaction& tx, const CTxIn& txin) c
                 db.WriteKeyImage(outString, tx.vin[i].keyImage);
                 if (mapWallet.count(tx.vin[i].prevout.hash) == 1) {
                     mapWallet[tx.vin[i].prevout.hash].MarkDirty();
+                    if (pendingPriv == h) {
+                        db.WriteHasWaitingTx(false);
+                    }
                 }
             }
         }
@@ -3639,7 +3685,7 @@ int CWallet::findMultisigInputIndex(const CTransaction& tx, const CTxIn& txin) c
         for(size_t i = 0; i < tx.vin.size(); i++) {
             setCoins.push_back(make_pair(tx.vin[i].decoys[k].hash, tx.vin[i].decoys[k].n));
         }
-        uint256 h = ComputeSortedSelectedOutPointHash(setCoins);
+        h = ComputeSortedSelectedOutPointHash(setCoins);
         CKey privateTx;
         privateTx.Set(h.begin(), h.end(), true);
         CPubKey txPub = privateTx.GetPubKey();
@@ -3663,6 +3709,9 @@ int CWallet::findMultisigInputIndex(const CTransaction& tx, const CTxIn& txin) c
                 db.WriteKeyImage(outString, tx.vin[i].keyImage);
                 if (mapWallet.count(tx.vin[i].decoys[ret].hash) == 1) {
                     mapWallet[tx.vin[i].decoys[ret].hash].MarkDirty();
+                    if (pendingPriv == h) {
+                        db.WriteHasWaitingTx(false);
+                    }
                 }
             }
         }
@@ -5179,7 +5228,7 @@ void CWallet::ScanWalletKeyImages()
     for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
         const CWalletTx wtxIn = it->second;
         uint256 hash = wtxIn.GetHash();
-        //AddToSpends(hash);
+        AddToSpends(hash);
     }
 }
 

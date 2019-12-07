@@ -924,6 +924,7 @@ public:
     {
         return CWalletDB(strWalletFile).ReadHasWaitingTx();
     }
+    uint256 readPendingTxPriv() const;
     void AddComputedPrivateKey(const CTxOut& out);
     bool IsMultisigSetup() const {
     	MyMultisigViewKey();
