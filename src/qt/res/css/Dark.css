@@ -26,6 +26,7 @@ QComboBox:disabled,
   border: 1px solid rgb(51, 54, 54);
 }*/
 QDialog {
+  min-width: 500px;
   background: qlineargradient(
     x1: 0 y1: 0,
     x2: 1 y2: 1,

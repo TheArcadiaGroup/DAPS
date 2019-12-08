@@ -1092,7 +1092,7 @@ void BitcoinGUI::setStakingStatus()
         stkStatus = pwalletMain->ReadStakingStatus();
     }
 
-    if (!stkStatus || pwalletMain->stakingMode == StakingMode::STOPPED) {
+    if (!stkStatus || pwalletMain->stakingMode == StakingMode::STOPPED || pwalletMain->IsLocked()) {
         stakingState->setText(tr("Staking Disabled"));
         stakingState->setToolTip("Staking Disabled");
         stakingAction->setIcon(QIcon(":/icons/staking_inactive"));
