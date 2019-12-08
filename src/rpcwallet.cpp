@@ -2925,19 +2925,45 @@ UniValue showtxprivatekeys(const UniValue& params, bool fHelp) {
     return ret;
 }
 
+UniValue rescan(const UniValue& params, bool fHelp) {
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+                "rescan\n"
+                "\nRescan wallet transactions from the first block.\n"
+                "\nArguments:\n"
+                "\nResult:\n"
+                "\"scanned wallet transactions\"    \n"
+                "\nExamples:\n" +
+                HelpExampleCli("rescan", "") + HelpExampleCli("rescan", "\"\"") +
+                HelpExampleRpc("rescan", ""));
+
+    if (!pwalletMain) {
+        //privacy wallet is already created
+        throw JSONRPCError(RPC_PRIVACY_WALLET_EXISTED,
+                           "Error: There is no privacy wallet, please use createprivacyaccount to create one.");
+    }
+
+    EnsureWalletIsUnlocked();
+
+    int nHeight = 1;
+    if (!pwalletMain->RescanAfterUnlock(nHeight)) {
+        return "Failed to rescan";
+    }
+    return "Done";
+}
 
 UniValue rescanwallettransactions(const UniValue& params, bool fHelp) {
-    if (fHelp || params.size() > 1)
+    if (fHelp || params.size() != 1)
         throw runtime_error(
                 "rescanwallettransactions \"block height\"\n"
-                "\nRescan wallet transaction.\n"
+                "\nRescan wallet transactions from a certain block height.\n"
                 "\nArguments:\n"
                 "\nblock height: block height from which the chain will be rescanned\n"
                 "\nResult:\n"
-                "\"scanned wallet transaction\"    \n"
+                "\"scanned wallet transactions\"    \n"
                 "\nExamples:\n" +
                 HelpExampleCli("rescanwallettransactions", "") + HelpExampleCli("rescanwallettransactions", "\"\"") +
-                HelpExampleCli("rescanwallettransactions", "") + HelpExampleRpc("rescanwallettransactions", ""));
+                HelpExampleRpc("rescanwallettransactions", ""));
 
     if (!pwalletMain) {
         //privacy wallet is already created

@@ -38,6 +38,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"getnetworkhashps", 0},
         {"getnetworkhashps", 1},
         {"sendtoaddress", 1},
+        {"rescan", 0},
         {"rescanwallettransactions", 0},
         {"sendtostealthaddress", 1},
         {"sendtoaddressix", 1},

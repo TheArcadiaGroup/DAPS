@@ -381,6 +381,7 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "revealviewprivatekey", &revealviewprivatekey, true, false, true},
         {"wallet", "revealspendprivatekey", &revealspendprivatekey, true, false, true},
         {"wallet", "showtxprivatekeys", &showtxprivatekeys, true, false, true},
+        {"wallet", "rescan", &rescan, true, false, true},
         {"wallet", "rescanwallettransactions", &rescanwallettransactions, true, false, true},
         {"wallet", "setdecoyconfirmation", &setdecoyconfirmation, true, false, true},
         {"wallet", "getdecoyconfirmation", &getdecoyconfirmation, true, false, true},
