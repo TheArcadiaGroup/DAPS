@@ -1223,14 +1223,14 @@ bool CWalletDB::ReadKeyImage(const std::string& outpointKey, CKeyImage& k)
 	return Read(std::make_pair(std::string("outpointkeyimage"), outpointKey), k);
 }
 
-bool CWalletDB::WriteHasWaitingTx(const bool& hasWaitingTx)
+bool CWalletDB::WriteHasWaitingTx(const bool hasWaitingTx)
 {
     return Write(std::string("hasmultisigpendingtx"), hasWaitingTx);
 }
 bool CWalletDB::ReadHasWaitingTx()
 {
     bool hasWaitingTx = false;
-    return Read(std::string("hasmultisigpendingtx"), hasWaitingTx);
+    Read(std::string("hasmultisigpendingtx"), hasWaitingTx);
     return hasWaitingTx;
 }
 bool CWalletDB::WritePendingForSigningTx(const CPartialTransaction& ptx)

@@ -81,7 +81,7 @@ void KeyImageSync::setBalance(const CAmount& balance, const CAmount& unconfirmed
 void KeyImageSync::on_copyButton_Clicked() 
 {
     QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setText(ui->hexCode->toPlainText());
+    clipboard->setText(ui->signedHex->toPlainText());
 }
 
 KeyImageSync::~KeyImageSync(){
@@ -125,6 +125,7 @@ void KeyImageSync::syncKeyImages()
 
 void KeyImageSync::generateKeyImageHex()
 {
+    if (pwalletMain->IsLocked()) return;
 	LOCK2(cs_main, pwalletMain->cs_wallet);
 	std::string hexCode = ui->hexCode->toPlainText().toStdString();
 	if (!IsHex(hexCode)) return;
@@ -156,7 +157,7 @@ void KeyImageSync::generateKeyImageHex()
 
 	QMessageBox msgBox;
     msgBox.setWindowTitle("Information");
-    msgBox.setText("Transaction meta-data created! Please send this meta-data to the transaction initiator for him to start co-signing the transaction");
+    msgBox.setText("Transaction meta-data created! Please send this meta-data to the transaction creator to start co-signing the transaction");
     msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
     msgBox.setIcon(QMessageBox::Information);
     msgBox.exec();

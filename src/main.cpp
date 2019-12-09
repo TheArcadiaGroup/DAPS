@@ -623,7 +623,6 @@ bool VerifyRingSignatureWithTxFee(const CTransaction& tx, CBlockIndex* pindex)
             size_t tempLength;
             if (!secp256k1_pedersen_commitment_to_serialized_pubkey(&sum, RIJ[i][j], &tempLength))
                 throw runtime_error("failed to serialize pedersen commitment");
-            LogPrintf("%s: R %d %d = %s\n", __func__, i, j, HexStr(RIJ[i][j], RIJ[i][j] + 33));
         }
 
         //compute C

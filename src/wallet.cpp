@@ -6660,7 +6660,6 @@ bool CWallet::SendToStealthAddress(CPartialTransaction& ptx, const std::string& 
     control.receiver = changeDes;
     control.txPriv = secretChange;
     CAmount nFeeRequired;
-    std::copy(stealthAddr.begin(), stealthAddr.end(), std::back_inserter(ptx.receiver));
     if (!pwalletMain->CreateTransactionBulletProof(ptx, secret, pubViewKey, scriptPubKey, 
                                                     nValue, wtxNew, reservekey,
                                                     nFeeRequired, strError, 
@@ -6674,6 +6673,7 @@ bool CWallet::SendToStealthAddress(CPartialTransaction& ptx, const std::string& 
         LogPrintf("SendToStealthAddress() : Not enough! %s\n", strError);
         throw runtime_error(strError);
     }
+    std::copy(stealthAddr.begin(), stealthAddr.end(), std::back_inserter(ptx.receiver));
     /*if (!pwalletMain->CommitTransaction(wtxNew, reservekey, (!fUseIX ? "tx" : "ix"))) {
     	inSpendQueueOutpointsPerSession.clear();
         throw runtime_error(

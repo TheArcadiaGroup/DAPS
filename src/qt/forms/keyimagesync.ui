@@ -85,7 +85,7 @@
    <item>
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Existing transaction waiting for key image synchronization: </string>
+      <string>Please enter the hex code of an existing transaction waiting for generating transaction metadata</string>
      </property>
     </widget>
    </item>
@@ -156,7 +156,7 @@
            <item>
             <widget class="QPushButton" name="generateKeyImage">
              <property name="text">
-              <string>Generate Key Image</string>
+              <string>Generate Metadata</string>
              </property>
             </widget>
            </item>
@@ -234,7 +234,7 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Hex Code of transaction with key image (Please go to Co-Sign tab in order to sign the transaction.): </string>
+      <string>Transaction metadata. Please copy and send this metadata to the transaction creator to start signing the transaction.</string>
      </property>
     </widget>
    </item>

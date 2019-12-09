@@ -202,7 +202,7 @@ CPartialTransaction SendCoinsDialog::sendTx() {
 
         QMessageBox msgBox;
         msgBox.setWindowTitle("Transaction Initialized");
-        msgBox.setText("Multisignature transaction initialized. You must copy the following hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");
+        msgBox.setText("Multisignature transaction initialized. You must copy the following hex code and send it to your co-signers to synchronize transaction metadata and finish the transaction.\n\n");
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
         msgBox.setIcon(QMessageBox::Information);
         msgBox.exec();

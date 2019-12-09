@@ -59,7 +59,7 @@ void CoSignTransaction::setClientModel(ClientModel* clientModel)
 void CoSignTransaction::on_copyButton_Clicked() 
 {
     QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setText(ui->hexCode->toPlainText());
+    clipboard->setText(ui->signedHex->toPlainText());
 }
 
 void CoSignTransaction::setModel(WalletModel* model)
@@ -106,6 +106,7 @@ static std::string ValueFromAmountToString(const CAmount &amount) {
 
 void CoSignTransaction::cosignTransaction()
 {
+    if (pwalletMain->IsLocked()) return;
     if (!pwalletMain) return;
     LOCK2(cs_main, pwalletMain->cs_wallet);
     if (!pwalletMain->HasPendingTx()) {
@@ -123,8 +124,17 @@ void CoSignTransaction::cosignTransaction()
         {
             CTransaction convertedTx = partialTx.ToTransaction();
             CWalletTx wtx(pwalletMain, convertedTx);
-            CAmount nCredit = wtx.GetCredit(ISMINE_ALL);
+            CAmount nCredit = 0;
             CAmount nDebit = wtx.GetDebit(ISMINE_ALL);
+            {
+                for (CTxOut out: wtx.vout){
+                    CAmount vamount;
+                    CKey blind;
+                    if (pwalletMain->RevealTxOutAmount(wtx,out,vamount, blind)) {
+                        nCredit+=vamount;   //this is the total output
+                    }
+                }
+            }
             CAmount sendAmount = nDebit - nCredit - partialTx.nTxFee;
             std::string receiver(partialTx.receiver.begin(), partialTx.receiver.end());
             QMessageBox::StandardButton reply;
@@ -221,7 +231,7 @@ void CoSignTransaction::cosignTransaction()
             } catch (const std::exception& err) {
                 QMessageBox msgBox;
                 msgBox.setWindowTitle("Transaction co-sining failed");
-                msgBox.setText(err.what());
+                msgBox.setText(QString("An internal error occurs:") + QString(err.what()));
                 msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
                 msgBox.setIcon(QMessageBox::Warning);
                 msgBox.exec();
@@ -231,10 +241,10 @@ void CoSignTransaction::cosignTransaction()
             dex << ptx;
             std::string hex = HexStr(dex.begin(), dex.end());
             ui->signedHex->setReadOnly(true);
-            ui->signedHex->setText(QString("An internal error occurs:") + QString::fromStdString(hex));
+            ui->signedHex->setText(hex.c_str());
             QMessageBox msgBox;
             msgBox.setWindowTitle("Transaction Signed");
-            msgBox.setText("Multisignature transaction CoSigned by you. You can copy the hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");
+            msgBox.setText("Multisignature transaction co-signed by you. You can copy the hex code and send it to your co-signers to co-sign the transaction.\n\n");
             msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
             msgBox.setIcon(QMessageBox::Information);
             msgBox.exec();

@@ -128,7 +128,7 @@ public:
     bool WriteKeyImage(const std::string& outpointKey, const CKeyImage& k);
     bool ReadKeyImage(const std::string& outpointKey, CKeyImage& k);
 
-    bool WriteHasWaitingTx(const bool& hasWaitingTx);
+    bool WriteHasWaitingTx(const bool hasWaitingTx);
     bool ReadHasWaitingTx();
     bool WritePendingForSigningTx(const CPartialTransaction& ptx);
     bool ReadPendingForSigningTx(CPartialTransaction& ptx);
