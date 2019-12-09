@@ -145,7 +145,7 @@ void KeyImageSync::generateKeyImageHex()
 
 	QMessageBox msgBox;
     msgBox.setWindowTitle("Information");
-    msgBox.setText("Hex code created! Please send it to the transaction creator for him to start co-signing the transaction");
+    msgBox.setText("Transaction meta-data created! Please send this meta-data to the transaction initiator for him to start co-signing the transaction");
     msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
     msgBox.setIcon(QMessageBox::Information);
     msgBox.exec();

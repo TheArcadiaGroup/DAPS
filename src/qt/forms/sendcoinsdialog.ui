@@ -92,8 +92,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>830</width>
-        <height>312</height>
+        <width>824</width>
+        <height>286</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0">
@@ -133,23 +133,6 @@
             </size>
            </property>
           </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="addButton">
-           <property name="toolTip">
-            <string>Send to multiple recipients at once</string>
-           </property>
-           <property name="text">
-            <string>Add &amp;Recipient</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../dapscoin.qrc">
-             <normaloff>:/icons/add</normaloff>:/icons/add</iconset>
-           </property>
-           <property name="autoDefault">
-            <bool>false</bool>
-           </property>
-          </widget>
          </item>
          <item>
           <spacer name="horizontalSpacer_3">

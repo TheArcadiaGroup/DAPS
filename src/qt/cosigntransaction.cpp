@@ -76,10 +76,10 @@ CoSignTransaction::~CoSignTransaction(){
 }
 
 void CoSignTransaction::UpdateLabels() {
-    ui->label_3->setText("Enter long code of transaction to be signed");
+    ui->label_3->setText("Enter the long hex code of transaction to be signed");
     if (pwalletMain) {
         if (pwalletMain->HasPendingTx()) {
-            ui->label_3->setText("You have a pending transaction, please enter the synchronized key images \nfrom your co-signers here to co-sign the pending transaction.");
+            ui->label_3->setText("You have a pending transaction, in order for your cosigners to co-sign the transaction, please enter \nthe transaction meta-data received from your co-signers here to co-sign the pending transaction.");
         }
     }
 }
@@ -157,7 +157,7 @@ void CoSignTransaction::cosignTransaction()
 
             QMessageBox msgBox;
             msgBox.setWindowTitle("Transaction Sent");
-            msgBox.setText(QString("Multisignature transaction CoSigned by you and sent. Here's transaction ID ") + QString(convertedTx.GetHash().GetHex().c_str()));
+            msgBox.setText(QString("Multisignature transaction CoSigned by you and sent to the network. Here's transaction ID ") + QString(convertedTx.GetHash().GetHex().c_str()));
             msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
             msgBox.setIcon(QMessageBox::Information);
             msgBox.exec();
