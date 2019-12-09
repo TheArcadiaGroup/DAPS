@@ -250,6 +250,9 @@
    </item>
    <item>
     <widget class="QPushButton" name="copyButton">
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
      <property name="text">
       <string>Copy</string>
      </property>

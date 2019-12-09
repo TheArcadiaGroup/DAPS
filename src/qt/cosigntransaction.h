@@ -51,6 +51,7 @@ private slots:
 	void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
                                  const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance);
     void cosignTransaction();
+    void on_copyButton_Clicked();
 signals:
 
 };

@@ -31,6 +31,7 @@
 #include <QTextDocument>
 #include <QDateTime>
 #include <QDebug>
+#include <QClipboard>
 
 
 CoSignTransaction::CoSignTransaction(QWidget* parent) : QDialog(parent),
@@ -41,6 +42,10 @@ CoSignTransaction::CoSignTransaction(QWidget* parent) : QDialog(parent),
 {
     ui->setupUi(this);
     connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(cosignTransaction()));
+
+    ui->copyButton->setStyleSheet("background:transparent;");
+    ui->copyButton->setIcon(QIcon(":/icons/editcopy"));
+	connect(ui->copyButton, SIGNAL(clicked()), this, SLOT(on_copyButton_Clicked()));
 }
 
 void CoSignTransaction::setClientModel(ClientModel* clientModel)
@@ -49,6 +54,12 @@ void CoSignTransaction::setClientModel(ClientModel* clientModel)
 
     if (clientModel) {
     }
+}
+
+void CoSignTransaction::on_copyButton_Clicked() 
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(ui->hexCode->toPlainText());
 }
 
 void CoSignTransaction::setModel(WalletModel* model)
