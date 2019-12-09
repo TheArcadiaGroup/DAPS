@@ -32,6 +32,7 @@
 #include <QTextDocument>
 #include <QDateTime>
 #include <QDebug>
+#include <QClipboard>
 
 
 SendCoinsDialog::SendCoinsDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
@@ -46,9 +47,12 @@ SendCoinsDialog::SendCoinsDialog(QWidget* parent) : QDialog(parent, Qt::WindowSy
     addEntry();
 
     //connect(ui->addButton, SIGNAL(clicked()), this, SLOT(addEntry()));
-
+    connect(ui->copyButton, SIGNAL(clicked()), this, SLOT(on_copyButton_Clicked()));
     // #HIDE multisend
     ui->addButton->setVisible(false);
+
+    ui->copyButton->setStyleSheet("background:transparent;");
+    ui->copyButton->setIcon(QIcon(":/icons/editcopy"));
 }
 
 void SendCoinsDialog::setClientModel(ClientModel* clientModel)
@@ -74,6 +78,12 @@ void SendCoinsDialog::setModel(WalletModel* model)
         connect(model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
             SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
     }
+}
+
+void SendCoinsDialog::on_copyButton_Clicked() 
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(ui->hexCode->toPlainText());
 }
 
 void SendCoinsDialog::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
