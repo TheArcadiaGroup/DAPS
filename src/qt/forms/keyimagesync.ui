@@ -22,7 +22,7 @@
   <property name="sizeGripEnabled">
    <bool>false</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0">
    <property name="bottomMargin">
     <number>8</number>
    </property>
@@ -245,6 +245,13 @@
      </property>
      <property name="acceptRichText">
       <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="copyButton">
+     <property name="text">
+      <string>Copy</string>
      </property>
     </widget>
    </item>

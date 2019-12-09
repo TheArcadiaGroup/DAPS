@@ -31,6 +31,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include "keyimagesync.h"
+#include <QClipboard>
 
 
 KeyImageSync::KeyImageSync(QWidget* parent) : QDialog(parent),
@@ -43,6 +44,10 @@ KeyImageSync::KeyImageSync(QWidget* parent) : QDialog(parent),
     connect(ui->syncKeyImageButton, SIGNAL(clicked()), this, SLOT(syncKeyImages()));
 	ui->syncKeyImageButton->setVisible(false);
 	connect(ui->generateKeyImage, SIGNAL(clicked()), this, SLOT(generateKeyImageHex()));
+
+	ui->copyButton->setStyleSheet("background:transparent;");
+    ui->copyButton->setIcon(QIcon(":/icons/editcopy"));
+	connect(ui->copyButton, SIGNAL(clicked()), this, SLOT(on_copyButton_Clicked()));
 }
 
 void KeyImageSync::setClientModel(ClientModel* clientModel)
@@ -71,6 +76,12 @@ void KeyImageSync::setBalance(const CAmount& balance, const CAmount& unconfirmed
     } else {
         ui->labelBalance->setText(BitcoinUnits::formatHtmlWithUnit(0, balance, false, BitcoinUnits::separatorAlways));
     }
+}
+
+void KeyImageSync::on_copyButton_Clicked() 
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(ui->hexCode->toPlainText());
 }
 
 KeyImageSync::~KeyImageSync(){

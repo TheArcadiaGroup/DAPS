@@ -42,7 +42,7 @@ private slots:
     void syncKeyImages();
     void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
                                  const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance);
-
+    void on_copyButton_Clicked();
 private:
     Ui::KeyImageSync* ui;
     ClientModel* clientModel;

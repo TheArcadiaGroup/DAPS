@@ -256,7 +256,7 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string/>
+      <string>Copy</string>
      </property>
     </widget>
    </item>
