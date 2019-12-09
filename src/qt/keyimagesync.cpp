@@ -79,15 +79,15 @@ KeyImageSync::~KeyImageSync(){
 
 void KeyImageSync::updateKeyImageButtons()
 {
-    ui->syncKeyImageButton->setEnabled(false);
-    ui->generateKeyImage->setEnabled(false);
-    if (pwalletMain) {
+    //ui->syncKeyImageButton->setEnabled(false);
+    //ui->generateKeyImage->setEnabled(false);
+    /*if (pwalletMain) {
         if (pwalletMain->HasPendingTx()) {
             ui->syncKeyImageButton->setEnabled(true);
         } else {
             ui->generateKeyImage->setEnabled(true);
         }
-    }
+    }*/
 }
 
 void KeyImageSync::syncKeyImages()
