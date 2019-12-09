@@ -202,6 +202,34 @@ UniValue addnode(const UniValue& params, bool fHelp)
     return NullUniValue;
 }
 
+UniValue getaddnodes(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "getaddnodes\n"
+            "\nReturns list of add nodes for use in .conf file.\n"
+            "\nbResult:\n"
+            "\nExamples:\n" +
+            HelpExampleCli("getaddnodes", "") + HelpExampleRpc("getaddnodes", ""));
+
+    LOCK(cs_main);
+
+    vector<CNodeStats> vstats;
+    CopyNodeStats(vstats);
+
+    UniValue ret(UniValue::VARR);
+
+    for (const CNodeStats& stats : vstats) {
+        UniValue obj(UniValue::VOBJ);
+        CNodeStateStats statestats;
+        bool fStateStats = GetNodeStateStats(stats.nodeid, statestats);
+        obj.push_back(Pair("addnode=", stats.addrName));
+        ret.push_back(obj);
+    }
+
+    return ret;
+}
+
 UniValue disconnectnode(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
