@@ -155,7 +155,7 @@ void CoSignTransaction::cosignTransaction()
             ui->signedHex->setText(QString::fromStdString(hex));
             QMessageBox msgBox;
             msgBox.setWindowTitle("Transaction Signed");
-            msgBox.setText("Multisignatu\re transaction CoSigned by you. You can copy the hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");
+            msgBox.setText("Multisignatu\re transaction cosigned by you. You can copy the hex code and send it to your co-signers to co-sign and finish the transaction.\n\n");
             msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
             msgBox.setIcon(QMessageBox::Information);
             msgBox.exec();
@@ -168,7 +168,7 @@ void CoSignTransaction::cosignTransaction()
 
             QMessageBox msgBox;
             msgBox.setWindowTitle("Transaction Sent");
-            msgBox.setText(QString("Multisignature transaction CoSigned by you and sent to the network. Here's transaction ID ") + QString(convertedTx.GetHash().GetHex().c_str()));
+            msgBox.setText(QString("Multisignature transaction cosigned by you and sent to the network. Here's transaction ID ") + QString(convertedTx.GetHash().GetHex().c_str()));
             msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
             msgBox.setIcon(QMessageBox::Information);
             msgBox.exec();
@@ -181,7 +181,7 @@ void CoSignTransaction::cosignTransaction()
         QStringList l = text.split("\n");
         if (l.size() != pwalletMain->ReadNumSigners() - 1) {
             msgBox.setWindowTitle("Transaction Signed");
-            msgBox.setText(QString("The number of key images code is not match with the number of cosigners."));
+            msgBox.setText(QString("To co-sign the transaction created by you, you must enter all metadatas obtained \nfrom your co-signers. Each metadata must be separated by a breakline."));
             msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
             msgBox.setIcon(QMessageBox::Warning);
             msgBox.exec();
@@ -192,7 +192,7 @@ void CoSignTransaction::cosignTransaction()
                 std::string str = l.at(i).trimmed().toStdString();
                 if (!IsHex(str)) {
                     msgBox.setWindowTitle("Transaction Signed");
-                    msgBox.setText(QString("Key images for signing not valid."));
+                    msgBox.setText(QString("Transaction metadata is invalid."));
                     msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
                     msgBox.setIcon(QMessageBox::Warning);
                     msgBox.exec();
@@ -205,7 +205,7 @@ void CoSignTransaction::cosignTransaction()
                     ssdata >> clpia;
                 } catch (const std::exception&) {
                     msgBox.setWindowTitle("Transaction Signed");
-                    msgBox.setText(QString("Key images for signing not valid."));
+                    msgBox.setText(QString("Transaction metadata is invalid."));
                     msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
                     msgBox.setIcon(QMessageBox::Warning);
                     msgBox.exec();
@@ -231,7 +231,7 @@ void CoSignTransaction::cosignTransaction()
             dex << ptx;
             std::string hex = HexStr(dex.begin(), dex.end());
             ui->signedHex->setReadOnly(true);
-            ui->signedHex->setText(QString::fromStdString(hex));
+            ui->signedHex->setText(QString("An internal error occurs:") + QString::fromStdString(hex));
             QMessageBox msgBox;
             msgBox.setWindowTitle("Transaction Signed");
             msgBox.setText("Multisignature transaction CoSigned by you. You can copy the hex code and send it to your co-signers to synchronize key image and finish the transaction.\n\n");

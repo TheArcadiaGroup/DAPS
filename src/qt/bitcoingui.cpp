@@ -298,9 +298,9 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(cosignAction);
 
-    keyImageSyncAction = new QAction(QIcon(":/icons/send"), tr("&Sync\nKeyImage"), this);
-    keyImageSyncAction->setIconText("    &Sync\n    KeyImage");
-    keyImageSyncAction->setToolTip("Sync KeyImage");
+    keyImageSyncAction = new QAction(QIcon(":/icons/send"), tr("&Sync\nMetadata"), this);
+    keyImageSyncAction->setIconText("    &Sync\n    Metadata");
+    keyImageSyncAction->setToolTip("Synchronization of transaction metadata");
     keyImageSyncAction->setCheckable(true);
 #ifdef Q_OS_MAC
     keyImageSyncAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_8));
