@@ -107,6 +107,9 @@ static inline int64_t roundint64(double d) {
 }
 
 CAmount AmountFromValue(const UniValue& value) {
+    if (!value.isNum())
+        throw JSONRPCError(RPC_TYPE_ERROR, "Amount is not a number");
+
     double dAmount = value.get_real();
     if (dAmount <= 0.0 || dAmount > Params().MAX_MONEY)
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount");
@@ -287,6 +290,8 @@ static const CRPCCommand vRPCCommands[] =
         {"blockchain", "getblockcount", &getblockcount, true, false, false},
         {"blockchain", "getblock", &getblock, true, false, false},
         {"blockchain", "getblockhash", &getblockhash, true, false, false},
+        {"blockchain", "setmaxreorgdepth", &setmaxreorgdepth, true, false, false},
+        {"blockchain", "resyncfrom", &resyncfrom, true, false, false},
         {"blockchain", "getblockheader", &getblockheader, false, false, false},
         {"blockchain", "getchaintips", &getchaintips, true, false, false},
         {"blockchain", "getdifficulty", &getdifficulty, true, false, false},
@@ -382,6 +387,7 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "showcombokey", &showcombokey, true, false, true},
         {"wallet", "showtxprivatekeys", &showtxprivatekeys, true, false, true},
         {"wallet", "generatekeyimageforsync", &generatekeyimageforsync, true, false, true},
+        {"wallet", "rescan", &rescan, true, false, true},
         {"wallet", "rescanwallettransactions", &rescanwallettransactions, true, false, true},
         {"wallet", "setdecoyconfirmation", &setdecoyconfirmation, true, false, true},
         {"wallet", "getdecoyconfirmation", &getdecoyconfirmation, true, false, true},

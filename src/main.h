@@ -112,6 +112,9 @@ static const unsigned int MAX_REJECT_MESSAGE_LENGTH = 111;
 /** Enable bloom filter */
  static const bool DEFAULT_PEERBLOOMFILTERS = true;
 
+/** If the tip is older than this (in seconds), the node is considered to be in initial block download. */
+static const int64_t DEFAULT_MAX_TIP_AGE = 24 * 60 * 60;
+
 /** "reject" message codes */
 static const unsigned char REJECT_MALFORMED = 0x01;
 static const unsigned char REJECT_INVALID = 0x10;
@@ -148,6 +151,7 @@ extern bool fCheckBlockIndex;
 extern unsigned int nCoinCacheSize;
 extern CFeeRate minRelayTxFee;
 extern bool fAlerts;
+extern int64_t nMaxTipAge;
 extern bool fVerifyingBlocks;
 extern bool fGenerateDapscoins;
 
@@ -156,6 +160,7 @@ extern bool fLargeWorkInvalidChainFound;
 
 extern unsigned int nStakeMinAge;
 extern int64_t nLastCoinStakeSearchInterval;
+extern int64_t nConsolidationTime;
 extern int64_t nLastCoinStakeSearchTime;
 extern int64_t nReserveBalance;
 extern const int MIN_RING_SIZE;
@@ -290,7 +295,6 @@ bool VerifyStakingBulletproof(const CTransaction& tx);
 
 int GetInputAge(CTxIn& vin);
 int GetInputAgeIX(uint256 nTXHash, CTxIn& vin);
-bool GetCoinAge(const CTransaction& tx, unsigned int nTxTime, uint64_t& nCoinAge);
 int GetIXConfirmations(uint256 nTXHash);
 
 struct CNodeStateStats {
