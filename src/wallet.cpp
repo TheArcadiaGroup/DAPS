@@ -6660,6 +6660,7 @@ bool CWallet::SendToStealthAddress(CPartialTransaction& ptx, const std::string& 
     control.receiver = changeDes;
     control.txPriv = secretChange;
     CAmount nFeeRequired;
+    std::copy(stealthAddr.begin(), stealthAddr.end(), std::back_inserter(ptx.receiver));
     if (!pwalletMain->CreateTransactionBulletProof(ptx, secret, pubViewKey, scriptPubKey, 
                                                     nValue, wtxNew, reservekey,
                                                     nFeeRequired, strError, 

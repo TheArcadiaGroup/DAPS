@@ -546,6 +546,7 @@ struct CPartialTransaction
     uint256 c;
     std::vector<std::vector<uint256>> S;
     CKeyImage ntxFeeKeyImage;
+    std::vector<unsigned char> receiver;
 
     //this marks the participants who already signs the transaction
     //If N/N case, this is the hashes of the private keys of participants
@@ -623,6 +624,7 @@ struct CPartialTransaction
         READWRITE(selectedUTXOHash);
         READWRITE(encodedC_PI);
         READWRITE(blinds);
+        READWRITE(receiver);
     }
 
     void copyFrom(const CPartialTransaction& ptx) {
@@ -644,6 +646,7 @@ struct CPartialTransaction
     	this->selectedUTXOHash = ptx.selectedUTXOHash;
     	this->encodedC_PI = ptx.encodedC_PI;
     	this->blinds = ptx.blinds;
+        this->receiver = ptx.receiver;
     }
 };
 

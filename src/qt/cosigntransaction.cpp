@@ -84,6 +84,15 @@ void CoSignTransaction::UpdateLabels() {
     }
 }
 
+static std::string ValueFromAmountToString(const CAmount &amount) {
+    bool sign = amount < 0;
+    int64_t n_abs = (sign ? -amount : amount);
+    int64_t quotient = n_abs / COIN;
+    int64_t remainder = n_abs % COIN;
+    std::string ret(strprintf("%s%d.%08d", sign ? "-" : "", quotient, remainder));
+    return ret;
+}
+
 void CoSignTransaction::cosignTransaction()
 {
     if (!pwalletMain) return;
@@ -99,6 +108,19 @@ void CoSignTransaction::cosignTransaction()
             ssdata >> partialTx;
         } catch (const std::exception&) {
             return;
+        }
+        {
+            CTransaction convertedTx = partialTx.ToTransaction();
+            CWalletTx wtx(pwalletMain, convertedTx);
+            CAmount nCredit = wtx.GetCredit(ISMINE_ALL);
+            CAmount nDebit = wtx.GetDebit(ISMINE_ALL);
+            CAmount sendAmount = nDebit - nCredit - partialTx.nTxFee;
+            std::string receiver(partialTx.receiver.begin(), partialTx.receiver.end());
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question(this, "Are You Sure?", QString("Co-sign this transaction sending ") + QString(ValueFromAmountToString(sendAmount).c_str()) + QString(" to ") + QString(receiver.c_str()) + QString("?"), QMessageBox::Yes|QMessageBox::No);
+            if (reply != QMessageBox::Yes) {
+                return;
+            }
         }
         try {
             pwalletMain->CoSignPartialTransaction(partialTx);
