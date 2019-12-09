@@ -59,6 +59,9 @@ SendCoinsDialog::SendCoinsDialog(QWidget* parent) : QDialog(parent, Qt::WindowSy
     connect(ui->pushButtonCoinControl, SIGNAL(clicked()), this, SLOT(coinControlButtonClicked()));
     connect(ui->checkBoxCoinControlChange, SIGNAL(stateChanged(int)), this, SLOT(coinControlChangeChecked(int)));
     connect(ui->lineEditCoinControlChange, SIGNAL(textEdited(const QString&)), this, SLOT(coinControlChangeEdited(const QString&)));
+    ui->pushButtonCoinControl->setVisible(false);
+    ui->checkBoxCoinControlChange->setVisible(false);
+    ui->lineEditCoinControlChange->setVisible(false);
 
     // Coin Control: clipboard actions
     QAction* clipboardQuantityAction = new QAction(tr("Copy quantity"), this);
@@ -86,6 +89,15 @@ SendCoinsDialog::SendCoinsDialog(QWidget* parent) : QDialog(parent, Qt::WindowSy
     ui->labelCoinControlLowOutput->addAction(clipboardLowOutputAction);
     ui->labelCoinControlChange->addAction(clipboardChangeAction);
 
+    ui->labelCoinControlQuantity->setVisible(false);
+    ui->labelCoinControlAmount->setVisible(false);
+    ui->labelCoinControlFee->setVisible(false);
+    ui->labelCoinControlAfterFee->setVisible(false);
+    ui->labelCoinControlBytes->setVisible(false);
+    ui->labelCoinControlPriority->setVisible(false);
+    ui->labelCoinControlLowOutput->setVisible(false);
+    ui->labelCoinControlChange->setVisible(false);
+
     // #HIDE multisend / unused items
     ui->addButton->setVisible(false);
     ui->checkBoxCoinControlChange->setVisible(false);
@@ -95,6 +107,38 @@ SendCoinsDialog::SendCoinsDialog(QWidget* parent) : QDialog(parent, Qt::WindowSy
     ui->labelBlockSize->setVisible(false);
     ui->labelBlockSizeText->setVisible(false);
     ui->labelCoinControlInsuffFunds->setVisible(false);
+
+    ui->labelCoinControlFeatures->setVisible(false);
+    ui->pushButtonCoinControl->setVisible(false);
+    ui->labelCoinControlAutomaticallySelected->setVisible(false);
+    ui->labelCoinControlInsuffFunds->setVisible(false);
+
+    ui->labelCoinControlQuantityText->setVisible(false);
+    ui->labelCoinControlQuantity->setVisible(false);
+    ui->labelCoinControlBytesText->setVisible(false);
+    ui->labelCoinControlBytes->setVisible(false);
+
+    ui->labelCoinControlAmountText->setVisible(false);
+    ui->labelCoinControlPriorityText->setVisible(false);
+    ui->labelCoinControlAmount->setVisible(false);
+    ui->labelCoinControlPriority->setVisible(false);
+
+    ui->labelCoinControlFeeText->setVisible(false);
+    ui->labelCoinControlLowOutputText->setVisible(false);
+    ui->labelCoinControlFee->setVisible(false);
+    ui->labelCoinControlLowOutput->setVisible(false);
+
+    ui->labelCoinControlAfterFeeText->setVisible(false);
+    ui->labelCoinControlChangeText->setVisible(false);
+    ui->labelCoinControlAfterFee->setVisible(false);
+    ui->labelCoinControlChange->setVisible(false);
+
+    ui->checkBoxCoinControlChange->setVisible(false);
+    ui->lineEditCoinControlChange->setVisible(false);
+    ui->splitBlockCheckBox->setVisible(false);
+    ui->splitBlockLineEdit->setVisible(false);
+    ui->labelBlockSizeText->setVisible(false);    
+    ui->labelBlockSize->setVisible(false);    
 }
 
 void SendCoinsDialog::setClientModel(ClientModel* clientModel)
