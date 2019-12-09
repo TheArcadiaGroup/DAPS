@@ -227,6 +227,7 @@ void SendCoinsDialog::FillExistingTxHexCode() {
             std::string hex = HexStr(ssData.begin(), ssData.end());
             ui->hexCode->setText(QString::fromStdString(hex));
         } else {
+            ui->hexCode->setText("");
             ui->sendButton->setEnabled(true);
             ui->label_2->setText("Hex code generated for the transaction");
         }
