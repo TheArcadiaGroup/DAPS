@@ -1706,7 +1706,7 @@ CAmount CWallet::GetSpendableBalance()
             const CWalletTx* pcoin = &(*it).second;
             if (pcoin->IsTrusted()) {
                 if (!((pcoin->IsCoinBase() || pcoin->IsCoinStake()) && pcoin->GetBlocksToMaturity() > 0 && pcoin->IsInMainChain())) {
-                    nTotal += pcoin->GetAvailableCredit();
+                    nTotal += pcoin->GetAvailableCredit(true, true);
                 }
             }
         }
@@ -2697,6 +2697,7 @@ bool CWallet::SelectCoinsByDenominations(int nDenom, CAmount nValueMin, CAmount 
 
 bool CWallet::IsCollateralized(const COutPoint& outpoint)
 {
+    if (IsLockedCoin(outpoint.hash, outpoint.n)) return true;
     for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
         if (mne.getTxHash() == outpoint.hash.GetHex() && mne.getOutputIndex() == outpoint.n) {
             return true;
